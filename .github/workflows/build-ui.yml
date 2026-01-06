@@ -14,7 +14,6 @@ jobs:
         with:
           node-version: 22
       - name: Build and push the image
-        working-directory: ./openfilz-web
         run: |
           npm install
           npm run build openfilz-ui
