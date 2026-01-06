@@ -15,6 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22
+      - name: Build the application
+        run: |
+          npm install
+          npm run build openfilz-ui
+
       - name: Login to GHCR
         run: |
           docker login ghcr.io \
