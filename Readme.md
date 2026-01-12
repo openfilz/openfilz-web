@@ -20,3 +20,5 @@ To get the latest Docker image :
 Run docker pull ghcr.io/openfilz/openfilz-web:latest
 ```
 
+
+
