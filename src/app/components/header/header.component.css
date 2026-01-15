@@ -86,7 +86,7 @@
 
 .search-box input {
     width: 100%;
-    padding: 12px 60px 12px 44px;
+    padding: 12px 90px 12px 44px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     flex-grow: 1;
@@ -114,9 +114,9 @@
 }
 
 .filter-button {
-    position: absolute;
-    right: 8px;
-    top: 50%;
+    position: relative;
+    right: -6px;
+    top: 20px;
     transform: translateY(-50%);
     z-index: 10;
     display: flex;
@@ -174,6 +174,35 @@
     color: var(--text-tertiary);
 }
 
+.clear-search-button {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 150ms ease;
+}
+
+.clear-search-button:hover {
+    background-color: var(--text-tertiary);
+    color: var(--bg-primary);
+}
+
+.clear-search-button mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
 
 /* 2. Style the main clickable area */
 .suggestion-info {
@@ -365,7 +394,7 @@
     }
 
     .search-box input {
-        padding: 12px 52px 12px 40px;
+        padding: 12px 82px 12px 40px;
         font-size: 15px;
         border-radius: 8px;
         height: 44px;
@@ -377,7 +406,13 @@
         left: 12px;
     }
 
+    .clear-search-button {
+        right: 50px;
+    }
+
     .filter-button {
+        top: 18px;
+        left: 16px;
         width: 40px;
         height: 40px;
         min-width: 40px;
@@ -433,7 +468,7 @@
     }
 
     .search-box input {
-        padding: 10px 46px 10px 36px;
+        padding: 10px 72px 10px 36px;
         font-size: 14px;
         height: 40px;
     }
@@ -444,12 +479,24 @@
         left: 10px;
     }
 
+    .clear-search-button {
+        right: 42px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .clear-search-button mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+    }
+
     .filter-button {
-        width: 36px;
+        width: 30px;
         height: 36px;
-        min-width: 36px;
+        min-width: 30px;
         min-height: 36px;
-        right: 4px;
+        left: 5px;
     }
 
     .avatar {

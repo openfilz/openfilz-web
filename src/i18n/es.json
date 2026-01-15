@@ -60,6 +60,7 @@
     "header": {
         "searchPlaceholder": "Escribe algo para buscar",
         "searchFilters": "Filtros de búsqueda",
+        "clearSearch": "Borrar búsqueda",
         "toggleMobileMenu": "Alternar menú móvil",
         "activeFilters": "Filtros activos",
         "changeLanguage": "Cambiar idioma",

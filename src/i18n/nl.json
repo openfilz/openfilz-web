@@ -60,6 +60,7 @@
     "header": {
         "searchPlaceholder": "Typ iets om te zoeken",
         "searchFilters": "Zoekfilters",
+        "clearSearch": "Zoekopdracht wissen",
         "toggleMobileMenu": "Mobiel menu in-/uitschakelen",
         "activeFilters": "Actieve filters",
         "changeLanguage": "Taal wijzigen",

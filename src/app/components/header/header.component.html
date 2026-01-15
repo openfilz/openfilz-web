@@ -13,6 +13,13 @@
             <input type="text" [placeholder]="'header.searchPlaceholder' | translate" [(ngModel)]="searchQuery"
                 (input)="onSearchInput()" (keyup.enter)="onSearch()" [class.has-active-filters]="hasActiveFilters()">
 
+            @if (searchQuery) {
+            <button class="clear-search-button" (click)="clearSearch()"
+                [attr.aria-label]="'header.clearSearch' | translate">
+                <mat-icon aria-hidden="true">close</mat-icon>
+            </button>
+            }
+
             <button class="filter-button" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
                 [matTooltip]="'header.searchFilters' | translate"
                 [attr.aria-label]="'header.searchFilters' | translate">

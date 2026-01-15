@@ -112,6 +112,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.searchSubject.next(this.searchQuery);
   }
 
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.suggestions = [];
+  }
+
   onSearch(): void {
     if (this.searchQuery.trim()) {
       this.router.navigate(['/search'], { queryParams: { q: this.searchQuery } });
