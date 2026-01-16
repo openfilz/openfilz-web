@@ -10,6 +10,11 @@
   transition: opacity 300ms ease-in-out;
 }
 
+/* Allow drag events to pass through when external files are being dragged */
+.metadata-panel-overlay.drag-through {
+  pointer-events: none;
+}
+
 /* Right-side collapsible panel */
 .metadata-panel {
   position: fixed;

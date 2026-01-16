@@ -1,4 +1,6 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ViewChild, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, ViewChild, inject } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +14,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 
 import { MetadataEditorComponent } from '../metadata-editor/metadata-editor.component';
 import { DocumentApiService } from '../../services/document-api.service';
+import { DragDropService } from '../../services/drag-drop.service';
 import { AuditLog, DocumentInfo } from '../../models/document.models';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -23,6 +26,7 @@ import { FileIconService } from '../../services/file-icon.service';
   templateUrl: './metadata-panel.component.html',
   styleUrls: ['./metadata-panel.component.css'],
   imports: [
+    NgClass,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -48,7 +52,7 @@ import { FileIconService } from '../../services/file-icon.service';
     ])
   ]
 })
-export class MetadataPanelComponent implements OnInit, OnChanges {
+export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild(MetadataEditorComponent) metadataEditor?: MetadataEditorComponent;
 
   @Input() documentId?: string;
@@ -70,6 +74,10 @@ export class MetadataPanelComponent implements OnInit, OnChanges {
   auditLoading: boolean = false;
   auditError?: string;
   selectedTabIndex: number = 0;
+
+  // External file dragging state
+  isExternalFileDragging: boolean = false;
+  private dragSubscription?: Subscription;
 
   // System metadata keys that should not be editable
   private readonly SYSTEM_METADATA_KEYS = ['sha256'];
@@ -151,6 +159,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges {
   };
 
   private documentApi = inject(DocumentApiService);
+  private dragDropService = inject(DragDropService);
   private fileIconService = inject(FileIconService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
@@ -162,6 +171,17 @@ export class MetadataPanelComponent implements OnInit, OnChanges {
     if (this.documentId && this.isOpen) {
       this.loadDocumentInfo();
     }
+
+    // Subscribe to external file dragging state
+    this.dragSubscription = this.dragDropService.isExternalFileDragging$.subscribe(
+      (isDragging) => {
+        this.isExternalFileDragging = isDragging;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.dragSubscription?.unsubscribe();
   }
 
   ngOnChanges() {

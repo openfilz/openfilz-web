@@ -1,5 +1,8 @@
 @if (isOpen) {
-  <div class="metadata-panel-overlay" (click)="onClose()" [@slideInOut]="animationState"
+  <div class="metadata-panel-overlay"
+    [ngClass]="{'drag-through': isExternalFileDragging}"
+    (click)="onClose()"
+    [@slideInOut]="animationState"
     aria-hidden="true">
   </div>
 }
