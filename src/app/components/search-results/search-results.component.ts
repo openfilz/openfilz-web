@@ -15,6 +15,7 @@ import { FileGridComponent } from '../file-grid/file-grid.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
+import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
 import { DocumentSearchInfo, DocumentType, FileItem } from '../../models/document.models';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
@@ -39,6 +40,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   searchQuery = '';
   metadataPanelOpen: boolean = false;
   selectedDocumentForMetadata?: string;
+
+  // Click delay handling to distinguish single-click from double-click
+  private clickTimeout: any = null;
+  private readonly CLICK_DELAY = 250; // milliseconds
 
   private route = inject(ActivatedRoute);
   private searchService = inject(SearchService);
@@ -133,6 +138,56 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       },
       error: () => {
         this.snackBar.open(`Failed to ${action} favorites`, 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  override onItemClick(item: FileItem) {
+    // Clear any existing timeout
+    if (this.clickTimeout) {
+      clearTimeout(this.clickTimeout);
+    }
+
+    // Delay the selection to allow double-click to be detected
+    this.clickTimeout = setTimeout(() => {
+      item.selected = !item.selected;
+      this.clickTimeout = null;
+    }, this.CLICK_DELAY);
+  }
+
+  override onItemDoubleClick(item: FileItem) {
+    // Clear the pending single-click timeout
+    if (this.clickTimeout) {
+      clearTimeout(this.clickTimeout);
+      this.clickTimeout = null;
+    }
+
+    // Deselect the item if it was selected
+    item.selected = false;
+
+    if (item.type === 'FOLDER') {
+      // Navigate to the folder in file explorer
+      this.router.navigate(['/my-folder'], {
+        queryParams: { folderId: item.id }
+      });
+    } else {
+      // Open file viewer for files
+      this.openFileViewer(item);
+    }
+  }
+
+  private openFileViewer(item: FileItem) {
+    this.dialog.open(FileViewerDialogComponent, {
+      width: '95vw',
+      height: '95vh',
+      maxWidth: '1400px',
+      maxHeight: '900px',
+      panelClass: 'file-viewer-dialog-container',
+      data: {
+        documentId: item.id,
+        fileName: item.name,
+        contentType: item.contentType || '',
+        fileSize: item.size
       }
     });
   }
