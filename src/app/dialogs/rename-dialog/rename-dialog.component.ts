@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { TranslatePipe } from '@ngx-translate/core';
+import { A11yModule } from '@angular/cdk/a11y';
 
 export interface RenameDialogData {
   name: string;
@@ -25,25 +26,18 @@ export interface RenameDialogData {
     MatButtonModule,
     FormsModule,
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    A11yModule
 ],
 })
-export class RenameDialogComponent implements AfterViewInit {
+export class RenameDialogComponent {
   newName: string;
-
-  @ViewChild('nameInput') nameInput!: ElementRef;
 
   readonly dialogRef = inject(MatDialogRef<RenameDialogComponent>);
   readonly data = inject<RenameDialogData>(MAT_DIALOG_DATA);
 
   constructor() {
     this.newName = this.data.name;
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.nameInput?.nativeElement?.focus();
-    }, 100);
   }
 
   onRename() {

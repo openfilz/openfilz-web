@@ -21,7 +21,7 @@
     <input matInput [(ngModel)]="newName" [placeholder]="'dialogs.rename.placeholder' | translate"
       (keyup.enter)="onRename()" autocomplete="off"
       [attr.aria-label]="(data.type === 'FOLDER' ? 'dialogs.rename.folderName' : 'dialogs.rename.fileName') | translate"
-      aria-required="true" #nameInput>
+      aria-required="true" cdkFocusInitial>
     <mat-icon matPrefix class="input-icon" aria-hidden="true">{{ data.type === 'FOLDER' ? 'folder' : 'description'
       }}</mat-icon>
   </mat-form-field>

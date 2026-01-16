@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { A11yModule } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-create-folder-dialog',
@@ -20,25 +21,17 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatButtonModule,
     MatIconModule,
     FormsModule,
-    TranslatePipe
+    TranslatePipe,
+    A11yModule
 ],
 })
-export class CreateFolderDialogComponent implements AfterViewInit {
+export class CreateFolderDialogComponent {
   folderName = '';
-
-  @ViewChild('nameInput') nameInput!: ElementRef;
 
   readonly dialogRef = inject(MatDialogRef<CreateFolderDialogComponent>);
   readonly data = inject(MAT_DIALOG_DATA);
 
   constructor() { }
-
-  ngAfterViewInit() {
-    // Auto-focus the input field
-    setTimeout(() => {
-      this.nameInput?.nativeElement?.focus();
-    }, 100);
-  }
 
   onCreate() {
     if (this.folderName?.trim()) {

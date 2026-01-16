@@ -19,7 +19,7 @@
     <mat-label>{{ 'dialogs.createFolder.folderName' | translate }}</mat-label>
     <input matInput [(ngModel)]="folderName" [placeholder]="'dialogs.createFolder.placeholder' | translate"
       (keyup.enter)="onCreate()" autocomplete="off" [attr.aria-label]="'dialogs.createFolder.folderName' | translate"
-      aria-required="true" #nameInput>
+      aria-required="true" cdkFocusInitial>
     <mat-icon matPrefix class="input-icon" aria-hidden="true">folder</mat-icon>
   </mat-form-field>
 
