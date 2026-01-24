@@ -64,7 +64,10 @@
         "toggleMobileMenu": "Toggle mobile menu",
         "activeFilters": "Active filters",
         "changeLanguage": "Change language",
-        "open": "Open"
+        "open": "Open",
+        "language": "Language",
+        "settings": "Settings",
+        "logout": "Log Out"
     },
     "breadcrumb": {
         "navigation": "Breadcrumb",

@@ -64,7 +64,10 @@
         "toggleMobileMenu": "Basculer le menu mobile",
         "activeFilters": "Filtres actifs",
         "changeLanguage": "Changer la langue",
-        "open": "Ouvrir"
+        "open": "Ouvrir",
+        "language": "Langue",
+        "settings": "Paramètres",
+        "logout": "Déconnexion"
     },
     "breadcrumb": {
         "navigation": "Fil d'Ariane",

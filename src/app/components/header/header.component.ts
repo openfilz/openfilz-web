@@ -59,6 +59,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   @Output() mobileMenuToggle = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+
   constructor() { }
 
   ngOnInit(): void {
@@ -281,5 +283,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateToSettings() {
     this.router.navigate(['/settings']);
+  }
+
+  onLogout() {
+    this.logout.emit();
   }
 }

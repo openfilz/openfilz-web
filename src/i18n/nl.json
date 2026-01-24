@@ -64,7 +64,10 @@
         "toggleMobileMenu": "Mobiel menu in-/uitschakelen",
         "activeFilters": "Actieve filters",
         "changeLanguage": "Taal wijzigen",
-        "open": "Openen"
+        "open": "Openen",
+        "language": "Taal",
+        "settings": "Instellingen",
+        "logout": "Uitloggen"
     },
     "breadcrumb": {
         "navigation": "Navigatiepad",

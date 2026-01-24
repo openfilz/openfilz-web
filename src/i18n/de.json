@@ -64,7 +64,10 @@
         "toggleMobileMenu": "Mobiles Menü umschalten",
         "activeFilters": "Aktive Filter",
         "changeLanguage": "Sprache ändern",
-        "open": "Öffnen"
+        "open": "Öffnen",
+        "language": "Sprache",
+        "settings": "Einstellungen",
+        "logout": "Abmelden"
     },
     "breadcrumb": {
         "navigation": "Brotkrumen",

@@ -64,7 +64,10 @@
         "toggleMobileMenu": "Alternar menu móvel",
         "activeFilters": "Filtros ativos",
         "changeLanguage": "Alterar idioma",
-        "open": "Abrir"
+        "open": "Abrir",
+        "language": "Idioma",
+        "settings": "Configurações",
+        "logout": "Sair"
     },
     "breadcrumb": {
         "navigation": "Caminho de navegação",

@@ -64,7 +64,10 @@
         "toggleMobileMenu": "تبديل القائمة المحمولة",
         "activeFilters": "الفلاتر النشطة",
         "changeLanguage": "تغيير اللغة",
-        "open": "فتح"
+        "open": "فتح",
+        "language": "اللغة",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج"
     },
     "breadcrumb": {
         "navigation": "مسار التنقل",

@@ -18,7 +18,8 @@
 
   <app-header
     [hasSelection]="hasSelectedItems" [userData]="(userData$ | async)"
-    (mobileMenuToggle)="toggleMobileMenu()">
+    (mobileMenuToggle)="toggleMobileMenu()"
+    (logout)="logout()">
   </app-header>
 
   @if(currentRoute == 'my-folder') {

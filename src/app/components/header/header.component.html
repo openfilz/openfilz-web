@@ -54,11 +54,27 @@
         </div>
     </div>
     <div class="header-right">
-        <!-- Language Selector -->
-        <button mat-icon-button [matMenuTriggerFor]="languageMenu" class="language-selector"
-            [attr.aria-label]="'header.changeLanguage' | translate" [matTooltip]="'header.changeLanguage' | translate">
-            <mat-icon>language</mat-icon>
-        </button>
+        <!-- Avatar with Menu -->
+        <div class="avatar" [matMenuTriggerFor]="avatarMenu">{{ userInitials }}</div>
+        <mat-menu #avatarMenu="matMenu" class="avatar-menu">
+           <!-- Language submenu -->
+            <button mat-menu-item [matMenuTriggerFor]="languageMenu">
+                <mat-icon>language</mat-icon>
+                <span>{{ 'header.language' | translate }}</span>
+            </button>
+            <!-- Settings -->
+            <button mat-menu-item (click)="navigateToSettings()">
+                <mat-icon>settings</mat-icon>
+                <span>{{ 'header.settings' | translate }}</span>
+            </button>
+            <!-- Logout -->
+            <button mat-menu-item (click)="onLogout()">
+                <mat-icon class="rtl-flip">logout</mat-icon>
+                <span>{{ 'header.logout' | translate }}</span>
+            </button>
+        </mat-menu>
+
+        <!-- Language submenu -->
         <mat-menu #languageMenu="matMenu" class="language-menu">
             @for (lang of availableLanguages; track lang.code) {
             <button mat-menu-item (click)="switchLanguage(lang)" [class.active]="lang.code === currentLanguage.code">
@@ -69,7 +85,5 @@
             </button>
             }
         </mat-menu>
-
-        <div class="avatar" (click)="navigateToSettings()" style="cursor: pointer;">{{ userInitials }}</div>
     </div>
 </div>
