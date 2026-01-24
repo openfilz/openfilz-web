@@ -117,12 +117,14 @@ export interface DocumentSearchInfo {
     id: string;
     name: string;
     extension: string;
+    contentType?: string;
     size: number;
     parentId: string;
     createdAt: string;
     updatedAt: string;
     createdBy: string;
     updatedBy: string;
+    thumbnailUrl?: string;
 }
 
 export interface DocumentSearchResult {

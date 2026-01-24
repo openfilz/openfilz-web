@@ -105,6 +105,7 @@ const SEARCH_DOCUMENTS_QUERY = gql`
         id
         name
         extension
+        contentType
         size
         parentId
         createdAt
@@ -112,6 +113,7 @@ const SEARCH_DOCUMENTS_QUERY = gql`
         createdBy
         updatedBy
         contentSnippet
+        thumbnailUrl
       }
     }
   }

@@ -105,8 +105,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       id: doc.id,
       name: doc.name,
       type: fileType,
+      contentType: doc.contentType,
       size: doc.size,
       icon: this.fileIconService.getFileIcon(doc.name, fileType),
+      thumbnailUrl: doc.thumbnailUrl,
       selected: false
     };
   }
