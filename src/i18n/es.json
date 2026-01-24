@@ -128,6 +128,15 @@
         "emptyTitle": "Esta carpeta está vacía",
         "emptyMessage": "Suelte archivos aquí o cree una nueva carpeta para comenzar"
     },
+    "searchResults": {
+        "title": "Resultados de búsqueda para \"{{query}}\"",
+        "foundResult": "Se encontró {{count}} resultado",
+        "foundResults": "Se encontraron {{count}} resultados",
+        "noResults": "No se encontraron resultados",
+        "noResultsMessage": "Intenta ajustar tus términos de búsqueda o filtros",
+        "searchingFor": "Buscando \"{{query}}\"...",
+        "loading": "Cargando resultados de búsqueda"
+    },
     "searchFilters": {
         "title": "Filtros de búsqueda",
         "ownerPlaceholder": "Creado por...",

@@ -128,6 +128,15 @@
         "emptyTitle": "Ce dossier est vide",
         "emptyMessage": "Déposez des fichiers ici ou créez un nouveau dossier pour commencer"
     },
+    "searchResults": {
+        "title": "Résultats de recherche pour \"{{query}}\"",
+        "foundResult": "{{count}} résultat trouvé",
+        "foundResults": "{{count}} résultats trouvés",
+        "noResults": "Aucun résultat trouvé",
+        "noResultsMessage": "Essayez d'ajuster vos termes de recherche ou vos filtres",
+        "searchingFor": "Recherche de \"{{query}}\" en cours...",
+        "loading": "Chargement des résultats de recherche"
+    },
     "searchFilters": {
         "title": "Filtres de recherche",
         "ownerPlaceholder": "Créé par...",

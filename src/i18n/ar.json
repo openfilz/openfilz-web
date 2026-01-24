@@ -128,6 +128,15 @@
         "emptyTitle": "هذا المجلد فارغ",
         "emptyMessage": "قم بسحب الملفات هنا أو إنشاء مجلد جديد للبدء"
     },
+    "searchResults": {
+        "title": "نتائج البحث عن \"{{query}}\"",
+        "foundResult": "تم العثور على {{count}} نتيجة",
+        "foundResults": "تم العثور على {{count}} نتائج",
+        "noResults": "لم يتم العثور على نتائج",
+        "noResultsMessage": "حاول تعديل مصطلحات البحث أو المرشحات",
+        "searchingFor": "جاري البحث عن \"{{query}}\"...",
+        "loading": "جاري تحميل نتائج البحث"
+    },
     "searchFilters": {
         "title": "فلاتر البحث",
         "ownerPlaceholder": "أنشأه...",

@@ -128,6 +128,15 @@
         "emptyTitle": "This folder is empty",
         "emptyMessage": "Drop files here or create a new folder to get started"
     },
+    "searchResults": {
+        "title": "Search results for \"{{query}}\"",
+        "foundResult": "Found {{count}} result",
+        "foundResults": "Found {{count}} results",
+        "noResults": "No results found",
+        "noResultsMessage": "Try adjusting your search terms or filters",
+        "searchingFor": "Searching for \"{{query}}\"...",
+        "loading": "Loading search results"
+    },
     "searchFilters": {
         "title": "Search Filters",
         "ownerPlaceholder": "Created by...",

@@ -14,27 +14,40 @@
     (moveSelected)="onMoveSelected()"
     (copySelected)="onCopySelected()"
     (deleteSelected)="onDeleteSelected()"
-    (clearSelection)="onSelectAll(false)">
+    (clearSelection)="onSelectAll(false)"
+  >
   </app-toolbar>
 
   <main class="search-results-content" role="main" aria-label="Search results">
     <div class="search-header">
-      <h1 class="search-title">Search results for "{{ searchQuery }}"</h1>
-      @if(!loading && items.length > 0) {
-        <p class="search-count" role="status" aria-live="polite" aria-atomic="true">
-          Found {{ totalItems }} {{ totalItems === 1 ? 'result' : 'results' }}
+      <h1 class="search-title">
+        {{ "searchResults.title" | translate: { query: searchQuery } }}
+      </h1>
+      @if (!loading && items.length > 0) {
+        <p
+          class="search-count"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {{
+            (totalItems === 1
+              ? "searchResults.foundResult"
+              : "searchResults.foundResults"
+            ) | translate: { count: totalItems }
+          }}
         </p>
       }
     </div>
-    @if(!loading) {
-      @if(items.length === 0) {
+    @if (!loading) {
+      @if (items.length === 0) {
         <div class="empty-state" role="status" aria-live="polite">
           <mat-icon aria-hidden="true">search_off</mat-icon>
-          <h2>No results found</h2>
-          <p>Try adjusting your search terms or filters</p>
+          <h2>{{ "searchResults.noResults" | translate }}</h2>
+          <p>{{ "searchResults.noResultsMessage" | translate }}</p>
         </div>
       }
-      @if(viewMode === 'grid' && items.length > 0) {
+      @if (viewMode === "grid" && items.length > 0) {
         <app-file-grid
           [items]="items"
           (itemClick)="onItemClick($event)"
@@ -46,10 +59,11 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)">
+          (viewProperties)="onViewProperties($event)"
+        >
         </app-file-grid>
       }
-      @if(viewMode === 'list' && items.length > 0) {
+      @if (viewMode === "list" && items.length > 0) {
         <app-file-list
           [items]="items"
           [sortBy]="sortBy"
@@ -65,14 +79,22 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)">
+          (viewProperties)="onViewProperties($event)"
+        >
         </app-file-list>
       }
     } @else {
-      <div class="loading-container" role="status" aria-live="polite" aria-busy="true">
+      <div
+        class="loading-container"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <mat-spinner aria-hidden="true"></mat-spinner>
-        <p>Searching for "{{ searchQuery }}"...</p>
-        <span class="sr-only">Loading search results</span>
+        <p>
+          {{ "searchResults.searchingFor" | translate: { query: searchQuery } }}
+        </p>
+        <span class="sr-only">{{ "searchResults.loading" | translate }}</span>
       </div>
     }
   </main>
@@ -82,6 +104,7 @@
     [documentId]="selectedDocumentForMetadata"
     [isOpen]="metadataPanelOpen"
     (closePanel)="closeMetadataPanel()"
-    (metadataSaved)="onMetadataSaved()">
+    (metadataSaved)="onMetadataSaved()"
+  >
   </app-metadata-panel>
 </div>

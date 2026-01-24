@@ -128,6 +128,15 @@
         "emptyTitle": "Deze map is leeg",
         "emptyMessage": "Sleep bestanden hierheen of maak een nieuwe map om aan de slag te gaan"
     },
+    "searchResults": {
+        "title": "Zoekresultaten voor \"{{query}}\"",
+        "foundResult": "{{count}} resultaat gevonden",
+        "foundResults": "{{count}} resultaten gevonden",
+        "noResults": "Geen resultaten gevonden",
+        "noResultsMessage": "Probeer uw zoektermen of filters aan te passen",
+        "searchingFor": "Zoeken naar \"{{query}}\"...",
+        "loading": "Zoekresultaten laden"
+    },
     "searchFilters": {
         "title": "Zoekfilters",
         "ownerPlaceholder": "Aangemaakt door...",

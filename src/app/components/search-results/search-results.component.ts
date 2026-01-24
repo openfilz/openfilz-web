@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { SearchService } from '../../services/search.service';
 import { DocumentApiService } from '../../services/document-api.service';
@@ -31,7 +32,8 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatIconModule
+    MatIconModule,
+    TranslateModule
 ],
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.css']
