@@ -315,6 +315,15 @@
         "emptyError": "فشل إفراغ سلة المهملات",
         "favoritesNotAvailable": "المفضلة غير متاحة للعناصر المحذوفة"
     },
+    "delete": {
+        "selectToDelete": "يرجى اختيار العناصر للحذف",
+        "deleteConfirmMessage": "هل أنت متأكد أنك تريد حذف {{count}} عنصر؟",
+        "deleteConfirmItem": "هل أنت متأكد أنك تريد حذف \"{{name}}\"؟",
+        "deleteSuccess": "تم حذف {{count}} عنصر",
+        "deleteSuccessSingle": "تم حذف \"{{name}}\"",
+        "deleteError": "فشل حذف العناصر",
+        "deleteDetailsBin": "يمكن استعادة العناصر المحذوفة من سلة المحذوفات لمدة {{emptyBinInterval}} يوم."
+    },
     "settings": {
         "hello": "مرحباً {{name}}",
         "managePreferences": "إدارة تفضيلاتك وإعدادات التطبيق",

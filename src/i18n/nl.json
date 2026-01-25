@@ -315,6 +315,15 @@
         "emptyError": "Legen van prullenbak mislukt",
         "favoritesNotAvailable": "Favorieten zijn niet beschikbaar voor verwijderde items"
     },
+    "delete": {
+        "selectToDelete": "Selecteer items om te verwijderen",
+        "deleteConfirmMessage": "Weet u zeker dat u {{count}} item(s) wilt verwijderen?",
+        "deleteConfirmItem": "Weet u zeker dat u \"{{name}}\" wilt verwijderen?",
+        "deleteSuccess": "{{count}} item(s) verwijderd",
+        "deleteSuccessSingle": "\"{{name}}\" verwijderd",
+        "deleteError": "Verwijderen van items mislukt",
+        "deleteDetailsBin": "Verwijderde items kunnen {{emptyBinInterval}} dagen worden hersteld vanuit de prullenbak."
+    },
     "settings": {
         "hello": "Hallo {{name}}",
         "managePreferences": "Beheer uw voorkeuren en applicatie-instellingen",

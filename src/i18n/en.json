@@ -315,6 +315,15 @@
         "emptyError": "Failed to empty recycle bin",
         "favoritesNotAvailable": "Favorites are not available for deleted items"
     },
+    "delete": {
+        "selectToDelete": "Please select items to delete",
+        "deleteConfirmMessage": "Are you sure you want to delete {{count}} item(s)?",
+        "deleteConfirmItem": "Are you sure you want to delete \"{{name}}\"?",
+        "deleteSuccess": "{{count}} item(s) deleted",
+        "deleteSuccessSingle": "\"{{name}}\" deleted",
+        "deleteError": "Failed to delete items",
+        "deleteDetailsBin": "Deleted items can be restored from the recycle bin for {{emptyBinInterval}} days."
+    },
     "settings": {
         "hello": "Hello {{name}}",
         "managePreferences": "Manage your preferences and application settings",

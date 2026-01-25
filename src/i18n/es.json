@@ -315,6 +315,15 @@
         "emptyError": "Error al vaciar la papelera",
         "favoritesNotAvailable": "Los favoritos no están disponibles para los elementos eliminados"
     },
+    "delete": {
+        "selectToDelete": "Por favor, seleccione los elementos para eliminar",
+        "deleteConfirmMessage": "¿Está seguro de que desea eliminar {{count}} elemento(s)?",
+        "deleteConfirmItem": "¿Está seguro de que desea eliminar \"{{name}}\"?",
+        "deleteSuccess": "{{count}} elemento(s) eliminado(s)",
+        "deleteSuccessSingle": "\"{{name}}\" eliminado",
+        "deleteError": "Error al eliminar los elementos",
+        "deleteDetailsBin": "Los elementos eliminados pueden restaurarse desde la papelera durante {{emptyBinInterval}} días."
+    },
     "settings": {
         "hello": "Hola {{name}}",
         "managePreferences": "Gestione sus preferencias y ajustes de la aplicación",

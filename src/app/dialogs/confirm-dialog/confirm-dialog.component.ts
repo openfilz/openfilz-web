@@ -12,6 +12,7 @@ export interface ConfirmDialogData {
   message: string;
   messageParams?: { [key: string]: any };
   details?: string;
+  detailsParams?: { [key: string]: any };
   type?: ConfirmDialogType;
   confirmText?: string;
   cancelText?: string;

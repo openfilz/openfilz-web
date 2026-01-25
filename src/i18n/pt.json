@@ -315,6 +315,15 @@
         "emptyError": "Falha ao esvaziar a lixeira",
         "favoritesNotAvailable": "Favoritos não estão disponíveis para itens excluídos"
     },
+    "delete": {
+        "selectToDelete": "Por favor, selecione os itens para excluir",
+        "deleteConfirmMessage": "Tem certeza que deseja excluir {{count}} item(ns)?",
+        "deleteConfirmItem": "Tem certeza que deseja excluir \"{{name}}\"?",
+        "deleteSuccess": "{{count}} item(ns) excluído(s)",
+        "deleteSuccessSingle": "\"{{name}}\" excluído",
+        "deleteError": "Falha ao excluir os itens",
+        "deleteDetailsBin": "Os itens excluídos podem ser restaurados da lixeira por {{emptyBinInterval}} dias."
+    },
     "settings": {
         "hello": "Olá {{name}}",
         "managePreferences": "Gerencie suas preferências e configurações do aplicativo",

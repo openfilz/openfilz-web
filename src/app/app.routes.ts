@@ -7,6 +7,7 @@ import { WipComponent } from "./components/wip/wip";
 import { SettingsComponent } from './pages/settings/settings.component';
 import { SearchResultsComponent } from './components/search-results/search-results.component';
 import { authGuard } from './guards/auth.guard';
+import { recycleBinGuard } from './guards/recycle-bin.guard';
 
 // Since we're using standalone components, we need to import them directly in routes
 export const routes: Routes = [
@@ -14,7 +15,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'my-folder', component: FileExplorerComponent, canActivate: [authGuard] },
   { path: 'search', component: SearchResultsComponent, canActivate: [authGuard] },
-  { path: 'recycle-bin', component: RecycleBinComponent, canActivate: [authGuard] },
+  { path: 'recycle-bin', component: RecycleBinComponent, canActivate: [authGuard, recycleBinGuard] },
   { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
   //{ path: 'shared-files', component: WipComponent },
   { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },

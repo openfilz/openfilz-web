@@ -13,6 +13,7 @@ import { routes } from './app/app.routes';
 import { provideAuth, LogLevel, authInterceptor, OidcSecurityService } from 'angular-auth-oidc-client';
 import { MockAuthService } from './app/services/mock-auth.service';
 import { RoleService } from './app/services/role.service';
+import { SettingsService } from './app/services/settings.service';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { providePaginatorIntl } from './app/i18n/paginator-intl';
@@ -52,6 +53,7 @@ bootstrapApplication(App, {
       provideAppInitializer(async () => {
         const oidcSecurityService = inject(OidcSecurityService);
         const roleService = inject(RoleService);
+        const settingsService = inject(SettingsService);
 
         const result = await oidcSecurityService.checkAuth().toPromise();
 
@@ -60,12 +62,19 @@ bootstrapApplication(App, {
           if (!hasValidRoles) {
             roleService.handleNoRoles();
           }
+          // Load application settings after successful authentication
+          await settingsService.loadSettings().toPromise();
         }
 
         return result;
       })
     ] : [
-      { provide: OidcSecurityService, useClass: MockAuthService }
+      { provide: OidcSecurityService, useClass: MockAuthService },
+      provideAppInitializer(async () => {
+        const settingsService = inject(SettingsService);
+        // Load application settings for non-authenticated mode
+        await settingsService.loadSettings().toPromise();
+      })
     ]),
     provideApollo(() => {
       const httpLink = inject(HttpLink);

@@ -315,6 +315,15 @@
         "emptyError": "Échec lors du vidage de la corbeille",
         "favoritesNotAvailable": "Les favoris ne sont pas disponibles pour les éléments supprimés"
     },
+    "delete": {
+        "selectToDelete": "Veuillez sélectionner les éléments à supprimer",
+        "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer {{count}} élément(s) ?",
+        "deleteConfirmItem": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
+        "deleteSuccess": "{{count}} élément(s) supprimé(s)",
+        "deleteSuccessSingle": "\"{{name}}\" supprimé",
+        "deleteError": "Échec de la suppression des éléments",
+        "deleteDetailsBin": "Les éléments supprimés peuvent être restaurés depuis la corbeille pendant {{emptyBinInterval}} jours."
+    },
     "settings": {
         "hello": "Bonjour {{name}}",
         "managePreferences": "Gérez vos préférences et les paramètres de l'application",

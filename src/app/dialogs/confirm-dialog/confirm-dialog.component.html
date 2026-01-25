@@ -14,7 +14,7 @@
 <mat-dialog-content class="dialog-content">
   <p class="message">{{ data.message | translate: data.messageParams }}</p>
   @if (data.details) {
-    <p class="details">{{ data.details | translate: data.messageParams }}</p>
+    <p class="details">{{ data.details | translate: (data.detailsParams || data.messageParams) }}</p>
   }
 </mat-dialog-content>
 

@@ -315,6 +315,15 @@
         "emptyError": "Impossibile svuotare il cestino",
         "favoritesNotAvailable": "I preferiti non sono disponibili per gli elementi eliminati"
     },
+    "delete": {
+        "selectToDelete": "Seleziona gli elementi da eliminare",
+        "deleteConfirmMessage": "Sei sicuro di voler eliminare {{count}} elemento/i?",
+        "deleteConfirmItem": "Sei sicuro di voler eliminare \"{{name}}\"?",
+        "deleteSuccess": "{{count}} elemento/i eliminato/i",
+        "deleteSuccessSingle": "\"{{name}}\" eliminato",
+        "deleteError": "Impossibile eliminare gli elementi",
+        "deleteDetailsBin": "Gli elementi eliminati possono essere ripristinati dal cestino per {{emptyBinInterval}} giorni."
+    },
     "settings": {
         "hello": "Ciao {{name}}",
         "managePreferences": "Gestisci le tue preferenze e le impostazioni dell'applicazione",

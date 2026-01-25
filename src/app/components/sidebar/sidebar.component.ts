@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, inject, computed } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,7 +29,7 @@ export class SidebarComponent implements OnInit {
   @Output() logout = new EventEmitter<void>();
   @Output() mobileMenuClose = new EventEmitter<void>();
 
-  navigationItems = [
+  private allNavigationItems = [
     { id: 'dashboard', labelKey: 'sidebar.dashboard', active: true, route: '/dashboard' },
     { id: 'my-folder', labelKey: 'sidebar.myFolder', active: false, route: '/my-folder' },
     { id: 'recycle-bin', labelKey: 'sidebar.recycleBin', active: false, route: '/recycle-bin' },
@@ -39,6 +40,15 @@ export class SidebarComponent implements OnInit {
   ];
 
   private router = inject(Router);
+  private settingsService = inject(SettingsService);
+
+  get navigationItems() {
+    // Hide recycle-bin menu when emptyBinInterval is null
+    if (!this.settingsService.isRecycleBinEnabled) {
+      return this.allNavigationItems.filter(item => item.id !== 'recycle-bin');
+    }
+    return this.allNavigationItems;
+  }
 
   constructor() { }
 
@@ -59,7 +69,7 @@ export class SidebarComponent implements OnInit {
     const baseRoute = url.split('?')[0];
 
     // Update active state for all items
-    this.navigationItems.forEach(item => {
+    this.allNavigationItems.forEach(item => {
       item.active = item.route === baseRoute;
     });
   }
@@ -90,10 +100,10 @@ export class SidebarComponent implements OnInit {
     }
 
     // Update active state
-    this.navigationItems.forEach(item => item.active = item.id === itemId);
+    this.allNavigationItems.forEach(item => item.active = item.id === itemId);
 
     // Navigate to the appropriate route
-    const item = this.navigationItems.find(navItem => navItem.id === itemId);
+    const item = this.allNavigationItems.find(navItem => navItem.id === itemId);
     if (item && item.route) {
       // --- START: Added logic to force reload ---
       if (this.router.url === item.route) {

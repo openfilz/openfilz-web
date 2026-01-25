@@ -10,6 +10,7 @@ import { Observable } from "rxjs";
 import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
+import { SettingsService } from '../../services/settings.service';
 
 @Directive()
 export abstract class FileOperationsComponent implements OnInit {
@@ -28,6 +29,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected dialog = inject(MatDialog);
   protected snackBar = inject(MatSnackBar);
   protected userPreferencesService = inject(UserPreferencesService);
+  protected settingsService = inject(SettingsService);
 
   constructor() {
     const prefs = this.userPreferencesService.getPreferences();
@@ -183,11 +185,15 @@ export abstract class FileOperationsComponent implements OnInit {
   }
 
   onDeleteItem(item: FileItem): void {
+    const isRecycleBinEnabled = this.settingsService.isRecycleBinEnabled;
+    const emptyBinInterval = this.settingsService.emptyBinInterval;
+
     const dialogData: ConfirmDialogData = {
-      title: 'recycleBin.deleteConfirmItem',
+      title: isRecycleBinEnabled ? 'delete.deleteConfirmItem' : 'recycleBin.deleteConfirmItem',
       messageParams: { name: item.name },
-      message: 'recycleBin.deleteConfirmItem', // Using title key as message for consistency with existing keys
-      details: 'recycleBin.deleteDetails',
+      message: isRecycleBinEnabled ? 'delete.deleteConfirmItem' : 'recycleBin.deleteConfirmItem',
+      details: isRecycleBinEnabled ? 'delete.deleteDetailsBin' : 'recycleBin.deleteDetails',
+      detailsParams: isRecycleBinEnabled ? { emptyBinInterval: emptyBinInterval } : undefined,
       type: 'danger',
       confirmText: 'common.delete',
       cancelText: 'common.cancel'
@@ -280,12 +286,15 @@ export abstract class FileOperationsComponent implements OnInit {
   onDeleteSelected(): void {
     const selected = this.selectedItems;
     if (selected.length > 0) {
-      const itemNames = selected.map(item => item.name).join(', ');
+      const isRecycleBinEnabled = this.settingsService.isRecycleBinEnabled;
+      const emptyBinInterval = this.settingsService.emptyBinInterval;
+
       const dialogData: ConfirmDialogData = {
-        title: 'recycleBin.deleteConfirmMessage',
+        title: isRecycleBinEnabled ? 'delete.deleteConfirmMessage' : 'recycleBin.deleteConfirmMessage',
         messageParams: { count: selected.length },
-        message: 'recycleBin.deleteConfirmMessage',
-        details: 'recycleBin.deleteDetails',
+        message: isRecycleBinEnabled ? 'delete.deleteConfirmMessage' : 'recycleBin.deleteConfirmMessage',
+        details: isRecycleBinEnabled ? 'delete.deleteDetailsBin' : 'recycleBin.deleteDetails',
+        detailsParams: isRecycleBinEnabled ? { emptyBinInterval: emptyBinInterval } : undefined,
         type: 'danger',
         confirmText: 'common.delete',
         cancelText: 'common.cancel'
