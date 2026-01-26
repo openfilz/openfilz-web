@@ -791,6 +791,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         fileSize: item.size
       }
     });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.onSelectAll(false);
+    });
   }
 
   onCreateFolder() {
