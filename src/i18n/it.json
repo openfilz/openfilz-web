@@ -103,7 +103,15 @@
         "actionsFor": "Azioni per {{count}} elementi",
         "quickActions": "Azioni rapide",
         "openActionsMenu": "Apri menu azioni",
-        "closeActionsMenu": "Chiudi menu azioni"
+        "closeActionsMenu": "Chiudi menu azioni",
+        "newDocument": "Nuovo documento",
+        "createNewDocument": "Crea nuovo documento",
+        "documentTypes": {
+            "word": "Documento Word",
+            "excel": "Foglio di calcolo Excel",
+            "powerpoint": "Presentazione PowerPoint",
+            "text": "File di testo"
+        }
     },
     "sortOptions": {
         "date": "Data",
@@ -239,6 +247,16 @@
             "folderName": "Nome Cartella",
             "fileName": "Nome File",
             "placeholder": "Inserisci nuovo nome"
+        },
+        "createDocument": {
+            "title": "Crea nuovo documento",
+            "subtitleWord": "Crea un nuovo documento Word",
+            "subtitleExcel": "Crea un nuovo foglio di calcolo Excel",
+            "subtitlePowerpoint": "Crea una nuova presentazione PowerPoint",
+            "subtitleText": "Crea un nuovo file di testo",
+            "documentName": "Nome documento",
+            "createButton": "Crea documento",
+            "closeDialog": "Chiudi finestra"
         },
         "upload": {
             "title": "Carica File",
@@ -474,6 +492,7 @@
         "deleteFailed": "Impossibile eliminare l'elemento",
         "uploadFailed": "Impossibile caricare il file",
         "downloadFailed": "Impossibile scaricare il file",
-        "notAllowedToViewFiles": "Non sei autorizzato a visualizzare i file"
+        "notAllowedToViewFiles": "Non sei autorizzato a visualizzare i file",
+        "createDocumentFailed": "Impossibile creare il documento"
     }
 }

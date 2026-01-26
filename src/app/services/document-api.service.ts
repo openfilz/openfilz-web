@@ -5,6 +5,7 @@ import { Apollo, gql } from 'apollo-angular';
 import {
   AncestorInfo,
   CopyRequest,
+  CreateBlankDocumentRequest,
   CreateFolderRequest,
   DashboardStatistics,
   DeleteRequest,
@@ -492,6 +493,12 @@ export class DocumentApiService {
 
     return this.http.put<ElementInfo>(`${this.baseUrl}/documents/${documentId}/replace-content`, formData, {
       headers: this.getMultipartHeaders()
+    });
+  }
+
+  createBlankDocument(request: CreateBlankDocumentRequest): Observable<UploadResponse> {
+    return this.http.post<UploadResponse>(`${this.baseUrl}/documents/create-blank`, request, {
+      headers: this.getHeaders()
     });
   }
 

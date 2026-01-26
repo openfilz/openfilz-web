@@ -103,7 +103,15 @@
         "actionsFor": "Aktionen für {{count}} Elemente",
         "quickActions": "Schnellaktionen",
         "openActionsMenu": "Aktionsmenü öffnen",
-        "closeActionsMenu": "Aktionsmenü schließen"
+        "closeActionsMenu": "Aktionsmenü schließen",
+        "newDocument": "Neues Dokument",
+        "createNewDocument": "Neues Dokument erstellen",
+        "documentTypes": {
+            "word": "Word-Dokument",
+            "excel": "Excel-Tabelle",
+            "powerpoint": "PowerPoint-Präsentation",
+            "text": "Textdatei"
+        }
     },
     "sortOptions": {
         "date": "Datum",
@@ -239,6 +247,16 @@
             "folderName": "Ordnername",
             "fileName": "Dateiname",
             "placeholder": "Neuen Namen eingeben"
+        },
+        "createDocument": {
+            "title": "Neues Dokument erstellen",
+            "subtitleWord": "Ein neues Word-Dokument erstellen",
+            "subtitleExcel": "Eine neue Excel-Tabelle erstellen",
+            "subtitlePowerpoint": "Eine neue PowerPoint-Präsentation erstellen",
+            "subtitleText": "Eine neue Textdatei erstellen",
+            "documentName": "Dokumentname",
+            "createButton": "Dokument erstellen",
+            "closeDialog": "Dialog schließen"
         },
         "upload": {
             "title": "Dateien hochladen",
@@ -474,6 +492,7 @@
         "deleteFailed": "Löschen des Elements fehlgeschlagen",
         "uploadFailed": "Hochladen der Datei fehlgeschlagen",
         "downloadFailed": "Herunterladen der Datei fehlgeschlagen",
-        "notAllowedToViewFiles": "Sie sind nicht berechtigt, die Dateien anzuzeigen"
+        "notAllowedToViewFiles": "Sie sind nicht berechtigt, die Dateien anzuzeigen",
+        "createDocumentFailed": "Erstellen des Dokuments fehlgeschlagen"
     }
 }

@@ -103,7 +103,15 @@
         "actionsFor": "Acties voor {{count}} items",
         "quickActions": "Snelle acties",
         "openActionsMenu": "Actiemenu openen",
-        "closeActionsMenu": "Actiemenu sluiten"
+        "closeActionsMenu": "Actiemenu sluiten",
+        "newDocument": "Nieuw document",
+        "createNewDocument": "Nieuw document aanmaken",
+        "documentTypes": {
+            "word": "Word-document",
+            "excel": "Excel-spreadsheet",
+            "powerpoint": "PowerPoint-presentatie",
+            "text": "Tekstbestand"
+        }
     },
     "sortOptions": {
         "date": "Datum",
@@ -239,6 +247,16 @@
             "folderName": "Mapnaam",
             "fileName": "Bestandsnaam",
             "placeholder": "Voer nieuwe naam in"
+        },
+        "createDocument": {
+            "title": "Nieuw document aanmaken",
+            "subtitleWord": "Maak een nieuw Word-document",
+            "subtitleExcel": "Maak een nieuwe Excel-spreadsheet",
+            "subtitlePowerpoint": "Maak een nieuwe PowerPoint-presentatie",
+            "subtitleText": "Maak een nieuw tekstbestand",
+            "documentName": "Documentnaam",
+            "createButton": "Document aanmaken",
+            "closeDialog": "Dialoogvenster sluiten"
         },
         "upload": {
             "title": "Bestanden uploaden",
@@ -474,6 +492,7 @@
         "deleteFailed": "Verwijderen van item mislukt",
         "uploadFailed": "Uploaden van bestand mislukt",
         "downloadFailed": "Downloaden van bestand mislukt",
-        "notAllowedToViewFiles": "U bent niet gemachtigd om de bestanden te bekijken"
+        "notAllowedToViewFiles": "U bent niet gemachtigd om de bestanden te bekijken",
+        "createDocumentFailed": "Aanmaken van document mislukt"
     }
 }

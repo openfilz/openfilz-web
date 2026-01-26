@@ -1,5 +1,13 @@
 export enum DocumentType {FILE = "FILE", FOLDER = "FOLDER"}
 
+export type DocumentTemplateType = 'WORD' | 'EXCEL' | 'POWERPOINT' | 'TEXT';
+
+export interface CreateBlankDocumentRequest {
+  name: string;
+  documentType: DocumentTemplateType;
+  parentFolderId?: string;
+}
+
 export interface Suggestion {
     id: string;
     s: string;

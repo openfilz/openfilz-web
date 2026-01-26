@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DocumentTemplateType } from '../../models/document.models';
 
 @Component({
   selector: 'app-toolbar',
@@ -34,6 +35,8 @@ export class ToolbarComponent {
   // Feature toggles
   @Input() showUploadButton = true;
   @Input() showCreateFolderButton = true;
+  @Input() showCreateDocumentButton = true;
+  @Input() onlyOfficeEnabled = false;
   @Input() showStandardSelectionActions = true; // Show rename, download, move, copy, delete buttons
 
   // Pagination inputs
@@ -52,6 +55,7 @@ export class ToolbarComponent {
   @Output() deleteSelected = new EventEmitter<void>();
   @Output() clearSelection = new EventEmitter<void>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
+  @Output() createDocument = new EventEmitter<DocumentTemplateType>();
 
   @Input() sortBy = 'name';
   @Input() sortOrder: 'ASC' | 'DESC' = 'ASC';
@@ -63,6 +67,13 @@ export class ToolbarComponent {
     { labelKey: 'common.type', value: 'type' },
     { labelKey: 'common.owner', value: 'createdBy' },
     { labelKey: 'sortOptions.dateCreated', value: 'createdAt' }
+  ];
+
+  documentTypes: { type: DocumentTemplateType; labelKey: string; icon: string }[] = [
+    { type: 'WORD', labelKey: 'toolbar.documentTypes.word', icon: 'description' },
+    { type: 'EXCEL', labelKey: 'toolbar.documentTypes.excel', icon: 'table_chart' },
+    { type: 'POWERPOINT', labelKey: 'toolbar.documentTypes.powerpoint', icon: 'slideshow' },
+    { type: 'TEXT', labelKey: 'toolbar.documentTypes.text', icon: 'article' }
   ];
 
   // Pagination outputs
@@ -108,6 +119,10 @@ export class ToolbarComponent {
   onCreateFolderFromFab() {
     this.createFolder.emit();
     this.closeFab();
+  }
+
+  onCreateDocument(type: DocumentTemplateType) {
+    this.createDocument.emit(type);
   }
 
   toggleViewMode() {

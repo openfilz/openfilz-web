@@ -103,7 +103,15 @@
         "actionsFor": "Actions for {{count}} items",
         "quickActions": "Quick actions",
         "openActionsMenu": "Open actions menu",
-        "closeActionsMenu": "Close actions menu"
+        "closeActionsMenu": "Close actions menu",
+        "newDocument": "New Document",
+        "createNewDocument": "Create new document",
+        "documentTypes": {
+            "word": "Word Document",
+            "excel": "Excel Spreadsheet",
+            "powerpoint": "PowerPoint Presentation",
+            "text": "Text File"
+        }
     },
     "sortOptions": {
         "date": "Date",
@@ -239,6 +247,16 @@
             "folderName": "Folder Name",
             "fileName": "File Name",
             "placeholder": "Enter new name"
+        },
+        "createDocument": {
+            "title": "Create New Document",
+            "subtitleWord": "Create a new Word document",
+            "subtitleExcel": "Create a new Excel spreadsheet",
+            "subtitlePowerpoint": "Create a new PowerPoint presentation",
+            "subtitleText": "Create a new text file",
+            "documentName": "Document Name",
+            "createButton": "Create Document",
+            "closeDialog": "Close dialog"
         },
         "upload": {
             "title": "Upload Files",
@@ -474,6 +492,7 @@
         "deleteFailed": "Failed to delete item",
         "uploadFailed": "Failed to upload file",
         "downloadFailed": "Failed to download file",
-        "notAllowedToViewFiles": "You are not allowed to view the files"
+        "notAllowedToViewFiles": "You are not allowed to view the files",
+        "createDocumentFailed": "Failed to create document"
     }
 }

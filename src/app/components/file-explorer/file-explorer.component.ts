@@ -14,6 +14,7 @@ import { FileListComponent } from '../file-list/file-list.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { CreateFolderDialogComponent } from '../../dialogs/create-folder-dialog/create-folder-dialog.component';
+import { CreateDocumentDialogComponent, CreateDocumentDialogData, CreateDocumentDialogResult } from '../../dialogs/create-document-dialog/create-document-dialog.component';
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
@@ -28,6 +29,7 @@ import { BreadcrumbService } from '../../services/breadcrumb.service';
 import { SearchService } from '../../services/search.service';
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.service';
+import { OnlyOfficeService } from '../../services/onlyoffice.service';
 
 import {
   AncestorInfo,
@@ -41,7 +43,9 @@ import {
   MoveRequest,
   CopyRequest,
   DeleteRequest,
-  SearchFilters
+  SearchFilters,
+  DocumentTemplateType,
+  CreateBlankDocumentRequest
 } from '../../models/document.models';
 
 import { DragDropDirective } from "../../directives/drag-drop.directive";
@@ -62,8 +66,10 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [totalItems]="totalItems"
+        [onlyOfficeEnabled]="isOnlyOfficeEnabled"
         (uploadFiles)="triggerFileInput()"
         (createFolder)="onCreateFolder()"
+        (createDocument)="onCreateDocument($event)"
         (viewModeChange)="onViewModeChange($event)"
         (renameSelected)="onRenameSelected()"
         (downloadSelected)="onDownloadSelected()"
@@ -238,6 +244,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private searchService = inject(SearchService);
   private keyboardShortcuts = inject(KeyboardShortcutsService);
   private location = inject(Location);
+  private onlyOfficeService = inject(OnlyOfficeService);
+
+  get isOnlyOfficeEnabled(): boolean {
+    return this.onlyOfficeService.isOnlyOfficeEnabled();
+  }
 
   constructor() {
     super();
@@ -804,6 +815,104 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             this.snackBar.open('Failed to create folder', 'Close', { duration: 3000 });
           }
         });
+      }
+    });
+  }
+
+  onCreateDocument(documentType: DocumentTemplateType) {
+    const dialogData: CreateDocumentDialogData = { documentType };
+
+    const dialogRef = this.dialog.open<CreateDocumentDialogComponent, CreateDocumentDialogData, CreateDocumentDialogResult>(
+      CreateDocumentDialogComponent, {
+        maxWidth: '500px',
+        width: '90vw',
+        autoFocus: true,
+        data: dialogData
+      }
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.name) {
+        const documentName = result.name;
+        this.snackBar.open('Creating document...', undefined, { duration: undefined });
+
+        const request: CreateBlankDocumentRequest = {
+          name: documentName,
+          documentType: result.documentType,
+          parentFolderId: this.currentFolder?.id
+        };
+
+        this.documentApi.createBlankDocument(request).subscribe({
+          next: (response) => {
+            this.snackBar.dismiss();
+            this.snackBar.open(`"${documentName}" created successfully`, 'Close', { duration: 3000 });
+
+            // Navigate to the new document's page and open it in the file viewer
+            if (response.id) {
+              this.navigateToNewDocumentAndOpen(response.id, documentName);
+            }
+          },
+          error: () => {
+            this.snackBar.dismiss();
+            this.snackBar.open('Failed to create document', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+
+  private navigateToNewDocumentAndOpen(documentId: string, documentName: string): void {
+    this.loading = true;
+
+    // Get the position of the new document based on current sorting
+    this.documentApi.getDocumentPosition(documentId, this.sortBy, this.sortOrder).subscribe({
+      next: (position) => {
+        // Calculate target page (0-indexed)
+        const targetPage = Math.floor(position.position / this.pageSize);
+        this.pageIndex = targetPage;
+        this.totalItems = position.totalItems;
+
+        // Load items on the target page and open the file viewer
+        this.loadItemsAndOpenDocument(documentId, documentName);
+      },
+      error: () => {
+        // Fallback: just reload the current folder
+        this.loadFolder(this.currentFolder);
+      }
+    });
+  }
+
+  private loadItemsAndOpenDocument(documentId: string, documentName: string): void {
+    this.documentApi.listFolder(
+      this.currentFolder?.id,
+      this.pageIndex + 1,
+      this.pageSize,
+      this.currentFilters,
+      this.sortBy,
+      this.sortOrder
+    ).subscribe({
+      next: (response: ElementInfo[]) => {
+        this.populateFolderContents(response);
+
+        // Find and focus the target document
+        const targetIndex = this.items.findIndex(item => item.id === documentId);
+        if (targetIndex !== -1) {
+          // Select the document
+          this.items[targetIndex].selected = true;
+
+          // Focus the document item (scroll into view)
+          this.focusFileItem(documentId);
+
+          // Open file viewer after a short delay
+          setTimeout(() => {
+            this.openFileViewer(this.items[targetIndex]);
+          }, 300);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.loading = false;
       }
     });
   }

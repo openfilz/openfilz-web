@@ -46,6 +46,24 @@
         <span>{{ 'toolbar.newFolder' | translate }}</span>
       </button>
       }
+
+      @if(showCreateDocumentButton && onlyOfficeEnabled) {
+      <button mat-stroked-button class="new-document-btn" [matMenuTriggerFor]="newDocumentMenu"
+        [attr.aria-label]="'toolbar.createNewDocument' | translate" aria-haspopup="menu">
+        <mat-icon aria-hidden="true">note_add</mat-icon>
+        <span>{{ 'toolbar.newDocument' | translate }}</span>
+        <mat-icon class="dropdown-icon" aria-hidden="true">arrow_drop_down</mat-icon>
+      </button>
+      }
+
+      <mat-menu #newDocumentMenu="matMenu" class="new-document-menu">
+        @for(docType of documentTypes; track docType.type) {
+        <button mat-menu-item (click)="onCreateDocument(docType.type)">
+          <mat-icon aria-hidden="true">{{ docType.icon }}</mat-icon>
+          <span>{{ docType.labelKey | translate }}</span>
+        </button>
+        }
+      </mat-menu>
     </div>
 
     <!-- Overflow menu for mobile -->

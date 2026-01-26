@@ -103,7 +103,15 @@
         "actionsFor": "Acciones para {{count}} elementos",
         "quickActions": "Acciones rápidas",
         "openActionsMenu": "Abrir menú de acciones",
-        "closeActionsMenu": "Cerrar menú de acciones"
+        "closeActionsMenu": "Cerrar menú de acciones",
+        "newDocument": "Nuevo documento",
+        "createNewDocument": "Crear nuevo documento",
+        "documentTypes": {
+            "word": "Documento de Word",
+            "excel": "Hoja de cálculo de Excel",
+            "powerpoint": "Presentación de PowerPoint",
+            "text": "Archivo de texto"
+        }
     },
     "sortOptions": {
         "date": "Fecha",
@@ -239,6 +247,16 @@
             "folderName": "Nombre de la carpeta",
             "fileName": "Nombre del archivo",
             "placeholder": "Introduzca el nuevo nombre"
+        },
+        "createDocument": {
+            "title": "Crear nuevo documento",
+            "subtitleWord": "Crear un nuevo documento de Word",
+            "subtitleExcel": "Crear una nueva hoja de cálculo de Excel",
+            "subtitlePowerpoint": "Crear una nueva presentación de PowerPoint",
+            "subtitleText": "Crear un nuevo archivo de texto",
+            "documentName": "Nombre del documento",
+            "createButton": "Crear documento",
+            "closeDialog": "Cerrar diálogo"
         },
         "upload": {
             "title": "Subir archivos",
@@ -474,6 +492,7 @@
         "deleteFailed": "Error al eliminar el elemento",
         "uploadFailed": "Error al subir el archivo",
         "downloadFailed": "Error al descargar el archivo",
-        "notAllowedToViewFiles": "No tiene permiso para ver los archivos"
+        "notAllowedToViewFiles": "No tiene permiso para ver los archivos",
+        "createDocumentFailed": "Error al crear el documento"
     }
 }

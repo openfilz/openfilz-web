@@ -103,7 +103,15 @@
         "actionsFor": "إجراءات لـ {{count}} عناصر",
         "quickActions": "إجراءات سريعة",
         "openActionsMenu": "فتح قائمة الإجراءات",
-        "closeActionsMenu": "إغلاق قائمة الإجراءات"
+        "closeActionsMenu": "إغلاق قائمة الإجراءات",
+        "newDocument": "مستند جديد",
+        "createNewDocument": "إنشاء مستند جديد",
+        "documentTypes": {
+            "word": "مستند Word",
+            "excel": "جدول بيانات Excel",
+            "powerpoint": "عرض PowerPoint تقديمي",
+            "text": "ملف نصي"
+        }
     },
     "sortOptions": {
         "date": "التاريخ",
@@ -239,6 +247,16 @@
             "folderName": "اسم المجلد",
             "fileName": "اسم الملف",
             "placeholder": "أدخل الاسم الجديد"
+        },
+        "createDocument": {
+            "title": "إنشاء مستند جديد",
+            "subtitleWord": "إنشاء مستند Word جديد",
+            "subtitleExcel": "إنشاء جدول بيانات Excel جديد",
+            "subtitlePowerpoint": "إنشاء عرض PowerPoint تقديمي جديد",
+            "subtitleText": "إنشاء ملف نصي جديد",
+            "documentName": "اسم المستند",
+            "createButton": "إنشاء المستند",
+            "closeDialog": "إغلاق النافذة"
         },
         "upload": {
             "title": "رفع الملفات",
@@ -474,6 +492,7 @@
         "deleteFailed": "فشل حذف العنصر",
         "uploadFailed": "فشل رفع الملف",
         "downloadFailed": "فشل تنزيل الملف",
-        "notAllowedToViewFiles": "غير مصرح لك بعرض الملفات"
+        "notAllowedToViewFiles": "غير مصرح لك بعرض الملفات",
+        "createDocumentFailed": "فشل إنشاء المستند"
     }
 }

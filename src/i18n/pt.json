@@ -103,7 +103,15 @@
         "actionsFor": "Ações para {{count}} itens",
         "quickActions": "Ações rápidas",
         "openActionsMenu": "Abrir menu de ações",
-        "closeActionsMenu": "Fechar menu de ações"
+        "closeActionsMenu": "Fechar menu de ações",
+        "newDocument": "Novo documento",
+        "createNewDocument": "Criar novo documento",
+        "documentTypes": {
+            "word": "Documento Word",
+            "excel": "Planilha Excel",
+            "powerpoint": "Apresentação PowerPoint",
+            "text": "Arquivo de texto"
+        }
     },
     "sortOptions": {
         "date": "Data",
@@ -239,6 +247,16 @@
             "folderName": "Nome da Pasta",
             "fileName": "Nome do Arquivo",
             "placeholder": "Digite o novo nome"
+        },
+        "createDocument": {
+            "title": "Criar novo documento",
+            "subtitleWord": "Criar um novo documento Word",
+            "subtitleExcel": "Criar uma nova planilha Excel",
+            "subtitlePowerpoint": "Criar uma nova apresentação PowerPoint",
+            "subtitleText": "Criar um novo arquivo de texto",
+            "documentName": "Nome do documento",
+            "createButton": "Criar documento",
+            "closeDialog": "Fechar diálogo"
         },
         "upload": {
             "title": "Enviar Arquivos",
@@ -474,6 +492,7 @@
         "deleteFailed": "Falha ao excluir item",
         "uploadFailed": "Falha ao enviar arquivo",
         "downloadFailed": "Falha ao baixar o arquivo",
-        "notAllowedToViewFiles": "Você não tem permissão para visualizar os arquivos"
+        "notAllowedToViewFiles": "Você não tem permissão para visualizar os arquivos",
+        "createDocumentFailed": "Falha ao criar documento"
     }
 }
