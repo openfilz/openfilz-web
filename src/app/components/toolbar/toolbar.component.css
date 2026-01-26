@@ -48,7 +48,13 @@
   font-size: 20px;
   font-weight: 600;
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif;
   white-space: nowrap;
 }
 
@@ -59,7 +65,11 @@
   gap: 8px;
   padding: 0 16px;
   height: 44px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(99, 102, 241, 0.05) 100%
+  );
   border-radius: 10px;
   color: var(--primary);
   font-weight: 600;
@@ -101,7 +111,11 @@
 }
 
 .upload-btn {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  ) !important;
   color: white !important;
   box-shadow: 0 2px 8px rgba(var(--primary-rgb, 99, 102, 241), 0.3);
 }
@@ -174,7 +188,13 @@
   padding: 12px 16px;
   height: auto;
   min-height: 48px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif;
   transition: all 200ms ease;
 }
 
@@ -317,7 +337,13 @@
   padding: 12px 16px;
   height: auto;
   min-height: 48px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif;
   transition: all 200ms ease;
   position: relative;
 }
@@ -381,7 +407,11 @@
 }
 
 .view-toggle button.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(99, 102, 241, 0.08) 100%
+  );
   color: var(--primary);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
   transform: scale(1.05);
@@ -424,14 +454,18 @@
   height: 56px !important;
   background-color: var(--primary) !important;
   color: white !important;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4), 0 8px 24px rgba(99, 102, 241, 0.2) !important;
+  box-shadow:
+    0 4px 12px rgba(99, 102, 241, 0.4),
+    0 8px 24px rgba(99, 102, 241, 0.2) !important;
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .main-fab:hover {
   transform: scale(1.05);
   background-color: var(--primary-dark) !important;
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5), 0 12px 32px rgba(99, 102, 241, 0.3) !important;
+  box-shadow:
+    0 6px 16px rgba(99, 102, 241, 0.5),
+    0 12px 32px rgba(99, 102, 241, 0.3) !important;
 }
 
 .main-fab:active {
@@ -477,7 +511,9 @@
 .speed-dial-btn {
   width: 48px !important;
   height: 48px !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 6px 16px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.15),
+    0 6px 16px rgba(0, 0, 0, 0.1) !important;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative;
 }
@@ -882,7 +918,13 @@
   padding: 12px 16px;
   height: auto;
   min-height: 48px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif;
   transition: all 200ms ease;
   position: relative;
 }
@@ -946,7 +988,11 @@
 }
 
 .view-toggle button.active {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.15) 0%,
+    rgba(99, 102, 241, 0.08) 100%
+  );
   color: var(--primary);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
   transform: scale(1.05);
@@ -957,7 +1003,6 @@
   color: var(--text-primary);
   transform: scale(1.05);
 }
-
 
 /* Sort Controls */
 .toolbar-center {
@@ -1042,7 +1087,13 @@
   padding: 12px 16px;
   height: auto;
   min-height: 44px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    sans-serif;
   transition: all 200ms ease;
 }
 
@@ -1331,7 +1382,6 @@
 
 /* Mobile-specific responsive adjustments */
 @media (max-width: 768px) {
-
   /* Hide desktop selection actions, show mobile version */
   .desktop-selection {
     display: none !important;
@@ -1344,7 +1394,6 @@
 }
 
 @media (max-width: 480px) {
-
   /* Maintain visual consistency with tighter spacing */
   .toolbar {
     padding: 6px 8px;
@@ -1472,4 +1521,33 @@
     height: 22px;
     margin-right: 14px;
   }
+}
+
+/* Document Type Icons Colors */
+::ng-deep .new-document-menu .mat-mdc-menu-item .icon-word {
+  color: #2b579a; /* Word Blue */
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item .icon-excel {
+  color: #217346; /* Excel Green */
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item .icon-powerpoint {
+  color: #d24726; /* PowerPoint Red */
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item .icon-text {
+  color: var(--text-secondary);
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item:hover .icon-word {
+  color: #1e4072;
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item:hover .icon-excel {
+  color: #104628;
+}
+
+::ng-deep .new-document-menu .mat-mdc-menu-item:hover .icon-powerpoint {
+  color: #a4371d;
 }

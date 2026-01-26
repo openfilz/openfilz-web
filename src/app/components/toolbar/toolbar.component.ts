@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +21,8 @@ import { DocumentTemplateType } from '../../models/document.models';
     MatMenuModule,
     MatTooltipModule,
     MatDividerModule,
-    TranslatePipe
+    TranslatePipe,
+    CommonModule
 ],
 })
 export class ToolbarComponent {
@@ -69,11 +71,11 @@ export class ToolbarComponent {
     { labelKey: 'sortOptions.dateCreated', value: 'createdAt' }
   ];
 
-  documentTypes: { type: DocumentTemplateType; labelKey: string; icon: string }[] = [
-    { type: 'WORD', labelKey: 'toolbar.documentTypes.word', icon: 'description' },
-    { type: 'EXCEL', labelKey: 'toolbar.documentTypes.excel', icon: 'table_chart' },
-    { type: 'POWERPOINT', labelKey: 'toolbar.documentTypes.powerpoint', icon: 'slideshow' },
-    { type: 'TEXT', labelKey: 'toolbar.documentTypes.text', icon: 'article' }
+  documentTypes: { type: DocumentTemplateType; labelKey: string; icon: string; className: string }[] = [
+    { type: 'WORD', labelKey: 'toolbar.documentTypes.word', icon: 'description', className: 'icon-word' },
+    { type: 'EXCEL', labelKey: 'toolbar.documentTypes.excel', icon: 'table_chart', className: 'icon-excel' },
+    { type: 'POWERPOINT', labelKey: 'toolbar.documentTypes.powerpoint', icon: 'slideshow', className: 'icon-powerpoint' },
+    { type: 'TEXT', labelKey: 'toolbar.documentTypes.text', icon: 'article', className: 'icon-text' }
   ];
 
   // Pagination outputs

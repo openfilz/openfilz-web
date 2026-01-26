@@ -59,7 +59,7 @@
       <mat-menu #newDocumentMenu="matMenu" class="new-document-menu">
         @for(docType of documentTypes; track docType.type) {
         <button mat-menu-item (click)="onCreateDocument(docType.type)">
-          <mat-icon aria-hidden="true">{{ docType.icon }}</mat-icon>
+          <mat-icon [ngClass]="docType.className" aria-hidden="true">{{ docType.icon }}</mat-icon>
           <span>{{ docType.labelKey | translate }}</span>
         </button>
         }
