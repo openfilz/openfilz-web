@@ -55,15 +55,6 @@
         <mat-icon class="dropdown-icon" aria-hidden="true">arrow_drop_down</mat-icon>
       </button>
       }
-
-      <mat-menu #newDocumentMenu="matMenu" class="new-document-menu">
-        @for(docType of documentTypes; track docType.type) {
-        <button mat-menu-item (click)="onCreateDocument(docType.type)">
-          <mat-icon [ngClass]="docType.className" aria-hidden="true">{{ docType.icon }}</mat-icon>
-          <span>{{ docType.labelKey | translate }}</span>
-        </button>
-        }
-      </mat-menu>
     </div>
 
     <!-- Overflow menu for mobile -->
@@ -243,7 +234,7 @@
 </div>
 
 <!-- Floating Action Button (Mobile Only) -->
-@if(!hasSelection && !isSearchResultsPage && (showUploadButton || showCreateFolderButton)) {
+@if(!hasSelection && !isSearchResultsPage && (showUploadButton || showCreateFolderButton || (showCreateDocumentButton && onlyOfficeEnabled))) {
 <div class="fab-container" [class.fab-open]="fabOpen">
   <!-- Main FAB -->
   <button mat-fab color="primary" class="main-fab" (click)="toggleFab()"
@@ -263,7 +254,7 @@
         [attr.aria-label]="'toolbar.uploadFiles' | translate" role="menuitem">
         <mat-icon aria-hidden="true">cloud_upload</mat-icon>
       </button>
-      <span class="speed-dial-label upload-label">{{ 'toolbar.upload' | translate }}</span>
+      <span class="speed-dial-label upload-label">{{ 'common.upload' | translate }}</span>
     </div>
     }
 
@@ -274,6 +265,16 @@
         <mat-icon aria-hidden="true">create_new_folder</mat-icon>
       </button>
       <span class="speed-dial-label folder-label">{{ 'toolbar.newFolder' | translate }}</span>
+    </div>
+    }
+
+    @if(showCreateDocumentButton && onlyOfficeEnabled) {
+    <div class="speed-dial-item">
+      <button mat-mini-fab class="speed-dial-btn document-dial-btn" [matMenuTriggerFor]="newDocumentMenu"
+        [attr.aria-label]="'toolbar.createNewDocument' | translate" role="menuitem" aria-haspopup="menu">
+        <mat-icon aria-hidden="true">note_add</mat-icon>
+      </button>
+      <span class="speed-dial-label document-label">{{ 'toolbar.newDocument' | translate }}</span>
     </div>
     }
   </div>
@@ -357,3 +358,13 @@
   </div>
 </div>
 }
+
+<!-- New Document Menu (shared between desktop and mobile) -->
+<mat-menu #newDocumentMenu="matMenu" class="new-document-menu">
+  @for(docType of documentTypes; track docType.type) {
+  <button mat-menu-item (click)="onCreateDocument(docType.type)">
+    <mat-icon [ngClass]="docType.className" aria-hidden="true">{{ docType.icon }}</mat-icon>
+    <span>{{ docType.labelKey | translate }}</span>
+  </button>
+  }
+</mat-menu>
