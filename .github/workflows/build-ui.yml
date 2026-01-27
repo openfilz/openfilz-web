@@ -21,7 +21,7 @@ jobs:
       - name: Build the application
         run: |
           npm install
-          npm run build openfilz-ui
+          npm run build openfilz-ui -- --configuration production
 
       - name: Login to GHCR
         run: |
