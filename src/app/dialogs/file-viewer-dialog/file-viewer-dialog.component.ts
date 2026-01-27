@@ -14,6 +14,7 @@ import { DocumentApiService } from '../../services/document-api.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { RoleService } from '../../services/role.service';
 import { OnlyOfficeEditorComponent } from '../../components/onlyoffice-editor/onlyoffice-editor.component';
+import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { saveAs } from 'file-saver';
 
 // PDF.js imports
@@ -56,6 +57,7 @@ const MAX_PREVIEW_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
     MatToolbarModule,
     MatTooltipModule,
     OnlyOfficeEditorComponent,
+    TextEditorComponent,
     TranslatePipe
   ],
 })
@@ -101,6 +103,9 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   private snackBar = inject(MatSnackBar);
   private sanitizer = inject(DomSanitizer);
   private translate = inject(TranslateService);
+  
+  // Track original content for auto-save
+  private originalContent?: string;
 
   constructor() {
     // Configure PDF.js worker
@@ -136,6 +141,12 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       );
       return;
     }
+
+    // Intercept backdrop clicks for auto-save
+    this.dialogRef.disableClose = true;
+    this.dialogRef.backdropClick().subscribe(() => {
+      this.onClose();
+    });
 
     this.determineViewerMode();
 
@@ -382,21 +393,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
       const text = await this.fileBlob.text();
       this.textContent = text;
-
-      // Apply syntax highlighting
-      const extension = this.getFileExtension(this.data.fileName);
-      const language = this.detectLanguage(extension);
-
-      let highlighted: string;
-      if (language) {
-        highlighted = hljs.highlight(text, { language }).value;
-      } else {
-        highlighted = hljs.highlightAuto(text).value;
-      }
-
-      this.highlightedContent = this.sanitizer.bypassSecurityTrustHtml(
-        `<pre><code class="hljs">${highlighted}</code></pre>`
-      );
+      this.originalContent = text;
 
       this.loading = false;
     } catch (err) {
@@ -524,7 +521,12 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onClose() {
-    this.dialogRef.close();
+    // Check if content has changed (only for text viewer)
+    if (this.viewerMode === 'text' && this.canEditDocument && this.textContent !== this.originalContent) {
+      this.saveDocument(true); // true = close after save
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   get currentZoom(): number {
@@ -533,6 +535,45 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   get showZoomControls(): boolean {
     return this.viewerMode === 'pdf' || this.viewerMode === 'image';
+  }
+
+  // ========== Text Editor ==========
+  onTextContentChange(newContent: string) {
+    this.textContent = newContent;
+  }
+
+  saveDocument(closeAfterSave: boolean = false) {
+    if (!this.canEditDocument || !this.textContent) return;
+
+    this.loading = true;
+    // Create a Blob from the content
+    const blob = new Blob([this.textContent], { type: this.data.contentType || 'text/plain' });
+    const file = new File([blob], this.data.fileName, { type: this.data.contentType || 'text/plain' });
+
+    this.documentApi.replaceDocumentContent(this.data.documentId, file).subscribe({
+      next: () => {
+        this.loading = false;
+        // Update original content to match saved content
+        this.originalContent = this.textContent;
+        
+        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
+        
+        if (closeAfterSave) {
+          this.dialogRef.close();
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error saving document:', err);
+        this.error = 'errors.saveFailed';
+        this.snackBar.open(this.translate.instant('errors.saveFailed'), this.translate.instant('common.close'), { duration: 3000 });
+      }
+    });
+  }
+
+  get detectedLanguage(): string {
+    const extension = this.getFileExtension(this.data.fileName);
+    return this.detectLanguage(extension) || 'plaintext';
   }
 
   get showPageNavigation(): boolean {

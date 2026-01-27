@@ -17,6 +17,7 @@ import { SettingsService } from './app/services/settings.service';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { providePaginatorIntl } from './app/i18n/paginator-intl';
+import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 
 @Component({
   selector: 'app-root',
@@ -101,6 +102,7 @@ bootstrapApplication(App, {
         suffix: '.json'
       })
     }),
-    providePaginatorIntl()
+    providePaginatorIntl(),
+    provideMonacoEditor()
   ]
 });

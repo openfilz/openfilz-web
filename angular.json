@@ -48,6 +48,11 @@
                 "glob": "**/*",
                 "input": "src/i18n",
                 "output": "/i18n"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/monaco-editor/min/vs",
+                "output": "/assets/monaco/min/vs"
               }
             ],
             "index": "src/index.html",

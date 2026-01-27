@@ -54,6 +54,13 @@
         <mat-icon>download</mat-icon>
       </button>
 
+      <!-- Save (Text Editor) -->
+      @if (viewerMode === 'text' && canEditDocument) {
+      <button mat-icon-button (click)="saveDocument()" [matTooltip]="'common.save' | translate">
+        <mat-icon>save</mat-icon>
+      </button>
+      }
+
       <!-- Print -->
       <button mat-icon-button (click)="print()" [matTooltip]="'fileViewer.print' | translate">
         <mat-icon>print</mat-icon>
@@ -119,10 +126,12 @@
     </div>
     }
 
-    <!-- Text Viewer -->
-    @if (viewerMode === 'text' && !loading && !error) {
-    <div class="text-viewer">
-      <div class="code-container" [innerHTML]="highlightedContent"></div>
+    <!-- Text Editor -->
+    @if (viewerMode === 'text' && !error) {
+    <div class="text-viewer" style="height: 100%; width: 100%;">
+      <app-text-editor [content]="textContent || ''" [language]="detectedLanguage" [readOnly]="!canEditDocument"
+        (contentChange)="onTextContentChange($event)" (save)="saveDocument()">
+      </app-text-editor>
     </div>
     }
 

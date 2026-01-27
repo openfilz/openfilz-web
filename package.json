@@ -27,6 +27,8 @@
     "graphql": "^16.12.0",
     "highlight.js": "^11.11.1",
     "mammoth": "^1.11.0",
+    "monaco-editor": "^0.55.1",
+    "ngx-monaco-editor-v2": "^20.3.0",
     "pdfjs-dist": "^4.10.38",
     "rxjs": "^7.8.1",
     "tslib": "^2.5.0",
