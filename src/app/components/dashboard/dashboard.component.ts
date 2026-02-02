@@ -6,6 +6,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropDirective } from '../../directives/drag-drop.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DocumentApiService } from '../../services/document-api.service';
@@ -21,6 +24,7 @@ export interface RecentFile {
   id: string;
   name: string;
   type: string;
+  contentType: string; // Add contentType
   size: number;
   lastModified?: string;
   updatedAt: string;
@@ -45,7 +49,8 @@ export interface FileTypeDistribution {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     DragDropDirective,
-    TranslatePipe
+    TranslatePipe,
+    MatTooltipModule
 ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -55,6 +60,8 @@ export class DashboardComponent implements OnInit {
   private fileIconService = inject(FileIconService);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
+  private router = inject(Router); // Inject Router
+  private dialog = inject(MatDialog); // Inject MatDialog
 
   recentlyEditedFiles: RecentFile[] = [];
   allFiles: DashboardFileItem[] = [];
@@ -167,6 +174,7 @@ export class DashboardComponent implements OnInit {
           id: file.id,
           name: file.name,
           type: this.getFileTypeCategory(file.contentType || ''),
+          contentType: file.contentType || '', // Populate contentType
           size: file.size || 0,
           updatedAt: file.updatedAt || '',
           icon: this.getIconForContentType(file.contentType || '')
@@ -312,6 +320,53 @@ export class DashboardComponent implements OnInit {
     // Format the date to match the design (e.g., "Jun 12")
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  // File Actions
+  onOpenFile(file: RecentFile) {
+    // Open file viewer dialog
+    import('../../dialogs/file-viewer-dialog/file-viewer-dialog.component').then(m => {
+      this.dialog.open(m.FileViewerDialogComponent, {
+        width: '95vw',
+        height: '95vh',
+        maxWidth: '1400px',
+        maxHeight: '900px',
+        panelClass: 'file-viewer-dialog-container',
+        data: {
+          documentId: file.id,
+          fileName: file.name,
+          contentType: this.getFileContentType(file), // Helper to get content type
+          fileSize: file.size
+        }
+      });
+    });
+  }
+
+  // Helper to infer content type since it might not be in RecentFile interface explicitly or normalized
+  private getFileContentType(file: RecentFile): string {
+    return file.contentType || ''; 
+  }
+
+  onGoToFile(file: RecentFile) {
+    // Navigate to file explorer with targetFileId
+    this.router.navigate(['/my-folder'], { queryParams: { targetFileId: file.id } });
+  }
+
+  onDownloadFile(file: RecentFile) {
+    this.documentApi.downloadDocument(file.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = file.name;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Download failed:', error);
+        this.snackBar.open(this.translate.instant('errors.downloadFailed'), this.translate.instant('common.close'), { duration: 3000 });
+      }
+    });
   }
 
   // Circular progress methods for storage indicator

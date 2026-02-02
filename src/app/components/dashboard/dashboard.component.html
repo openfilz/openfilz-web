@@ -152,6 +152,22 @@
             <p class="file-name">{{ file.name }}</p>
             <p class="file-meta">{{ formatFileSize(file.size) }}</p>
           </div>
+          
+          <div class="file-actions">
+            <button mat-icon-button (click)="onOpenFile(file)" [matTooltip]="'common.open' | translate" 
+                    [attr.aria-label]="'common.open' | translate">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onGoToFile(file)" [matTooltip]="'dashboard.goToFile' | translate" 
+                    [attr.aria-label]="'dashboard.goToFile' | translate">
+              <mat-icon>folder_open</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onDownloadFile(file)" [matTooltip]="'common.download' | translate" 
+                    [attr.aria-label]="'common.download' | translate">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+          
           <span class="file-timestamp-badge">{{ formatRelativeTime(file.updatedAt) }}</span>
         </div>
         }
