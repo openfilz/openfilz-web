@@ -1562,3 +1562,15 @@
 ::ng-deep .new-document-menu .mat-mdc-menu-item:hover .icon-powerpoint {
   color: #a4371d;
 }
+
+/* Theme overrides for Page Size Selector: make it visible on dark/midnight themes */
+:host-context(.theme-dark) .page-size-btn,
+:host-context(.theme-midnight) .page-size-btn {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+:host-context(.theme-dark) .page-size-btn:hover,
+:host-context(.theme-midnight) .page-size-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
