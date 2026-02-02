@@ -352,7 +352,13 @@
             "light": "Hell (Standard)",
             "dark": "Dunkel",
             "ocean": "Ozean",
-            "forest": "Wald"
+            "forest": "Wald",
+            "sunset": "Sonnenuntergang",
+            "lavender": "Lavendel",
+            "rose": "Rose",
+            "midnight": "Mitternacht",
+            "slate": "Schiefer",
+            "copper": "Kupfer"
         }
     },
     "bottomSheet": {

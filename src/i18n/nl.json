@@ -352,7 +352,13 @@
             "light": "Licht (Standaard)",
             "dark": "Donker",
             "ocean": "Oceaan",
-            "forest": "Bos"
+            "forest": "Bos",
+            "sunset": "Zonsondergang",
+            "lavender": "Lavendel",
+            "rose": "Roos",
+            "midnight": "Middernacht",
+            "slate": "Leisteen",
+            "copper": "Koper"
         }
     },
     "bottomSheet": {

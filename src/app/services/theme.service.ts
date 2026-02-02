@@ -17,7 +17,13 @@ export class ThemeService {
     { name: 'light', displayName: 'Light (Default)', className: 'theme-light' },
     { name: 'dark', displayName: 'Dark', className: 'theme-dark' },
     { name: 'ocean', displayName: 'Ocean', className: 'theme-ocean' },
-    { name: 'forest', displayName: 'Forest', className: 'theme-forest' }
+    { name: 'forest', displayName: 'Forest', className: 'theme-forest' },
+    { name: 'sunset', displayName: 'Sunset', className: 'theme-sunset' },
+    { name: 'lavender', displayName: 'Lavender', className: 'theme-lavender' },
+    { name: 'rose', displayName: 'Rose', className: 'theme-rose' },
+    { name: 'midnight', displayName: 'Midnight', className: 'theme-midnight' },
+    { name: 'slate', displayName: 'Slate', className: 'theme-slate' },
+    { name: 'copper', displayName: 'Copper', className: 'theme-copper' }
   ];
 
   private currentThemeSubject = new BehaviorSubject<Theme>(this.availableThemes[0]);

@@ -352,7 +352,13 @@
             "light": "Clair (par défaut)",
             "dark": "Sombre",
             "ocean": "Océan",
-            "forest": "Forêt"
+            "forest": "Forêt",
+            "sunset": "Coucher de soleil",
+            "lavender": "Lavande",
+            "rose": "Rose",
+            "midnight": "Minuit",
+            "slate": "Ardoise",
+            "copper": "Cuivre"
         }
     },
     "bottomSheet": {

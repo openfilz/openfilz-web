@@ -352,7 +352,13 @@
             "light": "فاتح (تلقائي)",
             "dark": "داكن",
             "ocean": "محيط",
-            "forest": "غابة"
+            "forest": "غابة",
+            "sunset": "غروب الشمس",
+            "lavender": "لافندر",
+            "rose": "وردي",
+            "midnight": "منتصف الليل",
+            "slate": "إردواز",
+            "copper": "نحاسي"
         }
     },
     "bottomSheet": {

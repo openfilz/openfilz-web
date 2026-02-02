@@ -70,8 +70,8 @@
 /* Theme Grid */
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
   margin-top: 12px;
 }
 
@@ -106,18 +106,11 @@
   padding: 12px;
 }
 
-.color-stripes {
-  display: flex;
-  height: 80px;
+.color-preview {
+  height: 60px;
   border-radius: 8px;
-  overflow: hidden;
   margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
-}
-
-.stripe {
-  flex: 1;
-  height: 100%;
 }
 
 .theme-info {

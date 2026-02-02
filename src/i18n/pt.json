@@ -352,7 +352,13 @@
             "light": "Claro (Padrão)",
             "dark": "Escuro",
             "ocean": "Oceano",
-            "forest": "Floresta"
+            "forest": "Floresta",
+            "sunset": "Pôr do sol",
+            "lavender": "Lavanda",
+            "rose": "Rosa",
+            "midnight": "Meia-noite",
+            "slate": "Ardósia",
+            "copper": "Cobre"
         }
     },
     "bottomSheet": {

@@ -352,7 +352,13 @@
             "light": "Claro (Predeterminado)",
             "dark": "Oscuro",
             "ocean": "Océano",
-            "forest": "Bosque"
+            "forest": "Bosque",
+            "sunset": "Atardecer",
+            "lavender": "Lavanda",
+            "rose": "Rosa",
+            "midnight": "Medianoche",
+            "slate": "Pizarra",
+            "copper": "Cobre"
         }
     },
     "bottomSheet": {

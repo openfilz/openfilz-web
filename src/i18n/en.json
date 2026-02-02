@@ -349,10 +349,16 @@
         "theme": "Theme",
         "themeDescription": "Choose a color theme for the application interface.",
         "themes": {
-            "light": "Light (Default)",
+            "light": "Light",
             "dark": "Dark",
             "ocean": "Ocean",
-            "forest": "Forest"
+            "forest": "Forest",
+            "sunset": "Sunset",
+            "lavender": "Lavender",
+            "rose": "Rose",
+            "midnight": "Midnight",
+            "slate": "Slate",
+            "copper": "Copper"
         }
     },
     "bottomSheet": {
