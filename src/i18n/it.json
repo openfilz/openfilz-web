@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Ciao {{name}}",
         "managePreferences": "Gestisci le tue preferenze e le impostazioni dell'applicazione",
+        "quotas": {
+            "title": "Quote di archiviazione",
+            "fileQuota": "Limite caricamento file",
+            "fileQuotaDescription": "Dimensione massima per caricamento file",
+            "userQuota": "Limite archiviazione totale",
+            "userQuotaDescription": "Archiviazione totale massima per il tuo account"
+        },
         "appearance": "Aspetto",
         "theme": "Tema",
         "themeDescription": "Scegli un tema di colore per l'interfaccia dell'applicazione.",

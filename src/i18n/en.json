@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Hello {{name}}",
         "managePreferences": "Manage your preferences and application settings",
+        "quotas": {
+            "title": "Storage Quotas",
+            "fileQuota": "File Upload Limit",
+            "fileQuotaDescription": "Maximum size per file upload",
+            "userQuota": "Total Storage Limit",
+            "userQuotaDescription": "Maximum total storage for your account"
+        },
         "appearance": "Appearance",
         "theme": "Theme",
         "themeDescription": "Choose a color theme for the application interface.",

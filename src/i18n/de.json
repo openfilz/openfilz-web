@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Hallo {{name}}",
         "managePreferences": "Verwalten Sie Ihre Einstellungen und Anwendungseinstellungen",
+        "quotas": {
+            "title": "Speicherkontingente",
+            "fileQuota": "Datei-Upload-Limit",
+            "fileQuotaDescription": "Maximale Größe pro Datei-Upload",
+            "userQuota": "Gesamtspeicherlimit",
+            "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto"
+        },
         "appearance": "Erscheinungsbild",
         "theme": "Design",
         "themeDescription": "Wählen Sie ein Farbschema für die Benutzeroberfläche.",

@@ -130,3 +130,66 @@
   width: 20px;
   height: 20px;
 }
+
+/* Quota Grid */
+.quota-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.quota-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.quota-card:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.quota-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary-light);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.quota-icon mat-icon {
+  color: var(--primary-dark);
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.quota-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quota-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.quota-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quota-description {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}

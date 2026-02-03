@@ -4,6 +4,44 @@
     <p>{{ 'settings.managePreferences' | translate }}</p>
   </div>
 
+  @if (hasQuotaInfo) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>data_usage</mat-icon>
+        {{ 'settings.quotas.title' | translate }}
+      </div>
+
+      <div class="section-content">
+        <div class="quota-grid">
+          @if (settings?.fileQuotaMB !== null) {
+            <div class="quota-card">
+              <div class="quota-icon">
+                <mat-icon>insert_drive_file</mat-icon>
+              </div>
+              <div class="quota-info">
+                <span class="quota-label">{{ 'settings.quotas.fileQuota' | translate }}</span>
+                <span class="quota-value">{{ settings?.fileQuotaMB }} MB</span>
+                <span class="quota-description">{{ 'settings.quotas.fileQuotaDescription' | translate }}</span>
+              </div>
+            </div>
+          }
+          @if (settings?.userQuotaMB !== null) {
+            <div class="quota-card">
+              <div class="quota-icon">
+                <mat-icon>storage</mat-icon>
+              </div>
+              <div class="quota-info">
+                <span class="quota-label">{{ 'settings.quotas.userQuota' | translate }}</span>
+                <span class="quota-value">{{ settings?.userQuotaMB }} MB</span>
+                <span class="quota-description">{{ 'settings.quotas.userQuotaDescription' | translate }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
   <div class="settings-section">
     <div class="section-title">
       <mat-icon>palette</mat-icon>

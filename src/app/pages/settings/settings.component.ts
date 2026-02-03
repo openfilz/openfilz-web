@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { SettingsService, Settings } from '../../services/settings.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -16,8 +17,10 @@ export class SettingsComponent implements OnInit {
   currentTheme: Theme | undefined;
   availableThemes: Theme[] = [];
   firstName: string = '';
+  settings: Settings | null = null;
 
   private themeService = inject(ThemeService);
+  private settingsService = inject(SettingsService);
   private oidcSecurityService = inject(OidcSecurityService);
   private translate = inject(TranslateService);
 
@@ -29,6 +32,10 @@ export class SettingsComponent implements OnInit {
       this.currentTheme = theme;
     });
 
+    this.settingsService.settings$.subscribe(settings => {
+      this.settings = settings;
+    });
+
     this.oidcSecurityService.userData$.subscribe((result: any) => {
       const userData = result.userData || result; // Handle both wrapper and direct object
       if (userData) {
@@ -37,6 +44,10 @@ export class SettingsComponent implements OnInit {
         this.firstName = this.translate.instant('common.user');
       }
     });
+  }
+
+  get hasQuotaInfo(): boolean {
+    return this.settings !== null && (this.settings.fileQuotaMB !== null || this.settings.userQuotaMB !== null);
   }
 
   onThemeChange(themeName: string) {

@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 
 export interface Settings {
   emptyBinInterval: number | null;
+  fileQuotaMB: number | null;
+  userQuotaMB: number | null;
 }
 
 @Injectable({
@@ -32,8 +34,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null });
-        return of({ emptyBinInterval: null });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null });
       })
     );
   }

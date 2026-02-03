@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Hallo {{name}}",
         "managePreferences": "Beheer uw voorkeuren en applicatie-instellingen",
+        "quotas": {
+            "title": "Opslagquota",
+            "fileQuota": "Bestandsuploadlimiet",
+            "fileQuotaDescription": "Maximale grootte per bestandsupload",
+            "userQuota": "Totale opslaglimiet",
+            "userQuotaDescription": "Maximale totale opslag voor uw account"
+        },
         "appearance": "Uiterlijk",
         "theme": "Thema",
         "themeDescription": "Kies een kleurenthema voor de applicatie-interface.",

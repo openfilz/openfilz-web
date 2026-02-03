@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Hola {{name}}",
         "managePreferences": "Gestione sus preferencias y ajustes de la aplicación",
+        "quotas": {
+            "title": "Cuotas de almacenamiento",
+            "fileQuota": "Límite de carga de archivo",
+            "fileQuotaDescription": "Tamaño máximo por archivo subido",
+            "userQuota": "Límite de almacenamiento total",
+            "userQuotaDescription": "Almacenamiento total máximo para su cuenta"
+        },
         "appearance": "Apariencia",
         "theme": "Tema",
         "themeDescription": "Elija un tema de color para la interfaz de la aplicación.",

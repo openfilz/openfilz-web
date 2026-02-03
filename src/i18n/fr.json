@@ -346,6 +346,13 @@
     "settings": {
         "hello": "Bonjour {{name}}",
         "managePreferences": "Gérez vos préférences et les paramètres de l'application",
+        "quotas": {
+            "title": "Quotas de stockage",
+            "fileQuota": "Limite de téléversement",
+            "fileQuotaDescription": "Taille maximale par fichier téléversé",
+            "userQuota": "Limite de stockage total",
+            "userQuotaDescription": "Stockage total maximum pour votre compte"
+        },
         "appearance": "Apparence",
         "theme": "Thème",
         "themeDescription": "Choisissez un thème de couleur pour l'interface de l'application.",

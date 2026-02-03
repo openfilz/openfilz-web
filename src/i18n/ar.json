@@ -346,6 +346,13 @@
     "settings": {
         "hello": "مرحباً {{name}}",
         "managePreferences": "إدارة تفضيلاتك وإعدادات التطبيق",
+        "quotas": {
+            "title": "حصص التخزين",
+            "fileQuota": "حد رفع الملف",
+            "fileQuotaDescription": "الحجم الأقصى لكل ملف مرفوع",
+            "userQuota": "حد التخزين الكلي",
+            "userQuotaDescription": "الحد الأقصى للتخزين الكلي لحسابك"
+        },
         "appearance": "المظهر",
         "theme": "السمة",
         "themeDescription": "اختر سمة لون لواجهة التطبيق.",
