@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropDirective } from '../../directives/drag-drop.directive';
+import { AuthImageDirective } from '../../directives/auth-image.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DocumentApiService } from '../../services/document-api.service';
 import { FileIconService } from '../../services/file-icon.service';
@@ -29,6 +30,7 @@ export interface RecentFile {
   lastModified?: string;
   updatedAt: string;
   icon: string;
+  thumbnailUrl?: string;
 }
 
 export interface FileTypeDistribution {
@@ -49,6 +51,7 @@ export interface FileTypeDistribution {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     DragDropDirective,
+    AuthImageDirective,
     TranslatePipe,
     MatTooltipModule
 ],
@@ -177,7 +180,8 @@ export class DashboardComponent implements OnInit {
           contentType: file.contentType || '', // Populate contentType
           size: file.size || 0,
           updatedAt: file.updatedAt || '',
-          icon: this.getIconForContentType(file.contentType || '')
+          icon: this.getIconForContentType(file.contentType || ''),
+          thumbnailUrl: file.thumbnailUrl
         }));
         this.isLoadingRecentFiles = false;
       },
@@ -367,6 +371,13 @@ export class DashboardComponent implements OnInit {
         this.snackBar.open(this.translate.instant('errors.downloadFailed'), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
+  }
+
+  /**
+   * Handle thumbnail loading error by clearing the URL to show fallback icon
+   */
+  onThumbnailError(event: Event, file: RecentFile): void {
+    file.thumbnailUrl = undefined;
   }
 
   // Circular progress methods for storage indicator

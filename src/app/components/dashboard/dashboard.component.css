@@ -387,12 +387,61 @@
 
 .recent-file-item {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
   padding: 14px;
   border-radius: 8px;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-light);
+}
+
+/* Main row: thumbnail/icon + file info + timestamp */
+.recent-file-row-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+/* Actions row: right-aligned action buttons */
+.recent-file-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Desktop: single row layout */
+@media (min-width: 768px) {
+  .recent-file-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .recent-file-row-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .recent-file-row-actions {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: none;
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
+/* File thumbnail */
+.file-thumbnail {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .file-icon-container {
@@ -448,9 +497,15 @@
 .file-actions {
   display: flex;
   gap: 4px;
-  margin-right: 12px;
   opacity: 0.7;
   transition: opacity 0.2s;
+}
+
+/* Desktop: add margin between actions and timestamp */
+@media (min-width: 768px) {
+  .file-actions {
+    margin-right: 12px;
+  }
 }
 
 .recent-file-item:hover .file-actions {
