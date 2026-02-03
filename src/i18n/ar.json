@@ -83,6 +83,7 @@
         "newFolder": "مجلد جديد",
         "createNewFolder": "إنشاء مجلد جديد",
         "clearSelection": "مسح التحديد",
+        "openSelected": "فتح العنصر المحدد",
         "renameSelected": "إعادة تسمية العنصر المحدد",
         "downloadSelected": "تنزيل العناصر المحددة",
         "move": "نقل",

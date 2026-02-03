@@ -50,6 +50,7 @@ export class ToolbarComponent {
   @Output() createFolder = new EventEmitter<void>();
   @Output() uploadFiles = new EventEmitter<void>();
   @Output() viewModeChange = new EventEmitter<'grid' | 'list'>();
+  @Output() openSelected = new EventEmitter<void>();
   @Output() renameSelected = new EventEmitter<void>();
   @Output() downloadSelected = new EventEmitter<void>();
   @Output() moveSelected = new EventEmitter<void>();
@@ -130,6 +131,10 @@ export class ToolbarComponent {
   toggleViewMode() {
     const newMode = this.viewMode === 'grid' ? 'list' : 'grid';
     this.viewModeChange.emit(newMode);
+  }
+
+  onOpenSelected() {
+    this.openSelected.emit();
   }
 
   onRenameSelected() {
@@ -231,6 +236,11 @@ export class ToolbarComponent {
   onActionSelected(action: string): void {
     // Execute action based on type
     switch (action) {
+      case 'open':
+        if (this.selectionCount === 1) {
+          this.onOpenSelected();
+        }
+        break;
       case 'move':
         this.onMoveSelected();
         break;
@@ -257,10 +267,10 @@ export class ToolbarComponent {
   getAvailableActionsCount(): number {
     // Count available actions in bottom sheet
     // Base actions: move, copy, download, delete = 4
-    // Rename: only if 1 item selected
+    // Open + Rename: only if 1 item selected
     let count = 4;
     if (this.selectionCount === 1) {
-      count += 1; // Add rename
+      count += 2; // Add open and rename
     }
     return count;
   }

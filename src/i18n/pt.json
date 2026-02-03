@@ -83,6 +83,7 @@
         "newFolder": "Nova Pasta",
         "createNewFolder": "Criar nova pasta",
         "clearSelection": "Limpar seleção",
+        "openSelected": "Abrir item selecionado",
         "renameSelected": "Renomear item selecionado",
         "downloadSelected": "Baixar itens selecionados",
         "move": "Mover",

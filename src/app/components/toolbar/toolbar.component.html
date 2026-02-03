@@ -87,28 +87,33 @@
     <div class="selection-actions desktop-selection" role="group"
       [attr.aria-label]="'toolbar.managementToolbar' | translate">
       @if(selectionCount === 1) {
-      <button mat-stroked-button (click)="onRenameSelected()" [matTooltip]="'toolbar.rename' | translate"
+      <button mat-stroked-button (click)="onOpenSelected()"
+        [attr.aria-label]="'toolbar.openSelected' | translate">
+        <mat-icon aria-hidden="true">visibility</mat-icon>
+        <span>{{ 'common.open' | translate }}</span>
+      </button>
+      <button mat-stroked-button (click)="onRenameSelected()"
         [attr.aria-label]="'toolbar.renameSelected' | translate">
         <mat-icon aria-hidden="true">edit</mat-icon>
         <span>{{ 'common.rename' | translate }}</span>
       </button>
       }
-      <button mat-stroked-button (click)="onDownloadSelected()" [matTooltip]="'toolbar.download' | translate"
+      <button mat-stroked-button (click)="onDownloadSelected()"
         [attr.aria-label]="'toolbar.downloadSelected' | translate">
         <mat-icon aria-hidden="true">download</mat-icon>
         <span>{{ 'common.download' | translate }}</span>
       </button>
-      <button mat-stroked-button (click)="onMoveSelected()" [matTooltip]="'toolbar.move' | translate"
+      <button mat-stroked-button (click)="onMoveSelected()"
         [attr.aria-label]="'toolbar.moveSelected' | translate">
         <mat-icon aria-hidden="true">open_with</mat-icon>
         <span>{{ 'toolbar.move' | translate }}</span>
       </button>
-      <button mat-stroked-button (click)="onCopySelected()" [matTooltip]="'toolbar.copy' | translate"
+      <button mat-stroked-button (click)="onCopySelected()"
         [attr.aria-label]="'toolbar.copySelected' | translate">
         <mat-icon aria-hidden="true">content_copy</mat-icon>
         <span>{{ 'toolbar.copy' | translate }}</span>
       </button>
-      <button mat-stroked-button color="warn" (click)="onDeleteSelected()" [matTooltip]="'toolbar.delete' | translate"
+      <button mat-stroked-button color="warn" (click)="onDeleteSelected()"
         [attr.aria-label]="'toolbar.deleteSelected' | translate">
         <mat-icon aria-hidden="true">delete</mat-icon>
         <span>{{ 'common.delete' | translate }}</span>
@@ -320,6 +325,15 @@
     <!-- Organize Actions -->
     <div class="action-category" role="group" aria-labelledby="organize-heading">
       <div class="action-category-title" id="organize-heading">{{ 'bottomSheet.organize' | translate }}</div>
+
+      <button class="action-item" (click)="onActionSelected('open')" [disabled]="selectionCount !== 1" role="menuitem"
+        tabindex="0" [attr.aria-disabled]="selectionCount !== 1">
+        <mat-icon class="action-item-icon" aria-hidden="true">visibility</mat-icon>
+        <span class="action-item-label">{{ 'common.open' | translate }}</span>
+        @if(selectionCount !== 1) {
+        <span class="action-item-meta">{{ 'bottomSheet.oneItemOnly' | translate }}</span>
+        }
+      </button>
 
       <button class="action-item" (click)="onActionSelected('move')" role="menuitem" tabindex="0">
         <mat-icon class="action-item-icon" aria-hidden="true">open_with</mat-icon>

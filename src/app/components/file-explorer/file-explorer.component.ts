@@ -71,6 +71,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
         (createFolder)="onCreateFolder()"
         (createDocument)="onCreateDocument($event)"
         (viewModeChange)="onViewModeChange($event)"
+        (openSelected)="onOpenSelected()"
         (renameSelected)="onRenameSelected()"
         (downloadSelected)="onDownloadSelected()"
         (moveSelected)="onMoveSelected()"
@@ -604,9 +605,6 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
               // Open file viewer dialog
               const item = this.items[targetIndex];
               this.openFileViewer(item);
-            } else {
-              // Open metadata panel
-              this.openMetadataPanel(targetFileId);
             }
           }, 300);
         }
@@ -1143,6 +1141,18 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     }
   }
 
+  onOpenSelected() {
+    const selectedItems = this.selectedItems;
+    if (selectedItems.length === 1) {
+      const item = selectedItems[0];
+      if (item.type === 'FOLDER') {
+        this.loadFolder(item, false, true);
+      } else {
+        this.openFileViewer(item);
+      }
+    }
+  }
+
   override onRenameSelected() {
     const selectedItems = this.selectedItems;
     if (selectedItems.length === 1) {
@@ -1529,10 +1539,6 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             // Focus the file item (scroll into view)
             this.focusFileItem(targetFileId);
 
-            // Open metadata panel after a short delay
-            setTimeout(() => {
-              this.openMetadataPanel(targetFileId);
-            }, 300);
           }
         }
         // For multiple files, just load the page without focus/panel

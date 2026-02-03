@@ -83,6 +83,7 @@
         "newFolder": "Nuova Cartella",
         "createNewFolder": "Crea nuova cartella",
         "clearSelection": "Cancella selezione",
+        "openSelected": "Apri elemento selezionato",
         "renameSelected": "Rinomina elemento selezionato",
         "downloadSelected": "Scarica elementi selezionati",
         "move": "Sposta",

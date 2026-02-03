@@ -83,6 +83,7 @@
         "newFolder": "Neuer Ordner",
         "createNewFolder": "Neuen Ordner erstellen",
         "clearSelection": "Auswahl aufheben",
+        "openSelected": "Ausgewähltes Element öffnen",
         "renameSelected": "Ausgewähltes Element umbenennen",
         "downloadSelected": "Ausgewählte Elemente herunterladen",
         "move": "Verschieben",

@@ -83,6 +83,7 @@
         "newFolder": "Nieuwe Map",
         "createNewFolder": "Nieuwe map aanmaken",
         "clearSelection": "Selectie wissen",
+        "openSelected": "Geselecteerd item openen",
         "renameSelected": "Geselecteerd item hernoemen",
         "downloadSelected": "Geselecteerde items downloaden",
         "move": "Verplaatsen",

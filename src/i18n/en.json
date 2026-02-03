@@ -83,6 +83,7 @@
         "newFolder": "New Folder",
         "createNewFolder": "Create new folder",
         "clearSelection": "Clear selection",
+        "openSelected": "Open selected item",
         "renameSelected": "Rename selected item",
         "downloadSelected": "Download selected items",
         "move": "Move",
