@@ -574,27 +574,43 @@ mat-paginator {
     font-size: 12px;
   }
 
-  /* Always show overlays on mobile for easier selection */
+  /* Always show overlays on mobile for easier interaction */
   .select-overlay {
     opacity: 1;
   }
 
-  /* Larger checkboxes for mobile */
-  .select-overlay mat-checkbox {
-    transform: scale(1.1);
-  }
-
-  /* Touch-friendly favorite button */
+  /* Always show favorite button on mobile */
   .favorite-overlay {
+    opacity: 1;
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
+  }
+
+  /* Always show info button on mobile */
+  .file-actions {
+    opacity: 1;
+  }
+
+  .file-actions button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .file-actions button mat-icon {
     font-size: 18px;
     width: 18px;
     height: 18px;
+    color: var(--text-secondary);
+  }
+
+  /* Larger checkboxes for mobile */
+  .select-overlay mat-checkbox {
+    transform: scale(1.1);
   }
 }
 
@@ -627,27 +643,58 @@ mat-paginator {
     font-size: 11px;
   }
 
-  /* Always show overlays on mobile for easier selection */
+  /* Always show overlays on mobile for easier interaction */
   .select-overlay {
     opacity: 1;
   }
 
-  /* Larger checkboxes for mobile */
-  .select-overlay mat-checkbox {
-    transform: scale(1.1);
-  }
-
-  /* Touch-friendly favorite button */
+  /* Always show favorite button on mobile */
   .favorite-overlay {
+    opacity: 1;
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
+  }
+
+  /* Always show info button on mobile */
+  .file-actions {
+    opacity: 1;
+  }
+
+  .file-actions button {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
 
   .file-actions button mat-icon {
     font-size: 16px;
     width: 16px;
     height: 16px;
+    color: var(--text-secondary);
+  }
+
+  /* Larger checkboxes for mobile */
+  .select-overlay mat-checkbox {
+    transform: scale(1.1);
+  }
+}
+
+/* Mobile: Always show favorite and info buttons (touch devices) */
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .favorite-overlay {
+    opacity: 1 !important;
+  }
+
+  .file-actions {
+    opacity: 1 !important;
+  }
+
+  .select-overlay {
+    opacity: 1 !important;
   }
 }
 

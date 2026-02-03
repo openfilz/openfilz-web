@@ -120,7 +120,7 @@
       [attr.aria-label]="'toolbar.managementToolbar' | translate">
       <button mat-raised-button color="primary" (click)="toggleBottomSheet()" [attr.aria-expanded]="bottomSheetOpen"
         [attr.aria-label]="'toolbar.actionsFor' | translate:{count: selectionCount}" class="mobile-actions-button">
-        <mat-icon aria-hidden="true">checklist</mat-icon>
+        <mat-icon aria-hidden="true">bolt</mat-icon>
         <span>{{ 'common.actions' | translate }}</span>
         @if(getAvailableActionsCount() > 0) {
         <span class="action-count-badge">{{ getAvailableActionsCount() }}</span>

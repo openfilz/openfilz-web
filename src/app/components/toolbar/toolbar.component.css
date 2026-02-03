@@ -679,11 +679,6 @@
     flex-shrink: 0;
   }
 
-  /* Hide breadcrumb when selection is active on mobile to prevent overlap */
-  .toolbar[data-has-selection="true"] ::ng-deep .toolbar-breadcrumb-compact {
-    display: none !important;
-  }
-
   ::ng-deep .toolbar-breadcrumb-compact .breadcrumb-home-btn,
   ::ng-deep .toolbar-breadcrumb-compact .breadcrumb-back-btn {
     min-width: 32px !important;
@@ -1209,14 +1204,55 @@
 }
 
 .mobile-actions-button {
-  min-width: 120px;
-  height: 44px;
-  border-radius: 10px;
+  min-width: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
   font-weight: 600;
-  gap: 8px;
-  padding: 0 16px;
+  gap: 0;
+  padding: 0 !important;
   font-size: 14px;
   position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.2);
+  transition: all 200ms ease;
+}
+
+/* Override Angular Material button internal layout for centering */
+.mobile-actions-button::ng-deep .mdc-button__label,
+.mobile-actions-button ::ng-deep .mdc-button__label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+.mobile-actions-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5), 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+.mobile-actions-button:active {
+  transform: scale(0.98);
+}
+
+.mobile-actions-button mat-icon {
+  font-size: 26px !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.mobile-actions-button span:not(.action-count-badge) {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
 .action-count-badge {
@@ -1417,6 +1453,64 @@
     display: flex;
     gap: 8px;
   }
+
+  /* Better mobile selection toolbar styling */
+  .toolbar[data-has-selection="true"] {
+    padding: 8px 12px;
+    justify-content: space-between;
+  }
+
+  .toolbar[data-has-selection="true"] .toolbar-left {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  /* Selection info styling for mobile */
+  .toolbar[data-has-selection="true"] .selection-info {
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .toolbar[data-has-selection="true"] .selection-info .clear-selection {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+
+  /* Mobile actions button styling */
+  .mobile-actions-button {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    padding: 0 !important;
+    border-radius: 10px !important;
+    gap: 0 !important;
+  }
+
+  .mobile-actions-button mat-icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .mobile-actions-button .action-count-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    padding: 0 5px;
+  }
+
+  /* Hide pagination row during selection */
+  .toolbar[data-has-selection="true"] ~ .toolbar-pagination,
+  .toolbar[data-has-selection="true"] .toolbar-pagination {
+    display: none !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1435,29 +1529,46 @@
     display: none;
   }
 
-  /* Keep 44px height for consistency, just make narrower */
+  /* Keep consistent button size */
   .mobile-actions-button {
-    min-width: 44px;
-    width: 44px;
-    padding: 0;
+    min-width: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
     justify-content: center;
+    border-radius: 10px !important;
   }
 
-  /* Selection info - maintain 44px height */
+  /* Selection info - compact for small screens */
   .selection-info {
-    padding: 0 12px;
-    gap: 6px;
+    height: 36px;
+    padding: 0 10px;
+    gap: 4px;
+    border-radius: 6px;
   }
 
   .selection-info span {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .clear-selection {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    min-height: 28px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+
+  .clear-selection mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Compact mobile actions button */
+  .mobile-actions-button mat-icon {
+    font-size: 22px !important;
+    width: 22px !important;
+    height: 22px !important;
   }
 
   /* Overflow menu button - match other buttons */
