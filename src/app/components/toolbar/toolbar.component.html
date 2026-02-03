@@ -189,9 +189,22 @@
     </div>
   </div>
 
-  <!-- Pagination - Mobile only (separate row) -->
+  <!-- Pagination - Mobile only (separate row with view toggle) -->
   @if(totalItems > 0) {
   <div class="toolbar-pagination mobile-only">
+    <!-- View toggle for mobile - in pagination row -->
+    <div class="view-toggle mobile-view-toggle" role="group" aria-label="View mode toggle">
+      <button mat-icon-button [class.active]="viewMode === 'grid'" (click)="viewMode !== 'grid' && toggleViewMode()"
+        [matTooltip]="'toolbar.gridView' | translate" [attr.aria-label]="'toolbar.gridView' | translate"
+        [attr.aria-pressed]="viewMode === 'grid'">
+        <mat-icon aria-hidden="true">grid_view</mat-icon>
+      </button>
+      <button mat-icon-button [class.active]="viewMode === 'list'" (click)="viewMode !== 'list' && toggleViewMode()"
+        [matTooltip]="'toolbar.listView' | translate" [attr.aria-label]="'toolbar.listView' | translate"
+        [attr.aria-pressed]="viewMode === 'list'">
+        <mat-icon aria-hidden="true">view_list</mat-icon>
+      </button>
+    </div>
     <nav class="pagination-controls" role="navigation" aria-label="Pagination">
       <span class="pagination-info" role="status" aria-live="polite">
         {{ getStartIndex() }}-{{ getEndIndex() }} {{ 'toolbar.of' | translate }} {{ totalItems }}
@@ -249,8 +262,8 @@
   @if(fabOpen) {
   <div class="fab-speed-dial" role="menu" [attr.aria-label]="'toolbar.quickActions' | translate">
     @if(showUploadButton) {
-    <div class="speed-dial-item">
-      <button mat-mini-fab class="speed-dial-btn upload-dial-btn" (click)="onUploadFilesFromFab()"
+    <div class="speed-dial-item" (click)="onUploadFilesFromFab()">
+      <button mat-mini-fab class="speed-dial-btn upload-dial-btn"
         [attr.aria-label]="'toolbar.uploadFiles' | translate" role="menuitem">
         <mat-icon aria-hidden="true">cloud_upload</mat-icon>
       </button>
@@ -259,8 +272,8 @@
     }
 
     @if(showCreateFolderButton) {
-    <div class="speed-dial-item">
-      <button mat-mini-fab class="speed-dial-btn folder-dial-btn" (click)="onCreateFolderFromFab()"
+    <div class="speed-dial-item" (click)="onCreateFolderFromFab()">
+      <button mat-mini-fab class="speed-dial-btn folder-dial-btn"
         [attr.aria-label]="'toolbar.createNewFolder' | translate" role="menuitem">
         <mat-icon aria-hidden="true">create_new_folder</mat-icon>
       </button>
@@ -269,8 +282,8 @@
     }
 
     @if(showCreateDocumentButton && onlyOfficeEnabled) {
-    <div class="speed-dial-item">
-      <button mat-mini-fab class="speed-dial-btn document-dial-btn" [matMenuTriggerFor]="newDocumentMenu"
+    <div class="speed-dial-item" [matMenuTriggerFor]="newDocumentMenu">
+      <button mat-mini-fab class="speed-dial-btn document-dial-btn"
         [attr.aria-label]="'toolbar.createNewDocument' | translate" role="menuitem" aria-haspopup="menu">
         <mat-icon aria-hidden="true">note_add</mat-icon>
       </button>

@@ -20,7 +20,8 @@
             </button>
             }
 
-            <button class="filter-button" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
+            <!-- Filter button for desktop (inside search box) -->
+            <button class="filter-button desktop-filter" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
                 [matTooltip]="'header.searchFilters' | translate"
                 [attr.aria-label]="'header.searchFilters' | translate">
                 <mat-icon aria-hidden="true">tune</mat-icon>
@@ -54,6 +55,14 @@
         </div>
     </div>
     <div class="header-right">
+        <!-- Filter button for mobile (in header-right) -->
+        <button class="filter-button mobile-filter" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
+            [attr.aria-label]="'header.searchFilters' | translate">
+            <mat-icon aria-hidden="true">tune</mat-icon>
+            @if (hasActiveFilters()) {
+            <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate"></span>
+            }
+        </button>
         <!-- Avatar with Menu -->
         <div class="avatar" [matMenuTriggerFor]="avatarMenu">{{ userInitials }}</div>
         <mat-menu #avatarMenu="matMenu" class="avatar-menu">

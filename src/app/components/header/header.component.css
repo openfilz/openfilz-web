@@ -134,6 +134,19 @@
     transition: all 200ms ease;
 }
 
+/* Desktop: show filter inside search box, hide mobile version */
+.filter-button.desktop-filter {
+    display: flex;
+}
+
+.filter-button.mobile-filter {
+    display: none;
+    position: static;
+    transform: none;
+    top: auto;
+    right: auto;
+}
+
 .filter-button:hover {
     background-color: var(--bg-tertiary);
     border-color: var(--primary);
@@ -387,14 +400,21 @@
         min-width: 0;
     }
 
+    .header-right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
     .search-box {
         margin: 0 8px;
-        min-width: 120px;
+        min-width: 100px;
         max-width: 100%;
     }
 
     .search-box input {
-        padding: 12px 82px 12px 40px;
+        padding: 12px 40px 12px 40px;
         font-size: 15px;
         border-radius: 8px;
         height: 44px;
@@ -407,17 +427,20 @@
     }
 
     .clear-search-button {
-        right: 50px;
+        right: 12px;
     }
 
-    .filter-button {
-        top: 18px;
-        left: 16px;
+    /* Hide desktop filter, show mobile filter */
+    .filter-button.desktop-filter {
+        display: none;
+    }
+
+    .filter-button.mobile-filter {
+        display: flex;
         width: 40px;
         height: 40px;
         min-width: 40px;
         min-height: 40px;
-        right: 6px;
     }
 
     .filter-button mat-icon {
@@ -447,6 +470,11 @@
     .header {
         padding: 10px 8px;
         height: 56px;
+        gap: 6px;
+    }
+
+    .header-right {
+        gap: 6px;
     }
 
     .mobile-menu-button {
@@ -463,12 +491,12 @@
     }
 
     .search-box {
-        min-width: 100px;
-        margin: 0 6px;
+        min-width: 80px;
+        margin: 0 4px;
     }
 
     .search-box input {
-        padding: 10px 72px 10px 36px;
+        padding: 10px 36px 10px 36px;
         font-size: 14px;
         height: 40px;
     }
@@ -480,7 +508,7 @@
     }
 
     .clear-search-button {
-        right: 42px;
+        right: 10px;
         width: 20px;
         height: 20px;
     }
@@ -491,24 +519,23 @@
         height: 14px;
     }
 
-    .filter-button {
-        width: 30px;
+    .filter-button.mobile-filter {
+        width: 36px;
         height: 36px;
-        min-width: 30px;
+        min-width: 36px;
         min-height: 36px;
-        left: 5px;
-    }
-
-    .avatar {
-        width: 32px;
-        height: 32px;
-        font-size: 12px;
     }
 
     .filter-button mat-icon {
         font-size: 16px;
         width: 16px;
         height: 16px;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
     }
 }
 
@@ -517,6 +544,31 @@ app-search-filters {
     top: calc(100% + 8px);
     right: 0;
     z-index: 1002;
+}
+
+/* Mobile: make search filters full-width and properly positioned */
+@media (max-width: 768px) {
+    app-search-filters {
+        position: fixed;
+        top: 60px; /* Below header */
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
+
+    app-search-filters ::ng-deep .filters-overlay {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0 0 12px 12px;
+        border-left: none;
+        border-right: none;
+    }
+}
+
+@media (max-width: 480px) {
+    app-search-filters {
+        top: 56px; /* Smaller header on very small screens */
+    }
 }
 
 /* Language Selector Styles */
