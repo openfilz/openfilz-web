@@ -280,7 +280,8 @@
             "moveItem": "Element verschieben",
             "moveItems": "{{count}} Elemente verschieben",
             "copyItem": "Element kopieren",
-            "copyItems": "{{count}} Elemente kopieren"
+            "copyItems": "{{count}} Elemente kopieren",
+            "openFolder": "Ordner öffnen"
         },
         "confirm": {},
         "partialUpload": {

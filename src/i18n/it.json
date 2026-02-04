@@ -280,7 +280,8 @@
             "moveItem": "Sposta elemento",
             "moveItems": "Sposta {{count}} elementi",
             "copyItem": "Copia elemento",
-            "copyItems": "Copia {{count}} elementi"
+            "copyItems": "Copia {{count}} elementi",
+            "openFolder": "Apri cartella"
         },
         "confirm": {},
         "partialUpload": {

@@ -280,7 +280,8 @@
             "moveItem": "نقل العنصر",
             "moveItems": "نقل {{count}} عناصر",
             "copyItem": "نسخ العنصر",
-            "copyItems": "نسخ {{count}} عناصر"
+            "copyItems": "نسخ {{count}} عناصر",
+            "openFolder": "فتح المجلد"
         },
         "confirm": {},
         "partialUpload": {

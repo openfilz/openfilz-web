@@ -280,7 +280,8 @@
             "moveItem": "Move item",
             "moveItems": "Move {{count}} items",
             "copyItem": "Copy item",
-            "copyItems": "Copy {{count}} items"
+            "copyItems": "Copy {{count}} items",
+            "openFolder": "Open folder"
         },
         "confirm": {},
         "partialUpload": {

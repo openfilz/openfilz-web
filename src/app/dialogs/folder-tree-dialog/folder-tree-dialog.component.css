@@ -204,6 +204,59 @@ mat-dialog-content {
   transform: translateY(-2px);
 }
 
+.folder-card.selected {
+  background: var(--bg-primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), 0 8px 24px rgba(99, 102, 241, 0.15);
+}
+
+.folder-card.selected::before {
+  opacity: 1;
+}
+
+.folder-card.selected .folder-icon {
+  color: var(--primary);
+  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+}
+
+.enter-folder-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  opacity: 0;
+  transition: all 200ms ease;
+  background-color: rgba(99, 102, 241, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+.enter-folder-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.folder-card:hover .enter-folder-btn,
+.folder-card.selected .enter-folder-btn {
+  opacity: 1;
+}
+
+.enter-folder-btn:hover {
+  background-color: var(--primary) !important;
+  color: white !important;
+  transform: scale(1.1);
+}
+
+/* Mobile: always show enter button */
+@media (hover: none) and (pointer: coarse) {
+  .enter-folder-btn {
+    opacity: 1;
+  }
+}
+
 .folder-icon {
   font-size: 56px;
   width: 56px;

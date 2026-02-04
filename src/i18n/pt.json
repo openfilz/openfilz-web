@@ -280,7 +280,8 @@
             "moveItem": "Mover item",
             "moveItems": "Mover {{count}} itens",
             "copyItem": "Copiar item",
-            "copyItems": "Copiar {{count}} itens"
+            "copyItems": "Copiar {{count}} itens",
+            "openFolder": "Abrir pasta"
         },
         "confirm": {},
         "partialUpload": {

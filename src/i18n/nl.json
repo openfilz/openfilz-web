@@ -280,7 +280,8 @@
             "moveItem": "Item verplaatsen",
             "moveItems": "{{count}} items verplaatsen",
             "copyItem": "Item kopiëren",
-            "copyItems": "{{count}} items kopiëren"
+            "copyItems": "{{count}} items kopiëren",
+            "openFolder": "Map openen"
         },
         "confirm": {},
         "partialUpload": {

@@ -39,9 +39,17 @@
       @else {
       <div class="folder-grid">
         @for (folder of folders; track folder.id) {
-          <div class="folder-card" (dblclick)="onFolderDoubleClick(folder)">
+          <div class="folder-card"
+               [class.selected]="selectedFolderId === folder.id"
+               (click)="onFolderClick(folder)"
+               (dblclick)="onFolderDoubleClick(folder)">
             <mat-icon class="folder-icon">folder</mat-icon>
             <span class="folder-name">{{ folder.name }}</span>
+            <button mat-icon-button class="enter-folder-btn"
+                    (click)="enterFolder(folder); $event.stopPropagation()"
+                    [attr.aria-label]="'dialogs.folderTree.openFolder' | translate">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
           </div>
         }
       </div>

@@ -45,6 +45,7 @@ export class FolderTreeDialogComponent implements OnInit {
   folders: FolderItem[] = [];
   breadcrumbs: BreadcrumbItem[] = [{ name: 'dialogs.folderTree.root' }];
   currentFolderId?: string;
+  selectedFolderId?: string;
   loading = true;
 
   totalItems = 0;
@@ -98,7 +99,16 @@ export class FolderTreeDialogComponent implements OnInit {
     });
   }
 
+  onFolderClick(folder: FolderItem) {
+    this.selectedFolderId = folder.id;
+  }
+
   onFolderDoubleClick(folder: FolderItem) {
+    this.enterFolder(folder);
+  }
+
+  enterFolder(folder: FolderItem) {
+    this.selectedFolderId = undefined;
     this.breadcrumbs.push({
       id: folder.id,
       name: folder.name
@@ -107,6 +117,7 @@ export class FolderTreeDialogComponent implements OnInit {
   }
 
   onBreadcrumbClick(index: number) {
+    this.selectedFolderId = undefined;
     this.breadcrumbs = this.breadcrumbs.slice(0, index + 1);
     const targetBreadcrumb = this.breadcrumbs[index];
     this.loadFolders(targetBreadcrumb.id, true);
@@ -140,7 +151,7 @@ export class FolderTreeDialogComponent implements OnInit {
   }
 
   onAction() {
-    this.dialogRef.close(this.currentFolderId || null);
+    this.dialogRef.close(this.selectedFolderId ?? this.currentFolderId ?? null);
   }
 
   onCancel() {
