@@ -36,7 +36,9 @@
         "key": "المفتاح",
         "value": "القيمة",
         "dropFilesHere": "اسحب الملفات هنا للرفع",
-        "view": "عرض"
+        "view": "عرض",
+        "expand": "توسيع",
+        "minimize": "تصغير"
     },
     "languages": {
         "en": "English",
@@ -502,6 +504,36 @@
         "downloadFile": "تنزيل الملف",
         "fileTooLargeTitle": "الملف كبير جداً للمعاينة",
         "fileTooLargeMessage": "هذا الملف يتجاوز الحجم الأقصى للمعاينة ({{maxSize}} ميجابايت). يرجى تنزيل الملف وفتحه على جهاز الكمبيوتر الخاص بك."
+    },
+    "upload": {
+        "title": "الرفع",
+        "uploading": "جاري الرفع",
+        "completed": "مكتمل",
+        "paused": "متوقف مؤقتاً",
+        "waiting": "في الانتظار...",
+        "complete": "مكتمل",
+        "failed": "فشل",
+        "remaining": "متبقي",
+        "pause": "إيقاف مؤقت",
+        "resume": "استئناف",
+        "cancel": "إلغاء",
+        "clearCompleted": "مسح المكتملة",
+        "totalProgress": "التقدم الكلي",
+        "reselectToResume": "أعد اختيار الملف للاستئناف",
+        "reselectFile": "أعد اختيار الملف لاستئناف الرفع",
+        "fileMismatch": "الملف المحدد لا يطابق الرفع الأصلي (الحجم المتوقع: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "حجم الرفع يتجاوز الحد الأقصى المسموح به أو تم تجاوز حصة الملفات",
+            "quotaExceeded": "تم تجاوز حصة تخزين المستخدم",
+            "parentFolderNotFound": "المجلد الأصل غير موجود",
+            "duplicateFilename": "اسم ملف مكرر في المجلد الهدف",
+            "missingHeaders": "رؤوس أو اسم ملف مطلوبة مفقودة",
+            "uploadNotFound": "الرفع غير موجود",
+            "offsetMismatch": "عدم تطابق الإزاحة - استئناف من طلب HEAD",
+            "uploadNotComplete": "الرفع غير مكتمل",
+            "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
+            "finalizeFailed": "فشل إنهاء الرفع"
+        }
     },
     "errors": {
         "loadFailed": "فشل تحميل البيانات",

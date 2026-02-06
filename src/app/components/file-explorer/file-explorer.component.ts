@@ -30,6 +30,7 @@ import { SearchService } from '../../services/search.service';
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
+import { ResumableUploadService } from '../../services/resumable-upload.service';
 
 import {
   AncestorInfo,
@@ -53,6 +54,7 @@ import { DownloadProgressComponent } from "../download-progress/download-progres
 import { AppConfig } from '../../config/app.config';
 import { DropEvent } from '../../services/drag-drop.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { TUS_THRESHOLD_BYTES } from '../../models/upload.models';
 
 @Component({
   selector: 'app-file-explorer',
@@ -246,6 +248,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private keyboardShortcuts = inject(KeyboardShortcutsService);
   private location = inject(Location);
   private onlyOfficeService = inject(OnlyOfficeService);
+  private resumableUploadService = inject(ResumableUploadService);
 
   get isOnlyOfficeEnabled(): boolean {
     return this.onlyOfficeService.isOnlyOfficeEnabled();
@@ -1397,82 +1400,122 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
   private handleFileUpload(files: FileList) {
     const fileArray = Array.from(files);
-    const isSingleFile = fileArray.length === 1;
-    const singleFileName = isSingleFile ? fileArray[0].name : undefined;
 
-    // Show uploading notification
-    const uploadMessage = isSingleFile
-      ? `Uploading ${singleFileName}...`
-      : `Uploading ${fileArray.length} files...`;
-    this.snackBar.open(uploadMessage, undefined, { duration: undefined });
+    // Separate files by size: large files use TUS, small files use regular upload
+    const largeFiles = fileArray.filter(f => f.size > TUS_THRESHOLD_BYTES);
+    const smallFiles = fileArray.filter(f => f.size <= TUS_THRESHOLD_BYTES);
 
-    // Upload files directly without dialog
-    this.documentApi.uploadMultipleDocuments(
-      fileArray,
-      this.currentFolder?.id,
-      false // allowDuplicates = false by default
-    ).subscribe({
-      next: (httpResponse) => {
-        this.snackBar.dismiss();
-        const response = httpResponse.body || [];
-        const status = httpResponse.status;
+    // Handle large files with TUS resumable uploads
+    if (largeFiles.length > 0) {
+      this.handleTusUpload(largeFiles);
+    }
 
-        // HTTP 207 Multi-Status: Partial success
-        if (status === 207) {
-          const result = this.documentApi.parseUploadResult(response);
+    // Handle small files with regular multipart upload
+    if (smallFiles.length > 0) {
+      this.handleRegularUpload(smallFiles);
+    }
+  }
 
-          // Find the last successful upload for navigation after dialog closes
-          const successfulUploads = response.filter(r => !r.errorType && r.id);
-          const lastSuccessId = successfulUploads.length > 0 ? successfulUploads[successfulUploads.length - 1].id! : null;
+  /**
+   * Handle large files using TUS resumable uploads.
+   * Shows progress in the UploadProgressComponent panel.
+   */
+  private handleTusUpload(files: File[]) {
+    const parentFolderId = this.currentFolder?.id;
 
-          // Show dialog and navigate/reload after it closes
-          this.showPartialUploadResultDialog(result).afterClosed().subscribe(() => {
-            if (lastSuccessId) {
-              this.navigateToUploadedFile(lastSuccessId, false);
-            } else {
-              this.loadFolder(this.currentFolder);
-            }
-          });
-          return;
+    files.forEach(file => {
+      this.resumableUploadService.startUpload({
+        file,
+        parentFolderId,
+        allowDuplicateFileNames: false,
+        onSuccess: (progress) => {
+          this.snackBar.open(`${file.name} uploaded successfully`, 'Close', { duration: 3000 });
+          // Navigate to the uploaded file
+          if (progress.documentId) {
+            this.navigateToUploadedFile(progress.documentId, files.length === 1);
+          }
+        },
+        onError: (progress, error) => {
+          console.error('TUS upload failed:', error);
+          // Error is shown in the upload progress panel
         }
-
-        // HTTP 200: All successful
-        const successMessage = isSingleFile
-          ? `${singleFileName} uploaded successfully`
-          : `${fileArray.length} files uploaded successfully`;
-        this.snackBar.open(successMessage, 'Close', { duration: 3000 });
-
-        // Navigate to the uploaded file
-        // For single file: focus and open metadata panel
-        // For multiple files: just navigate to the page of the last uploaded file
-        if (response.length > 0 && response[response.length - 1].id) {
-          this.navigateToUploadedFile(response[response.length - 1].id!, isSingleFile);
-        }
-      },
-      error: (error) => {
-        this.snackBar.dismiss();
-
-        // Check for 409 Conflict (duplicate file name)
-        if (error.status === 409 && isSingleFile && singleFileName) {
-          this.handleDuplicateFileUpload(fileArray[0], singleFileName);
-          return;
-        }
-
-        // HTTP 404, 409, 403, 500 with body: All uploads failed
-        if (error.error && Array.isArray(error.error)) {
-          const result = this.documentApi.parseUploadResult(error.error);
-          this.showPartialUploadResultDialog(result).afterClosed().subscribe(() => {
-            this.loadFolder(this.currentFolder);
-          });
-          return;
-        }
-
-        const errorMessage = isSingleFile
-          ? `Failed to upload ${singleFileName}`
-          : `Failed to upload ${fileArray.length} files`;
-        this.snackBar.open(errorMessage, 'Close', { duration: 5000 });
-      }
+      }).subscribe();
     });
+
+    // Show notification that uploads have started
+    const message = files.length === 1
+      ? `Starting upload of ${files[0].name}...`
+      : `Starting upload of ${files.length} large files...`;
+    this.snackBar.open(message, 'Close', { duration: 3000 });
+  }
+
+  /**
+   * Handle small files using regular multipart upload.
+   * Each file is uploaded individually and tracked in the upload-progress panel
+   * with an indeterminate progress bar.
+   */
+  private handleRegularUpload(files: File[]) {
+    const parentFolderId = this.currentFolder?.id;
+    const totalFiles = files.length;
+    let completedCount = 0;
+    let lastDocumentId: string | undefined;
+
+    files.forEach(file => {
+      const progress = this.resumableUploadService.startRegularUploadTracking(
+        file.name, file.size, parentFolderId
+      );
+
+      const subscription = this.documentApi.uploadDocument(
+        file, parentFolderId, undefined, false
+      ).subscribe({
+        next: (response) => {
+          if (response.id) {
+            lastDocumentId = response.id;
+          }
+          this.resumableUploadService.completeRegularUpload(progress.uploadId, response.id || undefined);
+          completedCount++;
+          this.onRegularUploadBatchDone(completedCount, totalFiles, lastDocumentId);
+        },
+        error: (error) => {
+          completedCount++;
+
+          // Single-file 409 — hand off to the existing replace dialog
+          if (error.status === 409 && totalFiles === 1) {
+            this.resumableUploadService.removeRegularUpload(progress.uploadId);
+            this.handleDuplicateFileUpload(file, file.name);
+            return;
+          }
+
+          if (error.status === 409) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.duplicateFilename');
+          } else if (error.status === 413) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.fileTooLarge');
+          } else if (error.status === 507) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.quotaExceeded');
+          } else {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'errors.uploadFailed');
+          }
+
+          this.onRegularUploadBatchDone(completedCount, totalFiles, lastDocumentId);
+        }
+      });
+
+      this.resumableUploadService.registerRegularUploadSubscription(progress.uploadId, subscription);
+    });
+  }
+
+  /**
+   * Called each time a regular upload finishes (success or error).
+   * When the entire batch is done, navigates to the last successful upload.
+   */
+  private onRegularUploadBatchDone(completedCount: number, totalFiles: number, lastDocumentId?: string): void {
+    if (completedCount < totalFiles) return;
+
+    if (lastDocumentId) {
+      this.navigateToUploadedFile(lastDocumentId, totalFiles === 1);
+    } else {
+      this.loadFolder(this.currentFolder);
+    }
   }
 
   private showPartialUploadResultDialog(result: import('../../models/document.models').PartialUploadResult) {

@@ -36,7 +36,9 @@
         "key": "Sleutel",
         "value": "Waarde",
         "dropFilesHere": "Sleep bestanden hierheen om te uploaden",
-        "view": "Bekijken"
+        "view": "Bekijken",
+        "expand": "Uitvouwen",
+        "minimize": "Minimaliseren"
     },
     "languages": {
         "en": "Engels",
@@ -502,6 +504,36 @@
         "downloadFile": "Bestand downloaden",
         "fileTooLargeTitle": "Bestand te groot voor voorbeeld",
         "fileTooLargeMessage": "Dit bestand overschrijdt de maximale grootte voor voorbeeld ({{maxSize}} MB). Download het bestand en open het op uw computer."
+    },
+    "upload": {
+        "title": "Uploads",
+        "uploading": "Uploaden",
+        "completed": "Voltooid",
+        "paused": "Gepauzeerd",
+        "waiting": "Wachten...",
+        "complete": "Klaar",
+        "failed": "Mislukt",
+        "remaining": "resterend",
+        "pause": "Pauzeren",
+        "resume": "Hervatten",
+        "cancel": "Annuleren",
+        "clearCompleted": "Voltooide wissen",
+        "totalProgress": "Totale voortgang",
+        "reselectToResume": "Selecteer bestand opnieuw om te hervatten",
+        "reselectFile": "Selecteer bestand opnieuw om upload te hervatten",
+        "fileMismatch": "Het geselecteerde bestand komt niet overeen met de originele upload (verwachte grootte: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "Uploadgrootte overschrijdt het maximum of bestandsquota overschreden",
+            "quotaExceeded": "Opslagquota van gebruiker overschreden",
+            "parentFolderNotFound": "Bovenliggende map niet gevonden",
+            "duplicateFilename": "Dubbele bestandsnaam in doelmap",
+            "missingHeaders": "Ontbrekende vereiste headers of bestandsnaam",
+            "uploadNotFound": "Upload niet gevonden",
+            "offsetMismatch": "Offset komt niet overeen - hervat vanaf HEAD-verzoek",
+            "uploadNotComplete": "Upload is niet voltooid",
+            "fileSizeExceedsQuota": "Bestandsgrootte overschrijdt quota",
+            "finalizeFailed": "Voltooien van upload mislukt"
+        }
     },
     "errors": {
         "loadFailed": "Laden van gegevens mislukt",

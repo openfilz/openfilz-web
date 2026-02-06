@@ -36,7 +36,9 @@
         "metadata": "Métadonnées",
         "key": "Clé",
         "value": "Valeur",
-        "dropFilesHere": "Déposez les fichiers ici pour téléverser"
+        "dropFilesHere": "Déposez les fichiers ici pour téléverser",
+        "expand": "Développer",
+        "minimize": "Réduire"
     },
     "languages": {
         "en": "English",
@@ -502,6 +504,36 @@
         "downloadFile": "Télécharger le fichier",
         "fileTooLargeTitle": "Fichier trop volumineux pour l'aperçu",
         "fileTooLargeMessage": "Ce fichier dépasse la taille maximale pour l'aperçu ({{maxSize}} Mo). Veuillez télécharger le fichier et l'ouvrir sur votre ordinateur."
+    },
+    "upload": {
+        "title": "Téléversements",
+        "uploading": "Téléversement en cours",
+        "completed": "Terminé",
+        "paused": "En pause",
+        "waiting": "En attente...",
+        "complete": "Terminé",
+        "failed": "Échec",
+        "remaining": "restant",
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "cancel": "Annuler",
+        "clearCompleted": "Effacer les éléments terminés",
+        "totalProgress": "Progression totale",
+        "reselectToResume": "Resélectionner le fichier pour reprendre",
+        "reselectFile": "Resélectionner le fichier pour reprendre le téléversement",
+        "fileMismatch": "Le fichier sélectionné ne correspond pas au téléversement original (taille attendue : {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "La taille du téléversement dépasse le maximum autorisé ou le quota de fichier est dépassé",
+            "quotaExceeded": "Quota de stockage utilisateur dépassé",
+            "parentFolderNotFound": "Dossier parent introuvable",
+            "duplicateFilename": "Nom de fichier en double dans le dossier cible",
+            "missingHeaders": "En-têtes ou nom de fichier requis manquants",
+            "uploadNotFound": "Téléversement introuvable",
+            "offsetMismatch": "Décalage incorrect - reprendre à partir de la requête HEAD",
+            "uploadNotComplete": "Le téléversement n'est pas terminé",
+            "fileSizeExceedsQuota": "La taille du fichier dépasse le quota",
+            "finalizeFailed": "Échec de la finalisation du téléversement"
+        }
     },
     "errors": {
         "loadFailed": "Échec du chargement des données",

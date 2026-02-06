@@ -1,0 +1,124 @@
+@if (isVisible) {
+  <mat-card class="upload-panel" [class.minimized]="isMinimized">
+    <!-- Header -->
+    <mat-card-header class="panel-header" (click)="toggleMinimize()">
+      <div class="header-content">
+        <mat-icon>cloud_upload</mat-icon>
+        <span class="header-title">
+          @if (activeUploads.length > 0) {
+            {{ 'upload.uploading' | translate }} ({{ activeUploads.length }})
+          } @else if (completedUploads.length > 0) {
+            {{ 'upload.completed' | translate }} ({{ completedUploads.length }})
+          } @else {
+            {{ 'upload.title' | translate }}
+          }
+        </span>
+        <span class="header-progress" *ngIf="activeUploads.length > 0">
+          {{ totalProgress.progress }}%
+        </span>
+      </div>
+      <div class="header-actions">
+        @if (completedUploads.length > 0 || failedUploads.length > 0) {
+          <button mat-icon-button
+                  (click)="clearCompleted(); $event.stopPropagation()"
+                  [matTooltip]="'upload.clearCompleted' | translate">
+            <mat-icon>clear_all</mat-icon>
+          </button>
+        }
+        <button mat-icon-button [matTooltip]="isMinimized ? ('common.expand' | translate) : ('common.minimize' | translate)">
+          <mat-icon>{{ isMinimized ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </button>
+      </div>
+    </mat-card-header>
+
+    <!-- Content (hidden when minimized) -->
+    @if (!isMinimized) {
+      <mat-card-content class="panel-content">
+        <!-- Total progress bar for multiple uploads -->
+        @if (activeUploads.length > 1) {
+          <div class="total-progress">
+            <div class="total-progress-text">
+              <span>{{ 'upload.totalProgress' | translate }}</span>
+              <span>{{ formatBytes(totalProgress.uploadedBytes) }} / {{ formatBytes(totalProgress.totalBytes) }}</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="totalProgress.progress"></mat-progress-bar>
+          </div>
+        }
+
+        <!-- Individual upload items -->
+        <div class="upload-list">
+          @for (upload of uploads; track trackByUploadId($index, upload)) {
+            <div class="upload-item" [class]="getStatusClass(upload.status)">
+              <div class="upload-info">
+                <mat-icon class="status-icon">{{ getStatusIcon(upload.status) }}</mat-icon>
+                <div class="upload-details">
+                  <span class="filename" [matTooltip]="upload.filename">{{ upload.filename }}</span>
+                  <div class="upload-meta">
+                    @if (upload.status === 'uploading') {
+                      @if (upload.regularUpload) {
+                        <span>{{ formatBytes(upload.totalSize) }} - {{ 'upload.uploading' | translate }}…</span>
+                      } @else {
+                        <span>{{ formatBytes(upload.uploadedBytes) }} / {{ formatBytes(upload.totalSize) }}</span>
+                        <span class="separator">|</span>
+                        <span>{{ formatBytes(upload.speed || 0) }}/s</span>
+                        @if (upload.eta) {
+                          <span class="separator">|</span>
+                          <span>{{ formatEta(upload.eta) }} {{ 'upload.remaining' | translate }}</span>
+                        }
+                      }
+                    } @else if (upload.status === 'paused') {
+                      @if (needsFileReselection(upload)) {
+                        <span>{{ formatBytes(upload.uploadedBytes) }} / {{ formatBytes(upload.totalSize) }} - {{ 'upload.reselectToResume' | translate }}</span>
+                      } @else {
+                        <span>{{ formatBytes(upload.uploadedBytes) }} / {{ formatBytes(upload.totalSize) }} - {{ 'upload.paused' | translate }}</span>
+                      }
+                    } @else if (upload.status === 'completed') {
+                      <span>{{ formatBytes(upload.totalSize) }} - {{ 'upload.complete' | translate }}</span>
+                    } @else if (upload.status === 'error') {
+                      <span class="error-message">{{ (upload.errorMessage || 'upload.failed') | translate }}</span>
+                    } @else if (upload.status === 'pending') {
+                      <span>{{ 'upload.waiting' | translate }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Progress bar -->
+              @if (upload.status !== 'completed' && upload.status !== 'error') {
+                <mat-progress-bar
+                  [mode]="getProgressMode(upload)"
+                  [value]="upload.progress"
+                  class="upload-progress-bar">
+                </mat-progress-bar>
+              }
+
+              <!-- Actions -->
+              <div class="upload-actions">
+                @if (upload.status === 'uploading' && !upload.regularUpload) {
+                  <button mat-icon-button
+                          (click)="pauseUpload(upload.uploadId)"
+                          [matTooltip]="'upload.pause' | translate">
+                    <mat-icon>pause</mat-icon>
+                  </button>
+                } @else if (upload.status === 'paused') {
+                  <button mat-icon-button
+                          (click)="resumeUpload(upload.uploadId)"
+                          [matTooltip]="(needsFileReselection(upload) ? 'upload.reselectFile' : 'upload.resume') | translate">
+                    <mat-icon>{{ needsFileReselection(upload) ? 'file_open' : 'play_arrow' }}</mat-icon>
+                  </button>
+                }
+                @if (upload.status !== 'completed') {
+                  <button mat-icon-button
+                          (click)="cancelUpload(upload.uploadId)"
+                          [matTooltip]="'upload.cancel' | translate">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    }
+  </mat-card>
+}

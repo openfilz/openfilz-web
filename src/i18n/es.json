@@ -36,7 +36,9 @@
         "metadata": "Metadatos",
         "key": "Clave",
         "value": "Valor",
-        "dropFilesHere": "Suelte archivos aquí para subir"
+        "dropFilesHere": "Suelte archivos aquí para subir",
+        "expand": "Expandir",
+        "minimize": "Minimizar"
     },
     "languages": {
         "en": "Inglés",
@@ -502,6 +504,36 @@
         "downloadFile": "Descargar archivo",
         "fileTooLargeTitle": "Archivo demasiado grande para vista previa",
         "fileTooLargeMessage": "Este archivo supera el tamaño máximo para vista previa ({{maxSize}} MB). Por favor, descargue el archivo y ábralo en su ordenador."
+    },
+    "upload": {
+        "title": "Subidas",
+        "uploading": "Subiendo",
+        "completed": "Completado",
+        "paused": "Pausado",
+        "waiting": "Esperando...",
+        "complete": "Completo",
+        "failed": "Fallido",
+        "remaining": "restante",
+        "pause": "Pausar",
+        "resume": "Reanudar",
+        "cancel": "Cancelar",
+        "clearCompleted": "Limpiar completados",
+        "totalProgress": "Progreso total",
+        "reselectToResume": "Vuelva a seleccionar el archivo para reanudar",
+        "reselectFile": "Vuelva a seleccionar el archivo para reanudar la subida",
+        "fileMismatch": "El archivo seleccionado no coincide con la subida original (tamaño esperado: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "El tamaño de la subida supera el máximo permitido o se ha excedido la cuota de archivos",
+            "quotaExceeded": "Cuota de almacenamiento de usuario excedida",
+            "parentFolderNotFound": "Carpeta principal no encontrada",
+            "duplicateFilename": "Nombre de archivo duplicado en la carpeta de destino",
+            "missingHeaders": "Faltan encabezados requeridos o nombre de archivo",
+            "uploadNotFound": "Subida no encontrada",
+            "offsetMismatch": "Desajuste de desplazamiento - reanudar desde solicitud HEAD",
+            "uploadNotComplete": "La subida no está completa",
+            "fileSizeExceedsQuota": "El tamaño del archivo excede la cuota",
+            "finalizeFailed": "Error al finalizar la subida"
+        }
     },
     "errors": {
         "loadFailed": "Error al cargar los datos",

@@ -36,7 +36,9 @@
         "metadata": "Metadaten",
         "key": "Schlüssel",
         "value": "Wert",
-        "dropFilesHere": "Dateien zum Hochladen hier ablegen"
+        "dropFilesHere": "Dateien zum Hochladen hier ablegen",
+        "expand": "Erweitern",
+        "minimize": "Minimieren"
     },
     "languages": {
         "en": "English",
@@ -502,6 +504,36 @@
         "downloadFile": "Datei herunterladen",
         "fileTooLargeTitle": "Datei zu groß für Vorschau",
         "fileTooLargeMessage": "Diese Datei überschreitet die maximale Größe für die Vorschau ({{maxSize}} MB). Bitte laden Sie die Datei herunter und öffnen Sie sie auf Ihrem Computer."
+    },
+    "upload": {
+        "title": "Uploads",
+        "uploading": "Hochladen",
+        "completed": "Abgeschlossen",
+        "paused": "Pausiert",
+        "waiting": "Warten...",
+        "complete": "Fertig",
+        "failed": "Fehlgeschlagen",
+        "remaining": "verbleibend",
+        "pause": "Pause",
+        "resume": "Fortsetzen",
+        "cancel": "Abbrechen",
+        "clearCompleted": "Abgeschlossene löschen",
+        "totalProgress": "Gesamtfortschritt",
+        "reselectToResume": "Datei erneut auswählen zum Fortsetzen",
+        "reselectFile": "Datei erneut auswählen, um den Upload fortzusetzen",
+        "fileMismatch": "Die ausgewählte Datei entspricht nicht dem ursprünglichen Upload (erwartete Größe: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "Upload-Größe überschreitet das Maximum oder Datei-Kontingent erschöpft",
+            "quotaExceeded": "Benutzer-Speicherkontingent überschritten",
+            "parentFolderNotFound": "Übergeordneter Ordner nicht gefunden",
+            "duplicateFilename": "Doppelter Dateiname im Zielordner",
+            "missingHeaders": "Fehlende erforderliche Header oder Dateiname",
+            "uploadNotFound": "Upload nicht gefunden",
+            "offsetMismatch": "Offset-Abweichung - ab HEAD-Anfrage fortsetzen",
+            "uploadNotComplete": "Upload ist nicht abgeschlossen",
+            "fileSizeExceedsQuota": "Dateigröße überschreitet das Kontingent",
+            "finalizeFailed": "Abschluss des Uploads fehlgeschlagen"
+        }
     },
     "errors": {
         "loadFailed": "Laden der Daten fehlgeschlagen",

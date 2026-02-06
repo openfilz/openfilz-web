@@ -36,7 +36,9 @@
         "metadata": "Metadati",
         "key": "Chiave",
         "value": "Valore",
-        "dropFilesHere": "Trascina i file qui per il caricamento"
+        "dropFilesHere": "Trascina i file qui per il caricamento",
+        "expand": "Espandi",
+        "minimize": "Minimizza"
     },
     "languages": {
         "en": "Inglese",
@@ -502,6 +504,36 @@
         "downloadFile": "Scarica File",
         "fileTooLargeTitle": "File troppo grande per l'anteprima",
         "fileTooLargeMessage": "Questo file supera la dimensione massima per l'anteprima ({{maxSize}} MB). Scarica il file e aprilo sul tuo computer."
+    },
+    "upload": {
+        "title": "Caricamenti",
+        "uploading": "Caricamento in corso",
+        "completed": "Completato",
+        "paused": "In pausa",
+        "waiting": "In attesa...",
+        "complete": "Completo",
+        "failed": "Fallito",
+        "remaining": "rimanente",
+        "pause": "Pausa",
+        "resume": "Riprendi",
+        "cancel": "Annulla",
+        "clearCompleted": "Cancella completati",
+        "totalProgress": "Progresso totale",
+        "reselectToResume": "Riseleziona il file per riprendere",
+        "reselectFile": "Riseleziona il file per riprendere il caricamento",
+        "fileMismatch": "Il file selezionato non corrisponde all'upload originale (dimensione prevista: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "La dimensione del caricamento supera il massimo consentito o la quota file è stata superata",
+            "quotaExceeded": "Quota di archiviazione utente superata",
+            "parentFolderNotFound": "Cartella principale non trovata",
+            "duplicateFilename": "Nome file duplicato nella cartella di destinazione",
+            "missingHeaders": "Intestazioni richieste o nome file mancanti",
+            "uploadNotFound": "Caricamento non trovato",
+            "offsetMismatch": "Mancata corrispondenza dell'offset - riprendi dalla richiesta HEAD",
+            "uploadNotComplete": "Il caricamento non è completo",
+            "fileSizeExceedsQuota": "La dimensione del file supera la quota",
+            "finalizeFailed": "Impossibile finalizzare il caricamento"
+        }
     },
     "errors": {
         "loadFailed": "Impossibile caricare i dati",

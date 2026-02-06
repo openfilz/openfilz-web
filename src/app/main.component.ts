@@ -9,6 +9,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { DownloadProgressComponent } from "./components/download-progress/download-progress.component";
+import { UploadProgressComponent } from "./components/upload-progress/upload-progress.component";
 import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
 import { ThemeService } from './services/theme.service';
@@ -26,6 +27,7 @@ import { ThemeService } from './services/theme.service';
     HeaderComponent,
     BreadcrumbComponent,
     DownloadProgressComponent,
+    UploadProgressComponent,
     RouterOutlet
   ],
 })

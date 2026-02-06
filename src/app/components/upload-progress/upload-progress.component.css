@@ -1,0 +1,223 @@
+.upload-panel {
+  position: fixed;
+  bottom: 55px;
+  right: 20px;
+  width: 380px;
+  max-height: 400px;
+  z-index: 1002;
+  box-shadow: var(--shadow-md);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow: hidden;
+}
+
+.upload-panel.minimized {
+  max-height: 56px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header:hover {
+  background-color: var(--bg-hover);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.header-content mat-icon {
+  color: var(--primary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.header-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.header-progress {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-left: auto;
+  margin-right: 8px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-actions button {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+}
+
+.header-actions mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.panel-content {
+  padding: 12px 16px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.total-progress {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.total-progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upload-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.upload-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.status-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.status-uploading .status-icon {
+  color: var(--primary);
+}
+
+.status-paused .status-icon {
+  color: var(--warning, #f59e0b);
+}
+
+.status-completed .status-icon {
+  color: var(--success, #10b981);
+}
+
+.status-error .status-icon {
+  color: var(--error, #ef4444);
+}
+
+.status-pending .status-icon {
+  color: var(--text-secondary);
+}
+
+.upload-details {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.filename {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upload-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.separator {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.error-message {
+  color: var(--error, #ef4444);
+}
+
+.upload-progress-bar {
+  height: 4px;
+  border-radius: 2px;
+}
+
+.upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: -4px;
+}
+
+.upload-actions button {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+}
+
+.upload-actions mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Scrollbar styling */
+.panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-tertiary, #9ca3af);
+}

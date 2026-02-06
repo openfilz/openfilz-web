@@ -36,7 +36,9 @@
         "metadata": "Metadata",
         "key": "Key",
         "value": "Value",
-        "dropFilesHere": "Drop files here to upload"
+        "dropFilesHere": "Drop files here to upload",
+        "expand": "Expand",
+        "minimize": "Minimize"
     },
     "languages": {
         "en": "English",
@@ -502,6 +504,36 @@
         "downloadFile": "Download File",
         "fileTooLargeTitle": "File Too Large for Preview",
         "fileTooLargeMessage": "This file exceeds the maximum size for preview ({{maxSize}} MB). Please download the file and open it on your computer."
+    },
+    "upload": {
+        "title": "Uploads",
+        "uploading": "Uploading",
+        "completed": "Completed",
+        "paused": "Paused",
+        "waiting": "Waiting...",
+        "complete": "Complete",
+        "failed": "Failed",
+        "remaining": "remaining",
+        "pause": "Pause",
+        "resume": "Resume",
+        "cancel": "Cancel",
+        "clearCompleted": "Clear completed",
+        "totalProgress": "Total progress",
+        "reselectToResume": "Re-select file to resume",
+        "reselectFile": "Re-select file to resume upload",
+        "fileMismatch": "Selected file does not match the original upload (expected size: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "Upload size exceeds maximum allowed or file quota exceeded",
+            "quotaExceeded": "User storage quota exceeded",
+            "parentFolderNotFound": "Parent folder not found",
+            "duplicateFilename": "Duplicate filename in target folder",
+            "missingHeaders": "Missing required headers or filename",
+            "uploadNotFound": "Upload not found",
+            "offsetMismatch": "Offset mismatch - resume from HEAD request",
+            "uploadNotComplete": "Upload is not complete",
+            "fileSizeExceedsQuota": "File size exceeds quota",
+            "finalizeFailed": "Failed to finalize upload"
+        }
     },
     "errors": {
         "loadFailed": "Failed to load data",

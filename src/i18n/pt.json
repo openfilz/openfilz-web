@@ -36,7 +36,9 @@
         "key": "Chave",
         "value": "Valor",
         "dropFilesHere": "Solte os arquivos aqui para fazer upload",
-        "view": "Visualizar"
+        "view": "Visualizar",
+        "expand": "Expandir",
+        "minimize": "Minimizar"
     },
     "languages": {
         "en": "Inglês",
@@ -502,6 +504,36 @@
         "downloadFile": "Baixar Arquivo",
         "fileTooLargeTitle": "Arquivo muito grande para pré-visualização",
         "fileTooLargeMessage": "Este arquivo excede o tamanho máximo para pré-visualização ({{maxSize}} MB). Por favor, baixe o arquivo e abra-o no seu computador."
+    },
+    "upload": {
+        "title": "Uploads",
+        "uploading": "Enviando",
+        "completed": "Concluído",
+        "paused": "Pausado",
+        "waiting": "Aguardando...",
+        "complete": "Completo",
+        "failed": "Falhou",
+        "remaining": "restante",
+        "pause": "Pausar",
+        "resume": "Retomar",
+        "cancel": "Cancelar",
+        "clearCompleted": "Limpar concluídos",
+        "totalProgress": "Progresso total",
+        "reselectToResume": "Selecione novamente o arquivo para retomar",
+        "reselectFile": "Selecione novamente o arquivo para retomar o upload",
+        "fileMismatch": "O arquivo selecionado não corresponde ao upload original (tamanho esperado: {{expectedSize}})",
+        "errors": {
+            "fileTooLarge": "O tamanho do upload excede o máximo permitido ou a cota de arquivos foi excedida",
+            "quotaExceeded": "Cota de armazenamento do usuário excedida",
+            "parentFolderNotFound": "Pasta pai não encontrada",
+            "duplicateFilename": "Nome de arquivo duplicado na pasta de destino",
+            "missingHeaders": "Cabeçalhos necessários ou nome de arquivo ausentes",
+            "uploadNotFound": "Upload não encontrado",
+            "offsetMismatch": "Deslocamento incorreto - retomar a partir da solicitação HEAD",
+            "uploadNotComplete": "O upload não está completo",
+            "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
+            "finalizeFailed": "Falha ao finalizar o upload"
+        }
     },
     "errors": {
         "loadFailed": "Falha ao carregar dados",
