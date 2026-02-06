@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subscription, from, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subscription, firstValueFrom, from, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import * as tus from 'tus-js-client';
 import {
@@ -12,6 +12,7 @@ import {
   DEFAULT_TUS_CHUNK_SIZE
 } from '../models/upload.models';
 import { environment } from '../../environments/environment';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 /**
  * Service for handling TUS (resumable) uploads.
@@ -25,6 +26,7 @@ export class ResumableUploadService {
   private readonly tusEndpoint = `${this.baseUrl}/tus`;
 
   private http = inject(HttpClient);
+  private oidcSecurityService = inject(OidcSecurityService);
 
   /** Map of active TUS uploads by uploadId */
   private uploads = new Map<string, tus.Upload>();
@@ -45,12 +47,19 @@ export class ResumableUploadService {
   }
 
   /**
-   * Get authorization headers for TUS requests.
+   * onBeforeRequest callback for tus-js-client.
+   * Fetches a fresh access token from OidcSecurityService before each HTTP
+   * request so that long-running uploads always use a valid (refreshed) token.
    */
-  private getAuthHeaders(): { [key: string]: string } {
-    const token = localStorage.getItem('token');
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  }
+  private tusOnBeforeRequest = async (req: tus.HttpRequest): Promise<void> => {
+    if (!environment.authentication.enabled) {
+      return;
+    }
+    const token = await firstValueFrom(this.oidcSecurityService.getAccessToken());
+    if (token) {
+      req.setHeader('Authorization', `Bearer ${token}`);
+    }
+  };
 
   /**
    * Fetch TUS configuration from the server.
@@ -112,7 +121,7 @@ export class ResumableUploadService {
           parentFolderId: options.parentFolderId || '',
           uploadId: uploadId
         },
-        headers: this.getAuthHeaders(),
+        onBeforeRequest: this.tusOnBeforeRequest,
 
         onError: (error) => {
           console.error('TUS upload error:', error);
@@ -253,7 +262,7 @@ export class ResumableUploadService {
         uploadUrl: progress.uploadUrl,
         chunkSize,
         retryDelays: [0, 1000, 3000, 5000, 10000],
-        headers: this.getAuthHeaders(),
+        onBeforeRequest: this.tusOnBeforeRequest,
 
         onError: (error) => {
           console.error('TUS resume error:', error);
@@ -419,9 +428,7 @@ export class ResumableUploadService {
     const uploadUrl = upload?.url || progress?.uploadUrl;
 
     if (uploadUrl) {
-      return this.http.delete<void>(uploadUrl, {
-        headers: new HttpHeaders(this.getAuthHeaders())
-      }).pipe(
+      return this.http.delete<void>(uploadUrl).pipe(
         tap(() => this.removeUpload(uploadId)),
         catchError(() => {
           this.removeUpload(uploadId);
@@ -456,8 +463,7 @@ export class ResumableUploadService {
 
     return this.http.post<TusFinalizeResponse>(
       `${this.tusEndpoint}/${serverUploadId}/finalize`,
-      request,
-      { headers: new HttpHeaders({ ...this.getAuthHeaders(), 'Content-Type': 'application/json' }) }
+      request
     ).pipe(
       map(response => {
         progress.documentId = response.id;
@@ -668,7 +674,6 @@ export class ResumableUploadService {
     if (!progress.uploadUrl) return;
 
     this.http.head(progress.uploadUrl, {
-      headers: new HttpHeaders(this.getAuthHeaders()),
       observe: 'response'
     }).subscribe({
       next: (response) => {
