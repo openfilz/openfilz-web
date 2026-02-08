@@ -324,6 +324,7 @@
         "restoreSuccess": "{{count}} elemento(s) restaurado(s) con éxito",
         "restoreSuccessSingle": "\"{{name}}\" restaurado con éxito",
         "restoreError": "Error al restaurar elementos",
+        "restoreQuotaExceeded": "Restaurar esos elementos resultaría en exceder su cuota. Debe eliminar permanentemente algunos elementos para poder restaurar los elementos seleccionados.",
         "selectToDelete": "Por favor, seleccione los elementos para eliminar permanentemente",
         "deleteConfirmMessage": "¿Está seguro de que desea eliminar permanentemente {{count}} elemento(s)?",
         "deleteConfirmItem": "¿Está seguro de que desea eliminar permanentemente \"{{name}}\"?",

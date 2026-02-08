@@ -324,6 +324,7 @@
         "restoreSuccess": "{{count}} item(s) restored successfully",
         "restoreSuccessSingle": "\"{{name}}\" restored successfully",
         "restoreError": "Failed to restore items",
+        "restoreQuotaExceeded": "Restoring those elements would result in exceeding your quota. You must delete some items permanently to be able to restore the selected elements.",
         "selectToDelete": "Please select items to permanently delete",
         "deleteConfirmMessage": "Are you sure you want to permanently delete {{count}} item(s)?",
         "deleteConfirmItem": "Are you sure you want to permanently delete \"{{name}}\"?",

@@ -324,6 +324,7 @@
         "restoreSuccess": "{{count}} Element(e) erfolgreich wiederhergestellt",
         "restoreSuccessSingle": "\"{{name}}\" erfolgreich wiederhergestellt",
         "restoreError": "Wiederherstellen der Elemente fehlgeschlagen",
+        "restoreQuotaExceeded": "Das Wiederherstellen dieser Elemente würde zu einer Überschreitung Ihres Kontingents führen. Sie müssen einige Elemente dauerhaft löschen, um die ausgewählten Elemente wiederherstellen zu können.",
         "selectToDelete": "Bitte wählen Sie die dauerhaft zu löschenden Elemente aus",
         "deleteConfirmMessage": "Sind Sie sicher, dass Sie {{count}} Element(e) dauerhaft löschen möchten?",
         "deleteConfirmItem": "Sind Sie sicher, dass Sie \"{{name}}\" dauerhaft löschen möchten?",

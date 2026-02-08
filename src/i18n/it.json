@@ -324,6 +324,7 @@
         "restoreSuccess": "{{count}} elemento/i ripristinato/i con successo",
         "restoreSuccessSingle": "\"{{name}}\" ripristinato con successo",
         "restoreError": "Impossibile ripristinare gli elementi",
+        "restoreQuotaExceeded": "Il ripristino di questi elementi comporterebbe il superamento della quota. È necessario eliminare definitivamente alcuni elementi per poter ripristinare gli elementi selezionati.",
         "selectToDelete": "Seleziona gli elementi da eliminare definitivamente",
         "deleteConfirmMessage": "Sei sicuro di voler eliminare definitivamente {{count}} elemento/i?",
         "deleteConfirmItem": "Sei sicuro di voler eliminare definitivamente \"{{name}}\"?",

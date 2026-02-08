@@ -288,7 +288,11 @@ export class RecycleBinComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error restoring items:', error);
-        this.snackBar.open(this.translate.instant('recycleBin.restoreError'), this.translate.instant('common.close'), { duration: 3000 });
+        if (error.status === 507) {
+          this.snackBar.open(this.translate.instant('recycleBin.restoreQuotaExceeded'), this.translate.instant('common.close'), { duration: 5000 });
+        } else {
+          this.snackBar.open(this.translate.instant('recycleBin.restoreError'), this.translate.instant('common.close'), { duration: 3000 });
+        }
       }
     });
   }

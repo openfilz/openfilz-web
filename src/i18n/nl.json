@@ -324,6 +324,7 @@
         "restoreSuccess": "{{count}} item(s) succesvol hersteld",
         "restoreSuccessSingle": "\"{{name}}\" succesvol hersteld",
         "restoreError": "Herstellen van items mislukt",
+        "restoreQuotaExceeded": "Het herstellen van deze elementen zou resulteren in het overschrijden van uw quota. U moet enkele items definitief verwijderen om de geselecteerde elementen te kunnen herstellen.",
         "selectToDelete": "Selecteer items om definitief te verwijderen",
         "deleteConfirmMessage": "Weet u zeker dat u {{count}} item(s) definitief wilt verwijderen?",
         "deleteConfirmItem": "Weet u zeker dat u \"{{name}}\" definitief wilt verwijderen?",
