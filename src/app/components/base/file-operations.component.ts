@@ -1,4 +1,4 @@
-import { Directive, OnInit, inject } from '@angular/core';
+import { Directive, HostListener, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyRequest, DocumentType, FileItem, MoveRequest, RenameRequest } from '../../models/document.models';
@@ -19,6 +19,8 @@ export abstract class FileOperationsComponent implements OnInit {
   isDownloading = false;
   items: FileItem[] = [];
   totalItems = 0;
+  lastSelectedIndex = -1;
+  protected shiftHeld = false;
   pageSize = AppConfig.pagination.defaultPageSize;
   pageIndex = 0;
   sortBy: string = 'name';
@@ -61,6 +63,25 @@ export abstract class FileOperationsComponent implements OnInit {
     });
   }
 
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Shift') {
+      this.shiftHeld = true;
+    }
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Shift') {
+      this.shiftHeld = false;
+    }
+  }
+
+  @HostListener('window:blur')
+  onWindowBlur() {
+    this.shiftHeld = false;
+  }
+
   get hasSelectedItems(): boolean {
     return this.items.some(item => item.selected);
   }
@@ -80,16 +101,36 @@ export abstract class FileOperationsComponent implements OnInit {
     this.reloadData();
   }
 
+  protected applySelection(item: FileItem, selected: boolean, shiftKey: boolean): void {
+    const currentIndex = this.items.indexOf(item);
+
+    if (shiftKey && this.lastSelectedIndex >= 0 && this.lastSelectedIndex < this.items.length && currentIndex >= 0) {
+      const start = Math.min(this.lastSelectedIndex, currentIndex);
+      const end = Math.max(this.lastSelectedIndex, currentIndex);
+      for (let i = start; i <= end; i++) {
+        this.items[i].selected = selected;
+      }
+    } else {
+      item.selected = selected;
+    }
+
+    if (currentIndex >= 0) {
+      this.lastSelectedIndex = currentIndex;
+    }
+  }
+
   onItemClick(item: FileItem): void {
-    item.selected = !item.selected;
+    const selected = this.shiftHeld ? true : !item.selected;
+    this.applySelection(item, selected, this.shiftHeld);
   }
 
   onSelectionChange(event: { item: FileItem, selected: boolean }): void {
-    event.item.selected = event.selected;
+    this.applySelection(event.item, event.selected, this.shiftHeld);
   }
 
   onSelectAll(selected: boolean): void {
     this.items.forEach(item => item.selected = selected);
+    this.lastSelectedIndex = -1;
   }
 
   onRenameItem(item: FileItem): void {
@@ -372,6 +413,7 @@ export abstract class FileOperationsComponent implements OnInit {
   onPreviousPage() {
     if (this.pageIndex > 0) {
       this.pageIndex--;
+      this.lastSelectedIndex = -1;
       this.loadItems();
     }
   }
@@ -380,6 +422,7 @@ export abstract class FileOperationsComponent implements OnInit {
     const totalPages = Math.ceil(this.totalItems / this.pageSize);
     if (this.pageIndex < totalPages - 1) {
       this.pageIndex++;
+      this.lastSelectedIndex = -1;
       this.loadItems();
     }
   }
@@ -388,6 +431,7 @@ export abstract class FileOperationsComponent implements OnInit {
     this.pageSize = newPageSize;
     this.userPreferencesService.setPageSize(newPageSize);
     this.pageIndex = 0;
+    this.lastSelectedIndex = -1;
     this.loadItems();
   }
 

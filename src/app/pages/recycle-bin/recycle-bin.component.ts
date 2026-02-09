@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,6 +54,10 @@ export class RecycleBinComponent implements OnInit {
   private clickTimeout: any = null;
   private readonly CLICK_DELAY = 250; // milliseconds
 
+  // Shift-select support
+  lastSelectedIndex = -1;
+  private shiftHeld = false;
+
   // Mobile FAB state
   fabOpen = false;
 
@@ -65,6 +69,25 @@ export class RecycleBinComponent implements OnInit {
   private translate = inject(TranslateService);
 
   constructor() { }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Shift') {
+      this.shiftHeld = true;
+    }
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Shift') {
+      this.shiftHeld = false;
+    }
+  }
+
+  @HostListener('window:blur')
+  onWindowBlur() {
+    this.shiftHeld = false;
+  }
 
   ngOnInit() {
     this.loadDeletedItems();
@@ -207,9 +230,13 @@ export class RecycleBinComponent implements OnInit {
       clearTimeout(this.clickTimeout);
     }
 
+    // Capture shift state now (before the timeout fires)
+    const shiftHeld = this.shiftHeld;
+
     // Delay the selection to allow double-click to be detected
     this.clickTimeout = setTimeout(() => {
-      item.selected = !item.selected;
+      const selected = shiftHeld ? true : !item.selected;
+      this.applySelection(item, selected, shiftHeld);
       this.clickTimeout = null;
     }, this.CLICK_DELAY);
   }
@@ -234,12 +261,31 @@ export class RecycleBinComponent implements OnInit {
     }
   }
 
+  private applySelection(item: FileItem, selected: boolean, shiftKey: boolean): void {
+    const currentIndex = this.items.indexOf(item);
+
+    if (shiftKey && this.lastSelectedIndex >= 0 && this.lastSelectedIndex < this.items.length && currentIndex >= 0) {
+      const start = Math.min(this.lastSelectedIndex, currentIndex);
+      const end = Math.max(this.lastSelectedIndex, currentIndex);
+      for (let i = start; i <= end; i++) {
+        this.items[i].selected = selected;
+      }
+    } else {
+      item.selected = selected;
+    }
+
+    if (currentIndex >= 0) {
+      this.lastSelectedIndex = currentIndex;
+    }
+  }
+
   onSelectionChange(event: { item: FileItem, selected: boolean }) {
-    event.item.selected = event.selected;
+    this.applySelection(event.item, event.selected, this.shiftHeld);
   }
 
   onSelectAll(selected: boolean) {
     this.items.forEach(item => item.selected = selected);
+    this.lastSelectedIndex = -1;
   }
 
   onClearSelection() {

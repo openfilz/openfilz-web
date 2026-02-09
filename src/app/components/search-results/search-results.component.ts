@@ -152,9 +152,13 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       clearTimeout(this.clickTimeout);
     }
 
+    // Capture shift state now (before the timeout fires)
+    const shiftHeld = this.shiftHeld;
+
     // Delay the selection to allow double-click to be detected
     this.clickTimeout = setTimeout(() => {
-      item.selected = !item.selected;
+      const selected = shiftHeld ? true : !item.selected;
+      this.applySelection(item, selected, shiftHeld);
       this.clickTimeout = null;
     }, this.CLICK_DELAY);
   }
