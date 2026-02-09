@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 24px 28px 20px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.02) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 5%, transparent) 0%, color-mix(in srgb, var(--primary) 2%, transparent) 100%);
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -23,8 +23,8 @@
   height: 48px;
   min-width: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .icon-wrapper mat-icon {
@@ -92,7 +92,7 @@ mat-dialog-content {
 .breadcrumb-container {
   padding: 20px 28px;
   border-bottom: 1px solid var(--border-light);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(99, 102, 241, 0.01) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 3%, transparent) 0%, color-mix(in srgb, var(--primary) 1%, transparent) 100%);
   flex-shrink: 0;
 }
 
@@ -125,14 +125,14 @@ mat-dialog-content {
 
 .breadcrumb-item:hover {
   color: var(--primary);
-  background-color: rgba(99, 102, 241, 0.08);
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
   transform: translateY(-1px);
 }
 
 .breadcrumb-item.current {
   color: var(--primary);
   cursor: default;
-  background-color: rgba(99, 102, 241, 0.12);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
   font-weight: 700;
 }
 
@@ -183,7 +183,7 @@ mat-dialog-content {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 5%, transparent) 0%, transparent 100%);
   opacity: 0;
   transition: opacity 250ms ease;
   pointer-events: none;
@@ -192,7 +192,7 @@ mat-dialog-content {
 .folder-card:hover {
   background: var(--bg-primary);
   border-color: var(--primary);
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 15%, transparent);
   transform: translateY(-4px);
 }
 
@@ -207,7 +207,7 @@ mat-dialog-content {
 .folder-card.selected {
   background: var(--bg-primary);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2), 0 8px 24px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent), 0 8px 24px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
 .folder-card.selected::before {
@@ -216,7 +216,7 @@ mat-dialog-content {
 
 .folder-card.selected .folder-icon {
   color: var(--primary);
-  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--primary) 30%, transparent));
 }
 
 .enter-folder-btn {
@@ -229,7 +229,7 @@ mat-dialog-content {
   min-height: 28px !important;
   opacity: 0;
   transition: all 200ms ease;
-  background-color: rgba(99, 102, 241, 0.1) !important;
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent) !important;
   color: var(--primary) !important;
 }
 
@@ -270,7 +270,7 @@ mat-dialog-content {
 .folder-card:hover .folder-icon {
   color: var(--primary);
   transform: scale(1.1);
-  filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+  filter: drop-shadow(0 4px 8px color-mix(in srgb, var(--primary) 30%, transparent));
 }
 
 .folder-name {
@@ -377,14 +377,14 @@ mat-dialog-content {
 }
 
 .action-btn {
-  background: linear-gradient(135deg, #6366F1 0%, #7C3AED 100%) !important;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
   color: white !important;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .action-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 
 .action-btn mat-icon {

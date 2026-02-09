@@ -106,7 +106,7 @@
 .filter-section select:focus,
 .filter-section input:focus {
   border-color: var(--primary, #6366f1);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 /* Metadata List */

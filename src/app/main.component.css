@@ -235,13 +235,13 @@
   text-align: center;
   transition: all 200ms ease-in-out;
   cursor: pointer;
-  background-color: rgba(99, 102, 241, 0.02);
+  background-color: color-mix(in srgb, var(--primary) 2%, transparent);
   margin-bottom: 40px;
 }
 
 .upload-area:hover {
   border-color: var(--primary);
-  background-color: rgba(99, 102, 241, 0.05);
+  background-color: color-mix(in srgb, var(--primary) 5%, transparent);
 }
 
 .upload-icon {
@@ -251,7 +251,7 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
   border-radius: 8px;
   color: var(--primary);
   font-size: 24px;

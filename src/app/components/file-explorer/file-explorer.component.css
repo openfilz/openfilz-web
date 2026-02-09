@@ -34,7 +34,7 @@
 }
 
 .file-explorer-content.file-over {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 8%, transparent) 0%, color-mix(in srgb, var(--primary) 3%, transparent) 100%);
 }
 
 .file-explorer-content.file-over::before {
@@ -51,7 +51,7 @@
   background-color: var(--bg-primary);
   padding: 32px 64px;
   border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--primary) 20%, transparent);
   border: 2px solid var(--primary);
   animation: pulse 2s ease-in-out infinite;
 }
@@ -78,7 +78,7 @@
 .empty-content {
   max-width: 400px;
   padding: 48px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(99, 102, 241, 0.01) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 3%, transparent) 0%, color-mix(in srgb, var(--primary) 1%, transparent) 100%);
   border-radius: 20px;
   border: 1px solid var(--border-light);
 }
@@ -88,8 +88,8 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 24px;
-  color: rgba(99, 102, 241, 0.3);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  color: color-mix(in srgb, var(--primary) 30%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 10%, transparent) 0%, color-mix(in srgb, var(--primary) 5%, transparent) 100%);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -137,7 +137,7 @@
 
 .empty-actions button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 /* Loading state */
@@ -188,7 +188,7 @@
     background-color: transparent;
   }
   25%, 75% {
-    background-color: rgba(99, 102, 241, 0.25);
+    background-color: color-mix(in srgb, var(--primary) 25%, transparent);
   }
 }
 

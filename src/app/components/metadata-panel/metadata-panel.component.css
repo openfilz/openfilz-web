@@ -507,7 +507,7 @@
 }
 
 .audit-primary .audit-icon {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
 .audit-primary .audit-icon mat-icon {

@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 24px 28px 20px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.02) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 5%, transparent) 0%, color-mix(in srgb, var(--primary) 2%, transparent) 100%);
   border-bottom: 1px solid var(--border-light);
   overflow: hidden;
 }
@@ -25,7 +25,7 @@
   min-width: 48px;
   border-radius: 12px;
   background: var(--primary);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .icon-wrapper i {
@@ -176,12 +176,12 @@
 .create-btn {
   background: var(--primary) !important;
   color: white !important;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .create-btn:hover:not([disabled]) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 
 .create-btn[disabled] {

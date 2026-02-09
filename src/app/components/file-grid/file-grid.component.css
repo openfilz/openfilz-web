@@ -40,14 +40,14 @@
 
 .file-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--primary) 15%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .file-item.selected {
   border: 2px solid var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  background-color: rgba(99, 102, 241, 0.02);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 2%, transparent);
 }
 
 .file-preview {
@@ -272,7 +272,7 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.3);
+  background: color-mix(in srgb, var(--primary) 30%, transparent);
   transform: translate(-50%, -50%);
   animation: ripple-animation 600ms ease-out;
 }
@@ -307,14 +307,14 @@
 /* Default file styling */
 .file-icon mat-icon.file-type-file {
   color: var(--primary);
-  background: rgba(99, 102, 241, 0.12);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
   width: 48px;
   height: 48px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--primary) 15%, transparent);
   transition: all 200ms ease;
 }
 
@@ -471,7 +471,7 @@ mat-paginator {
 
 .dropzone-overlay.file-over {
   display: flex;
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
   border: 2px dashed var(--primary);
   flex-direction: column;
   border-radius: 8px;
@@ -703,8 +703,8 @@ mat-paginator {
 @media (hover: hover) and (pointer: fine) {
   .file-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(99, 102, 241, 0.15);
-    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--primary) 15%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 30%, transparent);
   }
 
   .file-item:hover .select-overlay,
