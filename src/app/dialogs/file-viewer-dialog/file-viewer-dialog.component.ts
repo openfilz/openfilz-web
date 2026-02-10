@@ -209,7 +209,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
     else if (contentType.startsWith('text/') ||
       contentType === 'application/json' ||
       contentType === 'application/xml' ||
-      /\.(txt|json|xml|html|css|js|ts|java|py|md|yml|yaml|sh|bat|log)$/i.test(fileName)) {
+      /\.(txt|json|xml|html|css|js|ts|java|py|md|yml|yaml|sh|bat|log|sql)$/i.test(fileName)) {
       this.viewerMode = 'text';
     }
     // Office documents (fallback when OnlyOffice is disabled)
@@ -417,7 +417,8 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       'yml': 'yaml',
       'yaml': 'yaml',
       'sh': 'bash',
-      'bat': 'batch'
+      'bat': 'batch',
+      'sql': 'sql'
     };
 
     return languageMap[extension] || null;
