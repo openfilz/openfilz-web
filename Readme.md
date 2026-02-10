@@ -2,6 +2,8 @@
 
 The official open-source web application for [OpenFilz](https://github.com/openfilz/openfilz-core), providing a modern, Google Drive-like interface for document management. Built with **Angular 21** and **Angular Material**, it connects to the OpenFilz API via REST and GraphQL.
 
+**[Try the live demo](https://app.openfilz.org/)**
+
 ---
 
 ## Features
