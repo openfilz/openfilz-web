@@ -56,7 +56,24 @@ bootstrapApplication(App, {
         const roleService = inject(RoleService);
         const settingsService = inject(SettingsService);
 
-        const result = await oidcSecurityService.checkAuth().toPromise();
+        let result;
+        try {
+          result = await oidcSecurityService.checkAuth().toPromise();
+        } catch (error) {
+          console.error('OIDC checkAuth failed:', error);
+          result = null;
+        }
+
+        // If authentication failed but OIDC callback params are present in the URL
+        // (e.g. after a KeyCloak password change redirect), clean up the URL
+        // so the normal auth flow can start fresh
+        if (!result?.isAuthenticated) {
+          const currentUrl = new URL(window.location.href);
+          if (currentUrl.searchParams.has('code') || currentUrl.searchParams.has('state')) {
+            window.location.replace(window.location.origin);
+            return new Promise(() => {}); // Wait for redirect
+          }
+        }
 
         if (result?.isAuthenticated) {
           const hasValidRoles = await roleService.initializeRoles();
