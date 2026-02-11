@@ -215,7 +215,7 @@
         "keepEditing": "Keep editing",
         "hashCopied": "SHA256 hash copied to clipboard",
         "copyFailed": "Failed to copy to clipboard",
-        "saveSuccess": "Metadata saved successfully"
+        "saveSuccess": "Document saved successfully"
     },
     "metadataEditor": {
         "clearAll": "Clear All",

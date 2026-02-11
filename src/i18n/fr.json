@@ -215,7 +215,7 @@
         "keepEditing": "Continuer l'édition",
         "hashCopied": "Hachage SHA256 copié dans le presse-papiers",
         "copyFailed": "Échec de la copie dans le presse-papiers",
-        "saveSuccess": "Métadonnées enregistrées avec succès"
+        "saveSuccess": "Document enregistré avec succès"
     },
     "metadataEditor": {
         "clearAll": "Tout effacer",

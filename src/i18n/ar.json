@@ -215,7 +215,7 @@
         "keepEditing": "متابعة التعديل",
         "hashCopied": "تم نسخ هاش SHA256 إلى الحافظة",
         "copyFailed": "فشل النسخ إلى الحافظة",
-        "saveSuccess": "تم حفظ البيانات الوصفية بنجاح"
+        "saveSuccess": "تم حفظ المستند بنجاح"
     },
     "metadataEditor": {
         "clearAll": "مسح الكل",

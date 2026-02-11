@@ -215,7 +215,7 @@
         "keepEditing": "Blijven bewerken",
         "hashCopied": "SHA256-hash gekopieerd naar klembord",
         "copyFailed": "Kopiëren naar klembord mislukt",
-        "saveSuccess": "Metadata succesvol opgeslagen"
+        "saveSuccess": "Document succesvol opgeslagen"
     },
     "metadataEditor": {
         "clearAll": "Alles wissen",

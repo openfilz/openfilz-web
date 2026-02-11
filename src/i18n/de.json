@@ -215,7 +215,7 @@
         "keepEditing": "Bearbeitung fortsetzen",
         "hashCopied": "SHA256-Hash in die Zwischenablage kopiert",
         "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen",
-        "saveSuccess": "Metadaten erfolgreich gespeichert"
+        "saveSuccess": "Dokument erfolgreich gespeichert"
     },
     "metadataEditor": {
         "clearAll": "Alles löschen",

@@ -215,7 +215,7 @@
         "keepEditing": "Seguir editando",
         "hashCopied": "Hash SHA256 copiado al portapapeles",
         "copyFailed": "Error al copiar al portapapeles",
-        "saveSuccess": "Metadatos guardados con éxito"
+        "saveSuccess": "Documento guardado con éxito"
     },
     "metadataEditor": {
         "clearAll": "Limpiar todo",

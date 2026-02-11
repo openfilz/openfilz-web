@@ -215,7 +215,7 @@
         "keepEditing": "Continua a modificare",
         "hashCopied": "Hash SHA256 copiato negli appunti",
         "copyFailed": "Copia negli appunti fallita",
-        "saveSuccess": "Metadati salvati con successo"
+        "saveSuccess": "Documento salvato con successo"
     },
     "metadataEditor": {
         "clearAll": "Pulisci Tutto",

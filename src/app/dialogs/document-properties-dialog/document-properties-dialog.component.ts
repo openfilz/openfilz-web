@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { TranslateService } from '@ngx-translate/core';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentInfo } from '../../models/document.models';
 import { MetadataEditorComponent } from '../../components/metadata-editor/metadata-editor.component';
@@ -92,6 +93,7 @@ export class DocumentPropertiesDialogComponent implements OnInit {
   private documentApi = inject(DocumentApiService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
 
   constructor() { }
 
@@ -285,7 +287,7 @@ export class DocumentPropertiesDialogComponent implements OnInit {
 
     this.documentApi.updateDocumentMetadata(this.data.documentId, metadataToSave).subscribe({
       next: () => {
-        this.snackBar.open('Metadata saved successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.originalMetadata = { ...metadataToSave };
         this.currentMetadata = { ...metadataToSave };
         this.editMode = false;
