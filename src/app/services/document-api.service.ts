@@ -122,7 +122,7 @@ const SEARCH_DOCUMENTS_QUERY = gql`
 
 const RECENT_FILES_QUERY = gql`
   query recentFiles($request: ListFolderRequest!) {
-    listFolder(request: $request) {
+    listAllFolder(request: $request) {
       id
       type
       contentType
@@ -538,7 +538,7 @@ export class DocumentApiService {
       variables: { request }
     }).valueChanges.pipe(
       filter(result => !result.loading),
-      map(result => result.data?.listFolder ?? [])
+      map(result => result.data?.listAllFolder ?? [])
     );
   }
 
