@@ -4,6 +4,7 @@
   margin-top: 64px;
   background-color: #f9fafb;
   min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
 }
 
 .upload-drop-zone {

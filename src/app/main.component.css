@@ -1,6 +1,7 @@
 .app-layout {
   display: block;
   height: 100vh;
+  height: 100dvh;
   background-color: var(--bg-secondary);
 }
 
@@ -24,6 +25,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
   /* Full height - header */
   background-color: var(--bg-secondary);
   overflow-y: auto;
@@ -54,6 +56,7 @@
   /* Only header height */
   margin-bottom: 0;
   height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
   /* Full height minus header only */
   overflow-y: auto;
   /* Dashboard and other views scroll normally */
@@ -64,6 +67,7 @@
   margin-top: 92px;
   /* Header height (64px) + breadcrumb height (28px) */
   height: calc(100vh - 92px);
+  height: calc(100dvh - 92px);
   /* Include breadcrumb in calculation */
 }
 
@@ -136,6 +140,7 @@
     margin-top: 60px;
     /* Compact header height */
     height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
   }
 
   :host-context([dir="rtl"]) .main-content {
@@ -146,6 +151,7 @@
     margin-top: 60px;
     /* No separate breadcrumb on mobile - integrated in toolbar */
     height: calc(100vh - 60px);
+    height: calc(100dvh - 60px);
   }
 
   /* Mobile overlay for sidebar */
@@ -161,21 +167,25 @@
     margin-top: 56px;
     /* Extra compact header */
     height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
   }
 
   .main-content:not(.dashboard-content) {
     margin-top: 56px;
     /* No separate breadcrumb on mobile - integrated in toolbar */
     height: calc(100vh - 56px);
+    height: calc(100dvh - 56px);
   }
 
   .empty-state {
     height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
     padding: 0 16px;
   }
 
   .loading-container {
     height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
   }
 }
 
@@ -184,6 +194,7 @@
   justify-content: center;
   align-items: center;
   height: calc(100vh - 240px);
+  height: calc(100dvh - 240px);
   /* Adjusted for breadcrumb */
   text-align: center;
 }
@@ -218,6 +229,7 @@
   justify-content: center;
   align-items: center;
   height: calc(100vh - 240px);
+  height: calc(100dvh - 240px);
   /* Adjusted for breadcrumb */
   gap: 16px;
 }
@@ -274,6 +286,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background-color: #f5f7fa;
 }
