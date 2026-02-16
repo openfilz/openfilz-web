@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        (function() {
+            var lang = localStorage.getItem('preferredLanguage');
+            if (lang) {
+                document.documentElement.lang = lang;
+                if (lang === 'ar') document.documentElement.dir = 'rtl';
+            } else {
+                var browserLang = (navigator.language || '').split('-')[0];
+                var supported = ['en', 'fr', 'de', 'ar', 'es', 'pt', 'it', 'nl'];
+                if (supported.indexOf(browserLang) !== -1) {
+                    document.documentElement.lang = browserLang;
+                    if (browserLang === 'ar') document.documentElement.dir = 'rtl';
+                }
+            }
+        })();
+    </script>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>OpF - OpenFilz</title>
