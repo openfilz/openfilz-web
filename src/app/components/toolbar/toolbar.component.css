@@ -20,6 +20,7 @@
   gap: 14px;
   flex: 1;
   min-width: 0;
+  flex-wrap: wrap;
 }
 
 .toolbar-right {
@@ -222,6 +223,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .selection-actions button {
