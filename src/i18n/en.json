@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "This folder is empty",
-        "emptyMessage": "Drop files here or create a new folder to get started"
+        "emptyMessage": "Drop files here or create a new folder to get started",
+        "loadFolderError": "Could not load the specified folder.",
+        "navigateToFileError": "Could not navigate to the file.",
+        "loadContentsError": "Failed to load folder contents",
+        "folderCreated": "Folder created successfully",
+        "folderCreateError": "Failed to create folder",
+        "creatingDocument": "Creating document...",
+        "documentCreated": "\"{{name}}\" created successfully",
+        "documentCreateError": "Failed to create document",
+        "itemsAlreadyInFolder": "Items are already in this folder",
+        "nameConflictMaxRetries": "Name conflict detected. Maximum retry attempts ({{maxAttempts}}) reached.",
+        "uploadStartingSingle": "Starting upload of {{name}}...",
+        "uploadStartingMultiple": "Starting upload of {{count}} large files...",
+        "uploadingFile": "Uploading {{name}}...",
+        "uploadSuccess": "{{name}} uploaded successfully",
+        "uploadError": "Failed to upload {{name}}",
+        "uploadMultipleSuccess": "{{count}} file(s) uploaded successfully",
+        "replacingFile": "Replacing {{name}}...",
+        "replaceSuccess": "{{name}} replaced successfully",
+        "replaceError": "Failed to replace {{name}}"
     },
     "searchResults": {
         "title": "Search results for \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "File size exceeds quota",
             "finalizeFailed": "Failed to finalize upload"
         }
+    },
+    "operations": {
+        "renameSuccess": "Item renamed successfully",
+        "renameError": "Failed to rename item",
+        "downloadError": "Failed to download file",
+        "downloadMultipleError": "Failed to download files",
+        "moveSuccess": "Item moved successfully",
+        "moveError": "Failed to move item",
+        "moveMultipleSuccess": "Items moved successfully",
+        "moveMultipleError": "Failed to move items",
+        "copySuccess": "Item copied successfully",
+        "copyError": "Failed to copy item",
+        "copyMultipleSuccess": "Items copied successfully",
+        "copyMultipleError": "Failed to copy items",
+        "deleteSuccess": "Items deleted successfully",
+        "deleteError": "Failed to delete items",
+        "addFavoriteSuccess": "Successfully added to favorites",
+        "removeFavoriteSuccess": "Successfully removed from favorites",
+        "addFavoriteError": "Failed to add to favorites",
+        "removeFavoriteError": "Failed to remove from favorites",
+        "goToFile": "Go to file",
+        "saveMetadataError": "Failed to save metadata",
+        "loadDocumentError": "Failed to load document information"
     },
     "errors": {
         "loadFailed": "Failed to load data",

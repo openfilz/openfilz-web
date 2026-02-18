@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Ce dossier est vide",
-        "emptyMessage": "Déposez des fichiers ici ou créez un nouveau dossier pour commencer"
+        "emptyMessage": "Déposez des fichiers ici ou créez un nouveau dossier pour commencer",
+        "loadFolderError": "Impossible de charger le dossier spécifié.",
+        "navigateToFileError": "Impossible de naviguer vers le fichier.",
+        "loadContentsError": "Échec du chargement du contenu du dossier",
+        "folderCreated": "Dossier créé avec succès",
+        "folderCreateError": "Échec de la création du dossier",
+        "creatingDocument": "Création du document...",
+        "documentCreated": "\"{{name}}\" créé avec succès",
+        "documentCreateError": "Échec de la création du document",
+        "itemsAlreadyInFolder": "Les éléments sont déjà dans ce dossier",
+        "nameConflictMaxRetries": "Conflit de nom détecté. Nombre maximum de tentatives ({{maxAttempts}}) atteint.",
+        "uploadStartingSingle": "Début du téléversement de {{name}}...",
+        "uploadStartingMultiple": "Début du téléversement de {{count}} fichiers volumineux...",
+        "uploadingFile": "Téléversement de {{name}}...",
+        "uploadSuccess": "{{name}} téléversé avec succès",
+        "uploadError": "Échec du téléversement de {{name}}",
+        "uploadMultipleSuccess": "{{count}} fichier(s) téléversé(s) avec succès",
+        "replacingFile": "Remplacement de {{name}}...",
+        "replaceSuccess": "{{name}} remplacé avec succès",
+        "replaceError": "Échec du remplacement de {{name}}"
     },
     "searchResults": {
         "title": "Résultats de recherche pour \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "La taille du fichier dépasse le quota",
             "finalizeFailed": "Échec de la finalisation du téléversement"
         }
+    },
+    "operations": {
+        "renameSuccess": "Élément renommé avec succès",
+        "renameError": "Échec du renommage de l'élément",
+        "downloadError": "Échec du téléchargement du fichier",
+        "downloadMultipleError": "Échec du téléchargement des fichiers",
+        "moveSuccess": "Élément déplacé avec succès",
+        "moveError": "Échec du déplacement de l'élément",
+        "moveMultipleSuccess": "Éléments déplacés avec succès",
+        "moveMultipleError": "Échec du déplacement des éléments",
+        "copySuccess": "Élément copié avec succès",
+        "copyError": "Échec de la copie de l'élément",
+        "copyMultipleSuccess": "Éléments copiés avec succès",
+        "copyMultipleError": "Échec de la copie des éléments",
+        "deleteSuccess": "Éléments supprimés avec succès",
+        "deleteError": "Échec de la suppression des éléments",
+        "addFavoriteSuccess": "Ajouté aux favoris avec succès",
+        "removeFavoriteSuccess": "Retiré des favoris avec succès",
+        "addFavoriteError": "Échec de l'ajout aux favoris",
+        "removeFavoriteError": "Échec du retrait des favoris",
+        "goToFile": "Aller au fichier",
+        "saveMetadataError": "Échec de l'enregistrement des métadonnées",
+        "loadDocumentError": "Échec du chargement des informations du document"
     },
     "errors": {
         "loadFailed": "Échec du chargement des données",

@@ -514,7 +514,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.loadFolder(this.breadcrumbTrail[this.breadcrumbTrail.length - 1], true, false, false);
       },
       error: (err) => {
-        this.snackBar.open('Could not load the specified folder.', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadFolderError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
         this.router.navigate(['/my-folder']);
         this.loadFolder(undefined, false, false, false);
@@ -573,7 +573,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         });
       },
       error: (err) => {
-        this.snackBar.open('Could not navigate to the file.', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.navigateToFileError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
         this.router.navigate(['/my-folder']);
         this.loadFolder(undefined, false, false, false);
@@ -614,7 +614,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
           console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -676,7 +676,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
           console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -690,7 +690,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
           console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -817,11 +817,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         };
         this.documentApi.createFolder(request).subscribe({
           next: (response) => {
-            this.snackBar.open('Folder created successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.folderCreated'), this.translate.instant('common.close'), { duration: 3000 });
             this.navigateToNewFolder(response.id);
           },
           error: () => {
-            this.snackBar.open('Failed to create folder', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.folderCreateError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         });
       }
@@ -843,7 +843,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.name) {
         const documentName = result.name;
-        this.snackBar.open('Creating document...', undefined, { duration: undefined });
+        this.snackBar.open(this.translate.instant('fileExplorer.creatingDocument'), undefined, { duration: undefined });
 
         const request: CreateBlankDocumentRequest = {
           name: documentName,
@@ -854,7 +854,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.documentApi.createBlankDocument(request).subscribe({
           next: (response) => {
             this.snackBar.dismiss();
-            this.snackBar.open(`"${documentName}" created successfully`, 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.documentCreated', { name: documentName }), this.translate.instant('common.close'), { duration: 3000 });
 
             // Navigate to the new document's page and open it in the file viewer
             if (response.id) {
@@ -863,7 +863,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           },
           error: () => {
             this.snackBar.dismiss();
-            this.snackBar.open('Failed to create document', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.documentCreateError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         });
       }
@@ -920,7 +920,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
         console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -970,7 +970,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
           console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -992,11 +992,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
         renameObservable.subscribe({
           next: () => {
-            this.snackBar.open('Item renamed successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.renameSuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.loadFolder(this.currentFolder);
           },
           error: (error) => {
-            this.snackBar.open('Failed to rename item', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.renameError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         });
       }
@@ -1019,7 +1019,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.isDownloading = false;
       },
       error: (error) => {
-        this.snackBar.open('Failed to download file', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.downloadError'), this.translate.instant('common.close'), { duration: 3000 });
         this.isDownloading = false;
       }
     });
@@ -1066,10 +1066,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     this.documentApi.toggleFavorite(item.id).subscribe({
       next: () => {
         item.favorite = !item.favorite;
-        this.snackBar.open(`Successfully ${action === 'add to' ? 'added to' : 'removed from'} favorites`, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteSuccess' : 'operations.removeFavoriteSuccess'), this.translate.instant('common.close'), { duration: 3000 });
       },
       error: (error) => {
-        this.snackBar.open(`Failed to ${action} favorites`, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteError' : 'operations.removeFavoriteError'), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
   }
@@ -1095,7 +1095,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           this.isDownloading = false;
         },
         error: (error) => {
-          this.snackBar.open('Failed to download files', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.downloadMultipleError'), this.translate.instant('common.close'), { duration: 3000 });
           this.isDownloading = false;
         }
       });
@@ -1180,7 +1180,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
     moveObservable.subscribe({
       next: () => {
-        this.snackBar.open('Item moved successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.moveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.loadFolder(this.currentFolder);
       },
       error: (error: any) => {
@@ -1188,10 +1188,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           if (attempt === 1) {
             this.performMoveWithRetry(item, targetFolderId, attempt + 1, maxAttempts);
           } else {
-            this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
           }
         } else {
-          this.snackBar.open('Failed to move item', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.moveError'), this.translate.instant('common.close'), { duration: 3000 });
         }
       }
     });
@@ -1207,7 +1207,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     if (item.type === 'FOLDER') {
       this.documentApi.copyFolders(request).subscribe({
         next: () => {
-          this.snackBar.open('Item copied successfully', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.copySuccess'), this.translate.instant('common.close'), { duration: 3000 });
           this.loadFolder(this.currentFolder);
         },
         error: (error: any) => {
@@ -1215,17 +1215,17 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             if (attempt === 1) {
               this.performCopyWithRetry(item, targetFolderId, attempt + 1, maxAttempts);
             } else {
-              this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+              this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
             }
           } else {
-            this.snackBar.open('Failed to copy item', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.copyError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         }
       });
     } else {
       this.documentApi.copyFiles(request).subscribe({
         next: () => {
-          this.snackBar.open('Item copied successfully', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.copySuccess'), this.translate.instant('common.close'), { duration: 3000 });
           this.loadFolder(this.currentFolder);
         },
         error: (error: any) => {
@@ -1233,10 +1233,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             if (attempt === 1) {
               this.performCopyWithRetry(item, targetFolderId, attempt + 1, maxAttempts);
             } else {
-              this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+              this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
             }
           } else {
-            this.snackBar.open('Failed to copy item', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.copyError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         }
       });
@@ -1255,7 +1255,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     const handleCompletion = () => {
       completed++;
       if (completed === totalOperations) {
-        this.snackBar.open('Items moved successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.moveMultipleSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.reloadData();
       }
     };
@@ -1287,10 +1287,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           if (attempt === 1) {
             this.performBulkMoveWithRetry(items, targetFolderId, onComplete, type, attempt + 1, maxAttempts);
           } else {
-            this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
           }
         } else {
-          this.snackBar.open('Failed to move items', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.moveMultipleError'), this.translate.instant('common.close'), { duration: 3000 });
         }
       }
     });
@@ -1306,7 +1306,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     // Prevent moving to same location
     const currentFolderId = this.currentFolder?.id ?? null;
     if (targetFolderId === currentFolderId) {
-      this.snackBar.open('Items are already in this folder', 'Close', { duration: 3000 });
+      this.snackBar.open(this.translate.instant('fileExplorer.itemsAlreadyInFolder'), this.translate.instant('common.close'), { duration: 3000 });
       return;
     }
 
@@ -1326,7 +1326,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     const handleCompletion = () => {
       completed++;
       if (completed === totalOperations) {
-        this.snackBar.open('Items copied successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.copyMultipleSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.reloadData();
       }
     };
@@ -1355,10 +1355,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             if (attempt === 1) {
               this.performBulkCopyWithRetry(items, targetFolderId, onComplete, type, attempt + 1, maxAttempts);
             } else {
-              this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+              this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
             }
           } else {
-            this.snackBar.open('Failed to copy items', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.copyMultipleError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         }
       });
@@ -1370,10 +1370,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             if (attempt === 1) {
               this.performBulkCopyWithRetry(items, targetFolderId, onComplete, type, attempt + 1, maxAttempts);
             } else {
-              this.snackBar.open(`Name conflict detected. Maximum retry attempts (${maxAttempts}) reached.`, 'Close', { duration: 5000 });
+              this.snackBar.open(this.translate.instant('fileExplorer.nameConflictMaxRetries', { maxAttempts }), this.translate.instant('common.close'), { duration: 5000 });
             }
           } else {
-            this.snackBar.open('Failed to copy items', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.copyMultipleError'), this.translate.instant('common.close'), { duration: 3000 });
           }
         }
       });
@@ -1431,8 +1431,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           // Multiple files: show snackbar with "Go to file" action
           const fileId = lastDocumentId;
           const snackBarRef = this.snackBar.open(
-            `${successCount} file${successCount > 1 ? 's' : ''} uploaded successfully`,
-            'Go to file',
+            this.translate.instant('fileExplorer.uploadMultipleSuccess', { count: successCount }),
+            this.translate.instant('operations.goToFile'),
             { duration: 8000 }
           );
           snackBarRef.onAction().subscribe(() => {
@@ -1485,9 +1485,9 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
     // Show notification that uploads have started
     const message = files.length === 1
-      ? `Starting upload of ${files[0].name}...`
-      : `Starting upload of ${files.length} large files...`;
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+      ? this.translate.instant('fileExplorer.uploadStartingSingle', { name: files[0].name })
+      : this.translate.instant('fileExplorer.uploadStartingMultiple', { count: files.length });
+    this.snackBar.open(message, this.translate.instant('common.close'), { duration: 3000 });
   }
 
   /**
@@ -1606,7 +1606,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       },
       error: (error) => {
         console.log(error);
-        this.snackBar.open('Failed to load folder contents', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
         this.loading = false;
       }
     });
@@ -1618,7 +1618,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
     if (!existingItem) {
       // Conflict is with a deleted/inactive file - retry upload with allowDuplicateFileNames=true
-      this.snackBar.open(`Uploading ${fileName}...`, undefined, { duration: undefined });
+      this.snackBar.open(this.translate.instant('fileExplorer.uploadingFile', { name: fileName }), undefined, { duration: undefined });
       this.documentApi.uploadMultipleDocuments(
         [file],
         this.currentFolder?.id,
@@ -1627,7 +1627,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         next: (httpResponse) => {
           this.snackBar.dismiss();
           const response = httpResponse.body || [];
-          this.snackBar.open(`${fileName} uploaded successfully`, 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('fileExplorer.uploadSuccess', { name: fileName }), this.translate.instant('common.close'), { duration: 3000 });
           // Navigate to the uploaded file with focus and metadata panel
           if (response.length > 0 && response[response.length - 1].id) {
             this.navigateToUploadedFile(response[response.length - 1].id!, true);
@@ -1635,7 +1635,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         },
         error: () => {
           this.snackBar.dismiss();
-          this.snackBar.open(`Failed to upload ${fileName}`, 'Close', { duration: 5000 });
+          this.snackBar.open(this.translate.instant('fileExplorer.uploadError', { name: fileName }), this.translate.instant('common.close'), { duration: 5000 });
         }
       });
       return;
@@ -1656,18 +1656,18 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     dialogRef.afterClosed().subscribe((result: ConfirmReplaceDialogResult | null) => {
       if (result?.confirmed) {
         // User confirmed - replace the document content
-        this.snackBar.open(`Replacing ${fileName}...`, undefined, { duration: undefined });
+        this.snackBar.open(this.translate.instant('fileExplorer.replacingFile', { name: fileName }), undefined, { duration: undefined });
 
         this.documentApi.replaceDocumentContent(result.existingDocumentId, file).subscribe({
           next: () => {
             this.snackBar.dismiss();
-            this.snackBar.open(`${fileName} replaced successfully`, 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.replaceSuccess', { name: fileName }), this.translate.instant('common.close'), { duration: 3000 });
             // Navigate to the replaced file with focus and metadata panel
             this.navigateToUploadedFile(result.existingDocumentId, true);
           },
           error: (err) => {
             this.snackBar.dismiss();
-            this.snackBar.open(`Failed to replace ${fileName}`, 'Close', { duration: 5000 });
+            this.snackBar.open(this.translate.instant('fileExplorer.replaceError', { name: fileName }), this.translate.instant('common.close'), { duration: 5000 });
           }
         });
       }

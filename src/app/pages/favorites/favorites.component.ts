@@ -19,7 +19,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SearchService } from "../../services/search.service";
 import { MatDialog } from "@angular/material/dialog";
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
 
@@ -54,7 +54,7 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
   private route = inject(ActivatedRoute);
   private searchService = inject(SearchService);
   private fileIconService = inject(FileIconService);
-  private translate = inject(TranslateService);
+
 
   constructor() {
     super();

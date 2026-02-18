@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Esta pasta está vazia",
-        "emptyMessage": "Solte arquivos aqui ou crie uma nova pasta para começar"
+        "emptyMessage": "Solte arquivos aqui ou crie uma nova pasta para começar",
+        "loadFolderError": "Não foi possível carregar a pasta especificada.",
+        "navigateToFileError": "Não foi possível navegar até o arquivo.",
+        "loadContentsError": "Falha ao carregar o conteúdo da pasta",
+        "folderCreated": "Pasta criada com sucesso",
+        "folderCreateError": "Falha ao criar a pasta",
+        "creatingDocument": "Criando documento...",
+        "documentCreated": "\"{{name}}\" criado com sucesso",
+        "documentCreateError": "Falha ao criar o documento",
+        "itemsAlreadyInFolder": "Os itens já estão nesta pasta",
+        "nameConflictMaxRetries": "Conflito de nome detectado. Número máximo de tentativas ({{maxAttempts}}) atingido.",
+        "uploadStartingSingle": "Iniciando upload de {{name}}...",
+        "uploadStartingMultiple": "Iniciando upload de {{count}} arquivos grandes...",
+        "uploadingFile": "Enviando {{name}}...",
+        "uploadSuccess": "{{name}} enviado com sucesso",
+        "uploadError": "Falha ao enviar {{name}}",
+        "uploadMultipleSuccess": "{{count}} arquivo(s) enviado(s) com sucesso",
+        "replacingFile": "Substituindo {{name}}...",
+        "replaceSuccess": "{{name}} substituído com sucesso",
+        "replaceError": "Falha ao substituir {{name}}"
     },
     "searchResults": {
         "title": "Resultados da pesquisa para \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
             "finalizeFailed": "Falha ao finalizar o upload"
         }
+    },
+    "operations": {
+        "renameSuccess": "Item renomeado com sucesso",
+        "renameError": "Falha ao renomear o item",
+        "downloadError": "Falha ao baixar o arquivo",
+        "downloadMultipleError": "Falha ao baixar os arquivos",
+        "moveSuccess": "Item movido com sucesso",
+        "moveError": "Falha ao mover o item",
+        "moveMultipleSuccess": "Itens movidos com sucesso",
+        "moveMultipleError": "Falha ao mover os itens",
+        "copySuccess": "Item copiado com sucesso",
+        "copyError": "Falha ao copiar o item",
+        "copyMultipleSuccess": "Itens copiados com sucesso",
+        "copyMultipleError": "Falha ao copiar os itens",
+        "deleteSuccess": "Itens excluídos com sucesso",
+        "deleteError": "Falha ao excluir os itens",
+        "addFavoriteSuccess": "Adicionado aos favoritos com sucesso",
+        "removeFavoriteSuccess": "Removido dos favoritos com sucesso",
+        "addFavoriteError": "Falha ao adicionar aos favoritos",
+        "removeFavoriteError": "Falha ao remover dos favoritos",
+        "goToFile": "Ir para o arquivo",
+        "saveMetadataError": "Falha ao salvar os metadados",
+        "loadDocumentError": "Falha ao carregar informações do documento"
     },
     "errors": {
         "loadFailed": "Falha ao carregar dados",

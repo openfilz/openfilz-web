@@ -11,6 +11,7 @@ import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Directive()
 export abstract class FileOperationsComponent implements OnInit {
@@ -32,6 +33,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected snackBar = inject(MatSnackBar);
   protected userPreferencesService = inject(UserPreferencesService);
   protected settingsService = inject(SettingsService);
+  protected translate = inject(TranslateService);
 
   constructor() {
     const prefs = this.userPreferencesService.getPreferences();
@@ -148,10 +150,10 @@ export abstract class FileOperationsComponent implements OnInit {
 
         renameObservable.subscribe({
           next: () => {
-            this.snackBar.open('Item renamed successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.renameSuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open('Failed to rename item', 'Close', { duration: 3000 })
+          error: () => this.snackBar.open(this.translate.instant('operations.renameError'), this.translate.instant('common.close'), { duration: 3000 })
         });
       }
     });
@@ -173,7 +175,7 @@ export abstract class FileOperationsComponent implements OnInit {
         this.isDownloading = false;
       },
       error: () => {
-        this.snackBar.open('Failed to download file', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.downloadError'), this.translate.instant('common.close'), { duration: 3000 });
         this.isDownloading = false;
       }
     });
@@ -193,10 +195,10 @@ export abstract class FileOperationsComponent implements OnInit {
           : this.documentApi.moveFiles(request);
         moveObservable.subscribe({
           next: () => {
-            this.snackBar.open('Item moved successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.moveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open('Failed to move item', 'Close', { duration: 3000 })
+          error: () => this.snackBar.open(this.translate.instant('operations.moveError'), this.translate.instant('common.close'), { duration: 3000 })
         });
       }
     });
@@ -216,10 +218,10 @@ export abstract class FileOperationsComponent implements OnInit {
           : this.documentApi.copyFiles(request);
         copyObservable.subscribe({
           next: () => {
-            this.snackBar.open('Item copied successfully', 'Close', { duration: 3000 });
+            this.snackBar.open(this.translate.instant('operations.copySuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open('Failed to copy item', 'Close', { duration: 3000 })
+          error: () => this.snackBar.open(this.translate.instant('operations.copyError'), this.translate.instant('common.close'), { duration: 3000 })
         });
       }
     });
@@ -271,7 +273,7 @@ export abstract class FileOperationsComponent implements OnInit {
           this.isDownloading = false;
         },
         error: () => {
-          this.snackBar.open('Failed to download files', 'Close', { duration: 3000 });
+          this.snackBar.open(this.translate.instant('operations.downloadMultipleError'), this.translate.instant('common.close'), { duration: 3000 });
           this.isDownloading = false;
         }
       });
@@ -364,10 +366,10 @@ export abstract class FileOperationsComponent implements OnInit {
     }
     observables.forEach(obs => obs.subscribe({
       next: () => {
-        this.snackBar.open('Items deleted successfully', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.deleteSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.reloadData();
       },
-      error: () => this.snackBar.open('Failed to delete items', 'Close', { duration: 3000 })
+      error: () => this.snackBar.open(this.translate.instant('operations.deleteError'), this.translate.instant('common.close'), { duration: 3000 })
     }));
   }
 
@@ -376,10 +378,10 @@ export abstract class FileOperationsComponent implements OnInit {
     const files = itemsToMove.filter(item => item.type === 'FILE');
     const request: MoveRequest = { documentIds: [], targetFolderId: targetFolderId || undefined };
     if (folders.length > 0) {
-      this.documentApi.moveFolders({ ...request, documentIds: folders.map(f => f.id) }).subscribe(this.bulkOperationObserver('moved'));
+      this.documentApi.moveFolders({ ...request, documentIds: folders.map(f => f.id) }).subscribe(this.bulkOperationObserver('move'));
     }
     if (files.length > 0) {
-      this.documentApi.moveFiles({ ...request, documentIds: files.map(f => f.id) }).subscribe(this.bulkOperationObserver('moved'));
+      this.documentApi.moveFiles({ ...request, documentIds: files.map(f => f.id) }).subscribe(this.bulkOperationObserver('move'));
     }
   }
 
@@ -388,20 +390,22 @@ export abstract class FileOperationsComponent implements OnInit {
     const files = itemsToCopy.filter(item => item.type === 'FILE');
     const request: CopyRequest = { documentIds: [], targetFolderId: targetFolderId || undefined };
     if (folders.length > 0) {
-      this.documentApi.copyFolders({ ...request, documentIds: folders.map(f => f.id) }).subscribe(this.bulkOperationObserver('copied'));
+      this.documentApi.copyFolders({ ...request, documentIds: folders.map(f => f.id) }).subscribe(this.bulkOperationObserver('copy'));
     }
     if (files.length > 0) {
-      this.documentApi.copyFiles({ ...request, documentIds: files.map(f => f.id) }).subscribe(this.bulkOperationObserver('copied'));
+      this.documentApi.copyFiles({ ...request, documentIds: files.map(f => f.id) }).subscribe(this.bulkOperationObserver('copy'));
     }
   }
 
-  private bulkOperationObserver(action: 'moved' | 'copied') {
+  private bulkOperationObserver(action: 'move' | 'copy') {
+    const successKey = action === 'move' ? 'operations.moveMultipleSuccess' : 'operations.copyMultipleSuccess';
+    const errorKey = action === 'move' ? 'operations.moveMultipleError' : 'operations.copyMultipleError';
     return {
       next: () => {
-        this.snackBar.open(`Items ${action} successfully`, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(successKey), this.translate.instant('common.close'), { duration: 3000 });
         this.reloadData();
       },
-      error: () => this.snackBar.open(`Failed to ${action} items`, 'Close', { duration: 3000 })
+      error: () => this.snackBar.open(this.translate.instant(errorKey), this.translate.instant('common.close'), { duration: 3000 })
     };
   }
 

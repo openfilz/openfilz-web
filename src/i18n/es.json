@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Esta carpeta está vacía",
-        "emptyMessage": "Suelte archivos aquí o cree una nueva carpeta para comenzar"
+        "emptyMessage": "Suelte archivos aquí o cree una nueva carpeta para comenzar",
+        "loadFolderError": "No se pudo cargar la carpeta especificada.",
+        "navigateToFileError": "No se pudo navegar al archivo.",
+        "loadContentsError": "Error al cargar el contenido de la carpeta",
+        "folderCreated": "Carpeta creada con éxito",
+        "folderCreateError": "Error al crear la carpeta",
+        "creatingDocument": "Creando documento...",
+        "documentCreated": "\"{{name}}\" creado con éxito",
+        "documentCreateError": "Error al crear el documento",
+        "itemsAlreadyInFolder": "Los elementos ya están en esta carpeta",
+        "nameConflictMaxRetries": "Conflicto de nombre detectado. Se alcanzó el número máximo de intentos ({{maxAttempts}}).",
+        "uploadStartingSingle": "Iniciando subida de {{name}}...",
+        "uploadStartingMultiple": "Iniciando subida de {{count}} archivos grandes...",
+        "uploadingFile": "Subiendo {{name}}...",
+        "uploadSuccess": "{{name}} subido con éxito",
+        "uploadError": "Error al subir {{name}}",
+        "uploadMultipleSuccess": "{{count}} archivo(s) subido(s) con éxito",
+        "replacingFile": "Reemplazando {{name}}...",
+        "replaceSuccess": "{{name}} reemplazado con éxito",
+        "replaceError": "Error al reemplazar {{name}}"
     },
     "searchResults": {
         "title": "Resultados de búsqueda para \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "El tamaño del archivo excede la cuota",
             "finalizeFailed": "Error al finalizar la subida"
         }
+    },
+    "operations": {
+        "renameSuccess": "Elemento renombrado con éxito",
+        "renameError": "Error al renombrar el elemento",
+        "downloadError": "Error al descargar el archivo",
+        "downloadMultipleError": "Error al descargar los archivos",
+        "moveSuccess": "Elemento movido con éxito",
+        "moveError": "Error al mover el elemento",
+        "moveMultipleSuccess": "Elementos movidos con éxito",
+        "moveMultipleError": "Error al mover los elementos",
+        "copySuccess": "Elemento copiado con éxito",
+        "copyError": "Error al copiar el elemento",
+        "copyMultipleSuccess": "Elementos copiados con éxito",
+        "copyMultipleError": "Error al copiar los elementos",
+        "deleteSuccess": "Elementos eliminados con éxito",
+        "deleteError": "Error al eliminar los elementos",
+        "addFavoriteSuccess": "Añadido a favoritos con éxito",
+        "removeFavoriteSuccess": "Eliminado de favoritos con éxito",
+        "addFavoriteError": "Error al añadir a favoritos",
+        "removeFavoriteError": "Error al eliminar de favoritos",
+        "goToFile": "Ir al archivo",
+        "saveMetadataError": "Error al guardar los metadatos",
+        "loadDocumentError": "Error al cargar la información del documento"
     },
     "errors": {
         "loadFailed": "Error al cargar los datos",

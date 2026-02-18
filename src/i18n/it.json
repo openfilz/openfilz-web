@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Questa cartella è vuota",
-        "emptyMessage": "Trascina i file qui o crea una nuova cartella per iniziare"
+        "emptyMessage": "Trascina i file qui o crea una nuova cartella per iniziare",
+        "loadFolderError": "Impossibile caricare la cartella specificata.",
+        "navigateToFileError": "Impossibile navigare al file.",
+        "loadContentsError": "Impossibile caricare il contenuto della cartella",
+        "folderCreated": "Cartella creata con successo",
+        "folderCreateError": "Impossibile creare la cartella",
+        "creatingDocument": "Creazione documento...",
+        "documentCreated": "\"{{name}}\" creato con successo",
+        "documentCreateError": "Impossibile creare il documento",
+        "itemsAlreadyInFolder": "Gli elementi sono già in questa cartella",
+        "nameConflictMaxRetries": "Conflitto di nome rilevato. Numero massimo di tentativi ({{maxAttempts}}) raggiunto.",
+        "uploadStartingSingle": "Avvio caricamento di {{name}}...",
+        "uploadStartingMultiple": "Avvio caricamento di {{count}} file di grandi dimensioni...",
+        "uploadingFile": "Caricamento di {{name}}...",
+        "uploadSuccess": "{{name}} caricato con successo",
+        "uploadError": "Impossibile caricare {{name}}",
+        "uploadMultipleSuccess": "{{count}} file caricato/i con successo",
+        "replacingFile": "Sostituzione di {{name}}...",
+        "replaceSuccess": "{{name}} sostituito con successo",
+        "replaceError": "Impossibile sostituire {{name}}"
     },
     "searchResults": {
         "title": "Risultati della ricerca per \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "La dimensione del file supera la quota",
             "finalizeFailed": "Impossibile finalizzare il caricamento"
         }
+    },
+    "operations": {
+        "renameSuccess": "Elemento rinominato con successo",
+        "renameError": "Impossibile rinominare l'elemento",
+        "downloadError": "Impossibile scaricare il file",
+        "downloadMultipleError": "Impossibile scaricare i file",
+        "moveSuccess": "Elemento spostato con successo",
+        "moveError": "Impossibile spostare l'elemento",
+        "moveMultipleSuccess": "Elementi spostati con successo",
+        "moveMultipleError": "Impossibile spostare gli elementi",
+        "copySuccess": "Elemento copiato con successo",
+        "copyError": "Impossibile copiare l'elemento",
+        "copyMultipleSuccess": "Elementi copiati con successo",
+        "copyMultipleError": "Impossibile copiare gli elementi",
+        "deleteSuccess": "Elementi eliminati con successo",
+        "deleteError": "Impossibile eliminare gli elementi",
+        "addFavoriteSuccess": "Aggiunto ai preferiti con successo",
+        "removeFavoriteSuccess": "Rimosso dai preferiti con successo",
+        "addFavoriteError": "Impossibile aggiungere ai preferiti",
+        "removeFavoriteError": "Impossibile rimuovere dai preferiti",
+        "goToFile": "Vai al file",
+        "saveMetadataError": "Impossibile salvare i metadati",
+        "loadDocumentError": "Impossibile caricare le informazioni del documento"
     },
     "errors": {
         "loadFailed": "Impossibile caricare i dati",

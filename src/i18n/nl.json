@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Deze map is leeg",
-        "emptyMessage": "Sleep bestanden hierheen of maak een nieuwe map om aan de slag te gaan"
+        "emptyMessage": "Sleep bestanden hierheen of maak een nieuwe map om aan de slag te gaan",
+        "loadFolderError": "De opgegeven map kon niet worden geladen.",
+        "navigateToFileError": "Kon niet naar het bestand navigeren.",
+        "loadContentsError": "Laden van mapinhoud mislukt",
+        "folderCreated": "Map succesvol aangemaakt",
+        "folderCreateError": "Aanmaken van map mislukt",
+        "creatingDocument": "Document aanmaken...",
+        "documentCreated": "\"{{name}}\" succesvol aangemaakt",
+        "documentCreateError": "Aanmaken van document mislukt",
+        "itemsAlreadyInFolder": "Items bevinden zich al in deze map",
+        "nameConflictMaxRetries": "Naamconflict gedetecteerd. Maximaal aantal pogingen ({{maxAttempts}}) bereikt.",
+        "uploadStartingSingle": "Upload van {{name}} starten...",
+        "uploadStartingMultiple": "Upload van {{count}} grote bestanden starten...",
+        "uploadingFile": "{{name}} uploaden...",
+        "uploadSuccess": "{{name}} succesvol geüpload",
+        "uploadError": "Uploaden van {{name}} mislukt",
+        "uploadMultipleSuccess": "{{count}} bestand(en) succesvol geüpload",
+        "replacingFile": "{{name}} vervangen...",
+        "replaceSuccess": "{{name}} succesvol vervangen",
+        "replaceError": "Vervangen van {{name}} mislukt"
     },
     "searchResults": {
         "title": "Zoekresultaten voor \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "Bestandsgrootte overschrijdt quota",
             "finalizeFailed": "Voltooien van upload mislukt"
         }
+    },
+    "operations": {
+        "renameSuccess": "Item succesvol hernoemd",
+        "renameError": "Hernoemen van item mislukt",
+        "downloadError": "Downloaden van bestand mislukt",
+        "downloadMultipleError": "Downloaden van bestanden mislukt",
+        "moveSuccess": "Item succesvol verplaatst",
+        "moveError": "Verplaatsen van item mislukt",
+        "moveMultipleSuccess": "Items succesvol verplaatst",
+        "moveMultipleError": "Verplaatsen van items mislukt",
+        "copySuccess": "Item succesvol gekopieerd",
+        "copyError": "Kopiëren van item mislukt",
+        "copyMultipleSuccess": "Items succesvol gekopieerd",
+        "copyMultipleError": "Kopiëren van items mislukt",
+        "deleteSuccess": "Items succesvol verwijderd",
+        "deleteError": "Verwijderen van items mislukt",
+        "addFavoriteSuccess": "Succesvol toegevoegd aan favorieten",
+        "removeFavoriteSuccess": "Succesvol verwijderd uit favorieten",
+        "addFavoriteError": "Toevoegen aan favorieten mislukt",
+        "removeFavoriteError": "Verwijderen uit favorieten mislukt",
+        "goToFile": "Ga naar bestand",
+        "saveMetadataError": "Opslaan van metadata mislukt",
+        "loadDocumentError": "Laden van documentinformatie mislukt"
     },
     "errors": {
         "loadFailed": "Laden van gegevens mislukt",

@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "Dieser Ordner ist leer",
-        "emptyMessage": "Dateien hier ablegen oder einen neuen Ordner erstellen, um zu beginnen"
+        "emptyMessage": "Dateien hier ablegen oder einen neuen Ordner erstellen, um zu beginnen",
+        "loadFolderError": "Der angegebene Ordner konnte nicht geladen werden.",
+        "navigateToFileError": "Zur Datei konnte nicht navigiert werden.",
+        "loadContentsError": "Ordnerinhalt konnte nicht geladen werden",
+        "folderCreated": "Ordner erfolgreich erstellt",
+        "folderCreateError": "Ordner konnte nicht erstellt werden",
+        "creatingDocument": "Dokument wird erstellt...",
+        "documentCreated": "\"{{name}}\" erfolgreich erstellt",
+        "documentCreateError": "Dokument konnte nicht erstellt werden",
+        "itemsAlreadyInFolder": "Elemente befinden sich bereits in diesem Ordner",
+        "nameConflictMaxRetries": "Namenskonflikt erkannt. Maximale Versuche ({{maxAttempts}}) erreicht.",
+        "uploadStartingSingle": "Upload von {{name}} wird gestartet...",
+        "uploadStartingMultiple": "Upload von {{count}} großen Dateien wird gestartet...",
+        "uploadingFile": "{{name}} wird hochgeladen...",
+        "uploadSuccess": "{{name}} erfolgreich hochgeladen",
+        "uploadError": "{{name}} konnte nicht hochgeladen werden",
+        "uploadMultipleSuccess": "{{count}} Datei(en) erfolgreich hochgeladen",
+        "replacingFile": "{{name}} wird ersetzt...",
+        "replaceSuccess": "{{name}} erfolgreich ersetzt",
+        "replaceError": "{{name}} konnte nicht ersetzt werden"
     },
     "searchResults": {
         "title": "Suchergebnisse für \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "Dateigröße überschreitet das Kontingent",
             "finalizeFailed": "Abschluss des Uploads fehlgeschlagen"
         }
+    },
+    "operations": {
+        "renameSuccess": "Element erfolgreich umbenannt",
+        "renameError": "Element konnte nicht umbenannt werden",
+        "downloadError": "Datei konnte nicht heruntergeladen werden",
+        "downloadMultipleError": "Dateien konnten nicht heruntergeladen werden",
+        "moveSuccess": "Element erfolgreich verschoben",
+        "moveError": "Element konnte nicht verschoben werden",
+        "moveMultipleSuccess": "Elemente erfolgreich verschoben",
+        "moveMultipleError": "Elemente konnten nicht verschoben werden",
+        "copySuccess": "Element erfolgreich kopiert",
+        "copyError": "Element konnte nicht kopiert werden",
+        "copyMultipleSuccess": "Elemente erfolgreich kopiert",
+        "copyMultipleError": "Elemente konnten nicht kopiert werden",
+        "deleteSuccess": "Elemente erfolgreich gelöscht",
+        "deleteError": "Elemente konnten nicht gelöscht werden",
+        "addFavoriteSuccess": "Erfolgreich zu Favoriten hinzugefügt",
+        "removeFavoriteSuccess": "Erfolgreich aus Favoriten entfernt",
+        "addFavoriteError": "Fehler beim Hinzufügen zu Favoriten",
+        "removeFavoriteError": "Fehler beim Entfernen aus Favoriten",
+        "goToFile": "Zur Datei gehen",
+        "saveMetadataError": "Metadaten konnten nicht gespeichert werden",
+        "loadDocumentError": "Dokumentinformationen konnten nicht geladen werden"
     },
     "errors": {
         "loadFailed": "Laden der Daten fehlgeschlagen",

@@ -5,7 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { SearchService } from '../../services/search.service';
 import { DocumentApiService } from '../../services/document-api.service';
@@ -138,10 +138,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     this.documentApi.toggleFavorite(item.id).subscribe({
       next: () => {
         item.favorite = !item.favorite;
-        this.snackBar.open(`Successfully ${action === 'add to' ? 'added to' : 'removed from'} favorites`, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteSuccess' : 'operations.removeFavoriteSuccess'), this.translate.instant('common.close'), { duration: 3000 });
       },
       error: () => {
-        this.snackBar.open(`Failed to ${action} favorites`, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteError' : 'operations.removeFavoriteError'), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
   }

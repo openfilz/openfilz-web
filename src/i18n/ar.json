@@ -138,7 +138,26 @@
     },
     "fileExplorer": {
         "emptyTitle": "هذا المجلد فارغ",
-        "emptyMessage": "قم بسحب الملفات هنا أو إنشاء مجلد جديد للبدء"
+        "emptyMessage": "قم بسحب الملفات هنا أو إنشاء مجلد جديد للبدء",
+        "loadFolderError": "تعذر تحميل المجلد المحدد.",
+        "navigateToFileError": "تعذر الانتقال إلى الملف.",
+        "loadContentsError": "فشل تحميل محتويات المجلد",
+        "folderCreated": "تم إنشاء المجلد بنجاح",
+        "folderCreateError": "فشل إنشاء المجلد",
+        "creatingDocument": "جاري إنشاء المستند...",
+        "documentCreated": "تم إنشاء \"{{name}}\" بنجاح",
+        "documentCreateError": "فشل إنشاء المستند",
+        "itemsAlreadyInFolder": "العناصر موجودة بالفعل في هذا المجلد",
+        "nameConflictMaxRetries": "تم اكتشاف تعارض في الاسم. تم الوصول إلى الحد الأقصى لعدد المحاولات ({{maxAttempts}}).",
+        "uploadStartingSingle": "بدء رفع {{name}}...",
+        "uploadStartingMultiple": "بدء رفع {{count}} ملفات كبيرة...",
+        "uploadingFile": "جاري رفع {{name}}...",
+        "uploadSuccess": "تم رفع {{name}} بنجاح",
+        "uploadError": "فشل رفع {{name}}",
+        "uploadMultipleSuccess": "تم رفع {{count}} ملف(ات) بنجاح",
+        "replacingFile": "جاري استبدال {{name}}...",
+        "replaceSuccess": "تم استبدال {{name}} بنجاح",
+        "replaceError": "فشل استبدال {{name}}"
     },
     "searchResults": {
         "title": "نتائج البحث عن \"{{query}}\"",
@@ -535,6 +554,29 @@
             "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
             "finalizeFailed": "فشل إنهاء الرفع"
         }
+    },
+    "operations": {
+        "renameSuccess": "تمت إعادة تسمية العنصر بنجاح",
+        "renameError": "فشل إعادة تسمية العنصر",
+        "downloadError": "فشل تنزيل الملف",
+        "downloadMultipleError": "فشل تنزيل الملفات",
+        "moveSuccess": "تم نقل العنصر بنجاح",
+        "moveError": "فشل نقل العنصر",
+        "moveMultipleSuccess": "تم نقل العناصر بنجاح",
+        "moveMultipleError": "فشل نقل العناصر",
+        "copySuccess": "تم نسخ العنصر بنجاح",
+        "copyError": "فشل نسخ العنصر",
+        "copyMultipleSuccess": "تم نسخ العناصر بنجاح",
+        "copyMultipleError": "فشل نسخ العناصر",
+        "deleteSuccess": "تم حذف العناصر بنجاح",
+        "deleteError": "فشل حذف العناصر",
+        "addFavoriteSuccess": "تمت الإضافة إلى المفضلة بنجاح",
+        "removeFavoriteSuccess": "تمت الإزالة من المفضلة بنجاح",
+        "addFavoriteError": "فشل الإضافة إلى المفضلة",
+        "removeFavoriteError": "فشل الإزالة من المفضلة",
+        "goToFile": "الذهاب إلى الملف",
+        "saveMetadataError": "فشل حفظ البيانات الوصفية",
+        "loadDocumentError": "فشل تحميل معلومات المستند"
     },
     "errors": {
         "loadFailed": "فشل تحميل البيانات",

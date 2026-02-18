@@ -115,9 +115,9 @@ export class DocumentPropertiesDialogComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load document information';
+        this.error = 'operations.loadDocumentError';
         this.loading = false;
-        this.snackBar.open(this.error, 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant(this.error), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
   }
@@ -250,9 +250,9 @@ export class DocumentPropertiesDialogComponent implements OnInit {
     const hash = this.sha256Hash;
     if (hash) {
       navigator.clipboard.writeText(hash).then(() => {
-        this.snackBar.open('SHA256 hash copied to clipboard', 'Close', { duration: 2000 });
+        this.snackBar.open(this.translate.instant('metadataPanel.hashCopied'), this.translate.instant('common.close'), { duration: 2000 });
       }).catch(() => {
-        this.snackBar.open('Failed to copy to clipboard', 'Close', { duration: 2000 });
+        this.snackBar.open(this.translate.instant('metadataPanel.copyFailed'), this.translate.instant('common.close'), { duration: 2000 });
       });
     }
   }
@@ -299,7 +299,7 @@ export class DocumentPropertiesDialogComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.snackBar.open('Failed to save metadata', 'Close', { duration: 3000 });
+        this.snackBar.open(this.translate.instant('operations.saveMetadataError'), this.translate.instant('common.close'), { duration: 3000 });
         this.saving = false;
       }
     });
@@ -329,12 +329,12 @@ export class DocumentPropertiesDialogComponent implements OnInit {
   onClose() {
     if (this.editMode && this.hasChanges) {
       const dialogData: ConfirmDialogData = {
-        title: 'Unsaved Changes',
-        message: 'You have unsaved changes. Are you sure you want to close?',
-        details: 'Your changes will be lost if you close without saving.',
+        title: 'metadataPanel.unsavedChangesTitle',
+        message: 'metadataPanel.unsavedChangesMessage',
+        details: 'metadataPanel.unsavedChangesDetails',
         type: 'warning',
-        confirmText: 'Discard Changes',
-        cancelText: 'Keep Editing',
+        confirmText: 'metadataPanel.discardChanges',
+        cancelText: 'metadataPanel.keepEditing',
         icon: 'edit_off'
       };
       const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
