@@ -1409,14 +1409,55 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     const largeFiles = fileArray.filter(f => f.size > TUS_THRESHOLD_BYTES);
     const smallFiles = fileArray.filter(f => f.size <= TUS_THRESHOLD_BYTES);
 
+    // Unified batch tracking: position endpoint is called only after the very last upload completes
+    const totalFiles = fileArray.length;
+    let completedCount = 0;
+    let successCount = 0;
+    let lastDocumentId: string | undefined;
+
+    const onFileUploadDone = (documentId?: string) => {
+      if (documentId) {
+        lastDocumentId = documentId;
+        successCount++;
+      }
+      completedCount++;
+      if (completedCount < totalFiles) return;
+
+      if (lastDocumentId) {
+        if (totalFiles === 1) {
+          // Single file: auto-redirect to the uploaded file with focus and metadata panel
+          this.navigateToUploadedFile(lastDocumentId, true);
+        } else {
+          // Multiple files: show snackbar with "Go to file" action
+          const fileId = lastDocumentId;
+          const snackBarRef = this.snackBar.open(
+            `${successCount} file${successCount > 1 ? 's' : ''} uploaded successfully`,
+            'Go to file',
+            { duration: 8000 }
+          );
+          snackBarRef.onAction().subscribe(() => {
+            this.navigateToUploadedFile(fileId, false);
+          });
+          snackBarRef.afterDismissed().subscribe(info => {
+            if (!info.dismissedByAction) {
+              // User didn't click "Go to file" — reload current folder to show new files
+              this.loadFolder(this.currentFolder);
+            }
+          });
+        }
+      } else {
+        this.loadFolder(this.currentFolder);
+      }
+    };
+
     // Handle large files with TUS resumable uploads
     if (largeFiles.length > 0) {
-      this.handleTusUpload(largeFiles);
+      this.handleTusUpload(largeFiles, onFileUploadDone);
     }
 
     // Handle small files with regular multipart upload
     if (smallFiles.length > 0) {
-      this.handleRegularUpload(smallFiles);
+      this.handleRegularUpload(smallFiles, totalFiles, onFileUploadDone);
     }
   }
 
@@ -1424,7 +1465,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
    * Handle large files using TUS resumable uploads.
    * Shows progress in the UploadProgressComponent panel.
    */
-  private handleTusUpload(files: File[]) {
+  private handleTusUpload(files: File[], onFileUploadDone: (documentId?: string) => void) {
     const parentFolderId = this.currentFolder?.id;
 
     files.forEach(file => {
@@ -1433,15 +1474,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         parentFolderId,
         allowDuplicateFileNames: false,
         onSuccess: (progress) => {
-          this.snackBar.open(`${file.name} uploaded successfully`, 'Close', { duration: 3000 });
-          // Navigate to the uploaded file
-          if (progress.documentId) {
-            this.navigateToUploadedFile(progress.documentId, files.length === 1);
-          }
+          onFileUploadDone(progress.documentId);
         },
         onError: (progress, error) => {
           console.error('TUS upload failed:', error);
-          // Error is shown in the upload progress panel
+          onFileUploadDone();
         }
       }).subscribe();
     });
@@ -1458,11 +1495,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
    * Each file is uploaded individually and tracked in the upload-progress panel
    * with an indeterminate progress bar.
    */
-  private handleRegularUpload(files: File[]) {
+  private handleRegularUpload(files: File[], totalBatchFiles: number, onFileUploadDone: (documentId?: string) => void) {
     const parentFolderId = this.currentFolder?.id;
-    const totalFiles = files.length;
-    let completedCount = 0;
-    let lastDocumentId: string | undefined;
 
     files.forEach(file => {
       const progress = this.resumableUploadService.startRegularUploadTracking(
@@ -1473,18 +1507,12 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         file, parentFolderId, undefined, false
       ).subscribe({
         next: (response) => {
-          if (response.id) {
-            lastDocumentId = response.id;
-          }
           this.resumableUploadService.completeRegularUpload(progress.uploadId, response.id || undefined);
-          completedCount++;
-          this.onRegularUploadBatchDone(completedCount, totalFiles, lastDocumentId);
+          onFileUploadDone(response.id || undefined);
         },
         error: (error) => {
-          completedCount++;
-
           // Single-file 409 — hand off to the existing replace dialog
-          if (error.status === 409 && totalFiles === 1) {
+          if (error.status === 409 && totalBatchFiles === 1) {
             this.resumableUploadService.removeRegularUpload(progress.uploadId);
             this.handleDuplicateFileUpload(file, file.name);
             return;
@@ -1500,26 +1528,12 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             this.resumableUploadService.failRegularUpload(progress.uploadId, 'errors.uploadFailed');
           }
 
-          this.onRegularUploadBatchDone(completedCount, totalFiles, lastDocumentId);
+          onFileUploadDone();
         }
       });
 
       this.resumableUploadService.registerRegularUploadSubscription(progress.uploadId, subscription);
     });
-  }
-
-  /**
-   * Called each time a regular upload finishes (success or error).
-   * When the entire batch is done, navigates to the last successful upload.
-   */
-  private onRegularUploadBatchDone(completedCount: number, totalFiles: number, lastDocumentId?: string): void {
-    if (completedCount < totalFiles) return;
-
-    if (lastDocumentId) {
-      this.navigateToUploadedFile(lastDocumentId, totalFiles === 1);
-    } else {
-      this.loadFolder(this.currentFolder);
-    }
   }
 
   private showPartialUploadResultDialog(result: import('../../models/document.models').PartialUploadResult) {
@@ -1540,7 +1554,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
    * For single file upload: focus on the file and open metadata panel.
    * For multiple files upload: just navigate to the page without focus/panel.
    */
-  private navigateToUploadedFile(fileId: string, focusAndOpenPanel: boolean): void {
+  private navigateToUploadedFile(fileId: string, focusElement: boolean): void {
     this.loading = true;
 
     // Get the document position to find the correct page
@@ -1552,7 +1566,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.totalItems = position.totalItems;
 
         // Load the page and optionally focus the file
-        this.loadItemsAfterUpload(fileId, focusAndOpenPanel);
+        this.loadItemsAfterUpload(fileId, focusElement);
       },
       error: () => {
         // Fallback: just reload the current folder
@@ -1564,7 +1578,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   /**
    * Load items after upload and optionally focus on the uploaded file.
    */
-  private loadItemsAfterUpload(targetFileId: string, focusAndOpenPanel: boolean): void {
+  private loadItemsAfterUpload(targetFileId: string, focusElement: boolean): void {
     this.documentApi.listFolder(
       this.currentFolder?.id,
       this.pageIndex + 1,
@@ -1576,7 +1590,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       next: (response: ElementInfo[]) => {
         this.populateFolderContents(response);
 
-        if (focusAndOpenPanel) {
+        if (focusElement) {
           // Find and focus the target file (single file upload)
           const targetIndex = this.items.findIndex(item => item.id === targetFileId);
           if (targetIndex !== -1) {
