@@ -351,6 +351,10 @@ export class DashboardComponent implements OnInit {
     return file.contentType || ''; 
   }
 
+  navigateToMyFolder() {
+    this.router.navigate(['/my-folder']);
+  }
+
   onGoToFile(file: RecentFile) {
     // Navigate to file explorer with targetFileId
     this.router.navigate(['/my-folder'], { queryParams: { targetFileId: file.id } });

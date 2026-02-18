@@ -26,7 +26,7 @@
 
   <!-- Storage Overview Card -->
   <article class="dashboard-card storage-card" role="region" [attr.aria-label]="'dashboard.storage' | translate">
-    <header class="card-header">
+    <header class="card-header clickable" (click)="navigateToMyFolder()">
       <div class="card-icon-wrapper">
         <mat-icon class="card-icon" aria-hidden="true">cloud_queue</mat-icon>
       </div>
@@ -78,7 +78,7 @@
 
   <!-- File Statistics Card -->
   <article class="dashboard-card stats-card" role="region" [attr.aria-label]="'dashboard.yourFiles' | translate">
-    <header class="card-header">
+    <header class="card-header clickable" (click)="navigateToMyFolder()">
       <div class="card-icon-wrapper">
         <mat-icon class="card-icon" aria-hidden="true">folder_open</mat-icon>
       </div>

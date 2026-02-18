@@ -87,6 +87,18 @@
   flex-shrink: 0;
 }
 
+.card-header.clickable {
+  cursor: pointer;
+}
+
+.card-header.clickable:hover .card-icon-wrapper {
+  opacity: 0.85;
+}
+
+.card-header.clickable:hover .card-title {
+  text-decoration: none;
+}
+
 .card-icon-wrapper {
   width: 44px;
   height: 44px;
