@@ -1,14 +1,8 @@
 <div class="file-viewer-dialog">
   <!-- Toolbar -->
   <mat-toolbar class="viewer-toolbar">
-    <div class="toolbar-left">
-      <button mat-icon-button (click)="onClose()" [matTooltip]="'common.close' | translate">
-        <mat-icon>close</mat-icon>
-      </button>
-      <span class="file-name">{{ data.fileName }}</span>
-    </div>
-
     <div class="toolbar-center">
+      <span class="file-name">{{ data.fileName }}</span>
       <!-- Page Navigation (PDF only) -->
       @if (showPageNavigation) {
       <div class="page-navigation">
@@ -70,6 +64,11 @@
       <button mat-icon-button (click)="toggleFullscreen()"
         [matTooltip]="(isFullscreen ? 'fileViewer.exitFullscreen' : 'fileViewer.fullscreen') | translate">
         <mat-icon>{{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+      </button>
+
+      <!-- Close -->
+      <button mat-icon-button (click)="onClose()" [matTooltip]="'common.close' | translate">
+        <mat-icon>close</mat-icon>
       </button>
     </div>
   </mat-toolbar>
