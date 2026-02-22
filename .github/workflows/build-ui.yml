@@ -1,27 +1,117 @@
-name: Build & Push Docker image
+name: Create Release for the UI
 
 on:
-  push:
-    branches: ["main"]
+  pull_request:
+    branches: [ "main" ]
+    types:
+      - closed
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
-  docker:
+  release:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - run: echo "Starting release process..."
 
-      - uses: actions/setup-node@v3
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.RELEASE_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build the application
+
+      - name: Configure Git Credentials
         run: |
-          npm install
-          npm run build openfilz-ui -- --configuration production
+          git config --global user.name "release-bot[bot]"
+          git config --global user.email "release-bot[bot]@users.noreply.github.com"
+          git config --global credential.helper store
+          echo "https://x-access-token:${{ steps.app-token.outputs.token }}@github.com" > ~/.git-credentials
+
+      - name: Extract current version
+        id: project
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Remove SNAPSHOT suffix
+        id: version
+        run: echo "base=$(echo '${{ steps.project.outputs.version }}' | sed 's/-SNAPSHOT$//')" >> $GITHUB_OUTPUT
+
+      - name: Determine bump type
+        id: bump
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.bump }}" >> $GITHUB_OUTPUT
+          elif echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q 'release:major'; then
+            echo "type=major" >> $GITHUB_OUTPUT
+          elif echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q 'release:minor'; then
+            echo "type=minor" >> $GITHUB_OUTPUT
+          else
+            echo "type=patch" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compute release versions
+        id: versions
+        run: |
+          CURRENT="${{ steps.version.outputs.base }}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          BUMP="${{ steps.bump.outputs.type }}"
+
+          case "$BUMP" in
+            major)
+              RELEASE_VERSION="$((MAJOR + 1)).0.0"
+              DEV_VERSION="$((MAJOR + 1)).0.1-SNAPSHOT"
+              ;;
+            minor)
+              RELEASE_VERSION="${MAJOR}.$((MINOR + 1)).0"
+              DEV_VERSION="${MAJOR}.$((MINOR + 1)).1-SNAPSHOT"
+              ;;
+            patch)
+              RELEASE_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+              DEV_VERSION="${MAJOR}.${MINOR}.$((PATCH + 1))-SNAPSHOT"
+              ;;
+          esac
+
+          echo "releaseVersion=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+          echo "developmentVersion=$DEV_VERSION" >> $GITHUB_OUTPUT
+          echo "Release: $RELEASE_VERSION, Next dev: $DEV_VERSION (bump=$BUMP)"
+
+      - name: Set release version
+        run: npm version ${{ steps.versions.outputs.releaseVersion }} --no-git-tag-version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the application
+        run: npm run build openfilz-ui -- --configuration production
+
+      - name: Commit and tag release
+        run: |
+          git add package.json package-lock.json
+          git commit -m "release: v${{ steps.versions.outputs.releaseVersion }}"
+          git tag "v${{ steps.versions.outputs.releaseVersion }}"
 
       - name: Login to GHCR
         run: |
@@ -29,8 +119,47 @@ jobs:
             -u ${{ github.actor }} \
             -p ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image
-        run: docker build -t ghcr.io/openfilz/openfilz-web:latest .
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            -t ghcr.io/openfilz/openfilz-web:${{ steps.versions.outputs.releaseVersion }} \
+            -t ghcr.io/openfilz/openfilz-web:latest \
+            .
+          docker push ghcr.io/openfilz/openfilz-web:${{ steps.versions.outputs.releaseVersion }}
+          docker push ghcr.io/openfilz/openfilz-web:latest
 
-      - name: Push image
-        run: docker push ghcr.io/openfilz/openfilz-web:latest
+      - name: Set next development version
+        run: npm version ${{ steps.versions.outputs.developmentVersion }} --no-git-tag-version
+
+      - name: Commit next development version
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore: prepare for next development iteration ${{ steps.versions.outputs.developmentVersion }}"
+
+      - name: Push commits and tag
+        run: |
+          git push origin main
+          git push origin "v${{ steps.versions.outputs.releaseVersion }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versions.outputs.releaseVersion }}
+          name: Release v${{ steps.versions.outputs.releaseVersion }}
+          generate_release_notes: true
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge main -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: develop
+          github_token: ${{ steps.app-token.outputs.token }}
+
+      - name: Cleanup credentials
+        if: always()
+        run: |
+          rm -f ~/.git-credentials
+          git config --global --unset credential.helper || true
