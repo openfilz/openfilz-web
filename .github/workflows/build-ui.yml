@@ -109,7 +109,7 @@ jobs:
 
       - name: Commit and tag release
         run: |
-          git add package.json package-lock.json
+          git add package.json
           git commit -m "release: v${{ steps.versions.outputs.releaseVersion }}"
           git tag "v${{ steps.versions.outputs.releaseVersion }}"
 
@@ -133,7 +133,7 @@ jobs:
 
       - name: Commit next development version
         run: |
-          git add package.json package-lock.json
+          git add package.json
           git commit -m "chore: prepare for next development iteration ${{ steps.versions.outputs.developmentVersion }}"
 
       - name: Push commits and tag
