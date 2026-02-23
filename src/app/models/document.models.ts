@@ -265,3 +265,34 @@ export interface DocumentPosition {
   position: number;
   totalItems: number;
 }
+
+/** Content types that support thumbnail generation (mirrors backend ThumbnailProperties). */
+export const THUMBNAIL_SUPPORTED_CONTENT_TYPES = new Set([
+  // Images
+  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/tiff',
+  // PDF
+  'application/pdf',
+  // Microsoft Office
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  // OpenDocument
+  'application/vnd.oasis.opendocument.text',
+  'application/vnd.oasis.opendocument.spreadsheet',
+  'application/vnd.oasis.opendocument.presentation',
+  // Text-like application types
+  'application/json', 'application/javascript', 'application/x-javascript',
+  'application/typescript', 'application/xml', 'application/xhtml+xml',
+  'application/yaml', 'application/x-yaml', 'application/x-sh',
+  'application/x-shellscript', 'application/sql', 'application/x-sql',
+  'application/graphql',
+]);
+
+/** Check if a content type supports thumbnail generation. */
+export function isThumbnailSupported(contentType?: string): boolean {
+  if (!contentType) return false;
+  return contentType.startsWith('text/') || THUMBNAIL_SUPPORTED_CONTENT_TYPES.has(contentType);
+}
