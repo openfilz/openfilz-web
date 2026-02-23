@@ -1,7 +1,9 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, interval, Subscription } from 'rxjs';
+import { take, takeWhile } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -46,7 +48,8 @@ import {
   DeleteRequest,
   SearchFilters,
   DocumentTemplateType,
-  CreateBlankDocumentRequest
+  CreateBlankDocumentRequest,
+  isThumbnailSupported
 } from '../../models/document.models';
 
 import { DragDropDirective } from "../../directives/drag-drop.directive";
@@ -55,6 +58,7 @@ import { AppConfig } from '../../config/app.config';
 import { DropEvent } from '../../services/drag-drop.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { TUS_THRESHOLD_BYTES } from '../../models/upload.models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-file-explorer',
@@ -240,7 +244,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   private shortcutsSubscription?: Subscription;
+  private uploadedDocumentIds = new Set<string>();
+  private thumbnailPollSubscription?: Subscription;
 
+  private http = inject(HttpClient);
   private fileIconService = inject(FileIconService);
   private breadcrumbService = inject(BreadcrumbService);
   private route = inject(ActivatedRoute);
@@ -278,6 +285,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     if (this.shortcutsSubscription) {
       this.shortcutsSubscription.unsubscribe();
     }
+    this.thumbnailPollSubscription?.unsubscribe();
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -705,6 +713,49 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     this.showUploadZone = this.items.length === 0;
     this.loading = false;
     this.updateBreadcrumbs();
+    this.pollThumbnailsForUploadedFiles();
+  }
+
+  /**
+   * For freshly uploaded files that don't have a thumbnail yet (backend generates
+   * them asynchronously), poll the thumbnail endpoint until available.
+   * Only polls for content types known to support thumbnail generation.
+   */
+  private pollThumbnailsForUploadedFiles(): void {
+    this.thumbnailPollSubscription?.unsubscribe();
+
+    if (this.uploadedDocumentIds.size === 0) return;
+
+    // Find items matching uploaded IDs that need thumbnail polling (current page only)
+    const itemsToRetry = this.items.filter(item =>
+      this.uploadedDocumentIds.has(item.id) &&
+      item.type === DocumentType.FILE &&
+      !item.thumbnailUrl &&
+      isThumbnailSupported(item.contentType)
+    );
+
+    // Only remove IDs visible on this page; keep others for subsequent page navigations
+    for (const item of this.items) {
+      this.uploadedDocumentIds.delete(item.id);
+    }
+
+    if (itemsToRetry.length === 0) return;
+
+    const thumbnailBaseUrl = `${environment.apiURL}/thumbnails/img`;
+
+    this.thumbnailPollSubscription = interval(1000).pipe(
+      take(10),
+      takeWhile(() => itemsToRetry.some(item => !item.thumbnailUrl))
+    ).subscribe(() => {
+      for (const item of itemsToRetry) {
+        if (item.thumbnailUrl) continue;
+        const url = `${thumbnailBaseUrl}/${item.id}`;
+        this.http.head(url, { observe: 'response' }).subscribe({
+          next: () => { item.thumbnailUrl = url; },
+          error: () => { /* Thumbnail not ready yet, will retry */ }
+        });
+      }
+    });
   }
 
   private updateBreadcrumbs() {
@@ -1415,13 +1466,18 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     let successCount = 0;
     let lastDocumentId: string | undefined;
 
+    const uploadedIds: string[] = [];
     const onFileUploadDone = (documentId?: string) => {
       if (documentId) {
         lastDocumentId = documentId;
+        uploadedIds.push(documentId);
         successCount++;
       }
       completedCount++;
       if (completedCount < totalFiles) return;
+
+      // Store uploaded IDs for thumbnail polling after folder reload
+      uploadedIds.forEach(id => this.uploadedDocumentIds.add(id));
 
       if (lastDocumentId) {
         if (totalFiles === 1) {
