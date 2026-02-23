@@ -201,12 +201,6 @@ export class FileListComponent {
         event.preventDefault();
         this.moveFocusUp();
         break;
-      case 'Enter':
-        event.preventDefault();
-        if (this.items[this.focusedIndex]) {
-          this.onItemDoubleClick(this.items[this.focusedIndex]);
-        }
-        break;
       case ' ':
         event.preventDefault();
         if (this.items[this.focusedIndex]) {
