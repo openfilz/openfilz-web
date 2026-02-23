@@ -1428,7 +1428,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           // Single file: auto-redirect to the uploaded file with focus and metadata panel
           this.navigateToUploadedFile(lastDocumentId, true);
         } else {
-          // Multiple files: show snackbar with "Go to file" action
+          // Multiple files: reload folder immediately, then show snackbar with "Go to file" action
+          this.loadFolder(this.currentFolder);
           const fileId = lastDocumentId;
           const snackBarRef = this.snackBar.open(
             this.translate.instant('fileExplorer.uploadMultipleSuccess', { count: successCount }),
@@ -1437,12 +1438,6 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           );
           snackBarRef.onAction().subscribe(() => {
             this.navigateToUploadedFile(fileId, false);
-          });
-          snackBarRef.afterDismissed().subscribe(info => {
-            if (!info.dismissedByAction) {
-              // User didn't click "Go to file" — reload current folder to show new files
-              this.loadFolder(this.currentFolder);
-            }
           });
         }
       } else {
