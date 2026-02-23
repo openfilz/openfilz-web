@@ -242,6 +242,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private queryParamsSubscription?: Subscription;
 
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild(FileListComponent) fileListComponent?: FileListComponent;
+  @ViewChild(FileGridComponent) fileGridComponent?: FileGridComponent;
 
   private shortcutsSubscription?: Subscription;
   private uploadedDocumentIds = new Set<string>();
@@ -286,6 +288,40 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       this.shortcutsSubscription.unsubscribe();
     }
     this.thumbnailPollSubscription?.unsubscribe();
+  }
+
+  @HostListener('keydown', ['$event'])
+  onEnterKey(event: KeyboardEvent): void {
+    if (event.key !== 'Enter') return;
+
+    const target = event.target as HTMLElement;
+    const tagName = target.tagName.toLowerCase();
+    // Allow Enter from checkboxes and table rows, but not from text inputs or textareas
+    if ((tagName === 'input' && (target as HTMLInputElement).type !== 'checkbox') ||
+        tagName === 'textarea' || target.isContentEditable) {
+      return;
+    }
+
+    // Case 1: One item is selected (checkbox checked) → open it
+    if (this.selectedItems.length === 1) {
+      event.preventDefault();
+      this.onOpenSelected();
+      return;
+    }
+
+    // Case 2: No selection but an item has keyboard focus → open the focused item
+    if (this.selectedItems.length === 0) {
+      let focusedItem: FileItem | undefined;
+      if (this.viewMode === 'list' && this.fileListComponent) {
+        focusedItem = this.items[this.fileListComponent.focusedIndex];
+      } else if (this.viewMode === 'grid' && this.fileGridComponent) {
+        focusedItem = this.items[this.fileGridComponent.focusedIndex];
+      }
+      if (focusedItem) {
+        event.preventDefault();
+        this.onItemDoubleClick(focusedItem);
+      }
+    }
   }
 
   @HostListener('window:popstate', ['$event'])
@@ -645,6 +681,19 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           top: Math.max(0, scrollTop),
           behavior: 'smooth'
         });
+
+        // Set real DOM focus so keyboard events (Enter) work
+        element.focus();
+
+        // Sync the child component's focusedIndex
+        const itemIndex = this.items.findIndex(item => item.id === fileId);
+        if (itemIndex !== -1) {
+          if (this.viewMode === 'list' && this.fileListComponent) {
+            this.fileListComponent.focusedIndex = itemIndex;
+          } else if (this.viewMode === 'grid' && this.fileGridComponent) {
+            this.fileGridComponent.focusedIndex = itemIndex;
+          }
+        }
 
         element.classList.add('highlighted');
 
