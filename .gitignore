@@ -22,6 +22,10 @@
 # TypeScript cache
 *.tsbuildinfo
 
+# IDE - IntelliJ / WebStorm
+/.idea/
+*.iml
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
