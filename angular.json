@@ -43,7 +43,6 @@
               "runtime": true
             },
             "assets": [
-              "src/favicon.ico",
               {
                 "glob": "**/*",
                 "input": "src/i18n",
@@ -53,7 +52,8 @@
                 "glob": "**/*",
                 "input": "node_modules/monaco-editor/min/vs",
                 "output": "/assets/monaco/min/vs"
-              }
+              },
+              "src/assets"
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -63,8 +63,8 @@
             ],
             "scripts": [],
             "styles": [
-              "src/custom-theme.scss",
-              "src/global_styles.css"
+              "src/assets/styles/custom-theme.scss",
+              "src/assets/styles/global_styles.css"
             ],
             "tsConfig": "tsconfig.app.json"
           }
