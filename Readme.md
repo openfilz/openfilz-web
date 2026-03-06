@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="src/assets/images/logos/openfilz-theme-standard.svg" alt="OpenFilz Logo" width="120" />
+</p>
+
 # OpenFilz Web UI
 
 The official open-source web application for [OpenFilz](https://github.com/openfilz/openfilz-core), providing a modern, Google Drive-like interface for document management. Built with **Angular 21** and **Angular Material**, it connects to the OpenFilz API via REST and GraphQL.

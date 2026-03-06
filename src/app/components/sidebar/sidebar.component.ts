@@ -8,6 +8,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../services/settings.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,7 +21,7 @@ import { SettingsService } from '../../services/settings.service';
     MatListModule,
     MatTooltipModule,
     TranslatePipe
-],
+  ],
 })
 export class SidebarComponent implements OnInit {
   isCollapsed = false;
@@ -28,6 +29,9 @@ export class SidebarComponent implements OnInit {
   @Output() collapsedChange = new EventEmitter<boolean>();
   @Output() logout = new EventEmitter<void>();
   @Output() mobileMenuClose = new EventEmitter<void>();
+
+  private themeService = inject(ThemeService);
+  currentLogoUrl: string = 'assets/images/logos/openfilz-theme-standard.svg';
 
   private allNavigationItems = [
     { id: 'dashboard', labelKey: 'sidebar.dashboard', active: true, route: '/dashboard' },
@@ -61,6 +65,12 @@ export class SidebarComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.updateActiveState(event.urlAfterRedirects);
+    });
+
+    // Subscribe to theme changes
+    this.themeService.currentTheme$.subscribe((theme: any) => {
+      const logoName = (theme.name === 'light' || theme.name === 'dark') ? 'standard' : theme.name;
+      this.currentLogoUrl = `assets/images/logos/openfilz-theme-${logoName}.svg`;
     });
   }
 

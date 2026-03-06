@@ -27,7 +27,7 @@
 }
 
 .sidebar-header {
-  padding: 16px;
+  padding: 11.5px 8px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   flex-direction: row;
@@ -37,14 +37,14 @@
 }
 
 .sidebar.collapsed .sidebar-header {
-  padding: 16px 8px;
+  padding: 11.5px 8px;
   justify-content: center;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
   min-width: 0;
 }
@@ -54,17 +54,13 @@
 }
 
 .logo {
-  width: 32px;
-  height: 32px;
-  background: var(--primary);
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .logo-text {
@@ -119,6 +115,10 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn-floating mat-icon {
+  overflow: unset !important;
 }
 
 :host-context([dir="rtl"]) .toggle-btn-floating {
