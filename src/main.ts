@@ -73,6 +73,23 @@ bootstrapApplication(App, {
             window.location.replace(window.location.origin);
             return new Promise(() => {}); // Wait for redirect
           }
+
+            // If login_hint is present in the URL (e.g. from sharing invitation email),
+            // immediately redirect to Keycloak with it so the login page can show
+            // the invited user experience. This must happen here (before routing)
+            // to ensure the hint is not lost during Angular's navigation lifecycle.
+            // We use urlHandler to append login_hint to the authorize URL built by
+            // the OIDC library (which includes state, nonce, PKCE code_challenge).
+            const loginHint = currentUrl.searchParams.get('login_hint');
+            if (loginHint) {
+                oidcSecurityService.authorize(undefined, {
+                    urlHandler: (url: string) => {
+                        const separator = url.includes('?') ? '&' : '?';
+                        window.location.href = url + separator + 'login_hint=' + encodeURIComponent(loginHint);
+                    }
+                });
+                return new Promise(() => {}); // Wait for redirect
+            }
         }
 
         if (result?.isAuthenticated) {
