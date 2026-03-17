@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Tablero",
+        "overview": "Resumen",
         "storage": "Almacenamiento",
         "ofUsed": "de {{total}} usados",
         "used": "usados",

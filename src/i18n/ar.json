@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "لوحة القيادة",
+        "overview": "نظرة عامة",
         "storage": "التخزين",
         "ofUsed": "من {{total}} مستخدم",
         "used": "مستخدم",

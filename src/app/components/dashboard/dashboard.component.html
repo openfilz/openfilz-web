@@ -24,107 +24,107 @@
   <!-- Dashboard Cards -->
   @if (!isLoadingDashboard && !dashboardError) {
 
-  <!-- Storage Overview Card -->
-  <article class="dashboard-card storage-card" role="region" [attr.aria-label]="'dashboard.storage' | translate">
+  <!-- Overview Card (merged Storage + Your Files) -->
+  <article class="dashboard-card overview-card" role="region" [attr.aria-label]="'dashboard.overview' | translate">
     <header class="card-header clickable" (click)="navigateToMyFolder()">
-      <div class="card-icon-wrapper">
-        <mat-icon class="card-icon" aria-hidden="true">cloud_queue</mat-icon>
+      <div class="card-icon-wrapper overview-icon-wrapper">
+        <mat-icon class="card-icon" aria-hidden="true">dashboard</mat-icon>
       </div>
-      <h3 class="card-title">{{ 'dashboard.storage' | translate }}</h3>
+      <h3 class="card-title">{{ 'dashboard.overview' | translate }}</h3>
     </header>
 
-    <div class="card-content">
-      <!-- Circular Progress Indicator -->
-      <div class="progress-ring">
-        <svg width="90" height="90">
-          <circle class="progress-ring-circle progress-ring-bg" cx="45" cy="45" r="38"></circle>
-          <circle class="progress-ring-circle progress-ring-fill" cx="45" cy="45" r="38"
-            [attr.stroke-dasharray]="getCircleDashArray()" [attr.stroke-dashoffset]="getCircleDashOffset()"></circle>
-        </svg>
-        <div class="progress-percentage">{{ storagePercentage }}%</div>
-      </div>
-
-      <div class="storage-display">
-        <h2 class="storage-amount">{{ formatFileSize(storageUsed) }}</h2>
-        <p class="storage-total">
-          @if (storageTotal > 0) {
-          {{ 'dashboard.ofUsed' | translate:{ total: formatFileSize(storageTotal) } }}
-          } @else {
-          {{ 'dashboard.used' | translate }}
-          }
-        </p>
-      </div>
-
-      <div class="storage-breakdown">
-        <div class="breakdown-item">
-          <span class="breakdown-label">{{ 'dashboard.documents' | translate }}</span>
-          <span class="breakdown-value">{{ formatFileSize(documentsSize) }}</span>
+    <div class="card-content overview-content">
+      <!-- Storage ring + amount (left panel) -->
+      <div class="overview-storage">
+        <div class="progress-ring">
+          <svg width="110" height="110">
+            <circle class="progress-ring-circle progress-ring-bg" cx="55" cy="55" r="46"></circle>
+            <circle class="progress-ring-circle progress-ring-fill" cx="55" cy="55" r="46"
+              [attr.stroke-dasharray]="getCircleDashArray()" [attr.stroke-dashoffset]="getCircleDashOffset()"></circle>
+          </svg>
+          <div class="progress-percentage">{{ storagePercentage }}%</div>
         </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">{{ 'dashboard.images' | translate }}</span>
-          <span class="breakdown-value">{{ formatFileSize(imagesSize) }}</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">{{ 'dashboard.videos' | translate }}</span>
-          <span class="breakdown-value">{{ formatFileSize(videosSize) }}</span>
-        </div>
-        <div class="breakdown-item">
-          <span class="breakdown-label">{{ 'dashboard.other' | translate }}</span>
-          <span class="breakdown-value">{{ formatFileSize(otherSize) }}</span>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- File Statistics Card -->
-  <article class="dashboard-card stats-card" role="region" [attr.aria-label]="'dashboard.yourFiles' | translate">
-    <header class="card-header clickable" (click)="navigateToMyFolder()">
-      <div class="card-icon-wrapper">
-        <mat-icon class="card-icon" aria-hidden="true">folder_open</mat-icon>
-      </div>
-      <h3 class="card-title">{{ 'dashboard.yourFiles' | translate }}</h3>
-    </header>
-
-    <div class="card-content">
-      <div class="total-display">
-        <h2 class="total-number">{{ totalFiles + totalFolders }}</h2>
-        <p class="total-label">{{ 'dashboard.totalItems' | translate }}</p>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-box">
-          <mat-icon class="stat-box-icon" aria-hidden="true">folder</mat-icon>
-          <div class="stat-box-value">{{ totalFolders }}</div>
-          <div class="stat-box-label">{{ 'dashboard.folders' | translate }}</div>
-        </div>
-        <div class="stat-box">
-          <mat-icon class="stat-box-icon" aria-hidden="true">insert_drive_file</mat-icon>
-          <div class="stat-box-value">{{ totalFiles }}</div>
-          <div class="stat-box-label">{{ 'dashboard.files' | translate }}</div>
+        <div class="storage-label">
+          <span class="storage-amount">{{ formatFileSize(storageUsed) }}</span>
+          <span class="storage-total-text">
+            @if (storageTotal > 0) {
+            {{ 'dashboard.ofUsed' | translate:{ total: formatFileSize(storageTotal) } }}
+            } @else {
+            {{ 'dashboard.used' | translate }}
+            }
+          </span>
         </div>
       </div>
 
-      @if (fileTypeDistribution.length > 0) {
-      <div class="type-list">
-        @for(item of fileTypeDistribution.slice(0, 3); track item.type) {
-        <div class="type-item">
-          <div class="type-item-left">
-            <mat-icon class="type-item-icon" aria-hidden="true">{{ getFileIconClass(item.type) }}</mat-icon>
-            <span class="type-item-name">{{ 'dashboard.' + (item.type === 'others' ? 'other' : item.type) | translate
-              }}</span>
+      <!-- Metric cards (right panel, 3 cols filling height) -->
+      <div class="metrics-row">
+        <div class="metric-card metric-folders">
+          <div class="metric-icon-wrap folders-bg">
+            <mat-icon aria-hidden="true">folder</mat-icon>
           </div>
-          <span class="type-item-count">{{ item.count }}</span>
+          <div class="metric-data">
+            <span class="metric-value">{{ totalFolders }}</span>
+            <span class="metric-label">{{ 'dashboard.folders' | translate }}</span>
+          </div>
         </div>
-        }
+
+        <div class="metric-card metric-files">
+          <div class="metric-icon-wrap files-bg">
+            <mat-icon aria-hidden="true">insert_drive_file</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="metric-value">{{ totalFiles }}</span>
+            <span class="metric-label">{{ 'dashboard.files' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card metric-documents">
+          <div class="metric-icon-wrap documents-bg">
+            <mat-icon aria-hidden="true">description</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="metric-value">{{ formatFileSize(documentsSize) }}</span>
+            <span class="metric-label">{{ 'dashboard.documents' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card metric-images">
+          <div class="metric-icon-wrap images-bg">
+            <mat-icon aria-hidden="true">image</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="metric-value">{{ formatFileSize(imagesSize) }}</span>
+            <span class="metric-label">{{ 'dashboard.images' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card metric-videos">
+          <div class="metric-icon-wrap videos-bg">
+            <mat-icon aria-hidden="true">videocam</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="metric-value">{{ formatFileSize(videosSize) }}</span>
+            <span class="metric-label">{{ 'dashboard.videos' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="metric-card metric-other">
+          <div class="metric-icon-wrap other-bg">
+            <mat-icon aria-hidden="true">more_horiz</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="metric-value">{{ formatFileSize(otherSize) }}</span>
+            <span class="metric-label">{{ 'dashboard.other' | translate }}</span>
+          </div>
+        </div>
       </div>
-      }
     </div>
   </article>
 
   <!-- Recent Files Card -->
   <article class="dashboard-card recent-card" role="region" aria-labelledby="recent-files-title">
     <header class="card-header">
-      <div class="card-icon-wrapper">
+      <div class="card-icon-wrapper recent-icon-wrapper">
         <mat-icon class="card-icon" aria-hidden="true">schedule</mat-icon>
       </div>
       <h3 class="card-title" id="recent-files-title">{{ 'dashboard.recentActivity' | translate }}</h3>
@@ -143,7 +143,7 @@
       </div>
       } @else {
       <div class="recent-files-list">
-        @for(file of recentlyEditedFiles.slice(0, 5); track file.id) {
+        @for(file of recentlyEditedFiles; track file.id) {
         <div class="recent-file-item">
           <div class="recent-file-row-main">
             @if(file.thumbnailUrl) {

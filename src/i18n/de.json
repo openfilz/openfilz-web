@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Dashboard",
+        "overview": "Übersicht",
         "storage": "Speicher",
         "ofUsed": "von {{total}} verwendet",
         "used": "verwendet",

@@ -76,7 +76,7 @@ export class DashboardComponent implements OnInit {
   fileTypeDistribution: FileTypeDistribution[] = [];
 
   // Configurable limit for recent files
-  recentFilesLimit = 5;
+  recentFilesLimit = 15;
 
   // Storage stats
   storageUsed = 0;
@@ -386,13 +386,13 @@ export class DashboardComponent implements OnInit {
 
   // Circular progress methods for storage indicator
   getCircleDashArray(): string {
-    const radius = 38;
+    const radius = 46;
     const circumference = 2 * Math.PI * radius;
     return `${circumference} ${circumference}`;
   }
 
   getCircleDashOffset(): number {
-    const radius = 38;
+    const radius = 46;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (this.storagePercentage / 100) * circumference;
     return offset;
