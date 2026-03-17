@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Dashboard",
+        "overview": "Overzicht",
         "storage": "Opslag",
         "ofUsed": "van {{total}} gebruikt",
         "used": "gebruikt",

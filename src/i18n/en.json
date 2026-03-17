@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Dashboard",
+        "overview": "Overview",
         "storage": "Storage",
         "ofUsed": "of {{total}} used",
         "used": "used",

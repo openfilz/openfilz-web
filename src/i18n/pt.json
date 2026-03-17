@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Painel",
+        "overview": "Visão geral",
         "storage": "Armazenamento",
         "ofUsed": "de {{total}} usados",
         "used": "usados",

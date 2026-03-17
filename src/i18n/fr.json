@@ -450,6 +450,7 @@
     },
     "dashboard": {
         "title": "Tableau de bord",
+        "overview": "Vue d'ensemble",
         "storage": "Stockage",
         "ofUsed": "sur {{total}} utilisé",
         "used": "utilisé",

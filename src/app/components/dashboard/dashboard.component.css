@@ -1,5 +1,6 @@
 /* ===================================
    Professional Theme-Adaptive Dashboard
+   1/3 overview + 2/3 recent activity
    =================================== */
 
 :host {
@@ -7,36 +8,35 @@
   width: 100%;
   height: 100%;
   background-color: var(--bg-secondary);
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 @media (max-width: 767px) {
   :host {
     height: auto;
     min-height: 100%;
+    overflow-y: auto;
   }
 }
 
 /* ===================================
-   Grid Layout
+   Grid Layout — 1/3 top, 2/3 bottom
    =================================== */
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
   padding: 24px;
-  min-height: 100%;
-  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 1023px) {
   .dashboard-grid {
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: auto auto;
     gap: 16px;
     padding: 20px;
   }
@@ -44,12 +44,11 @@
 
 @media (max-width: 767px) {
   .dashboard-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto 1fr;
     gap: 12px;
     padding: 12px;
-    min-height: 0;
-    overflow-y: visible;
+    height: auto;
+    min-height: 100%;
   }
 }
 
@@ -59,7 +58,7 @@
 
 .dashboard-card {
   background-color: var(--bg-primary);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-color);
@@ -81,7 +80,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
@@ -92,33 +91,37 @@
 }
 
 .card-header.clickable:hover .card-icon-wrapper {
-  opacity: 0.85;
-}
-
-.card-header.clickable:hover .card-title {
-  text-decoration: none;
+  transform: scale(1.05);
 }
 
 .card-icon-wrapper {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--primary);
   color: white;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.overview-icon-wrapper {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.recent-icon-wrapper {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
 }
 
 .card-icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
@@ -134,34 +137,55 @@
 }
 
 /* ===================================
-   Storage Card
+   Overview Card (merged Storage + Files)
    =================================== */
 
-.storage-card {
-  grid-column: span 6;
+.overview-card {
+  grid-column: 1;
 }
 
-.storage-card .card-content {
-  gap: 0;
+.overview-content {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 28px;
+  flex: 1;
+  min-height: 0;
 }
 
 @media (max-width: 767px) {
-  .storage-card {
-    grid-column: span 1;
-    max-height: none;
-    height: auto;
+  .overview-content {
+    flex-direction: column;
+    gap: 16px;
   }
 }
 
-/* Circular Progress */
+/* Storage ring section — left panel, centered vertically */
+.overview-storage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+  min-width: 160px;
+  padding: 8px 16px 8px 8px;
+}
+
+@media (max-width: 767px) {
+  .overview-storage {
+    padding: 0 0 16px 0;
+    min-width: 0;
+  }
+}
+
 .progress-ring {
-  margin: 8px auto 12px auto;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
 }
 
 .progress-ring svg {
@@ -179,174 +203,146 @@
 }
 
 .progress-ring-fill {
-  stroke: var(--primary);
+  stroke: #6366f1;
   stroke-linecap: round;
 }
 
 .progress-percentage {
   position: absolute;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.storage-display {
+.storage-label {
   text-align: center;
-  margin: 0 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .storage-amount {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
-  line-height: 1;
+  line-height: 1.2;
 }
 
-.storage-total {
+.storage-total-text {
   font-size: 13px;
   color: var(--text-secondary);
-  margin: 0;
-}
-
-/* Storage Breakdown */
-.storage-breakdown {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.breakdown-item {
-  background-color: var(--bg-secondary);
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.breakdown-label {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.breakdown-value {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-primary);
 }
 
 /* ===================================
-   Stats Card
+   Metric Cards — right panel, 3 cols stretching to fill height
    =================================== */
 
-.stats-card {
-  grid-column: span 6;
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  align-content: stretch;
 }
 
-@media (max-width: 767px) {
-  .stats-card {
-    grid-column: span 1;
-    max-height: none;
-    height: auto;
+@media (max-width: 900px) {
+  .metrics-row {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-.total-display {
-  text-align: center;
-  margin: 8px 0 12px 0;
+@media (max-width: 767px) {
+  .metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    width: 100%;
+  }
 }
 
-.total-number {
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1;
-  margin: 0 0 6px 0;
-  color: var(--primary);
-}
-
-.total-label {
-  font-size: 13px;
-  margin: 0;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin: 0 0 12px 0;
-}
-
-.stat-box {
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
   background-color: var(--bg-secondary);
-  padding: 10px 12px;
-  border-radius: 8px;
   border: 1px solid var(--border-light);
-  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.stat-box-icon {
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.metric-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.metric-icon-wrap mat-icon {
   font-size: 24px;
-  margin-bottom: 6px;
-  color: var(--primary);
+  width: 24px;
+  height: 24px;
 }
 
-.stat-box-value {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 4px 0;
-  line-height: 1;
-  color: var(--text-primary);
+/* Colorful icon backgrounds */
+.folders-bg {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
 }
 
-.stat-box-label {
-  font-size: 11px;
-  color: var(--text-secondary);
-  font-weight: 500;
+.files-bg {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
 }
 
-/* Type List */
-.type-list {
+.documents-bg {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+}
+
+.images-bg {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+
+.videos-bg {
+  background: linear-gradient(135deg, #14b8a6, #06b6d4);
+}
+
+.other-bg {
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.metric-data {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  min-width: 0;
 }
 
-.type-item {
-  background-color: var(--bg-secondary);
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.type-item-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.type-item-icon {
-  font-size: 18px;
-  color: var(--primary);
-}
-
-.type-item-name {
-  font-weight: 600;
-  font-size: 13px;
+.metric-value {
+  font-size: 19px;
+  font-weight: 700;
   color: var(--text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.type-item-count {
+.metric-label {
   font-size: 13px;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 500;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ===================================
@@ -354,22 +350,13 @@
    =================================== */
 
 .recent-card {
-  grid-column: span 12;
-  max-height: 450px;
-}
-
-@media (max-width: 767px) {
-  .recent-card {
-    grid-column: span 1;
-    max-height: none;
-    height: auto;
-  }
+  grid-column: 1;
 }
 
 .recent-files-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
@@ -378,32 +365,36 @@
 
 /* Scrollbar styling */
 .recent-files-list::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .recent-files-list::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-  border-radius: 4px;
+  background: transparent;
+  border-radius: 3px;
 }
 
 .recent-files-list::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-  opacity: 0.7;
+  background: var(--border-color);
+  border-radius: 3px;
 }
 
 .recent-files-list::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-  opacity: 1;
+  background: var(--text-tertiary);
 }
 
 .recent-file-item {
   display: flex;
   flex-direction: column;
-  padding: 14px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-light);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.recent-file-item:hover {
+  border-color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 4%, var(--bg-secondary));
 }
 
 /* Main row: thumbnail/icon + file info + timestamp */
@@ -419,8 +410,8 @@
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  padding-top: 10px;
-  margin-top: 10px;
+  padding-top: 8px;
+  margin-top: 8px;
   border-top: 1px solid var(--border-light);
 }
 
@@ -448,8 +439,8 @@
 
 /* File thumbnail */
 .file-thumbnail {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
@@ -457,20 +448,19 @@
 }
 
 .file-icon-container {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 200ms ease;
 }
 
 .file-icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
 .file-info {
@@ -482,7 +472,7 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -495,27 +485,26 @@
 }
 
 .file-timestamp-badge {
-  background-color: var(--bg-tertiary);
-  color: var(--primary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  color: #6366f1;
   padding: 4px 10px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   flex-shrink: 0;
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(99, 102, 241, 0.15);
 }
 
 .file-actions {
   display: flex;
-  gap: 4px;
-  opacity: 0.7;
+  gap: 2px;
+  opacity: 0.6;
   transition: opacity 0.2s;
 }
 
-/* Desktop: add margin between actions and timestamp */
 @media (min-width: 768px) {
   .file-actions {
-    margin-right: 12px;
+    margin-right: 8px;
   }
 }
 
@@ -547,22 +536,16 @@
    =================================== */
 
 .loading-state {
-  grid-column: span 12;
+  grid-column: 1;
+  grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
   background-color: var(--bg-primary);
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid var(--border-color);
-}
-
-@media (max-width: 767px) {
-  .loading-state {
-    grid-column: span 1;
-    padding: 60px 20px;
-  }
 }
 
 .loading-spinner {
@@ -576,22 +559,16 @@
 }
 
 .error-state {
-  grid-column: span 12;
+  grid-column: 1;
+  grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
   background-color: var(--bg-primary);
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid var(--border-color);
-}
-
-@media (max-width: 767px) {
-  .error-state {
-    grid-column: span 1;
-    padding: 60px 20px;
-  }
 }
 
 .error-icon {
@@ -615,6 +592,7 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  flex: 1;
 }
 
 .empty-icon {
@@ -652,8 +630,18 @@
 }
 
 .dashboard-card:nth-child(1) { animation-delay: 0.05s; }
-.dashboard-card:nth-child(2) { animation-delay: 0.1s; }
-.dashboard-card:nth-child(3) { animation-delay: 0.15s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.12s; }
+
+.metric-card {
+  animation: fadeIn 0.35s ease-out backwards;
+}
+
+.metric-card:nth-child(1) { animation-delay: 0.08s; }
+.metric-card:nth-child(2) { animation-delay: 0.12s; }
+.metric-card:nth-child(3) { animation-delay: 0.16s; }
+.metric-card:nth-child(4) { animation-delay: 0.20s; }
+.metric-card:nth-child(5) { animation-delay: 0.24s; }
+.metric-card:nth-child(6) { animation-delay: 0.28s; }
 
 /* ===================================
    Accessibility
@@ -661,14 +649,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .dashboard-card,
-  .stat-box,
-  .type-item,
+  .metric-card,
   .progress-ring-circle {
     animation: none;
+    transition: none;
   }
 }
 
-/* High contrast mode */
 @media (prefers-contrast: high) {
   .dashboard-card {
     border-width: 2px;
