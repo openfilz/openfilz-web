@@ -156,7 +156,7 @@
 @media (max-width: 767px) {
   .overview-content {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 }
 
@@ -174,8 +174,11 @@
 
 @media (max-width: 767px) {
   .overview-storage {
-    padding: 0 0 16px 0;
+    flex-direction: row;
+    padding: 0;
     min-width: 0;
+    gap: 16px;
+    justify-content: center;
   }
 }
 
@@ -186,6 +189,22 @@
   position: relative;
   width: 110px;
   height: 110px;
+}
+
+@media (max-width: 767px) {
+  .progress-ring {
+    width: 72px;
+    height: 72px;
+  }
+
+  .progress-ring svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .progress-ring-circle {
+    stroke-width: 6;
+  }
 }
 
 .progress-ring svg {
@@ -214,6 +233,12 @@
   color: var(--text-primary);
 }
 
+@media (max-width: 767px) {
+  .progress-percentage {
+    font-size: 16px;
+  }
+}
+
 .storage-label {
   text-align: center;
   display: flex;
@@ -221,11 +246,23 @@
   gap: 2px;
 }
 
+@media (max-width: 767px) {
+  .storage-label {
+    text-align: left;
+  }
+}
+
 .storage-amount {
   font-size: 22px;
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+  .storage-amount {
+    font-size: 18px;
+  }
 }
 
 .storage-total-text {
@@ -257,6 +294,7 @@
   .metrics-row {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: auto;
+    gap: 8px;
     width: 100%;
   }
 }
@@ -277,6 +315,14 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+@media (max-width: 767px) {
+  .metric-card {
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+}
+
 .metric-icon-wrap {
   width: 46px;
   height: 46px;
@@ -292,6 +338,20 @@
   font-size: 24px;
   width: 24px;
   height: 24px;
+}
+
+@media (max-width: 767px) {
+  .metric-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+  }
+
+  .metric-icon-wrap mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
 }
 
 /* Colorful icon backgrounds */
@@ -343,6 +403,16 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+  .metric-value {
+    font-size: 15px;
+  }
+
+  .metric-label {
+    font-size: 11px;
+  }
 }
 
 /* ===================================
