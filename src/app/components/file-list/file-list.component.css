@@ -73,13 +73,22 @@
   font-weight: 500;
 }
 
-.file-icon {
-  font-size: 20px !important;
-  width: 20px !important;
-  height: 20px !important;
-  transition: transform 200ms ease;
+.file-icon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  flex-shrink: 0;
   cursor: pointer;
-  position: relative;
+  transition: transform 200ms ease;
+}
+
+.file-icon-pill mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 /* Small thumbnail for list view */
@@ -124,12 +133,11 @@
   }
 }
 
-/* Responsive icon sizing for list view */
+/* Responsive icon pill sizing for list view */
 @media (min-width: 1440px) {
-  .file-icon {
-    font-size: 22px !important;
-    width: 22px !important;
-    height: 22px !important;
+  .file-icon-pill {
+    width: 30px;
+    height: 30px;
   }
 
   .favorite-btn mat-icon {
@@ -140,10 +148,15 @@
 }
 
 @media (min-width: 480px) and (max-width: 767px) {
-  .file-icon {
-    font-size: 18px !important;
-    width: 18px !important;
-    height: 18px !important;
+  .file-icon-pill {
+    width: 26px;
+    height: 26px;
+  }
+
+  .file-icon-pill mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
   }
 
   .favorite-btn mat-icon {
@@ -154,10 +167,15 @@
 }
 
 @media (max-width: 479px) {
-  .file-icon {
-    font-size: 16px !important;
-    width: 16px !important;
-    height: 16px !important;
+  .file-icon-pill {
+    width: 24px;
+    height: 24px;
+  }
+
+  .file-icon-pill mat-icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
   }
 
   .favorite-btn mat-icon {
@@ -173,16 +191,8 @@
   }
 }
 
-.file-list-table tbody tr:hover .file-icon {
-  transform: scale(1.15);
-}
-
-.file-icon.file-type-folder {
-  color: #F59E0B !important;
-}
-
-.file-icon.file-type-file {
-  color: var(--primary) !important;
+.file-list-table tbody tr:hover .file-icon-pill {
+  transform: scale(1.1);
 }
 
 .file-icon-cell {

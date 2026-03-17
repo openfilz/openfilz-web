@@ -41,7 +41,10 @@
                              loading="lazy"
                              (error)="onThumbnailError($event, item)" />
                     } @else {
-                        <mat-icon [class]="'file-type-' + item.type.toLowerCase()" aria-hidden="true">
+                        <mat-icon class="file-type-icon" aria-hidden="true"
+                            [style.color]="getFileColor(item.name, item.type)"
+                            [style.background-color]="getFileColor(item.name, item.type) + '1a'"
+                            [style.box-shadow]="'0 1px 3px ' + getFileColor(item.name, item.type) + '26'">
                             {{ getFileIcon(item.name, item.type) }}
                         </mat-icon>
                     }

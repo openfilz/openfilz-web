@@ -290,120 +290,15 @@
   }
 }
 
-/* Folder styling */
-.file-icon mat-icon.file-type-folder {
-  color: #F59E0B;
-  background: rgba(245, 158, 11, 0.12);
+/* File type icon with inline color from service */
+.file-icon mat-icon.file-type-icon {
   width: 48px;
   height: 48px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.15);
   transition: all 200ms ease;
-}
-
-/* Default file styling */
-.file-icon mat-icon.file-type-file {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px color-mix(in srgb, var(--primary) 15%, transparent);
-  transition: all 200ms ease;
-}
-
-/* Document files (PDF, DOC, TXT, etc.) - Blue */
-.file-icon mat-icon[class*="pdf"],
-.file-icon mat-icon[class*="doc"],
-.file-icon mat-icon[class*="docx"],
-.file-icon mat-icon[class*="txt"],
-.file-icon mat-icon[class*="rtf"] {
-  color: #3B82F6;
-  background: rgba(59, 130, 246, 0.12);
-  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.15);
-}
-
-/* Spreadsheet files (XLS, CSV, etc.) - Green */
-.file-icon mat-icon[class*="xls"],
-.file-icon mat-icon[class*="xlsx"],
-.file-icon mat-icon[class*="csv"] {
-  color: #10B981;
-  background: rgba(16, 185, 129, 0.12);
-  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.15);
-}
-
-/* Presentation files (PPT, etc.) - Orange */
-.file-icon mat-icon[class*="ppt"],
-.file-icon mat-icon[class*="pptx"] {
-  color: #F97316;
-  background: rgba(249, 115, 22, 0.12);
-  box-shadow: 0 1px 3px rgba(249, 115, 22, 0.15);
-}
-
-/* Image files (JPG, PNG, etc.) - Emerald */
-.file-icon mat-icon[class*="jpg"],
-.file-icon mat-icon[class*="jpeg"],
-.file-icon mat-icon[class*="png"],
-.file-icon mat-icon[class*="gif"],
-.file-icon mat-icon[class*="svg"],
-.file-icon mat-icon[class*="webp"] {
-  color: #059669;
-  background: rgba(5, 150, 105, 0.12);
-  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.15);
-}
-
-/* Video files (MP4, AVI, etc.) - Purple */
-.file-icon mat-icon[class*="mp4"],
-.file-icon mat-icon[class*="avi"],
-.file-icon mat-icon[class*="mov"],
-.file-icon mat-icon[class*="wmv"],
-.file-icon mat-icon[class*="mkv"],
-.file-icon mat-icon[class*="webm"] {
-  color: #8B5CF6;
-  background: rgba(139, 92, 246, 0.12);
-  box-shadow: 0 1px 3px rgba(139, 92, 246, 0.15);
-}
-
-/* Audio files (MP3, WAV, etc.) - Rose */
-.file-icon mat-icon[class*="mp3"],
-.file-icon mat-icon[class*="wav"],
-.file-icon mat-icon[class*="flac"],
-.file-icon mat-icon[class*="m4a"],
-.file-icon mat-icon[class*="ogg"] {
-  color: #F43F5E;
-  background: rgba(244, 63, 94, 0.12);
-  box-shadow: 0 1px 3px rgba(244, 63, 94, 0.15);
-}
-
-/* Archive files (ZIP, RAR, etc.) - Amber */
-.file-icon mat-icon[class*="zip"],
-.file-icon mat-icon[class*="rar"],
-.file-icon mat-icon[class*="7z"],
-.file-icon mat-icon[class*="tar"],
-.file-icon mat-icon[class*="gz"] {
-  color: #F59E0B;
-  background: rgba(245, 158, 11, 0.12);
-  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.15);
-}
-
-/* Code files (JS, HTML, CSS, etc.) - Cyan */
-.file-icon mat-icon[class*="js"],
-.file-icon mat-icon[class*="html"],
-.file-icon mat-icon[class*="css"],
-.file-icon mat-icon[class*="json"],
-.file-icon mat-icon[class*="xml"],
-.file-icon mat-icon[class*="ts"],
-.file-icon mat-icon[class*="py"],
-.file-icon mat-icon[class*="java"] {
-  color: #06B6D4;
-  background: rgba(6, 182, 212, 0.12);
-  box-shadow: 0 1px 3px rgba(6, 182, 212, 0.15);
 }
 
 .delete-item {

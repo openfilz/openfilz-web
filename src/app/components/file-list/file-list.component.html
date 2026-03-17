@@ -52,10 +52,12 @@
                  (error)="onThumbnailError($event, item)"
                  (click)="onIconClick($event, item)" />
           } @else {
-            <mat-icon class="file-icon" [class]="'file-type-' + item.type.toLowerCase()" aria-hidden="true"
+            <span class="file-icon-pill" aria-hidden="true"
+              [style.color]="getFileColor(item.name, item.type)"
+              [style.background-color]="getFileColor(item.name, item.type) + '1a'"
               (click)="onIconClick($event, item)">
-              {{ getFileIcon(item.name, item.type) }}
-            </mat-icon>
+              <mat-icon>{{ getFileIcon(item.name, item.type) }}</mat-icon>
+            </span>
           }
           <span class="file-name">{{ item.name }}</span>
         </div>

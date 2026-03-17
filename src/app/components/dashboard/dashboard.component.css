@@ -459,13 +459,12 @@
 .file-icon-container {
   width: 44px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background-color: var(--primary);
-  color: white;
+  transition: all 200ms ease;
 }
 
 .file-icon {

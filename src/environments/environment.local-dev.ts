@@ -4,7 +4,7 @@ export const environment = {
     authentication: {
         authority: import.meta.env['NG_APP_AUTHENTICATION_AUTHORITY'] ?? 'http://localhost:8080/realms/openfilz',
         clientId: import.meta.env['NG_APP_AUTHENTICATION_CLIENT_ID'] ?? 'openfilz-web',
-        enabled: true
+        enabled: false
     },
     onlyOffice: {
         enabled: true

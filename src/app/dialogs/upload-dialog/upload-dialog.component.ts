@@ -7,6 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { FileIconService } from '../../services/file-icon.service';
 
 export interface UploadDialogData {
   files: File[];
@@ -41,6 +42,7 @@ export class UploadDialogComponent {
 
   readonly dialogRef = inject(MatDialogRef<UploadDialogComponent>);
   readonly data = inject<UploadDialogData>(MAT_DIALOG_DATA);
+  private fileIconService = inject(FileIconService);
 
   constructor() {
     this.files = this.data.files;
@@ -65,25 +67,11 @@ export class UploadDialogComponent {
   }
 
   getFileIcon(file: File): string {
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    const iconMap: { [key: string]: string } = {
-      'pdf': 'picture_as_pdf',
-      'doc': 'description',
-      'docx': 'description',
-      'xls': 'table_chart',
-      'xlsx': 'table_chart',
-      'ppt': 'slideshow',
-      'pptx': 'slideshow',
-      'jpg': 'image',
-      'jpeg': 'image',
-      'png': 'image',
-      'gif': 'image',
-      'zip': 'folder_zip',
-      'rar': 'folder_zip',
-      'txt': 'text_snippet',
-      'csv': 'table_chart'
-    };
-    return iconMap[extension || ''] || 'insert_drive_file';
+    return this.fileIconService.getFileIcon(file.name, 'FILE');
+  }
+
+  getFileColor(file: File): string {
+    return this.fileIconService.getFileColor(file.name, 'FILE');
   }
 
   onCancel() {
