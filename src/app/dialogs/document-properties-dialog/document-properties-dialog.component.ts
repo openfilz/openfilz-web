@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslateService } from '@ngx-translate/core';
+import { FileIconService } from '../../services/file-icon.service';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentInfo } from '../../models/document.models';
 import { MetadataEditorComponent } from '../../components/metadata-editor/metadata-editor.component';
@@ -94,6 +95,7 @@ export class DocumentPropertiesDialogComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
+  private fileIconService = inject(FileIconService);
 
   constructor() { }
 
@@ -306,11 +308,7 @@ export class DocumentPropertiesDialogComponent implements OnInit {
   }
 
   formatFileSize(bytes?: number): string {
-    if (!bytes || bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    return this.fileIconService.getFileSize(bytes ?? 0);
   }
 
   formatDate(date?: string): string {

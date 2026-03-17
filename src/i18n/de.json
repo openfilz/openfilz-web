@@ -587,5 +587,12 @@
         "downloadFailed": "Herunterladen der Datei fehlgeschlagen",
         "notAllowedToViewFiles": "Sie sind nicht berechtigt, die Dateien anzuzeigen",
         "createDocumentFailed": "Erstellen des Dokuments fehlgeschlagen"
+    },
+    "fileSize": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB"
     }
 }

@@ -587,5 +587,12 @@
         "downloadFailed": "Falha ao baixar o arquivo",
         "notAllowedToViewFiles": "Você não tem permissão para visualizar os arquivos",
         "createDocumentFailed": "Falha ao criar documento"
+    },
+    "fileSize": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB"
     }
 }

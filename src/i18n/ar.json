@@ -587,5 +587,12 @@
         "downloadFailed": "فشل تنزيل الملف",
         "notAllowedToViewFiles": "غير مصرح لك بعرض الملفات",
         "createDocumentFailed": "فشل إنشاء المستند"
+    },
+    "fileSize": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB"
     }
 }

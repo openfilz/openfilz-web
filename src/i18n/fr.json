@@ -587,5 +587,12 @@
         "downloadFailed": "Échec du téléchargement du fichier",
         "notAllowedToViewFiles": "Vous n'êtes pas autorisé à visualiser les fichiers",
         "createDocumentFailed": "Échec de la création du document"
+    },
+    "fileSize": {
+        "B": "o",
+        "KB": "Ko",
+        "MB": "Mo",
+        "GB": "Go",
+        "TB": "To"
     }
 }

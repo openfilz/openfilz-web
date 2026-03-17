@@ -587,5 +587,12 @@
         "downloadFailed": "Error al descargar el archivo",
         "notAllowedToViewFiles": "No tiene permiso para ver los archivos",
         "createDocumentFailed": "Error al crear el documento"
+    },
+    "fileSize": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB"
     }
 }
