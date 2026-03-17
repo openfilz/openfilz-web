@@ -587,5 +587,12 @@
         "downloadFailed": "Downloaden van bestand mislukt",
         "notAllowedToViewFiles": "U bent niet gemachtigd om de bestanden te bekijken",
         "createDocumentFailed": "Aanmaken van document mislukt"
+    },
+    "fileSize": {
+        "B": "B",
+        "KB": "KB",
+        "MB": "MB",
+        "GB": "GB",
+        "TB": "TB"
     }
 }

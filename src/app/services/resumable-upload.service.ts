@@ -13,6 +13,7 @@ import {
 } from '../models/upload.models';
 import { environment } from '../../environments/environment';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { FileIconService } from './file-icon.service';
 
 /**
  * Service for handling TUS (resumable) uploads.
@@ -27,6 +28,7 @@ export class ResumableUploadService {
 
   private http = inject(HttpClient);
   private oidcSecurityService = inject(OidcSecurityService);
+  private fileIconService = inject(FileIconService);
 
   /** Map of active TUS uploads by uploadId */
   private uploads = new Map<string, tus.Upload>();
@@ -733,11 +735,7 @@ export class ResumableUploadService {
    * Format bytes to human-readable string.
    */
   formatBytes(bytes: number): string {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return this.fileIconService.getFileSize(bytes);
   }
 
   /**
