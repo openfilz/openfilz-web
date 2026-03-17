@@ -207,11 +207,11 @@ export class DashboardComponent implements OnInit {
   }
 
   private getIconForContentType(contentType: string): string {
-    if (contentType.startsWith('image/')) return 'image';
-    if (contentType.startsWith('video/')) return 'video';
-    if (contentType.startsWith('audio/')) return 'audiotrack';
-    if (contentType.includes('zip') || contentType.includes('archive')) return 'archive';
-    return 'description';
+    return this.fileIconService.getContentTypeIcon(contentType);
+  }
+
+  getIconColor(file: RecentFile): string {
+    return this.fileIconService.getContentTypeColor(file.contentType);
   }
 
   formatRelativeTime(dateString: string): string {

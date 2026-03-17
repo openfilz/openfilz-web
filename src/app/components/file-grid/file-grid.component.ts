@@ -136,6 +136,10 @@ export class FileGridComponent {
     return this.fileIconService.getFileIcon(fileName, type);
   }
 
+  getFileColor(fileName: string, type: 'FILE' | 'FOLDER'): string {
+    return this.fileIconService.getFileColor(fileName, type);
+  }
+
   formatFileSize(bytes: number): string {
     return this.fileIconService.getFileSize(bytes);
   }

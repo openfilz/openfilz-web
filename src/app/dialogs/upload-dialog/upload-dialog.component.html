@@ -15,7 +15,11 @@
       <mat-list class="files-list">
         @for(file of files; track $index) {
           <mat-list-item class="file-item">
-            <mat-icon matListItemIcon [class.file-icon]="true">
+            <mat-icon matListItemIcon class="file-icon"
+              [style.color]="getFileColor(file)"
+              [style.background-color]="getFileColor(file) + '1a'"
+              [style.border-radius.px]="6"
+              [style.padding.px]="4">
               {{ getFileIcon(file) }}
             </mat-icon>
             <div matListItemTitle class="file-name">{{ file.name }}</div>
