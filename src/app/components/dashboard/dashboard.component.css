@@ -26,7 +26,7 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 20px;
   max-width: 1400px;
   margin: 0 auto;
@@ -678,6 +678,127 @@
   font-size: 14px;
   color: var(--text-secondary);
   text-align: center;
+}
+
+/* ===================================
+   Compact mode for medium-density screens
+   (e.g. 1920x1200 @ 150% → 1280x800)
+   =================================== */
+
+@media (max-height: 820px) and (min-width: 768px) {
+  .dashboard-grid {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .dashboard-card {
+    padding: 14px 18px;
+  }
+
+  .card-header {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    gap: 10px;
+  }
+
+  .card-icon-wrapper {
+    width: 34px;
+    height: 34px;
+  }
+
+  .card-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .card-title {
+    font-size: 15px;
+  }
+
+  .overview-content {
+    gap: 20px;
+  }
+
+  .overview-storage {
+    min-width: 130px;
+    gap: 6px;
+    padding: 4px 12px 4px 4px;
+  }
+
+  .progress-ring {
+    width: 88px;
+    height: 88px;
+  }
+
+  .progress-ring svg {
+    width: 88px;
+    height: 88px;
+  }
+
+  .progress-percentage {
+    font-size: 18px;
+  }
+
+  .storage-amount {
+    font-size: 18px;
+  }
+
+  .storage-total-text {
+    font-size: 12px;
+  }
+
+  .metrics-row {
+    gap: 8px;
+  }
+
+  .metric-card {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .metric-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+  }
+
+  .metric-icon-wrap mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .metric-value {
+    font-size: 16px;
+  }
+
+  .metric-label {
+    font-size: 12px;
+  }
+
+  .recent-file-item {
+    padding: 8px 12px;
+  }
+
+  .file-thumbnail,
+  .file-icon-container {
+    width: 36px;
+    height: 36px;
+  }
+
+  .file-name {
+    font-size: 13px;
+  }
+
+  .file-meta {
+    font-size: 11px;
+  }
+
+  .recent-files-list {
+    gap: 4px;
+  }
 }
 
 /* ===================================
