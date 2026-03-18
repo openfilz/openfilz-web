@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Event as RouterEvent, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { OidcSecurityService, PublicEventsService, EventTypes } from 'angular-auth-oidc-client';
+import { TranslateService } from '@ngx-translate/core';
+import { filter } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
@@ -37,6 +40,8 @@ export class MainComponent implements OnInit {
   private breadcrumbService = inject(BreadcrumbService);
   private oidcSecurityService = inject(OidcSecurityService);
   private themeService = inject(ThemeService);
+  private publicEventsService = environment.authentication.enabled ? inject(PublicEventsService) : null;
+  private translateService = inject(TranslateService);
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
@@ -46,6 +51,7 @@ export class MainComponent implements OnInit {
   isWipRoute = false;
   isSidebarCollapsed = false;
   isMobileMenuOpen = false;
+  private isRedirectingToLogin = false;
 
   // This is needed for the header component
   get hasSelectedItems(): boolean {
@@ -75,6 +81,19 @@ export class MainComponent implements OnInit {
     this.breadcrumbService.currentBreadcrumbs.subscribe(breadcrumbs => {
       this.breadcrumbs = breadcrumbs;
     });
+
+    // Listen for silent renew failures (expired refresh token) and redirect to login
+    this.publicEventsService?.registerForEvents()
+      .pipe(filter(event => event.type === EventTypes.SilentRenewFailed))
+      .subscribe(() => {
+        if (this.isRedirectingToLogin) return;
+        this.isRedirectingToLogin = true;
+        console.warn('Silent renew failed — session expired, redirecting to login');
+        const message = this.translateService.instant('errors.sessionExpired');
+        this.snackBar.open(message, this.translateService.instant('common.ok'), { duration: 5000 });
+        // Give user a moment to see the message before redirecting
+        setTimeout(() => this.oidcSecurityService.authorize(), 2000);
+      });
   }
 
   updateCurrentRoute() {

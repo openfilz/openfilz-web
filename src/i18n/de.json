@@ -586,7 +586,8 @@
         "uploadFailed": "Hochladen der Datei fehlgeschlagen",
         "downloadFailed": "Herunterladen der Datei fehlgeschlagen",
         "notAllowedToViewFiles": "Sie sind nicht berechtigt, die Dateien anzuzeigen",
-        "createDocumentFailed": "Erstellen des Dokuments fehlgeschlagen"
+        "createDocumentFailed": "Erstellen des Dokuments fehlgeschlagen",
+        "sessionExpired": "Ihre Sitzung ist abgelaufen. Weiterleitung zur Anmeldeseite..."
     },
     "fileSize": {
         "B": "B",

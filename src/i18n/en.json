@@ -586,7 +586,8 @@
         "uploadFailed": "Failed to upload file",
         "downloadFailed": "Failed to download file",
         "notAllowedToViewFiles": "You are not allowed to view the files",
-        "createDocumentFailed": "Failed to create document"
+        "createDocumentFailed": "Failed to create document",
+        "sessionExpired": "Your session has expired. Redirecting to login..."
     },
     "fileSize": {
         "B": "B",

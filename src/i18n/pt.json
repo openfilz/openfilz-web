@@ -586,7 +586,8 @@
         "uploadFailed": "Falha ao enviar arquivo",
         "downloadFailed": "Falha ao baixar o arquivo",
         "notAllowedToViewFiles": "Você não tem permissão para visualizar os arquivos",
-        "createDocumentFailed": "Falha ao criar documento"
+        "createDocumentFailed": "Falha ao criar documento",
+        "sessionExpired": "Sua sessão expirou. Redirecionando para a página de login..."
     },
     "fileSize": {
         "B": "B",

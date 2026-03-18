@@ -586,7 +586,8 @@
         "uploadFailed": "فشل رفع الملف",
         "downloadFailed": "فشل تنزيل الملف",
         "notAllowedToViewFiles": "غير مصرح لك بعرض الملفات",
-        "createDocumentFailed": "فشل إنشاء المستند"
+        "createDocumentFailed": "فشل إنشاء المستند",
+        "sessionExpired": "انتهت صلاحية جلستك. جارٍ إعادة التوجيه إلى صفحة تسجيل الدخول..."
     },
     "fileSize": {
         "B": "B",

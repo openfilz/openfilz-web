@@ -586,7 +586,8 @@
         "uploadFailed": "Error al subir el archivo",
         "downloadFailed": "Error al descargar el archivo",
         "notAllowedToViewFiles": "No tiene permiso para ver los archivos",
-        "createDocumentFailed": "Error al crear el documento"
+        "createDocumentFailed": "Error al crear el documento",
+        "sessionExpired": "Su sesión ha expirado. Redirigiendo a la página de inicio de sesión..."
     },
     "fileSize": {
         "B": "B",
