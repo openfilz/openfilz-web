@@ -586,7 +586,8 @@
         "uploadFailed": "Échec du téléversement du fichier",
         "downloadFailed": "Échec du téléchargement du fichier",
         "notAllowedToViewFiles": "Vous n'êtes pas autorisé à visualiser les fichiers",
-        "createDocumentFailed": "Échec de la création du document"
+        "createDocumentFailed": "Échec de la création du document",
+        "sessionExpired": "Votre session a expiré. Redirection vers la page de connexion..."
     },
     "fileSize": {
         "B": "o",

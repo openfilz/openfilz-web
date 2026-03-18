@@ -586,7 +586,8 @@
         "uploadFailed": "Impossibile caricare il file",
         "downloadFailed": "Impossibile scaricare il file",
         "notAllowedToViewFiles": "Non sei autorizzato a visualizzare i file",
-        "createDocumentFailed": "Impossibile creare il documento"
+        "createDocumentFailed": "Impossibile creare il documento",
+        "sessionExpired": "La sessione è scaduta. Reindirizzamento alla pagina di accesso..."
     },
     "fileSize": {
         "B": "B",

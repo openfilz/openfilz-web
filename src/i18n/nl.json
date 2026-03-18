@@ -586,7 +586,8 @@
         "uploadFailed": "Uploaden van bestand mislukt",
         "downloadFailed": "Downloaden van bestand mislukt",
         "notAllowedToViewFiles": "U bent niet gemachtigd om de bestanden te bekijken",
-        "createDocumentFailed": "Aanmaken van document mislukt"
+        "createDocumentFailed": "Aanmaken van document mislukt",
+        "sessionExpired": "Uw sessie is verlopen. U wordt doorgestuurd naar de inlogpagina..."
     },
     "fileSize": {
         "B": "B",
