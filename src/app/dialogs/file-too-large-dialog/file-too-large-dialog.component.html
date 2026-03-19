@@ -1,0 +1,44 @@
+<div class="dialog-header warning">
+  <div class="header-content">
+    <div class="icon-wrapper warning">
+      <mat-icon>warning</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'fileViewer.fileTooLargeTitle' | translate }}</h2>
+      <p class="dialog-subtitle">{{ data.fileName }}</p>
+    </div>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  @if (data.isPdf) {
+    <p class="message">{{ 'fileViewer.fileTooLargePdfMessage' | translate:{maxSize: data.maxSizeMB} }}</p>
+  } @else {
+    <p class="message">{{ 'fileViewer.fileTooLargeOfficeMessage' | translate:{maxSize: data.maxSizeMB} }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  @if (data.isPdf) {
+    <button mat-stroked-button class="action-btn secondary-btn" (click)="download()" [disabled]="downloading">
+      <mat-icon>download</mat-icon>
+      {{ 'fileViewer.downloadFile' | translate }}
+    </button>
+    <button mat-flat-button class="action-btn primary-btn" (click)="openInNewTab()">
+      <mat-icon>open_in_new</mat-icon>
+      {{ 'fileViewer.openInNewTab' | translate }}
+    </button>
+  } @else {
+    <button mat-stroked-button class="action-btn cancel-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+      {{ 'common.close' | translate }}
+    </button>
+    <button mat-flat-button class="action-btn primary-btn" (click)="download()" [disabled]="downloading">
+      <mat-icon>download</mat-icon>
+      {{ 'fileViewer.downloadFile' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

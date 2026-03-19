@@ -7,6 +7,7 @@ declare interface Env {
   readonly NG_APP_AUTHENTICATION_CLIENT_ID: string;
   readonly NG_APP_AUTHENTICATION_ENABLED: string;
   readonly NG_APP_ONLYOFFICE_ENABLED: string;
+  readonly NG_APP_ONLYOFFICE_MAX_FILE_SIZE: string;
   [key: string]: any;
 }
 

@@ -525,6 +525,9 @@
         "downloadFile": "Datei herunterladen",
         "fileTooLargeTitle": "Datei zu groß für Vorschau",
         "fileTooLargeMessage": "Diese Datei überschreitet die maximale Größe für die Vorschau ({{maxSize}} MB). Bitte laden Sie die Datei herunter und öffnen Sie sie auf Ihrem Computer.",
+        "fileTooLargePdfMessage": "Dieses PDF überschreitet die maximale Größe für die Online-Anzeige ({{maxSize}} MB). Sie können es in einem neuen Tab öffnen oder herunterladen.",
+        "fileTooLargeOfficeMessage": "Dieses Dokument überschreitet die maximale Größe für die Online-Anzeige ({{maxSize}} MB). Bitte laden Sie die Datei herunter und öffnen Sie sie auf Ihrem Computer.",
+        "openInNewTab": "In neuem Tab öffnen",
         "viewPreview": "Vorschau anzeigen",
         "viewCode": "Quellcode anzeigen"
     },

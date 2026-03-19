@@ -525,6 +525,9 @@
         "downloadFile": "Scarica File",
         "fileTooLargeTitle": "File troppo grande per l'anteprima",
         "fileTooLargeMessage": "Questo file supera la dimensione massima per l'anteprima ({{maxSize}} MB). Scarica il file e aprilo sul tuo computer.",
+        "fileTooLargePdfMessage": "Questo PDF supera la dimensione massima per la visualizzazione online ({{maxSize}} MB). Puoi aprirlo in una nuova scheda o scaricarlo.",
+        "fileTooLargeOfficeMessage": "Questo documento supera la dimensione massima per la visualizzazione online ({{maxSize}} MB). Scarica il file e aprilo sul tuo computer.",
+        "openInNewTab": "Apri in nuova scheda",
         "viewPreview": "Visualizza anteprima",
         "viewCode": "Visualizza codice sorgente"
     },

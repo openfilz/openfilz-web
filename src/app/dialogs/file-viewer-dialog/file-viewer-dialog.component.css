@@ -122,6 +122,12 @@
   color: #ff9800;
 }
 
+.file-too-large-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .error-container h3,
 .unsupported-container h3,
 .file-too-large-container h3 {

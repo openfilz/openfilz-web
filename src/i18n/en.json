@@ -525,6 +525,9 @@
         "downloadFile": "Download File",
         "fileTooLargeTitle": "File Too Large for Preview",
         "fileTooLargeMessage": "This file exceeds the maximum size for preview ({{maxSize}} MB). Please download the file and open it on your computer.",
+        "fileTooLargePdfMessage": "This PDF exceeds the maximum size for online viewing ({{maxSize}} MB). You can open it in a new browser tab or download it.",
+        "fileTooLargeOfficeMessage": "This document exceeds the maximum size for online viewing ({{maxSize}} MB). Please download the file and open it on your computer.",
+        "openInNewTab": "Open in New Tab",
         "viewPreview": "View preview",
         "viewCode": "View source code"
     },

@@ -525,6 +525,9 @@
         "downloadFile": "Descargar archivo",
         "fileTooLargeTitle": "Archivo demasiado grande para vista previa",
         "fileTooLargeMessage": "Este archivo supera el tamaño máximo para vista previa ({{maxSize}} MB). Por favor, descargue el archivo y ábralo en su ordenador.",
+        "fileTooLargePdfMessage": "Este PDF supera el tamaño máximo para la visualización en línea ({{maxSize}} MB). Puede abrirlo en una nueva pestaña o descargarlo.",
+        "fileTooLargeOfficeMessage": "Este documento supera el tamaño máximo para la visualización en línea ({{maxSize}} MB). Por favor, descargue el archivo y ábralo en su ordenador.",
+        "openInNewTab": "Abrir en nueva pestaña",
         "viewPreview": "Ver vista previa",
         "viewCode": "Ver código fuente"
     },
