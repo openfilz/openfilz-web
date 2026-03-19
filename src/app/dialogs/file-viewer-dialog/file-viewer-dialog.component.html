@@ -43,6 +43,14 @@
       </button>
       }
 
+      <!-- Preview Toggle (HTML/Markdown) -->
+      @if (canTogglePreview) {
+      <button mat-icon-button (click)="togglePreviewMode()"
+        [matTooltip]="(isPreviewMode ? 'fileViewer.viewCode' : 'fileViewer.viewPreview') | translate">
+        <mat-icon>{{ isPreviewMode ? 'code' : 'visibility' }}</mat-icon>
+      </button>
+      }
+
       <!-- Download -->
       <button mat-icon-button (click)="download()" [matTooltip]="'common.download' | translate">
         <mat-icon>download</mat-icon>
@@ -126,11 +134,25 @@
     }
 
     <!-- Text Editor -->
-    @if (viewerMode === 'text' && !error) {
+    @if (viewerMode === 'text' && !error && !isPreviewMode) {
     <div class="text-viewer" style="height: 100%; width: 100%;">
       <app-text-editor [content]="textContent || ''" [language]="detectedLanguage" [readOnly]="!canEditDocument"
         (contentChange)="onTextContentChange($event)" (save)="saveDocument()">
       </app-text-editor>
+    </div>
+    }
+
+    <!-- HTML Preview (iframe) -->
+    @if (viewerMode === 'text' && !error && isPreviewMode && previewFileType === 'html') {
+    <div class="preview-viewer">
+      <iframe class="html-preview-iframe" [srcdoc]="htmlPreviewSrcdoc" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+    }
+
+    <!-- Markdown Preview -->
+    @if (viewerMode === 'text' && !error && isPreviewMode && previewFileType === 'md') {
+    <div class="preview-viewer" (click)="onPreviewClick($event)">
+      <div class="preview-content" [innerHTML]="renderedPreviewContent"></div>
     </div>
     }
 

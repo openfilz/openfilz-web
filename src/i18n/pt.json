@@ -524,7 +524,9 @@
         "unsupportedMessage": "Este tipo de arquivo não pode ser pré-visualizado no navegador.",
         "downloadFile": "Baixar Arquivo",
         "fileTooLargeTitle": "Arquivo muito grande para pré-visualização",
-        "fileTooLargeMessage": "Este arquivo excede o tamanho máximo para pré-visualização ({{maxSize}} MB). Por favor, baixe o arquivo e abra-o no seu computador."
+        "fileTooLargeMessage": "Este arquivo excede o tamanho máximo para pré-visualização ({{maxSize}} MB). Por favor, baixe o arquivo e abra-o no seu computador.",
+        "viewPreview": "Ver pré-visualização",
+        "viewCode": "Ver código-fonte"
     },
     "upload": {
         "title": "Uploads",

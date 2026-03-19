@@ -524,7 +524,9 @@
         "unsupportedMessage": "Ce type de fichier ne peut pas être prévisualisé dans le navigateur.",
         "downloadFile": "Télécharger le fichier",
         "fileTooLargeTitle": "Fichier trop volumineux pour l'aperçu",
-        "fileTooLargeMessage": "Ce fichier dépasse la taille maximale pour l'aperçu ({{maxSize}} Mo). Veuillez télécharger le fichier et l'ouvrir sur votre ordinateur."
+        "fileTooLargeMessage": "Ce fichier dépasse la taille maximale pour l'aperçu ({{maxSize}} Mo). Veuillez télécharger le fichier et l'ouvrir sur votre ordinateur.",
+        "viewPreview": "Voir l'aperçu",
+        "viewCode": "Voir le code source"
     },
     "upload": {
         "title": "Téléversements",

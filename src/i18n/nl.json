@@ -524,7 +524,9 @@
         "unsupportedMessage": "Dit bestandstype kan niet worden bekeken in de browser.",
         "downloadFile": "Bestand downloaden",
         "fileTooLargeTitle": "Bestand te groot voor voorbeeld",
-        "fileTooLargeMessage": "Dit bestand overschrijdt de maximale grootte voor voorbeeld ({{maxSize}} MB). Download het bestand en open het op uw computer."
+        "fileTooLargeMessage": "Dit bestand overschrijdt de maximale grootte voor voorbeeld ({{maxSize}} MB). Download het bestand en open het op uw computer.",
+        "viewPreview": "Voorbeeld bekijken",
+        "viewCode": "Broncode bekijken"
     },
     "upload": {
         "title": "Uploads",

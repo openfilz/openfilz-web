@@ -23,6 +23,9 @@ import * as pdfjsLib from 'pdfjs-dist';
 // Syntax highlighting
 import hljs from 'highlight.js';
 
+// Markdown rendering
+import { marked } from 'marked';
+
 // Office document viewers
 import * as mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
@@ -91,6 +94,11 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   // Text viewer properties
   textContent?: string;
   highlightedContent?: SafeHtml;
+
+  // Preview mode properties (HTML/Markdown)
+  isPreviewMode: boolean = false;
+  renderedPreviewContent?: SafeHtml;
+  htmlPreviewSrcdoc?: SafeHtml;
 
   // Office viewer properties
   officeContent?: SafeHtml;
@@ -579,5 +587,68 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   get showPageNavigation(): boolean {
     return this.viewerMode === 'pdf' && this.totalPages > 1;
+  }
+
+  // ========== HTML/Markdown Preview ==========
+  get canTogglePreview(): boolean {
+    if (this.viewerMode !== 'text') return false;
+    const ext = this.getFileExtension(this.data.fileName);
+    return ext === 'html' || ext === 'md';
+  }
+
+  get previewFileType(): 'html' | 'md' | null {
+    const ext = this.getFileExtension(this.data.fileName);
+    if (ext === 'html') return 'html';
+    if (ext === 'md') return 'md';
+    return null;
+  }
+
+  togglePreviewMode() {
+    this.isPreviewMode = !this.isPreviewMode;
+    if (this.isPreviewMode) {
+      this.renderPreview();
+    }
+  }
+
+  private renderPreview() {
+    const content = this.textContent || '';
+    const ext = this.getFileExtension(this.data.fileName);
+
+    if (ext === 'html') {
+      this.htmlPreviewSrcdoc = this.sanitizer.bypassSecurityTrustHtml(content);
+    } else if (ext === 'md') {
+      const renderer = new marked.Renderer();
+      renderer.heading = ({ text, depth }) => {
+        const id = text.toLowerCase().replace(/<[^>]*>/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
+        return `<h${depth} id="${id}">${text}</h${depth}>`;
+      };
+      renderer.link = ({ href, title, text }) => {
+        if (href && href.startsWith('#')) {
+          return `<a href="${href}" title="${title || ''}">${text}</a>`;
+        }
+        return `<a href="${href}" title="${title || ''}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      };
+      const html = marked.parse(content, { renderer }) as string;
+      this.renderedPreviewContent = this.sanitizer.bypassSecurityTrustHtml(html);
+    }
+  }
+
+  onPreviewClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const anchor = target.closest('a');
+    if (!anchor) return;
+
+    const href = anchor.getAttribute('href');
+    if (!href) return;
+
+    // Handle anchor links within the document
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const id = href.substring(1);
+      const element = (event.currentTarget as HTMLElement).querySelector(`[id="${id}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }
 }
