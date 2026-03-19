@@ -187,7 +187,7 @@ export class FileIconService {
     }
 
     getFileSize(bytes: number): string {
-        if (bytes === 0) return '0 ' + this.translate.instant('fileSize.B');
+        if (bytes === 0) return '-';
 
         const unitKeys = ['fileSize.B', 'fileSize.KB', 'fileSize.MB', 'fileSize.GB', 'fileSize.TB'];
         const i = Math.floor(Math.log(bytes) / Math.log(1024));
