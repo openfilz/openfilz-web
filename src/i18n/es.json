@@ -524,7 +524,9 @@
         "unsupportedMessage": "Este tipo de archivo no se puede previsualizar en el navegador.",
         "downloadFile": "Descargar archivo",
         "fileTooLargeTitle": "Archivo demasiado grande para vista previa",
-        "fileTooLargeMessage": "Este archivo supera el tamaño máximo para vista previa ({{maxSize}} MB). Por favor, descargue el archivo y ábralo en su ordenador."
+        "fileTooLargeMessage": "Este archivo supera el tamaño máximo para vista previa ({{maxSize}} MB). Por favor, descargue el archivo y ábralo en su ordenador.",
+        "viewPreview": "Ver vista previa",
+        "viewCode": "Ver código fuente"
     },
     "upload": {
         "title": "Subidas",

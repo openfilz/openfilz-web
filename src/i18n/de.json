@@ -524,7 +524,9 @@
         "unsupportedMessage": "Dieser Dateityp kann nicht im Browser in der Vorschau angezeigt werden.",
         "downloadFile": "Datei herunterladen",
         "fileTooLargeTitle": "Datei zu groß für Vorschau",
-        "fileTooLargeMessage": "Diese Datei überschreitet die maximale Größe für die Vorschau ({{maxSize}} MB). Bitte laden Sie die Datei herunter und öffnen Sie sie auf Ihrem Computer."
+        "fileTooLargeMessage": "Diese Datei überschreitet die maximale Größe für die Vorschau ({{maxSize}} MB). Bitte laden Sie die Datei herunter und öffnen Sie sie auf Ihrem Computer.",
+        "viewPreview": "Vorschau anzeigen",
+        "viewCode": "Quellcode anzeigen"
     },
     "upload": {
         "title": "Uploads",

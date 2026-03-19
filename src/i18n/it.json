@@ -524,7 +524,9 @@
         "unsupportedMessage": "Questo tipo di file non può essere visualizzato in anteprima nel browser.",
         "downloadFile": "Scarica File",
         "fileTooLargeTitle": "File troppo grande per l'anteprima",
-        "fileTooLargeMessage": "Questo file supera la dimensione massima per l'anteprima ({{maxSize}} MB). Scarica il file e aprilo sul tuo computer."
+        "fileTooLargeMessage": "Questo file supera la dimensione massima per l'anteprima ({{maxSize}} MB). Scarica il file e aprilo sul tuo computer.",
+        "viewPreview": "Visualizza anteprima",
+        "viewCode": "Visualizza codice sorgente"
     },
     "upload": {
         "title": "Caricamenti",
