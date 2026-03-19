@@ -14,7 +14,9 @@ import { AuthImageDirective } from '../../directives/auth-image.directive';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DocumentApiService } from '../../services/document-api.service';
 import { FileIconService } from '../../services/file-icon.service';
+import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { DocumentType, ElementInfo, FileItem } from '../../models/document.models';
+import { environment } from '../../../environments/environment';
 
 export interface DashboardFileItem extends FileItem {
   owner: string;
@@ -65,6 +67,7 @@ export class DashboardComponent implements OnInit {
   private translate = inject(TranslateService);
   private router = inject(Router); // Inject Router
   private dialog = inject(MatDialog); // Inject MatDialog
+  private onlyOfficeService = inject(OnlyOfficeService);
 
   recentlyEditedFiles: RecentFile[] = [];
   allFiles: DashboardFileItem[] = [];
@@ -324,6 +327,24 @@ export class DashboardComponent implements OnInit {
 
   // File Actions
   onOpenFile(file: RecentFile) {
+    // Check if file is too large for preview
+    if (file.size && this.isFileTooLargeForPreview(file)) {
+      const isPdf = (file.contentType || '').toLowerCase() === 'application/pdf'
+        || file.name.toLowerCase().endsWith('.pdf');
+      const isOnlyOfficeFile = this.onlyOfficeService.isOnlyOfficeEnabled()
+        && this.onlyOfficeService.isSupportedExtension(file.name);
+      const maxSizeMB = isOnlyOfficeFile ? environment.onlyOffice.maxFileSize : 10;
+      import('../../dialogs/file-too-large-dialog/file-too-large-dialog.component').then(m => {
+        this.dialog.open(m.FileTooLargeDialogComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          panelClass: 'file-too-large-dialog',
+          data: { fileName: file.name, documentId: file.id, isPdf, maxSizeMB }
+        });
+      });
+      return;
+    }
+
     // Open file viewer dialog
     import('../../dialogs/file-viewer-dialog/file-viewer-dialog.component').then(m => {
       this.dialog.open(m.FileViewerDialogComponent, {
@@ -335,11 +356,21 @@ export class DashboardComponent implements OnInit {
         data: {
           documentId: file.id,
           fileName: file.name,
-          contentType: this.getFileContentType(file), // Helper to get content type
+          contentType: this.getFileContentType(file),
           fileSize: file.size
         }
       });
     });
+  }
+
+  private isFileTooLargeForPreview(file: RecentFile): boolean {
+    if (!file.size) return false;
+    const isOnlyOfficeFile = this.onlyOfficeService.isOnlyOfficeEnabled()
+      && this.onlyOfficeService.isSupportedExtension(file.name);
+    if (isOnlyOfficeFile) {
+      return file.size > environment.onlyOffice.maxFileSize * 1024 * 1024;
+    }
+    return file.size > 10 * 1024 * 1024;
   }
 
   // Helper to infer content type since it might not be in RecentFile interface explicitly or normalized

@@ -20,6 +20,7 @@ import { CreateDocumentDialogComponent, CreateDocumentDialogData, CreateDocument
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { FileTooLargeDialogComponent } from '../../dialogs/file-too-large-dialog/file-too-large-dialog.component';
 import { KeyboardShortcutsDialogComponent } from '../../dialogs/keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { ConfirmReplaceDialogComponent, ConfirmReplaceDialogData, ConfirmReplaceDialogResult } from '../../dialogs/confirm-replace-dialog/confirm-replace-dialog.component';
 import { PartialUploadResultDialogComponent, PartialUploadResultDialogData } from '../../dialogs/partial-upload-result-dialog/partial-upload-result-dialog.component';
@@ -536,14 +537,17 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     }).subscribe({
       next: ({ folderInfo, ancestors }) => {
         // Build breadcrumb trail from ancestors + current folder
+        // Filter out the current folder from ancestors to avoid duplicates
         this.breadcrumbTrail = [
-          ...ancestors.map(ancestor => ({
-            id: ancestor.id,
-            name: ancestor.name,
-            type: DocumentType.FOLDER,
-            selected: false,
-            icon: this.fileIconService.getFileIcon(ancestor.name, 'FOLDER')
-          } as FileItem)),
+          ...ancestors
+            .filter(ancestor => ancestor.id !== folderId)
+            .map(ancestor => ({
+              id: ancestor.id,
+              name: ancestor.name,
+              type: DocumentType.FOLDER,
+              selected: false,
+              icon: this.fileIconService.getFileIcon(ancestor.name, 'FOLDER')
+            } as FileItem)),
           {
             id: folderId,
             name: folderInfo.name,
@@ -883,6 +887,25 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   }
 
   private openFileViewer(item: FileItem) {
+    // Check if file is too large for preview
+    if (this.isFileTooLargeForPreview(item)) {
+      const isPdf = (item.contentType || '').toLowerCase() === 'application/pdf'
+        || item.name.toLowerCase().endsWith('.pdf');
+      const maxSizeMB = this.getMaxPreviewSizeMB(item);
+      this.dialog.open(FileTooLargeDialogComponent, {
+        width: '520px',
+        maxWidth: '95vw',
+        panelClass: 'file-too-large-dialog',
+        data: {
+          fileName: item.name,
+          documentId: item.id,
+          isPdf,
+          maxSizeMB
+        }
+      });
+      return;
+    }
+
     const dialogRef = this.dialog.open(FileViewerDialogComponent, {
       width: '95vw',
       height: '95vh',
@@ -900,6 +923,22 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     dialogRef.afterClosed().subscribe(() => {
       this.onSelectAll(false);
     });
+  }
+
+  private isFileTooLargeForPreview(item: FileItem): boolean {
+    if (!item.size) return false;
+    const isOnlyOfficeFile = this.onlyOfficeService.isOnlyOfficeEnabled()
+      && this.onlyOfficeService.isSupportedExtension(item.name);
+    if (isOnlyOfficeFile) {
+      return item.size > environment.onlyOffice.maxFileSize * 1024 * 1024;
+    }
+    return item.size > 10 * 1024 * 1024; // 10 MB for other viewers
+  }
+
+  private getMaxPreviewSizeMB(item: FileItem): number {
+    const isOnlyOfficeFile = this.onlyOfficeService.isOnlyOfficeEnabled()
+      && this.onlyOfficeService.isSupportedExtension(item.name);
+    return isOnlyOfficeFile ? environment.onlyOffice.maxFileSize : 10;
   }
 
   onCreateFolder() {

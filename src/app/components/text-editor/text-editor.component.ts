@@ -17,6 +17,7 @@ export class TextEditorComponent implements OnChanges, OnDestroy {
   @Input() language: string = 'plaintext';
   @Input() readOnly: boolean = false;
   @Input() theme: string = 'vs-light';
+  @Input() largeFile: boolean = false;
 
   @Output() contentChange = new EventEmitter<string>();
   @Output() save = new EventEmitter<void>();
@@ -34,13 +35,21 @@ export class TextEditorComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['language']) {
-      this.editorOptions = { ...this.editorOptions, language: this.language };
+      this.editorOptions = { ...this.editorOptions, language: this.largeFile ? 'plaintext' : this.language };
     }
     if (changes['readOnly']) {
       this.editorOptions = { ...this.editorOptions, readOnly: this.readOnly };
     }
     if (changes['theme']) {
       this.editorOptions = { ...this.editorOptions, theme: this.theme };
+    }
+    if (changes['largeFile']) {
+      this.editorOptions = {
+        ...this.editorOptions,
+        language: this.largeFile ? 'plaintext' : this.language,
+        minimap: { enabled: !this.largeFile },
+        wordWrap: this.largeFile ? 'off' : 'on'
+      };
     }
   }
 

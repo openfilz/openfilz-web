@@ -7,6 +7,7 @@ export const environment = {
         enabled: import.meta.env['NG_APP_AUTHENTICATION_ENABLED'] === 'true'
     },
     onlyOffice: {
-        enabled: import.meta.env['NG_APP_ONLYOFFICE_ENABLED'] === 'true'
+        enabled: import.meta.env['NG_APP_ONLYOFFICE_ENABLED'] === 'true',
+        maxFileSize: Number(import.meta.env['NG_APP_ONLYOFFICE_MAX_FILE_SIZE']) || 30
     }
 };

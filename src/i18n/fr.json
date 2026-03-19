@@ -525,6 +525,9 @@
         "downloadFile": "Télécharger le fichier",
         "fileTooLargeTitle": "Fichier trop volumineux pour l'aperçu",
         "fileTooLargeMessage": "Ce fichier dépasse la taille maximale pour l'aperçu ({{maxSize}} Mo). Veuillez télécharger le fichier et l'ouvrir sur votre ordinateur.",
+        "fileTooLargePdfMessage": "Ce PDF dépasse la taille maximale pour la visualisation en ligne ({{maxSize}} Mo). Vous pouvez l'ouvrir dans un nouvel onglet ou le télécharger.",
+        "fileTooLargeOfficeMessage": "Ce document dépasse la taille maximale pour la visualisation en ligne ({{maxSize}} Mo). Veuillez télécharger le fichier et l'ouvrir sur votre ordinateur.",
+        "openInNewTab": "Ouvrir dans un nouvel onglet",
         "viewPreview": "Voir l'aperçu",
         "viewCode": "Voir le code source"
     },

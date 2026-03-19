@@ -525,6 +525,9 @@
         "downloadFile": "Bestand downloaden",
         "fileTooLargeTitle": "Bestand te groot voor voorbeeld",
         "fileTooLargeMessage": "Dit bestand overschrijdt de maximale grootte voor voorbeeld ({{maxSize}} MB). Download het bestand en open het op uw computer.",
+        "fileTooLargePdfMessage": "Dit PDF-bestand overschrijdt de maximale grootte voor online weergave ({{maxSize}} MB). U kunt het openen in een nieuw tabblad of downloaden.",
+        "fileTooLargeOfficeMessage": "Dit document overschrijdt de maximale grootte voor online weergave ({{maxSize}} MB). Download het bestand en open het op uw computer.",
+        "openInNewTab": "Openen in nieuw tabblad",
         "viewPreview": "Voorbeeld bekijken",
         "viewCode": "Broncode bekijken"
     },
