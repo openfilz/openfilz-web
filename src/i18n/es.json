@@ -66,6 +66,8 @@
         "clearSearch": "Borrar búsqueda",
         "toggleMobileMenu": "Alternar menú móvil",
         "activeFilters": "Filtros activos",
+        "results": "resultados",
+        "inMs": "en {{ms}}ms",
         "changeLanguage": "Cambiar idioma",
         "open": "Abrir",
         "language": "Idioma",

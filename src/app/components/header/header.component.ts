@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, Output, EventEmitter, inject } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchService } from "../../services/search.service";
-import { debounceTime, distinctUntilChanged, switchMap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, switchMap, tap } from "rxjs/operators";
 import { Suggestion, SearchFilters } from "../../models/document.models";
 import { DocumentApiService } from "../../services/document-api.service";
 import { SearchFiltersComponent } from "../search-filters/search-filters.component";
@@ -27,15 +28,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   showFilters = false;
   userInitials: string = '';
   currentFilters?: SearchFilters;
+  suggestionTimeMs: number = 0;
 
   private searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
+  private suggestionStartTime: number = 0;
 
   private searchService = inject(SearchService);
   private apiService = inject(DocumentApiService);
   private router = inject(Router);
   private elementRef = inject(ElementRef);
   private translate = inject(TranslateService);
+  private sanitizer = inject(DomSanitizer);
 
   // Language selector
   availableLanguages = [
@@ -70,8 +74,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap(() => this.suggestionStartTime = performance.now()),
       switchMap(query => this.searchService.getSuggestions(query))
     ).subscribe(suggestions => {
+      this.suggestionTimeMs = Math.round(performance.now() - this.suggestionStartTime);
       this.suggestions = suggestions;
     });
   }
@@ -278,6 +284,60 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     } else {
       this.userInitials = name.substring(0, 2).toUpperCase();
+    }
+  }
+
+  getFullName(suggestion: Suggestion): string {
+    if (suggestion.ext == null) return suggestion.s;
+    if (suggestion.ext.length === 0) return suggestion.s;
+    return `${suggestion.s}.${suggestion.ext}`;
+  }
+
+  highlightMatch(suggestion: Suggestion): SafeHtml {
+    const fullName = this.getFullName(suggestion);
+    if (!this.searchQuery || !this.searchQuery.trim()) {
+      return this.sanitizer.bypassSecurityTrustHtml(this.escapeHtml(fullName));
+    }
+
+    const terms = this.searchQuery.trim().split(/\s+/).filter(t => t.length > 0);
+    if (terms.length === 0) {
+      return this.sanitizer.bypassSecurityTrustHtml(this.escapeHtml(fullName));
+    }
+
+    // Build a regex that matches any of the search terms
+    const escapedTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regex = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
+
+    const html = this.escapeHtml(fullName).replace(regex, '<mark>$1</mark>');
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  private escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
+  getFileTypeLabel(ext: string | undefined): string {
+    if (ext == null) return 'Folder';
+    switch (ext.toLowerCase()) {
+      case 'pdf': return 'PDF';
+      case 'doc': case 'docx': return 'Word';
+      case 'xls': case 'xlsx': return 'Excel';
+      case 'ppt': case 'pptx': return 'PowerPoint';
+      case 'png': case 'jpg': case 'jpeg': case 'gif': case 'svg': case 'webp': return 'Image';
+      case 'zip': case 'rar': case '7z': case 'tar': case 'gz': return 'Archive';
+      case 'txt': return 'Text';
+      case 'md': return 'Markdown';
+      case 'json': return 'JSON';
+      case 'xml': return 'XML';
+      case 'html': case 'htm': return 'HTML';
+      case 'css': return 'CSS';
+      case 'js': case 'ts': return 'Code';
+      case 'sql': return 'SQL';
+      case 'mp4': case 'avi': case 'mov': case 'mkv': return 'Video';
+      case 'mp3': case 'wav': case 'ogg': case 'flac': return 'Audio';
+      default: return ext.toUpperCase();
     }
   }
 

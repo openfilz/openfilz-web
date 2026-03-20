@@ -217,129 +217,178 @@
     height: 16px;
 }
 
-/* 2. Style the main clickable area */
-.suggestion-info {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    flex-grow: 1;
-    /* Allow this section to take up available space */
-    min-width: 0;
-    /* Important for flexbox to allow text to truncate */
-}
-
-.suggestions-list {
-    max-height: 442px;
-    overflow-y: auto;
-    height: auto;
-    display: block;
-    visibility: visible;
-    opacity: 1;
+/* Suggestions Dropdown Container */
+.suggestions-dropdown {
     position: absolute;
-    top: 45px;
+    top: calc(100% + 6px);
     left: 0;
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     z-index: 1000;
     background-color: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.15));
+    overflow: hidden;
+    animation: dropdownFadeIn 150ms ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.suggestions-header {
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.suggestions-timing {
+    color: var(--text-tertiary);
+}
+
+.suggestions-list {
+    max-height: 400px;
+    overflow-y: auto;
     list-style-type: none;
     margin: 0;
-    padding: 0;
-    box-shadow: var(--shadow-md);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.suggestions-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.suggestions-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.suggestions-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
 }
 
 .suggestions-list li {
+    list-style: none;
+}
+
+.suggestion-card {
     display: flex;
     align-items: center;
-    /* REMOVED: justify-content: space-between; */
-    /* The default is 'flex-start', which aligns all items to the beginning (left). */
+    justify-content: space-between;
     padding: 10px 12px;
-    border-bottom: 1px solid #eee;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 150ms ease;
 }
 
-.suggestions-list li:last-child {
-    border-bottom: none;
+.suggestion-card:hover {
+    background-color: color-mix(in srgb, var(--primary) 6%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
-/* 2. The info block no longer needs to 'grow' */
-.suggestion-info {
+.suggestion-main {
     display: flex;
     align-items: center;
-    cursor: pointer;
-    /* REMOVED: flex-grow: 1; */
+    gap: 12px;
     min-width: 0;
-    /* Still good practice for text truncation */
-}
-
-.suggestion-info:hover .suggestion-text {
-    text-decoration: underline;
+    flex: 1;
 }
 
 .suggestion-icon {
-    margin-right: 12px;
-    color: #5f6368;
+    font-size: 16px;
+    width: 20px;
     display: flex;
+    align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
-.suggestion-text {
+.suggestion-icon.fa-folder { color: #f59e0b; }
+.suggestion-icon.fa-file-pdf { color: #ef4444; }
+.suggestion-icon.fa-file-word { color: #3b82f6; }
+.suggestion-icon.fa-file-excel { color: #22c55e; }
+.suggestion-icon.fa-file-powerpoint { color: #f97316; }
+.suggestion-icon.fa-file-image { color: #a855f7; }
+.suggestion-icon.fa-file-zipper { color: #6b7280; }
+.suggestion-icon.fa-file-lines { color: #6b7280; }
+.suggestion-icon.fa-file { color: #94a3b8; }
+
+.suggestion-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.suggestion-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* 3. The actions block now pushes itself to the right */
+.suggestion-name ::ng-deep mark {
+    background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: var(--primary);
+    border-radius: 3px;
+    padding: 0 3px;
+    font-weight: 700;
+}
+
+.suggestion-type {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
 .suggestion-actions {
     display: flex;
     align-items: center;
-    padding-left: 15px;
-    /* Keeps a safe distance from the text */
-    margin-left: auto;
-    /* THIS IS THE MAGIC KEY! Pushes this block to the far right. */
+    gap: 2px;
+    margin-left: 8px;
+    opacity: 0;
+    transition: opacity 150ms ease;
 }
 
-/* 4. Action icon styling remains the same */
-.suggestion-actions i {
+.suggestion-card:hover .suggestion-actions {
+    opacity: 1;
+}
+
+.suggestion-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-tertiary);
     cursor: pointer;
-    font-size: 1em;
-    color: #555;
-    transition: color 0.2s ease-in-out;
-    padding: 5px;
-    text-decoration: none;
+    transition: all 150ms ease;
+    font-size: 12px;
 }
 
-.suggestion-actions i:hover {
-    color: #007bff;
-}
-
-.suggestion-actions i:first-child {
-    margin-right: 8px;
-}
-
-/* Bonus: Add some color to the icons! */
-.suggestion-icon.fa-folder {
-    color: #f9ca24;
-}
-
-.suggestion-icon.fa-file-pdf {
-    color: #e74c3c;
-}
-
-.suggestion-icon.fa-file-word {
-    color: #2980b9;
-}
-
-.suggestion-icon.fa-file-excel {
-    color: #27ae60;
-}
-
-.suggestion-icon.fa-file-image {
-    color: #8e44ad;
-}
-
-.suggestion-icon.fa-file {
-    color: #95a5a6;
+.suggestion-action-btn:hover {
+    background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
 }
 
 
@@ -449,12 +498,16 @@
         height: 20px;
     }
 
-    .suggestions-list {
+    .suggestions-dropdown {
         left: 0;
         right: 0;
         width: 100%;
-        max-height: 60vh;
+        max-width: 100%;
         border-radius: 0 0 12px 12px;
+    }
+
+    .suggestions-list {
+        max-height: 60vh;
     }
 
     .avatar {

@@ -66,6 +66,8 @@
         "clearSearch": "Suche löschen",
         "toggleMobileMenu": "Mobiles Menü umschalten",
         "activeFilters": "Aktive Filter",
+        "results": "Ergebnisse",
+        "inMs": "in {{ms}}ms",
         "changeLanguage": "Sprache ändern",
         "open": "Öffnen",
         "language": "Sprache",
