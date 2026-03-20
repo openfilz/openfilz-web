@@ -487,22 +487,44 @@
 @media (max-width: 768px) {
   .viewer-toolbar {
     flex-wrap: wrap;
-    min-height: auto;
-    padding: 8px;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 4px 8px;
   }
 
-  .toolbar-center,
+  .toolbar-center {
+    order: 1;
+    flex: 1 1 100%;
+    justify-content: center;
+    gap: 2px;
+  }
+
   .toolbar-right {
-    gap: 4px;
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .toolbar-right button {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
   }
 
   .file-name {
-    font-size: 14px;
+    font-size: 13px;
+    max-width: 70vw;
   }
 
   .zoom-level,
   .page-info {
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .zoom-controls {
+    gap: 0 !important;
   }
 
   .office-content {
