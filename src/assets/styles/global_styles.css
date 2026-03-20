@@ -516,6 +516,15 @@ html {
   height: 100% !important;
 }
 
+/* File Viewer Dialog — mobile toolbar fix */
+@media (max-width: 768px) {
+  .file-viewer-dialog-container .mat-toolbar,
+  .file-viewer-dialog-container .mat-mdc-toolbar {
+    height: auto !important;
+    min-height: auto !important;
+  }
+}
+
 /* ==================================
    ACCESSIBILITY ENHANCEMENTS
    ================================== */

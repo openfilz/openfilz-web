@@ -149,6 +149,13 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       return;
     }
 
+    // Auto-fullscreen on small screens (mobile devices)
+    if (window.innerWidth <= 768) {
+      this.isFullscreen = true;
+      this.dialogRef.updateSize('100vw', '100vh');
+      this.dialogRef.addPanelClass('fullscreen-dialog');
+    }
+
     // Intercept backdrop clicks for auto-save
     this.dialogRef.disableClose = true;
     this.dialogRef.backdropClick().subscribe(() => {

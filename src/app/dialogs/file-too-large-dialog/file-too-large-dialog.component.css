@@ -220,9 +220,16 @@
     font-size: 18px;
   }
 
+  .dialog-actions {
+    flex-wrap: wrap !important;
+    overflow: visible;
+  }
+
   .action-btn {
     min-width: 44px;
     padding: 0 16px;
+    flex: 1 1 100%;
+    justify-content: center;
   }
 
   .header-content {
