@@ -66,6 +66,8 @@
         "clearSearch": "Zoekopdracht wissen",
         "toggleMobileMenu": "Mobiel menu in-/uitschakelen",
         "activeFilters": "Actieve filters",
+        "results": "resultaten",
+        "inMs": "in {{ms}}ms",
         "changeLanguage": "Taal wijzigen",
         "open": "Openen",
         "language": "Taal",

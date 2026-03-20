@@ -32,20 +32,39 @@
 
             <!-- Suggestions Dropdown -->
             @if (suggestions.length > 0) {
-            <ul class="suggestions-list">
-                @for (suggestion of suggestions; track $index) {
-                <li class="suggestion-info" (click)="selectSuggestion(suggestion)">
-                    <i class="suggestion-icon" [ngClass]="getIconForExtension(suggestion.ext)"></i>
-                    <span class="suggestion-text">{{ suggestion.s }}</span>
-                    <div class="suggestion-actions">
-                        <i class="fa-solid fa-eye" [title]="'common.view' | translate"
-                            (click)="onOpen(suggestion, $event)"></i>
-                        <i class="fa-solid fa-download" [title]="'common.download' | translate"
-                            (click)="onDownload(suggestion, $event)"></i>
-                    </div>
-                </li>
-                }
-            </ul>
+            <div class="suggestions-dropdown">
+                <div class="suggestions-header">
+                    <span>{{ suggestions.length }} {{ 'header.results' | translate }}</span>
+                    @if (suggestionTimeMs > 0) {
+                    <span class="suggestions-timing">{{ 'header.inMs' | translate: { ms: suggestionTimeMs } }}</span>
+                    }
+                </div>
+                <ul class="suggestions-list">
+                    @for (suggestion of suggestions; track $index) {
+                    <li (click)="selectSuggestion(suggestion)">
+                        <div class="suggestion-card">
+                            <div class="suggestion-main">
+                                <i class="suggestion-icon" [ngClass]="getIconForExtension(suggestion.ext)"></i>
+                                <div class="suggestion-content">
+                                    <span class="suggestion-name" [innerHTML]="highlightMatch(suggestion)"></span>
+                                    <span class="suggestion-type">{{ getFileTypeLabel(suggestion.ext) }}</span>
+                                </div>
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="suggestion-action-btn" [title]="'common.view' | translate"
+                                    (click)="onOpen(suggestion, $event)">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="suggestion-action-btn" [title]="'common.download' | translate"
+                                    (click)="onDownload(suggestion, $event)">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    }
+                </ul>
+            </div>
             }
             @if (showFilters) {
             <app-search-filters [initialFilters]="currentFilters" (filtersChanged)="onFiltersChanged($event)"

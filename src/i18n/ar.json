@@ -66,6 +66,8 @@
         "clearSearch": "مسح البحث",
         "toggleMobileMenu": "تبديل القائمة المحمولة",
         "activeFilters": "الفلاتر النشطة",
+        "results": "نتائج",
+        "inMs": "في {{ms}}مل‌ث",
         "changeLanguage": "تغيير اللغة",
         "open": "فتح",
         "language": "اللغة",
