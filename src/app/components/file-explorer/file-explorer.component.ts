@@ -779,6 +779,9 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
     if (this.uploadedDocumentIds.size === 0) return;
 
+    // Skip polling if thumbnails are not enabled on the backend
+    if (!this.settingsService.isThumbnailsActive) return;
+
     // Find items matching uploaded IDs that need thumbnail polling (current page only)
     const itemsToRetry = this.items.filter(item =>
       this.uploadedDocumentIds.has(item.id) &&

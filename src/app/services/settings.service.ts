@@ -8,6 +8,7 @@ export interface Settings {
   emptyBinInterval: number | null;
   fileQuotaMB: number | null;
   userQuotaMB: number | null;
+  thumbnailsActive: boolean;
 }
 
 @Injectable({
@@ -34,8 +35,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false });
       })
     );
   }
@@ -50,5 +51,9 @@ export class SettingsService {
 
   get isRecycleBinEnabled(): boolean {
     return this.emptyBinInterval !== null;
+  }
+
+  get isThumbnailsActive(): boolean {
+    return this.settingsSubject.value?.thumbnailsActive ?? false;
   }
 }
