@@ -287,6 +287,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  sanitizeSnippet(snippet: string): SafeHtml {
+    // Strip everything except <mark> tags, then trust the result
+    const cleaned = this.escapeHtml(snippet)
+      .replace(/&lt;mark&gt;/g, '<mark>')
+      .replace(/&lt;\/mark&gt;/g, '</mark>');
+    return this.sanitizer.bypassSecurityTrustHtml(cleaned);
+  }
+
   getFullName(suggestion: Suggestion): string {
     if (suggestion.ext == null) return suggestion.s;
     if (suggestion.ext.length === 0) return suggestion.s;

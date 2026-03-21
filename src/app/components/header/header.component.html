@@ -47,7 +47,11 @@
                                 <i class="suggestion-icon" [ngClass]="getIconForExtension(suggestion.ext)"></i>
                                 <div class="suggestion-content">
                                     <span class="suggestion-name" [innerHTML]="highlightMatch(suggestion)"></span>
+                                    @if (suggestion.contentSnippet) {
+                                    <span class="suggestion-snippet" [innerHTML]="sanitizeSnippet(suggestion.contentSnippet)"></span>
+                                    } @else {
                                     <span class="suggestion-type">{{ getFileTypeLabel(suggestion.ext) }}</span>
+                                    }
                                 </div>
                             </div>
                             <div class="suggestion-actions">

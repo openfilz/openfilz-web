@@ -12,6 +12,7 @@ export interface Suggestion {
     id: string;
     s: string;
     ext?: string;
+    contentSnippet?: string;
 }
 
 export interface ElementInfo {
