@@ -517,16 +517,18 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     });
 
     this.searchService.filters$.subscribe(filters => {
-      if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
-        // Navigate to search results page for broad scope searches
-        const queryParams: any = { scope: filters.scope };
-        if (filters.scope === 'CURRENT_AND_SUBFOLDERS' && this.currentFolder?.id) {
-          queryParams.folderId = this.currentFolder.id;
+      if (!this.loading) {
+        if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
+          // Navigate to search results page for broad scope searches
+          const queryParams: any = { scope: filters.scope };
+          if (filters.scope === 'CURRENT_AND_SUBFOLDERS' && this.currentFolder?.id) {
+            queryParams.folderId = this.currentFolder.id;
+          }
+          this.router.navigate(['/search'], { queryParams });
+        } else {
+          this.currentFilters = filters;
+          this.reloadData();
         }
-        this.router.navigate(['/search'], { queryParams });
-      } else {
-        this.currentFilters = filters;
-        this.reloadData();
       }
     });
 
