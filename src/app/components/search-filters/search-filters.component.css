@@ -229,3 +229,16 @@
 .btn-apply:active {
   transform: translateY(0);
 }
+
+.btn-apply:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.btn-apply:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { SearchService } from '../../services/search.service';
@@ -17,7 +18,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
-import { DocumentSearchInfo, DocumentType, FileItem } from '../../models/document.models';
+import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchScope } from '../../models/document.models';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
 
@@ -33,6 +34,7 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
     MatDialogModule,
     MatSnackBarModule,
     MatIconModule,
+    MatTooltipModule,
     TranslateModule
 ],
   templateUrl: './search-results.component.html',
@@ -42,6 +44,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   searchQuery = '';
   metadataPanelOpen: boolean = false;
   selectedDocumentForMetadata?: string;
+
+  // Scope-based filter search (not text search)
+  scopeMode?: SearchScope;
+  scopeFolderId?: string;
 
   // Click delay handling to distinguish single-click from double-click
   private clickTimeout: any = null;
@@ -57,14 +63,30 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
 
   override ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.searchQuery = params['q'];
-      if (this.searchQuery) {
-        this.reloadData();
-      }
+      this.searchQuery = params['q'] || '';
+      this.scopeMode = params['scope'] as SearchScope | undefined;
+      this.scopeFolderId = params['folderId'];
+      this.reloadData();
     });
 
-    this.searchService.filters$.subscribe(() => {
-      if (this.searchQuery) {
+    this.searchService.filters$.subscribe(filters => {
+      if (filters.scope === 'CURRENT_ONLY' && this.scopeMode) {
+        // User switched back to current folder only — go back to file explorer
+        const queryParams: any = {};
+        if (this.scopeFolderId) {
+          queryParams.folderId = this.scopeFolderId;
+        }
+        this.router.navigate(['/my-folder'], { queryParams });
+        return;
+      }
+      if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
+        // Update scope mode from filters and reload
+        this.scopeMode = filters.scope;
+        this.reloadData();
+      } else if (this.scopeMode) {
+        // In scope mode, react to other filter changes (metadata, type, etc.)
+        this.reloadData();
+      } else if (this.searchQuery) {
         this.reloadData();
       }
     });
@@ -72,7 +94,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     this.searchService.sort$.subscribe(sort => {
       this.sortBy = sort.sortBy;
       this.sortOrder = sort.sortOrder;
-      if (this.searchQuery) {
+      if (this.searchQuery || this.scopeMode) {
         this.reloadData();
       }
     });
@@ -87,6 +109,14 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   }
 
   override reloadData(): void {
+    if (this.scopeMode) {
+      this.reloadScopeData();
+    } else if (this.searchQuery) {
+      this.reloadSearchData();
+    }
+  }
+
+  private reloadSearchData(): void {
     this.loading = true;
     this.searchService.searchDocuments(this.searchQuery).subscribe({
       next: (result) => {
@@ -101,6 +131,58 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     });
   }
 
+  private reloadScopeData(): void {
+    this.loading = true;
+    const currentFilters = this.searchService.getCurrentFilters();
+
+    if (this.scopeMode === 'ALL' || (this.scopeMode === 'CURRENT_AND_SUBFOLDERS' && !this.scopeFolderId)) {
+      // ALL scope, or CURRENT_AND_SUBFOLDERS at root level (no folder) → search all files
+      this.documentApi.listAllFolderAndCount(
+        this.pageIndex + 1, this.pageSize, currentFilters, this.sortBy, this.sortOrder
+      ).subscribe({
+        next: (result: ListFolderAndCountResponse) => {
+          this.totalItems = result.count;
+          this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Scope search failed', err);
+          this.loading = false;
+        }
+      });
+    } else if (this.scopeMode === 'CURRENT_AND_SUBFOLDERS') {
+      // Use listFolderAndCount with recursive: true (inside a specific folder)
+      const filtersWithRecursive = { ...currentFilters, scope: 'CURRENT_AND_SUBFOLDERS' as SearchScope };
+      this.documentApi.listFolderAndCount(
+        this.scopeFolderId, this.pageIndex + 1, this.pageSize, filtersWithRecursive, this.sortBy, this.sortOrder
+      ).subscribe({
+        next: (result: ListFolderAndCountResponse) => {
+          this.totalItems = result.count;
+          this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Scope search failed', err);
+          this.loading = false;
+        }
+      });
+    }
+  }
+
+  private transformElementToFileItem(item: ElementInfo): FileItem {
+    return {
+      id: item.id,
+      name: item.name,
+      type: item.type as DocumentType,
+      contentType: item.contentType,
+      size: item.size,
+      icon: this.fileIconService.getFileIcon(item.name, item.type as DocumentType),
+      thumbnailUrl: item.thumbnailUrl,
+      favorite: item.favorite,
+      selected: false
+    };
+  }
+
   private transformToFileItem(doc: DocumentSearchInfo): FileItem {
     const fileType = doc.extension ? DocumentType.FILE : DocumentType.FOLDER;
     return {
@@ -113,6 +195,24 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       thumbnailUrl: doc.thumbnailUrl,
       selected: false
     };
+  }
+
+  onClearFilters(): void {
+    // Reset filters (same as the "Clear" button in the filter panel)
+    this.searchService.updateFilters({
+      type: undefined,
+      dateModified: 'any',
+      owner: '',
+      fileType: 'any',
+      metadata: [],
+      scope: 'CURRENT_ONLY'
+    });
+    // Navigate back to My Folder (at the folder we came from, or root)
+    const queryParams: any = {};
+    if (this.scopeFolderId) {
+      queryParams.folderId = this.scopeFolderId;
+    }
+    this.router.navigate(['/my-folder'], { queryParams });
   }
 
   openMetadataPanel(documentId: string) {

@@ -22,6 +22,36 @@
   gap: 1rem;
 }
 
+.search-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clear-filters-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--text-secondary, #666);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.clear-filters-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: var(--primary-color, #5c6bc0);
+}
+
+.clear-filters-btn mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;

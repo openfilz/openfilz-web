@@ -21,7 +21,15 @@
   <main class="search-results-content" role="main" aria-label="Search results">
     <div class="search-header">
       <h1 class="search-title">
-        {{ "searchResults.title" | translate: { query: searchQuery } }}
+        @if (scopeMode) {
+          {{ "searchResults.filterResultsTitle" | translate }}
+          <button class="clear-filters-btn" (click)="onClearFilters()"
+            [matTooltip]="'searchResults.clearFilters' | translate">
+            <mat-icon>filter_list_off</mat-icon>
+          </button>
+        } @else {
+          {{ "searchResults.title" | translate: { query: searchQuery } }}
+        }
       </h1>
       @if (!loading && items.length > 0) {
         <p
@@ -92,7 +100,11 @@
       >
         <mat-spinner aria-hidden="true"></mat-spinner>
         <p>
-          {{ "searchResults.searchingFor" | translate: { query: searchQuery } }}
+          @if (scopeMode) {
+            {{ "searchResults.filtering" | translate }}
+          } @else {
+            {{ "searchResults.searchingFor" | translate: { query: searchQuery } }}
+          }
         </p>
         <span class="sr-only">{{ "searchResults.loading" | translate }}</span>
       </div>

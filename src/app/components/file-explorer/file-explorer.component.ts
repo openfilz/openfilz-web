@@ -119,8 +119,10 @@ import { environment } from '../../../environments/environment';
         <app-breadcrumb
           [breadcrumbs]="breadcrumbTrail"
           [currentFolderId]="currentFolder?.id ?? null"
+          [hasActiveFilters]="hasActiveFilters()"
           (navigate)="onBreadcrumbNavigate($event)"
-          (itemsDropped)="onDragDropMove($event)">
+          (itemsDropped)="onDragDropMove($event)"
+          (clearFilters)="onClearFilters()">
         </app-breadcrumb>
       </div>
 
@@ -515,8 +517,17 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     });
 
     this.searchService.filters$.subscribe(filters => {
-      this.currentFilters = filters;
-      this.reloadData();
+      if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
+        // Navigate to search results page for broad scope searches
+        const queryParams: any = { scope: filters.scope };
+        if (filters.scope === 'CURRENT_AND_SUBFOLDERS' && this.currentFolder?.id) {
+          queryParams.folderId = this.currentFolder.id;
+        }
+        this.router.navigate(['/search'], { queryParams });
+      } else {
+        this.currentFilters = filters;
+        this.reloadData();
+      }
     });
 
     // Register keyboard shortcuts
@@ -848,6 +859,28 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.loadFolder(this.breadcrumbTrail[index], true, false, true);
       }
     }
+  }
+
+  hasActiveFilters(): boolean {
+    if (!this.currentFilters) return false;
+    return !!(
+      this.currentFilters.type ||
+      (this.currentFilters.fileType && this.currentFilters.fileType !== 'any') ||
+      (this.currentFilters.dateModified && this.currentFilters.dateModified !== 'any') ||
+      this.currentFilters.owner ||
+      (this.currentFilters.metadata && this.currentFilters.metadata.length > 0)
+    );
+  }
+
+  onClearFilters() {
+    this.searchService.updateFilters({
+      type: undefined,
+      dateModified: 'any',
+      owner: '',
+      fileType: 'any',
+      metadata: [],
+      scope: 'CURRENT_ONLY'
+    });
   }
 
   onFileOverChange(isOver: boolean) {

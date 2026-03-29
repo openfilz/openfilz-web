@@ -168,7 +168,10 @@
         "noResults": "No se encontraron resultados",
         "noResultsMessage": "Intenta ajustar tus términos de búsqueda o filtros",
         "searchingFor": "Buscando \"{{query}}\"...",
-        "loading": "Cargando resultados de búsqueda"
+        "loading": "Cargando resultados de búsqueda",
+        "filterResultsTitle": "Resultados del filtro",
+        "filtering": "Filtrando...",
+        "clearFilters": "Borrar filtros"
     },
     "searchFilters": {
         "title": "Filtros de búsqueda",
@@ -194,6 +197,12 @@
             "images": "Imágenes",
             "documents": "Documentos",
             "spreadsheets": "Hojas de cálculo"
+        },
+        "scope": "Alcance de búsqueda",
+        "scopeOptions": {
+            "currentOnly": "Solo carpeta actual",
+            "currentAndSubfolders": "Carpeta actual y subcarpetas",
+            "all": "Todos los archivos"
         }
     },
     "uploadZone": {

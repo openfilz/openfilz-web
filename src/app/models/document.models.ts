@@ -243,7 +243,10 @@ export interface ListFolderRequest {
   favorite?: boolean;
   active?: boolean;
   pageInfo?: PageCriteria;
+  recursive?: boolean;
 }
+
+export type SearchScope = 'CURRENT_ONLY' | 'CURRENT_AND_SUBFOLDERS' | 'ALL';
 
 export interface SearchFilters {
   type?: DocumentType;
@@ -251,6 +254,7 @@ export interface SearchFilters {
   owner?: string;
   fileType?: string;
   metadata?: { key: string; value: string }[];
+  scope?: SearchScope;
 }
 
 // Navigation interfaces for search suggestion navigation

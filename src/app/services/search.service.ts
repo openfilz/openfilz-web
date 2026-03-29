@@ -32,6 +32,10 @@ export class SearchService {
     this.filtersSubject.next(filters);
   }
 
+  getCurrentFilters(): SearchFilters {
+    return this.filtersSubject.value;
+  }
+
   updateSort(sortBy: string, sortOrder: 'ASC' | 'DESC') {
     this.sortSubject.next({ sortBy, sortOrder });
     this.userPreferencesService.setSort(sortBy, sortOrder);

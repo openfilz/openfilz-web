@@ -20,4 +20,11 @@
   </ng-container>
   }
 
+  @if (hasActiveFilters) {
+    <button class="clear-filters-icon" (click)="onClearFilters()"
+      [matTooltip]="'searchResults.clearFilters' | translate">
+      <mat-icon>filter_list_off</mat-icon>
+    </button>
+  }
+
 </nav>

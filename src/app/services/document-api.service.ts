@@ -67,6 +67,24 @@ const LIST_FOLDER_AND_COUNT_QUERY = gql`
   }
 `;
 
+const LIST_ALL_FOLDER_QUERY = gql`
+  query listAllFolder($request: ListFolderRequest!) {
+    listAllFolder(request: $request) {
+      id
+      type
+      contentType
+      name
+      size
+      createdAt
+      updatedAt
+      createdBy
+      updatedBy
+      favorite
+      thumbnailUrl
+    }
+  }
+`;
+
 const LIST_FAVORITES_AND_COUNT_QUERY = gql`
   query listFavoritesAndCount($request1: FavoriteRequest!, $request2: FavoriteRequest) {
       listFavorites(request: $request1) {
@@ -207,6 +225,10 @@ export class DocumentApiService {
       request.metadata = this.toJsonMetadata(filters.metadata);
     }
 
+    if (filters.scope === 'CURRENT_AND_SUBFOLDERS') {
+      request.recursive = true;
+    }
+
     return request;
   }
 
@@ -291,6 +313,31 @@ export class DocumentApiService {
       map(result => ({
         listFolder: result.data.listFolder,
         count: result.data.count
+      }))
+    );
+  }
+
+  listAllFolderAndCount(page: number = 1, pageSize: number = 50, filters?: SearchFilters, sortBy?: string, sortOrder?: 'ASC' | 'DESC'): Observable<ListFolderAndCountResponse> {
+    const filterRequest = this.mapFiltersToRequest(filters);
+    const request = {
+      pageInfo: {
+        pageNumber: page,
+        pageSize: pageSize,
+        sortBy,
+        sortOrder
+      },
+      ...filterRequest
+    };
+
+    return this.apollo.watchQuery<any>({
+      fetchPolicy: 'no-cache',
+      query: LIST_ALL_FOLDER_QUERY,
+      variables: { request }
+    }).valueChanges.pipe(
+      filter(result => !result.loading),
+      map(result => ({
+        listFolder: result.data.listAllFolder,
+        count: result.data.listAllFolder?.length ?? 0
       }))
     );
   }

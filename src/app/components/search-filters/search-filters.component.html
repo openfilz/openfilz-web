@@ -9,6 +9,18 @@
 
   <!-- Scrollable Content -->
   <div class="filters-content">
+    <!-- Search Scope -->
+    <div class="filter-section">
+      <label>{{ 'searchFilters.scope' | translate }}</label>
+      <select [(ngModel)]="filters.scope">
+        @for (scope of scopeOptions; track scope) {
+          <option [value]="scope.value">
+            {{ scope.labelKey | translate }}
+          </option>
+        }
+      </select>
+    </div>
+
     <!-- Type Filter -->
     <div class="filter-section">
       <label>{{ 'common.type' | translate }}</label>
@@ -78,6 +90,6 @@
   <!-- Footer Actions -->
   <div class="filter-actions">
     <button class="btn-clear" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
-    <button class="btn-apply" (click)="applyFilters()">{{ 'searchFilters.applyFilters' | translate }}</button>
+    <button class="btn-apply" (click)="applyFilters()" [disabled]="!hasChanges">{{ 'searchFilters.applyFilters' | translate }}</button>
   </div>
 </div>

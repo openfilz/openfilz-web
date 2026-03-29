@@ -80,6 +80,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.suggestionTimeMs = Math.round(performance.now() - this.suggestionStartTime);
       this.suggestions = suggestions;
     });
+
+    // Keep header filters in sync (e.g. when cleared from search results page)
+    this.searchService.filters$.subscribe(filters => {
+      this.currentFilters = filters;
+    });
   }
 
   private initializeLanguage(): void {
@@ -147,8 +152,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     return !!(
       this.currentFilters.type ||
-      this.currentFilters.fileType ||
-      this.currentFilters.dateModified ||
+      (this.currentFilters.fileType && this.currentFilters.fileType !== 'any') ||
+      (this.currentFilters.dateModified && this.currentFilters.dateModified !== 'any') ||
       this.currentFilters.owner ||
       (this.currentFilters.metadata && this.currentFilters.metadata.length > 0)
     );
@@ -158,6 +163,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     console.log('Filters changed:', filters);
     this.currentFilters = filters;
     this.searchService.updateFilters(filters);
+
+    // For broad scope searches, navigate to search results page if not already on file-explorer
+    if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
+      const currentUrl = this.router.url;
+      if (!currentUrl.startsWith('/my-folder') && !currentUrl.startsWith('/search')) {
+        // From dashboard or other pages, navigate to search with scope (root folder)
+        const queryParams: any = { scope: filters.scope };
+        this.router.navigate(['/search'], { queryParams });
+      }
+    }
   }
 
   selectSuggestion(suggestion: Suggestion): void {

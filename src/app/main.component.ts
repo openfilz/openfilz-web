@@ -15,6 +15,7 @@ import { DownloadProgressComponent } from "./components/download-progress/downlo
 import { UploadProgressComponent } from "./components/upload-progress/upload-progress.component";
 import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
+import { SearchService } from "./services/search.service";
 import { ThemeService } from './services/theme.service';
 
 @Component({
@@ -42,6 +43,7 @@ export class MainComponent implements OnInit {
   private themeService = inject(ThemeService);
   private publicEventsService = environment.authentication.enabled ? inject(PublicEventsService) : null;
   private translateService = inject(TranslateService);
+  private searchService = inject(SearchService);
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
@@ -51,6 +53,7 @@ export class MainComponent implements OnInit {
   isWipRoute = false;
   isSidebarCollapsed = false;
   isMobileMenuOpen = false;
+  hasActiveFilters = false;
   private isRedirectingToLogin = false;
 
   // This is needed for the header component
@@ -66,6 +69,17 @@ export class MainComponent implements OnInit {
 
     // Ensure mobile menu starts closed
     this.isMobileMenuOpen = false;
+
+    // Track active filters for breadcrumb clear-filters chip
+    this.searchService.filters$.subscribe(filters => {
+      this.hasActiveFilters = !!(
+        filters.type ||
+        (filters.fileType && filters.fileType !== 'any') ||
+        (filters.dateModified && filters.dateModified !== 'any') ||
+        filters.owner ||
+        (filters.metadata && filters.metadata.length > 0)
+      );
+    });
 
     // Initialize the current route based on the URL
     this.updateCurrentRoute();
@@ -126,6 +140,17 @@ export class MainComponent implements OnInit {
         this.breadcrumbService.navigateTo(item);
       });
     }
+  }
+
+  onClearFilters() {
+    this.searchService.updateFilters({
+      type: undefined,
+      dateModified: 'any',
+      owner: '',
+      fileType: 'any',
+      metadata: [],
+      scope: 'CURRENT_ONLY'
+    });
   }
 
 

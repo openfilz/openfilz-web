@@ -23,7 +23,8 @@
   </app-header>
 
   @if(currentRoute == 'my-folder') {
-  <app-breadcrumb [breadcrumbs]="breadcrumbs" (navigate)="onNavigate($event)">
+  <app-breadcrumb [breadcrumbs]="breadcrumbs" [hasActiveFilters]="hasActiveFilters"
+    (navigate)="onNavigate($event)" (clearFilters)="onClearFilters()">
   </app-breadcrumb>
   }
 
