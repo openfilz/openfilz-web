@@ -168,7 +168,10 @@
         "noResults": "Geen resultaten gevonden",
         "noResultsMessage": "Probeer uw zoektermen of filters aan te passen",
         "searchingFor": "Zoeken naar \"{{query}}\"...",
-        "loading": "Zoekresultaten laden"
+        "loading": "Zoekresultaten laden",
+        "filterResultsTitle": "Filterresultaten",
+        "filtering": "Filteren...",
+        "clearFilters": "Filters wissen"
     },
     "searchFilters": {
         "title": "Zoekfilters",
@@ -194,6 +197,12 @@
             "images": "Afbeeldingen",
             "documents": "Documenten",
             "spreadsheets": "Spreadsheets"
+        },
+        "scope": "Zoekbereik",
+        "scopeOptions": {
+            "currentOnly": "Alleen huidige map",
+            "currentAndSubfolders": "Huidige map en submappen",
+            "all": "Alle bestanden"
         }
     },
     "uploadZone": {

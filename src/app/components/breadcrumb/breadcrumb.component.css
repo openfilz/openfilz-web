@@ -57,6 +57,38 @@ mat-icon {
   height: 18px;
 }
 
+.clear-filters-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--text-tertiary, #94a3b8);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.clear-filters-icon:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.clear-filters-icon mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+:host-context([dir="rtl"]) .clear-filters-icon {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
 @media (max-width: 768px) {
   .breadcrumb {
     display: none;

@@ -168,7 +168,10 @@
         "noResults": "No results found",
         "noResultsMessage": "Try adjusting your search terms or filters",
         "searchingFor": "Searching for \"{{query}}\"...",
-        "loading": "Loading search results"
+        "loading": "Loading search results",
+        "filterResultsTitle": "Filter results",
+        "filtering": "Filtering...",
+        "clearFilters": "Clear filters"
     },
     "searchFilters": {
         "title": "Search Filters",
@@ -194,6 +197,12 @@
             "images": "Images",
             "documents": "Documents",
             "spreadsheets": "Spreadsheets"
+        },
+        "scope": "Search scope",
+        "scopeOptions": {
+            "currentOnly": "Current folder only",
+            "currentAndSubfolders": "Current folder and subfolders",
+            "all": "All files"
         }
     },
     "uploadZone": {

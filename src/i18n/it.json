@@ -168,7 +168,10 @@
         "noResults": "Nessun risultato trovato",
         "noResultsMessage": "Prova a modificare i termini di ricerca o i filtri",
         "searchingFor": "Ricerca di \"{{query}}\" in corso...",
-        "loading": "Caricamento risultati di ricerca"
+        "loading": "Caricamento risultati di ricerca",
+        "filterResultsTitle": "Risultati del filtro",
+        "filtering": "Filtraggio in corso...",
+        "clearFilters": "Cancella filtri"
     },
     "searchFilters": {
         "title": "Filtri di Ricerca",
@@ -194,6 +197,12 @@
             "images": "Immagini",
             "documents": "Documenti",
             "spreadsheets": "Fogli di calcolo"
+        },
+        "scope": "Ambito di ricerca",
+        "scopeOptions": {
+            "currentOnly": "Solo cartella corrente",
+            "currentAndSubfolders": "Cartella corrente e sottocartelle",
+            "all": "Tutti i file"
         }
     },
     "uploadZone": {

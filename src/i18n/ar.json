@@ -168,7 +168,10 @@
         "noResults": "لم يتم العثور على نتائج",
         "noResultsMessage": "حاول تعديل مصطلحات البحث أو المرشحات",
         "searchingFor": "جاري البحث عن \"{{query}}\"...",
-        "loading": "جاري تحميل نتائج البحث"
+        "loading": "جاري تحميل نتائج البحث",
+        "filterResultsTitle": "نتائج التصفية",
+        "filtering": "جارٍ التصفية...",
+        "clearFilters": "مسح الفلاتر"
     },
     "searchFilters": {
         "title": "فلاتر البحث",
@@ -194,6 +197,12 @@
             "images": "صور",
             "documents": "مستندات",
             "spreadsheets": "جداول بيانات"
+        },
+        "scope": "نطاق البحث",
+        "scopeOptions": {
+            "currentOnly": "المجلد الحالي فقط",
+            "currentAndSubfolders": "المجلد الحالي والمجلدات الفرعية",
+            "all": "جميع الملفات"
         }
     },
     "uploadZone": {

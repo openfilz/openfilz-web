@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
-import { DocumentType, SearchFilters } from '../../models/document.models';
+import { DocumentType, SearchFilters, SearchScope } from '../../models/document.models';
 
 @Component({
   selector: 'app-search-filters',
@@ -24,18 +24,37 @@ export class SearchFiltersComponent implements OnInit {
     dateModified: 'any',
     owner: '',
     fileType: 'any',
-    metadata: []
+    metadata: [],
+    scope: 'ALL'
   };
 
   metadataFilters: { key: string; value: string }[] = [];
 
+  private snapshotFilters!: string;
+  private snapshotMetadata!: string;
+
   ngOnInit() {
     if (this.initialFilters) {
-      this.filters = { ...this.initialFilters };
+      this.filters = { ...this.filters, ...this.initialFilters };
+      if (!this.filters.scope) {
+        this.filters.scope = 'ALL';
+      }
       if (this.initialFilters.metadata) {
         this.metadataFilters = [...this.initialFilters.metadata];
       }
     }
+    this.takeSnapshot();
+  }
+
+  private takeSnapshot() {
+    this.snapshotFilters = JSON.stringify({ ...this.filters, metadata: undefined });
+    this.snapshotMetadata = JSON.stringify(this.metadataFilters);
+  }
+
+  get hasChanges(): boolean {
+    const currentFilters = JSON.stringify({ ...this.filters, metadata: undefined });
+    const currentMetadata = JSON.stringify(this.metadataFilters);
+    return currentFilters !== this.snapshotFilters || currentMetadata !== this.snapshotMetadata;
   }
 
   get showFileTypeFilter(): boolean {
@@ -63,6 +82,12 @@ export class SearchFiltersComponent implements OnInit {
     { labelKey: 'searchFilters.fileTypeOptions.spreadsheets', value: 'application/vnd.ms-excel' }
   ];
 
+  scopeOptions: { labelKey: string; value: SearchScope }[] = [
+    { labelKey: 'searchFilters.scopeOptions.all', value: 'ALL' },
+    { labelKey: 'searchFilters.scopeOptions.currentAndSubfolders', value: 'CURRENT_AND_SUBFOLDERS' },
+    { labelKey: 'searchFilters.scopeOptions.currentOnly', value: 'CURRENT_ONLY' }
+  ];
+
   addMetadataFilter() {
     this.metadataFilters.push({ key: '', value: '' });
   }
@@ -85,7 +110,8 @@ export class SearchFiltersComponent implements OnInit {
       dateModified: 'any',
       owner: '',
       fileType: 'any',
-      metadata: []
+      metadata: [],
+      scope: 'ALL'
     };
     this.metadataFilters = [];
     this.filtersChanged.emit(this.filters);
