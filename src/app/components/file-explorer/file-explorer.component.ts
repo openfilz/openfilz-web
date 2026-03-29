@@ -251,6 +251,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private shortcutsSubscription?: Subscription;
   private uploadedDocumentIds = new Set<string>();
   private thumbnailPollSubscription?: Subscription;
+  private filtersSubscription?: Subscription;
 
   private http = inject(HttpClient);
   private fileIconService = inject(FileIconService);
@@ -291,6 +292,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       this.shortcutsSubscription.unsubscribe();
     }
     this.thumbnailPollSubscription?.unsubscribe();
+    this.filtersSubscription?.unsubscribe();
   }
 
   @HostListener('keydown', ['$event'])
@@ -516,7 +518,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       }
     });
 
-    this.searchService.filters$.subscribe(filters => {
+    this.filtersSubscription = this.searchService.filters$.subscribe(filters => {
       if (!this.loading) {
         if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
           // Navigate to search results page for broad scope searches
