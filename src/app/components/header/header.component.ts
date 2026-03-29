@@ -164,7 +164,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.currentFilters = filters;
     this.searchService.updateFilters(filters);
 
-    // For broad scope searches, navigate to search results page if not already on file-explorer
+    // For broad scope searches, navigate to search results page if not already on file-explorer or search
     if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
       const currentUrl = this.router.url;
       if (!currentUrl.startsWith('/my-folder') && !currentUrl.startsWith('/search')) {

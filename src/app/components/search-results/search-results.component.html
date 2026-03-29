@@ -29,6 +29,12 @@
           </button>
         } @else {
           {{ "searchResults.title" | translate: { query: searchQuery } }}
+          @if (hasActiveFilters) {
+            <button class="clear-filters-btn" (click)="onClearFilters()"
+              [matTooltip]="'searchResults.clearFilters' | translate">
+              <mat-icon>filter_list_off</mat-icon>
+            </button>
+          }
         }
       </h1>
       @if (!loading && items.length > 0) {

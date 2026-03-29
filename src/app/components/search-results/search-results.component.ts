@@ -18,7 +18,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
-import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchScope } from '../../models/document.models';
+import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchFilters, SearchScope } from '../../models/document.models';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
 
@@ -49,6 +49,9 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   scopeMode?: SearchScope;
   scopeFolderId?: string;
 
+  // Remember the original search query so we can restore it after clearing filters
+  private originalSearchQuery = '';
+
   // Click delay handling to distinguish single-click from double-click
   private clickTimeout: any = null;
   private readonly CLICK_DELAY = 250; // milliseconds
@@ -66,6 +69,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       this.searchQuery = params['q'] || '';
       this.scopeMode = params['scope'] as SearchScope | undefined;
       this.scopeFolderId = params['folderId'];
+      // Remember the search query so we can restore it after clearing filters
+      if (this.searchQuery) {
+        this.originalSearchQuery = this.searchQuery;
+      }
       this.reloadData();
     });
 
@@ -109,10 +116,13 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   }
 
   override reloadData(): void {
-    if (this.scopeMode) {
-      this.reloadScopeData();
-    } else if (this.searchQuery) {
+    if (this.searchQuery) {
+      // When a search query is typed, always use searchDocuments()
+      // which properly ANDs the query text with all active filters
       this.reloadSearchData();
+    } else if (this.scopeMode) {
+      // Filter-only mode (no query text): use scope-based search
+      this.reloadScopeData();
     }
   }
 
@@ -197,22 +207,46 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     };
   }
 
-  onClearFilters(): void {
-    // Reset filters (same as the "Clear" button in the filter panel)
+  get hasActiveFilters(): boolean {
+    const filters = this.searchService.getCurrentFilters();
+    return !!(
+      filters.type ||
+      (filters.dateModified && filters.dateModified !== 'any') ||
+      filters.owner ||
+      (filters.fileType && filters.fileType !== 'any') ||
+      (filters.metadata && filters.metadata.length > 0)
+    );
+  }
+
+  private resetFilters(): void {
     this.searchService.updateFilters({
       type: undefined,
       dateModified: 'any',
       owner: '',
       fileType: 'any',
       metadata: [],
-      scope: 'CURRENT_ONLY'
+      scope: undefined
     });
-    // Navigate back to My Folder (at the folder we came from, or root)
-    const queryParams: any = {};
-    if (this.scopeFolderId) {
-      queryParams.folderId = this.scopeFolderId;
+  }
+
+  onClearFilters(): void {
+    // Reset local scope state
+    this.scopeMode = undefined;
+
+    if (this.originalSearchQuery) {
+      // Had a search query: restore query, reset filters (which triggers reload via filters$ subscription)
+      this.searchQuery = this.originalSearchQuery;
+      this.resetFilters();
+      // The filters$ subscription will detect searchQuery is set and call reloadSearchData()
+    } else {
+      // Filter-only mode: reset filters and navigate back to My Folder
+      this.resetFilters();
+      const queryParams: any = {};
+      if (this.scopeFolderId) {
+        queryParams.folderId = this.scopeFolderId;
+      }
+      this.router.navigate(['/my-folder'], { queryParams });
     }
-    this.router.navigate(['/my-folder'], { queryParams });
   }
 
   openMetadataPanel(documentId: string) {
