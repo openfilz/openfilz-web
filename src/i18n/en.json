@@ -611,5 +611,21 @@
         "MB": "MB",
         "GB": "GB",
         "TB": "TB"
+    },
+    "aiChat": {
+        "title": "AI Assistant",
+        "newConversation": "New conversation",
+        "conversations": "Conversations",
+        "noConversations": "No conversations yet",
+        "noConversationsHint": "Start a new conversation to get help with your documents",
+        "untitledConversation": "Untitled conversation",
+        "emptyChat": "How can I help you?",
+        "emptyChatHint": "Ask me anything about your documents",
+        "typeMessage": "Type a message...",
+        "send": "Send",
+        "deleteConversation": "Delete conversation",
+        "back": "Back to conversations",
+        "close": "Close chat",
+        "errorStreaming": "An error occurred while generating a response"
     }
 }

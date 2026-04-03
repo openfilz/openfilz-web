@@ -611,5 +611,21 @@
         "MB": "MB",
         "GB": "GB",
         "TB": "TB"
+    },
+    "aiChat": {
+        "title": "مساعد الذكاء الاصطناعي",
+        "newConversation": "محادثة جديدة",
+        "conversations": "المحادثات",
+        "noConversations": "لا توجد محادثات",
+        "noConversationsHint": "ابدأ محادثة جديدة للحصول على مساعدة بشأن مستنداتك",
+        "untitledConversation": "محادثة بدون عنوان",
+        "emptyChat": "كيف يمكنني مساعدتك؟",
+        "emptyChatHint": "اسألني عن مستنداتك",
+        "typeMessage": "اكتب رسالة...",
+        "send": "إرسال",
+        "deleteConversation": "حذف المحادثة",
+        "back": "العودة إلى المحادثات",
+        "close": "إغلاق الدردشة",
+        "errorStreaming": "حدث خطأ أثناء إنشاء الاستجابة"
     }
 }

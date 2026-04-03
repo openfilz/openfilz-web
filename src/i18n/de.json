@@ -611,5 +611,21 @@
         "MB": "MB",
         "GB": "GB",
         "TB": "TB"
+    },
+    "aiChat": {
+        "title": "KI-Assistent",
+        "newConversation": "Neue Unterhaltung",
+        "conversations": "Unterhaltungen",
+        "noConversations": "Keine Unterhaltungen",
+        "noConversationsHint": "Starten Sie eine neue Unterhaltung, um Hilfe bei Ihren Dokumenten zu erhalten",
+        "untitledConversation": "Unterhaltung ohne Titel",
+        "emptyChat": "Wie kann ich Ihnen helfen?",
+        "emptyChatHint": "Fragen Sie mich zu Ihren Dokumenten",
+        "typeMessage": "Nachricht eingeben...",
+        "send": "Senden",
+        "deleteConversation": "Unterhaltung loschen",
+        "back": "Zuruck zu Unterhaltungen",
+        "close": "Chat schliessen",
+        "errorStreaming": "Beim Generieren der Antwort ist ein Fehler aufgetreten"
     }
 }

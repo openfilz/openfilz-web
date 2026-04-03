@@ -1,0 +1,41 @@
+<div class="chat-panel" @slideUp>
+  <!-- Header -->
+  <div class="panel-header">
+    <div class="header-left">
+      @if (currentView === 'chat') {
+        <button mat-icon-button class="header-btn" (click)="onBack()"
+          [matTooltip]="'aiChat.back' | translate">
+          <mat-icon class="rtl-flip">arrow_back</mat-icon>
+        </button>
+      }
+      <div class="header-icon">
+        <mat-icon>smart_toy</mat-icon>
+      </div>
+      <span class="header-title">{{ 'aiChat.title' | translate }}</span>
+    </div>
+    <div class="header-right">
+      @if (currentView === 'conversations') {
+        <button mat-icon-button class="header-btn" (click)="onNewConversation()"
+          [matTooltip]="'aiChat.newConversation' | translate">
+          <mat-icon>edit_square</mat-icon>
+        </button>
+      }
+      <button mat-icon-button class="header-btn" (click)="onClose()"
+        [matTooltip]="'aiChat.close' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="panel-body">
+    @if (currentView === 'conversations') {
+      <app-ai-conversation-list
+        (conversationSelected)="onConversationSelected($event)"
+        (newConversation)="onNewConversation()">
+      </app-ai-conversation-list>
+    } @else {
+      <app-ai-chat-view></app-ai-chat-view>
+    }
+  </div>
+</div>

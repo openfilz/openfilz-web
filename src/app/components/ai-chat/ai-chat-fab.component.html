@@ -1,0 +1,17 @@
+<!-- Chat Panel -->
+@if (isOpen) {
+  <div class="panel-container">
+    <app-ai-chat-panel (closePanel)="close()"></app-ai-chat-panel>
+  </div>
+}
+
+<!-- FAB Button (hidden when panel is open — panel has its own close button) -->
+@if (!isOpen) {
+  <button mat-fab
+    class="ai-fab"
+    (click)="toggle()"
+    matTooltip="AI Assistant"
+    matTooltipPosition="left">
+    <mat-icon>smart_toy</mat-icon>
+  </button>
+}

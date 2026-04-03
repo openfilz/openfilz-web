@@ -611,5 +611,21 @@
         "MB": "Mo",
         "GB": "Go",
         "TB": "To"
+    },
+    "aiChat": {
+        "title": "Assistant IA",
+        "newConversation": "Nouvelle conversation",
+        "conversations": "Conversations",
+        "noConversations": "Aucune conversation",
+        "noConversationsHint": "Commencez une conversation pour obtenir de l'aide avec vos documents",
+        "untitledConversation": "Conversation sans titre",
+        "emptyChat": "Comment puis-je vous aider ?",
+        "emptyChatHint": "Posez-moi des questions sur vos documents",
+        "typeMessage": "Saisissez un message...",
+        "send": "Envoyer",
+        "deleteConversation": "Supprimer la conversation",
+        "back": "Retour aux conversations",
+        "close": "Fermer le chat",
+        "errorStreaming": "Une erreur est survenue lors de la generation de la reponse"
     }
 }

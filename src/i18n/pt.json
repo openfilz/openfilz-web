@@ -611,5 +611,21 @@
         "MB": "MB",
         "GB": "GB",
         "TB": "TB"
+    },
+    "aiChat": {
+        "title": "Assistente IA",
+        "newConversation": "Nova conversa",
+        "conversations": "Conversas",
+        "noConversations": "Sem conversas",
+        "noConversationsHint": "Inicie uma conversa para obter ajuda com seus documentos",
+        "untitledConversation": "Conversa sem titulo",
+        "emptyChat": "Como posso ajudar?",
+        "emptyChatHint": "Pergunte-me sobre seus documentos",
+        "typeMessage": "Digite uma mensagem...",
+        "send": "Enviar",
+        "deleteConversation": "Excluir conversa",
+        "back": "Voltar para conversas",
+        "close": "Fechar chat",
+        "errorStreaming": "Ocorreu um erro ao gerar a resposta"
     }
 }

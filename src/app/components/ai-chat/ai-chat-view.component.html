@@ -1,0 +1,39 @@
+<div class="chat-view">
+  <div class="messages-container" #messagesContainer>
+    @if (messages.length === 0 && !isStreaming) {
+      <div class="empty-state">
+        <mat-icon class="empty-icon">chat_bubble_outline</mat-icon>
+        <p>{{ 'aiChat.emptyChat' | translate }}</p>
+        <span class="hint">{{ 'aiChat.emptyChatHint' | translate }}</span>
+      </div>
+    }
+    @for (msg of messages; track $index) {
+      <app-ai-message [message]="msg"></app-ai-message>
+    }
+    @if (isStreaming && (messages.length === 0 || messages[messages.length - 1]?.role !== 'assistant' || !messages[messages.length - 1]?.content)) {
+      <div class="typing-row">
+        <app-ai-typing-indicator></app-ai-typing-indicator>
+      </div>
+    }
+  </div>
+
+  <div class="input-area">
+    <textarea
+      #messageInput
+      class="message-input"
+      [placeholder]="'aiChat.typeMessage' | translate"
+      [(ngModel)]="inputText"
+      (keydown)="onKeydown($event)"
+      (input)="onInput()"
+      [disabled]="isStreaming"
+      rows="1"
+    ></textarea>
+    <button mat-icon-button
+      class="send-btn"
+      [disabled]="!inputText.trim() || isStreaming"
+      (click)="onSend()"
+      [matTooltip]="'aiChat.send' | translate">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

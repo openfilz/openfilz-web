@@ -611,5 +611,21 @@
         "MB": "MB",
         "GB": "GB",
         "TB": "TB"
+    },
+    "aiChat": {
+        "title": "AI-assistent",
+        "newConversation": "Nieuw gesprek",
+        "conversations": "Gesprekken",
+        "noConversations": "Geen gesprekken",
+        "noConversationsHint": "Start een gesprek om hulp te krijgen bij uw documenten",
+        "untitledConversation": "Gesprek zonder titel",
+        "emptyChat": "Hoe kan ik u helpen?",
+        "emptyChatHint": "Stel me vragen over uw documenten",
+        "typeMessage": "Typ een bericht...",
+        "send": "Versturen",
+        "deleteConversation": "Gesprek verwijderen",
+        "back": "Terug naar gesprekken",
+        "close": "Chat sluiten",
+        "errorStreaming": "Er is een fout opgetreden bij het genereren van het antwoord"
     }
 }

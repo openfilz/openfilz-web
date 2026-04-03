@@ -9,5 +9,8 @@ export const environment = {
     onlyOffice: {
         enabled: true,
         maxFileSize: Number(import.meta.env['NG_APP_ONLYOFFICE_MAX_FILE_SIZE']) || 30
+    },
+    ai: {
+        enabled: (import.meta.env['NG_APP_AI_ENABLED'] ?? 'true') !== 'false'
     }
 };

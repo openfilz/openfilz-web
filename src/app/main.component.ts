@@ -13,6 +13,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { DownloadProgressComponent } from "./components/download-progress/download-progress.component";
 import { UploadProgressComponent } from "./components/upload-progress/upload-progress.component";
+import { AiChatFabComponent } from "./components/ai-chat/ai-chat-fab.component";
 import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
 import { SearchService } from "./services/search.service";
@@ -32,6 +33,7 @@ import { ThemeService } from './services/theme.service';
     BreadcrumbComponent,
     DownloadProgressComponent,
     UploadProgressComponent,
+    AiChatFabComponent,
     RouterOutlet
   ],
 })
@@ -47,6 +49,7 @@ export class MainComponent implements OnInit {
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
+  isAiEnabled = environment.ai.enabled;
   isDownloading = false;
   breadcrumbs: ElementInfo[] = [];
   currentRoute = '';
