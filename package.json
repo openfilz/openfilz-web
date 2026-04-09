@@ -40,7 +40,10 @@
   },
   "overrides": {
     "dompurify": "3.3.3",
-    "undici": "7.24.4"
+    "undici": "7.24.4",
+    "@ngx-env/builder": {
+      "glob": "13.0.6"
+    }
   },
   "devDependencies": {
     "@angular/build": "~21.2.3",
