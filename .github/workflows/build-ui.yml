@@ -155,7 +155,7 @@ jobs:
 
       - name: Merge main -> develop
         run: |
-          git fetch origin develop
+          git fetch --unshallow origin
           git checkout develop
           git merge main --no-edit
           git push origin develop
