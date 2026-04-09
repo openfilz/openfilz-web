@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,8 +35,10 @@ export interface CreateDocumentDialogResult {
     A11yModule
   ],
 })
-export class CreateDocumentDialogComponent implements OnInit {
+export class CreateDocumentDialogComponent implements OnInit, AfterViewInit {
   documentName = '';
+
+  @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
 
   readonly dialogRef = inject(MatDialogRef<CreateDocumentDialogComponent>);
   readonly data = inject<CreateDocumentDialogData>(MAT_DIALOG_DATA);
@@ -44,6 +46,21 @@ export class CreateDocumentDialogComponent implements OnInit {
   ngOnInit() {
     // Set default name based on document type
     this.documentName = this.getDefaultName();
+  }
+
+  ngAfterViewInit() {
+    // Select only the filename part (before extension) so user can type a name immediately
+    setTimeout(() => {
+      const input = this.nameInput?.nativeElement;
+      if (input) {
+        const dotIndex = this.documentName.lastIndexOf('.');
+        if (dotIndex > 0) {
+          input.setSelectionRange(0, dotIndex);
+        } else {
+          input.select();
+        }
+      }
+    });
   }
 
   getDefaultName(): string {

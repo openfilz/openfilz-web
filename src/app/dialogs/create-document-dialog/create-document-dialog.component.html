@@ -17,7 +17,7 @@
 <div mat-dialog-content class="dialog-content">
   <mat-form-field appearance="outline" class="document-name-field">
     <mat-label>{{ 'dialogs.createDocument.documentName' | translate }}</mat-label>
-    <input matInput [(ngModel)]="documentName" [placeholder]="getDefaultName()"
+    <input #nameInput matInput [(ngModel)]="documentName" [placeholder]="getDefaultName()"
       (keyup.enter)="onCreate()" autocomplete="off" [attr.aria-label]="'dialogs.createDocument.documentName' | translate"
       aria-required="true" cdkFocusInitial>
     <mat-icon matPrefix class="input-icon" aria-hidden="true">{{ getIcon() }}</mat-icon>

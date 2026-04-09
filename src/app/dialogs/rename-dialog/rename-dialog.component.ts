@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,14 +30,36 @@ export interface RenameDialogData {
     A11yModule
 ],
 })
-export class RenameDialogComponent {
+export class RenameDialogComponent implements AfterViewInit {
   newName: string;
+
+  @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
 
   readonly dialogRef = inject(MatDialogRef<RenameDialogComponent>);
   readonly data = inject<RenameDialogData>(MAT_DIALOG_DATA);
 
   constructor() {
     this.newName = this.data.name;
+  }
+
+  ngAfterViewInit() {
+    // For files, select only the filename part (before extension) so user can rename without losing the extension
+    // For folders, select the entire name
+    setTimeout(() => {
+      const input = this.nameInput?.nativeElement;
+      if (input) {
+        if (this.data.type === 'FILE') {
+          const dotIndex = this.newName.lastIndexOf('.');
+          if (dotIndex > 0) {
+            input.setSelectionRange(0, dotIndex);
+          } else {
+            input.select();
+          }
+        } else {
+          input.select();
+        }
+      }
+    });
   }
 
   onRename() {
