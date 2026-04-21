@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -21,16 +21,13 @@ export class SettingsService {
   private settingsSubject = new BehaviorSubject<Settings | null>(null);
   public settings$ = this.settingsSubject.asObservable();
 
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  }
+  // No manual Authorization or Content-Type. Authorization is injected by the global
+  // authInterceptor() from angular-auth-oidc-client (see main.ts secureRoutes).
+  // Content-Type is set automatically by Angular's HttpClient when a request body
+  // is passed as an object.
 
   loadSettings(): Observable<Settings> {
-    return this.http.get<Settings>(`${this.baseUrl}/settings`, {
-      headers: this.getHeaders()
-    }).pipe(
+    return this.http.get<Settings>(`${this.baseUrl}/settings`).pipe(
       tap(settings => this.settingsSubject.next(settings)),
       catchError(error => {
         console.error('Failed to load settings', error);
