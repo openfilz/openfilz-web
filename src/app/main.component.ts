@@ -96,7 +96,21 @@ export class MainComponent implements OnInit {
       this.breadcrumbs = breadcrumbs;
     });
 
-    // Listen for silent renew failures (expired refresh token) and redirect to login
+    // Listen for silent renew failures (expired refresh token) and redirect to login.
+    //
+    // Why we pass {@code prompt: 'login'} to {@code authorize()}:
+    //
+    // When the refresh token expires on our side, the Keycloak browser session has
+    // usually expired on its side too. Without an explicit prompt, the OIDC lib
+    // redirects to Keycloak's authz endpoint which then inspects KC's own cookies
+    // and, finding a dead session, renders a "login timeout — start over" error
+    // banner on its login page. That banner is confusing: the user just wants to
+    // log in again, they didn't do anything wrong.
+    //
+    // {@code prompt=login} is the OIDC-standard way to say "force a fresh login
+    // regardless of any existing session" — Keycloak skips the session check and
+    // renders a clean login form. Users see the login page, log in, and are
+    // returned to wherever they were.
     this.publicEventsService?.registerForEvents()
       .pipe(filter(event => event.type === EventTypes.SilentRenewFailed))
       .subscribe(() => {
@@ -104,9 +118,15 @@ export class MainComponent implements OnInit {
         this.isRedirectingToLogin = true;
         console.warn('Silent renew failed — session expired, redirecting to login');
         const message = this.translateService.instant('errors.sessionExpired');
-        this.snackBar.open(message, this.translateService.instant('common.ok'), { duration: 5000 });
-        // Give user a moment to see the message before redirecting
-        setTimeout(() => this.oidcSecurityService.authorize(), 2000);
+        this.snackBar.open(message, this.translateService.instant('common.ok'), { duration: 3000 });
+        // Short delay so the snackbar paints before the redirect unmounts the view.
+        // 1 s is plenty; the previous 2 s felt like the app was frozen.
+        setTimeout(
+          () => this.oidcSecurityService.authorize(undefined, {
+            customParams: { prompt: 'login' }
+          }),
+          1000
+        );
       });
   }
 
