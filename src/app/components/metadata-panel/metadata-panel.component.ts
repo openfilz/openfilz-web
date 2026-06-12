@@ -86,7 +86,8 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   private versionIdByLog = new Map<AuditLog, string>();
 
   /** Audit actions that create a new storage version of the file */
-  private readonly VERSION_CREATING_ACTIONS = ['UPLOAD_DOCUMENT', 'REPLACE_DOCUMENT_CONTENT', 'RESTORE_DOCUMENT_VERSION'];
+  private readonly VERSION_CREATING_ACTIONS =
+    ['UPLOAD_DOCUMENT', 'REPLACE_DOCUMENT_CONTENT', 'RESTORE_DOCUMENT_VERSION', 'COPY_FILE', 'COPY_FILE_CHILD'];
 
   // External file dragging state
   isExternalFileDragging: boolean = false;
