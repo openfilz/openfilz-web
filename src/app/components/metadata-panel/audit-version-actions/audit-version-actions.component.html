@@ -1,5 +1,7 @@
 @if (visible) {
   <div class="version-actions" role="group" [attr.aria-label]="'versions.actions' | translate">
+    <span class="version-number-badge"
+      [matTooltip]="'versions.viewingVersion' | translate:{date: versionDate}">v{{ versionNumber }}</span>
     @if (canView) {
       <button mat-icon-button class="version-action-btn" (click)="view()" [disabled]="busy"
         [matTooltip]="'versions.view' | translate"

@@ -81,7 +81,9 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   // File versions (MinIO bucket versioning, flag-gated)
   versions: DocumentVersionInfo[] = [];
-  private versionIdByAuditId: { [auditId: string]: string } = {};
+  // Keyed by the AuditLog OBJECT: the audit trail endpoint returns entries with a
+  // null id, so any id-based key would collapse every entry onto the same slot
+  private versionIdByLog = new Map<AuditLog, string>();
 
   /** Audit actions that create a new storage version of the file */
   private readonly VERSION_CREATING_ACTIONS = ['UPLOAD_DOCUMENT', 'REPLACE_DOCUMENT_CONTENT', 'RESTORE_DOCUMENT_VERSION'];
@@ -215,7 +217,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.auditError = undefined;
     this.selectedTabIndex = 0;
     this.versions = [];
-    this.versionIdByAuditId = {};
+    this.versionIdByLog.clear();
   }
 
   get versioningEnabled(): boolean {
@@ -460,7 +462,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   private loadVersions() {
     if (!this.versioningEnabled || !this.documentId || this.documentInfo?.type !== 'FILE') {
       this.versions = [];
-      this.versionIdByAuditId = {};
+      this.versionIdByLog.clear();
       return;
     }
     this.documentVersionsService.listVersions(this.documentId).subscribe({
@@ -471,7 +473,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       error: () => {
         // Flag drift (backend versioning off → 409) or transient error: just no actions
         this.versions = [];
-        this.versionIdByAuditId = {};
+        this.versionIdByLog.clear();
       }
     });
   }
@@ -484,7 +486,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
    * when the counts line up exactly; otherwise actions are suppressed on legacy entries.
    */
   private computeVersionMapping() {
-    this.versionIdByAuditId = {};
+    this.versionIdByLog.clear();
     const entries = this.auditLogs
       .filter(log => this.VERSION_CREATING_ACTIONS.includes(log.action) && log.resourceType === 'FILE')
       .slice()
@@ -494,7 +496,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     for (const log of entries) {
       const versionId = log.details?.['versionId'];
       if (versionId && this.versions.some(v => v.versionId === versionId)) {
-        this.versionIdByAuditId[log.id] = versionId;
+        this.versionIdByLog.set(log, versionId);
         exactCount++;
       }
     }
@@ -502,12 +504,12 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (exactCount === 0 && entries.length > 0 && entries.length === this.versions.length) {
       const ascendingVersions = this.versions.slice()
         .sort((a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime());
-      entries.forEach((log, i) => this.versionIdByAuditId[log.id] = ascendingVersions[i].versionId);
+      entries.forEach((log, i) => this.versionIdByLog.set(log, ascendingVersions[i].versionId));
     }
   }
 
   getVersionIdFor(log: AuditLog): string | undefined {
-    return this.versionIdByAuditId[log.id];
+    return this.versionIdByLog.get(log);
   }
 
   onVersionRestored() {

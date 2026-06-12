@@ -73,6 +73,15 @@ export class AuditVersionActionsComponent {
     return version ? new Date(version.lastModified).toLocaleString() : '';
   }
 
+  /** 1-based version number, oldest = v1 (position in the ascending version history) */
+  get versionNumber(): number {
+    const version = this.version;
+    if (!version) return 0;
+    return this.versions.slice()
+      .sort((a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime())
+      .findIndex(v => v.versionId === version.versionId) + 1;
+  }
+
   view() {
     const version = this.version;
     if (!version) return;

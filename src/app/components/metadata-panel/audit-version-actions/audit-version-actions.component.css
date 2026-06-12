@@ -20,6 +20,15 @@
   height: 16px;
 }
 
+.version-number-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  cursor: default;
+}
+
 .current-version-badge {
   font-size: 11px;
   opacity: 0.7;
