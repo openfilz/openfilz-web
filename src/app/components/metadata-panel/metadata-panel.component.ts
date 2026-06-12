@@ -13,9 +13,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { MetadataEditorComponent } from '../metadata-editor/metadata-editor.component';
+import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
 import { DocumentApiService } from '../../services/document-api.service';
+import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
 import { AuditLog, DocumentInfo } from '../../models/document.models';
+import { DocumentVersionInfo } from '../../models/document-versions.models';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { FileIconService } from '../../services/file-icon.service';
@@ -35,6 +38,7 @@ import { FileIconService } from '../../services/file-icon.service';
     MatTooltipModule,
     MatTabsModule,
     MetadataEditorComponent,
+    AuditVersionActionsComponent,
     TranslatePipe
 ],
   animations: [
@@ -74,6 +78,16 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   auditLoading: boolean = false;
   auditError?: string;
   selectedTabIndex: number = 0;
+
+  // File versions (MinIO bucket versioning, flag-gated)
+  versions: DocumentVersionInfo[] = [];
+  // Keyed by the AuditLog OBJECT: the audit trail endpoint returns entries with a
+  // null id, so any id-based key would collapse every entry onto the same slot
+  private versionIdByLog = new Map<AuditLog, string>();
+
+  /** Audit actions that create a new storage version of the file */
+  private readonly VERSION_CREATING_ACTIONS =
+    ['UPLOAD_DOCUMENT', 'REPLACE_DOCUMENT_CONTENT', 'RESTORE_DOCUMENT_VERSION', 'COPY_FILE', 'COPY_FILE_CHILD'];
 
   // External file dragging state
   isExternalFileDragging: boolean = false;
@@ -159,6 +173,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   private documentApi = inject(DocumentApiService);
+  private documentVersionsService = inject(DocumentVersionsService);
   private dragDropService = inject(DragDropService);
   private fileIconService = inject(FileIconService);
   private snackBar = inject(MatSnackBar);
@@ -202,6 +217,12 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.auditLogs = [];
     this.auditError = undefined;
     this.selectedTabIndex = 0;
+    this.versions = [];
+    this.versionIdByLog.clear();
+  }
+
+  get versioningEnabled(): boolean {
+    return this.documentVersionsService.isVersioningEnabled();
   }
 
   loadDocumentInfo() {
@@ -425,12 +446,79 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       next: (logs) => {
         this.auditLogs = logs;
         this.auditLoading = false;
+        this.loadVersions();
       },
       error: (err) => {
         this.auditError = 'Failed to load audit history';
         this.auditLoading = false;
       }
     });
+  }
+
+  /**
+   * Load the file's storage versions alongside the audit trail (only when the
+   * versioning flag is on and the document is a file), then map version-creating
+   * audit entries to versionIds so each entry gets its view/download/restore actions.
+   */
+  private loadVersions() {
+    if (!this.versioningEnabled || !this.documentId || this.documentInfo?.type !== 'FILE') {
+      this.versions = [];
+      this.versionIdByLog.clear();
+      return;
+    }
+    this.documentVersionsService.listVersions(this.documentId).subscribe({
+      next: (versions) => {
+        this.versions = versions;
+        this.computeVersionMapping();
+      },
+      error: () => {
+        // Flag drift (backend versioning off → 409) or transient error: just no actions
+        this.versions = [];
+        this.versionIdByLog.clear();
+      }
+    });
+  }
+
+  /**
+   * Map version-creating audit entries to storage versionIds.
+   * Primary (exact): details.versionId, stored on every entry written since the
+   * versioning feature shipped. Legacy fallback (best-effort): when NO entry has a
+   * stored versionId, pair entries with surviving versions index-wise by date — only
+   * when the counts line up exactly; otherwise actions are suppressed on legacy entries.
+   */
+  private computeVersionMapping() {
+    this.versionIdByLog.clear();
+    const entries = this.auditLogs
+      .filter(log => this.VERSION_CREATING_ACTIONS.includes(log.action) && log.resourceType === 'FILE')
+      .slice()
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    let exactCount = 0;
+    for (const log of entries) {
+      const versionId = log.details?.['versionId'];
+      if (versionId && this.versions.some(v => v.versionId === versionId)) {
+        this.versionIdByLog.set(log, versionId);
+        exactCount++;
+      }
+    }
+
+    if (exactCount === 0 && entries.length > 0 && entries.length === this.versions.length) {
+      const ascendingVersions = this.versions.slice()
+        .sort((a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime());
+      entries.forEach((log, i) => this.versionIdByLog.set(log, ascendingVersions[i].versionId));
+    }
+  }
+
+  getVersionIdFor(log: AuditLog): string | undefined {
+    return this.versionIdByLog.get(log);
+  }
+
+  onVersionRestored() {
+    // The restore created a new version + audit entry, and the document size may
+    // have changed — refresh everything and let the parent refresh its item row.
+    this.loadDocumentInfo();
+    this.loadAuditTrail();
+    this.metadataSaved.emit();
   }
 
   getAuditActionKey(action: string): string {
@@ -452,6 +540,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       'MOVE_FOLDER': 'drive_folder_upload',
       'UPLOAD_DOCUMENT': 'upload_file',
       'REPLACE_DOCUMENT_CONTENT': 'sync',
+      'RESTORE_DOCUMENT_VERSION': 'settings_backup_restore',
       'REPLACE_DOCUMENT_METADATA': 'label',
       'UPDATE_DOCUMENT_METADATA': 'label',
       'DOWNLOAD_DOCUMENT': 'download',

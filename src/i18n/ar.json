@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "تم نقل المجلد",
             "UPLOAD_DOCUMENT": "تم رفع المستند",
             "REPLACE_DOCUMENT_CONTENT": "تم استبدال المحتوى",
+            "RESTORE_DOCUMENT_VERSION": "تمت استعادة الإصدار",
             "REPLACE_DOCUMENT_METADATA": "تم استبدال البيانات الوصفية",
             "UPDATE_DOCUMENT_METADATA": "تم تحديث البيانات الوصفية",
             "DOWNLOAD_DOCUMENT": "تم تنزيل المستند",
@@ -449,6 +450,19 @@
             "dayAgo": "منذ {{count}} يوم",
             "daysAgo": "منذ {{count}} يوم"
         }
+    },
+    "versions": {
+        "actions": "إجراءات الإصدار",
+        "view": "عرض هذا الإصدار",
+        "download": "تنزيل هذا الإصدار",
+        "restore": "استعادة هذا الإصدار",
+        "restoreConfirmTitle": "استعادة الإصدار",
+        "restoreConfirmMessage": "هل تريد استبدال الإصدار الحالي بإصدار {{date}}؟ سيتم الاحتفاظ بالإصدار الحالي في السجل.",
+        "restoreSuccess": "تمت استعادة الإصدار",
+        "restoreError": "فشلت استعادة الإصدار",
+        "downloadError": "فشل تنزيل الإصدار",
+        "current": "الإصدار الحالي",
+        "viewingVersion": "إصدار {{date}}"
     },
     "favorites": {
         "title": "المفضلات",

@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Cartella Spostata",
             "UPLOAD_DOCUMENT": "Documento Caricato",
             "REPLACE_DOCUMENT_CONTENT": "Contenuto Sostituito",
+            "RESTORE_DOCUMENT_VERSION": "Versione ripristinata",
             "REPLACE_DOCUMENT_METADATA": "Metadati Sostituiti",
             "UPDATE_DOCUMENT_METADATA": "Metadati Aggiornati",
             "DOWNLOAD_DOCUMENT": "Documento Scaricato",
@@ -449,6 +450,19 @@
             "dayAgo": "{{count}}g fa",
             "daysAgo": "{{count}}g fa"
         }
+    },
+    "versions": {
+        "actions": "Azioni versione",
+        "view": "Visualizza questa versione",
+        "download": "Scarica questa versione",
+        "restore": "Ripristina questa versione",
+        "restoreConfirmTitle": "Ripristina versione",
+        "restoreConfirmMessage": "Sostituire la versione corrente con la versione del {{date}}? La versione corrente sarà conservata nella cronologia.",
+        "restoreSuccess": "Versione ripristinata",
+        "restoreError": "Impossibile ripristinare la versione",
+        "downloadError": "Impossibile scaricare la versione",
+        "current": "Versione corrente",
+        "viewingVersion": "Versione del {{date}}"
     },
     "favorites": {
         "title": "Preferiti",
