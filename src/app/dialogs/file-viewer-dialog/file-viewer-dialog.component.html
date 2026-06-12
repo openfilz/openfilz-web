@@ -3,6 +3,9 @@
   <mat-toolbar class="viewer-toolbar">
     <div class="toolbar-center">
       <span class="file-name">{{ data.fileName }}</span>
+      @if (data.versionLabel) {
+      <span class="version-label">{{ 'versions.viewingVersion' | translate:{date: data.versionLabel} }}</span>
+      }
       <!-- Page Navigation (PDF only) -->
       @if (showPageNavigation) {
       <div class="page-navigation">

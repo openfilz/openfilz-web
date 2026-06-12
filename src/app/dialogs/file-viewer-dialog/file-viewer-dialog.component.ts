@@ -11,8 +11,10 @@ import { DomSanitizer, SafeResourceUrl, SafeHtml } from '@angular/platform-brows
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DocumentApiService } from '../../services/document-api.service';
+import { DocumentVersionsService } from '../../services/document-versions.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { RoleService } from '../../services/role.service';
+import { determineViewerMode, ViewerMode } from '../../utils/viewer-mode.util';
 import { OnlyOfficeEditorComponent } from '../../components/onlyoffice-editor/onlyoffice-editor.component';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { saveAs } from 'file-saver';
@@ -35,9 +37,11 @@ export interface FileViewerDialogData {
   fileName: string;
   contentType: string;
   fileSize?: number;
+  /** When set, the dialog shows this immutable historical version (read-only, no OnlyOffice) */
+  versionId?: string;
+  /** Human-readable label for the version (e.g. its formatted date), shown next to the file name */
+  versionLabel?: string;
 }
-
-type ViewerMode = 'pdf' | 'image' | 'text' | 'office' | 'onlyoffice' | 'unsupported';
 
 /**
  * File size threshold in bytes above which Monaco editor disables minimap
@@ -105,6 +109,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   readonly dialogRef = inject(MatDialogRef<FileViewerDialogComponent>);
   readonly data = inject<FileViewerDialogData>(MAT_DIALOG_DATA);
   private documentApi = inject(DocumentApiService);
+  private documentVersions = inject(DocumentVersionsService);
   private onlyOfficeService = inject(OnlyOfficeService);
   private roleService = inject(RoleService);
   private snackBar = inject(MatSnackBar);
@@ -124,9 +129,10 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
    * Determines if the user can edit documents in OnlyOffice.
    * CONTRIBUTOR role = can edit
    * READER role = view only
+   * Historical versions are always read-only.
    */
   get canEditDocument(): boolean {
-    return this.roleService.hasRole('CONTRIBUTOR');
+    return !this.data.versionId && this.roleService.hasRole('CONTRIBUTOR');
   }
 
   /**
@@ -184,41 +190,12 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private determineViewerMode() {
-    const contentType = this.data.contentType?.toLowerCase() || '';
-    const fileName = this.data.fileName?.toLowerCase() || '';
-
-    // Check if OnlyOffice is enabled and file is supported
-    if (this.onlyOfficeService.isOnlyOfficeEnabled() &&
-      this.onlyOfficeService.isSupportedExtension(fileName)) {
-      this.viewerMode = 'onlyoffice';
-      return;
-    }
-
-    // PDF
-    if (contentType === 'application/pdf' || fileName.endsWith('.pdf')) {
-      this.viewerMode = 'pdf';
-    }
-    // Images
-    else if (contentType.startsWith('image/') ||
-      /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(fileName)) {
-      this.viewerMode = 'image';
-    }
-    // Text/Code files
-    else if (contentType.startsWith('text/') ||
-      contentType === 'application/json' ||
-      contentType === 'application/xml' ||
-      /\.(txt|json|xml|html|css|js|ts|java|py|md|yml|yaml|sh|bat|log|sql|dat)$/i.test(fileName)) {
-      this.viewerMode = 'text';
-    }
-    // Office documents (fallback when OnlyOffice is disabled)
-    else if (contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-      contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
-      /\.(docx|xlsx)$/i.test(fileName)) {
-      this.viewerMode = 'office';
-    }
-    else {
-      this.viewerMode = 'unsupported';
-    }
+    // OnlyOffice edits the live document — never use it for an immutable historical
+    // version; office formats then fall back to the in-app mammoth/xlsx renderers.
+    const allowOnlyOffice = !this.data.versionId &&
+      this.onlyOfficeService.isOnlyOfficeEnabled() &&
+      this.onlyOfficeService.isSupportedExtension(this.data.fileName?.toLowerCase() || '');
+    this.viewerMode = determineViewerMode(this.data.fileName, this.data.contentType, allowOnlyOffice);
   }
 
   private loadDocument() {
@@ -231,7 +208,11 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.loading = true;
     this.error = undefined;
 
-    this.documentApi.downloadDocument(this.data.documentId).subscribe({
+    const content$ = this.data.versionId
+      ? this.documentVersions.downloadVersion(this.data.documentId, this.data.versionId)
+      : this.documentApi.downloadDocument(this.data.documentId);
+
+    content$.subscribe({
       next: (blob) => {
         this.fileBlob = blob;
         this.fileUrl = URL.createObjectURL(blob);
@@ -488,7 +469,10 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       saveAs(this.fileBlob, this.data.fileName);
     } else {
       // For OnlyOffice documents, download directly from the API
-      this.documentApi.downloadDocument(this.data.documentId).subscribe({
+      const content$ = this.data.versionId
+        ? this.documentVersions.downloadVersion(this.data.documentId, this.data.versionId)
+        : this.documentApi.downloadDocument(this.data.documentId);
+      content$.subscribe({
         next: (blob) => saveAs(blob, this.data.fileName),
         error: () => this.snackBar.open(
           this.translate.instant('errors.downloadFailed'),

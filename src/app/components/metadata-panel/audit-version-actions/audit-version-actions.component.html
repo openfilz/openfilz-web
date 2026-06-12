@@ -1,0 +1,25 @@
+@if (visible) {
+  <div class="version-actions" role="group" [attr.aria-label]="'versions.actions' | translate">
+    @if (canView) {
+      <button mat-icon-button class="version-action-btn" (click)="view()" [disabled]="busy"
+        [matTooltip]="'versions.view' | translate"
+        [attr.aria-label]="'versions.view' | translate">
+        <mat-icon aria-hidden="true">visibility</mat-icon>
+      </button>
+    }
+    <button mat-icon-button class="version-action-btn" (click)="download()" [disabled]="busy"
+      [matTooltip]="'versions.download' | translate"
+      [attr.aria-label]="'versions.download' | translate">
+      <mat-icon aria-hidden="true">download</mat-icon>
+    </button>
+    @if (canRestore) {
+      <button mat-icon-button class="version-action-btn" (click)="restore()" [disabled]="busy"
+        [matTooltip]="'versions.restore' | translate"
+        [attr.aria-label]="'versions.restore' | translate">
+        <mat-icon aria-hidden="true">settings_backup_restore</mat-icon>
+      </button>
+    } @else if (version?.latest) {
+      <span class="current-version-badge">{{ 'versions.current' | translate }}</span>
+    }
+  </div>
+}

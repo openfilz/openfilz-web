@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Pasta Movida",
             "UPLOAD_DOCUMENT": "Documento Enviado",
             "REPLACE_DOCUMENT_CONTENT": "Conteúdo Substituído",
+            "RESTORE_DOCUMENT_VERSION": "Versão restaurada",
             "REPLACE_DOCUMENT_METADATA": "Metadados Substituídos",
             "UPDATE_DOCUMENT_METADATA": "Metadados Atualizados",
             "DOWNLOAD_DOCUMENT": "Documento Baixado",
@@ -449,6 +450,19 @@
             "dayAgo": "há {{count}}d",
             "daysAgo": "há {{count}}d"
         }
+    },
+    "versions": {
+        "actions": "Ações de versão",
+        "view": "Ver esta versão",
+        "download": "Transferir esta versão",
+        "restore": "Restaurar esta versão",
+        "restoreConfirmTitle": "Restaurar versão",
+        "restoreConfirmMessage": "Substituir a versão atual pela versão de {{date}}? A versão atual será mantida no histórico.",
+        "restoreSuccess": "Versão restaurada",
+        "restoreError": "Falha ao restaurar a versão",
+        "downloadError": "Falha ao transferir a versão",
+        "current": "Versão atual",
+        "viewingVersion": "Versão de {{date}}"
     },
     "favorites": {
         "title": "Favoritos",

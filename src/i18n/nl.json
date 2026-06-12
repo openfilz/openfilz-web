@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Map verplaatst",
             "UPLOAD_DOCUMENT": "Document geüpload",
             "REPLACE_DOCUMENT_CONTENT": "Inhoud vervangen",
+            "RESTORE_DOCUMENT_VERSION": "Versie hersteld",
             "REPLACE_DOCUMENT_METADATA": "Metadata vervangen",
             "UPDATE_DOCUMENT_METADATA": "Metadata bijgewerkt",
             "DOWNLOAD_DOCUMENT": "Document gedownload",
@@ -449,6 +450,19 @@
             "dayAgo": "{{count}}d geleden",
             "daysAgo": "{{count}}d geleden"
         }
+    },
+    "versions": {
+        "actions": "Versieacties",
+        "view": "Deze versie bekijken",
+        "download": "Deze versie downloaden",
+        "restore": "Deze versie herstellen",
+        "restoreConfirmTitle": "Versie herstellen",
+        "restoreConfirmMessage": "De huidige versie vervangen door de versie van {{date}}? De huidige versie blijft bewaard in de geschiedenis.",
+        "restoreSuccess": "Versie hersteld",
+        "restoreError": "Versie herstellen mislukt",
+        "downloadError": "Versie downloaden mislukt",
+        "current": "Huidige versie",
+        "viewingVersion": "Versie van {{date}}"
     },
     "favorites": {
         "title": "Favorieten",
