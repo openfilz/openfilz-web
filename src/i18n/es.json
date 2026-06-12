@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Carpeta movida",
             "UPLOAD_DOCUMENT": "Documento subido",
             "REPLACE_DOCUMENT_CONTENT": "Contenido reemplazado",
+            "RESTORE_DOCUMENT_VERSION": "Versión restaurada",
             "REPLACE_DOCUMENT_METADATA": "Metadatos reemplazados",
             "UPDATE_DOCUMENT_METADATA": "Metadatos actualizados",
             "DOWNLOAD_DOCUMENT": "Documento descargado",
@@ -449,6 +450,19 @@
             "dayAgo": "hace {{count}}d",
             "daysAgo": "hace {{count}}d"
         }
+    },
+    "versions": {
+        "actions": "Acciones de versión",
+        "view": "Ver esta versión",
+        "download": "Descargar esta versión",
+        "restore": "Restaurar esta versión",
+        "restoreConfirmTitle": "Restaurar versión",
+        "restoreConfirmMessage": "¿Reemplazar la versión actual por la versión del {{date}}? La versión actual se conservará en el historial.",
+        "restoreSuccess": "Versión restaurada",
+        "restoreError": "No se pudo restaurar la versión",
+        "downloadError": "No se pudo descargar la versión",
+        "current": "Versión actual",
+        "viewingVersion": "Versión del {{date}}"
     },
     "favorites": {
         "title": "Favoritos",

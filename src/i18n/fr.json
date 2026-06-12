@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Dossier déplacé",
             "UPLOAD_DOCUMENT": "Document téléversé",
             "REPLACE_DOCUMENT_CONTENT": "Contenu remplacé",
+            "RESTORE_DOCUMENT_VERSION": "Version restaurée",
             "REPLACE_DOCUMENT_METADATA": "Métadonnées remplacées",
             "UPDATE_DOCUMENT_METADATA": "Métadonnées mises à jour",
             "DOWNLOAD_DOCUMENT": "Document téléchargé",
@@ -449,6 +450,19 @@
             "dayAgo": "Il y a {{count}} j",
             "daysAgo": "Il y a {{count}} j"
         }
+    },
+    "versions": {
+        "actions": "Actions de version",
+        "view": "Voir cette version",
+        "download": "Télécharger cette version",
+        "restore": "Restaurer cette version",
+        "restoreConfirmTitle": "Restaurer la version",
+        "restoreConfirmMessage": "Remplacer la version actuelle par la version du {{date}} ? La version actuelle sera conservée dans l'historique.",
+        "restoreSuccess": "Version restaurée",
+        "restoreError": "Échec de la restauration de la version",
+        "downloadError": "Échec du téléchargement de la version",
+        "current": "Version actuelle",
+        "viewingVersion": "Version du {{date}}"
     },
     "favorites": {
         "title": "Favoris",

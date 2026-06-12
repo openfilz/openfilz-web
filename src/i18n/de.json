@@ -429,6 +429,7 @@
             "MOVE_FOLDER": "Ordner verschoben",
             "UPLOAD_DOCUMENT": "Dokument hochgeladen",
             "REPLACE_DOCUMENT_CONTENT": "Inhalt ersetzt",
+            "RESTORE_DOCUMENT_VERSION": "Version wiederhergestellt",
             "REPLACE_DOCUMENT_METADATA": "Metadaten ersetzt",
             "UPDATE_DOCUMENT_METADATA": "Metadaten aktualisiert",
             "DOWNLOAD_DOCUMENT": "Dokument heruntergeladen",
@@ -449,6 +450,19 @@
             "dayAgo": "Vor {{count}} Tagen",
             "daysAgo": "Vor {{count}} Tagen"
         }
+    },
+    "versions": {
+        "actions": "Versionsaktionen",
+        "view": "Diese Version anzeigen",
+        "download": "Diese Version herunterladen",
+        "restore": "Diese Version wiederherstellen",
+        "restoreConfirmTitle": "Version wiederherstellen",
+        "restoreConfirmMessage": "Die aktuelle Version durch die Version vom {{date}} ersetzen? Die aktuelle Version bleibt im Verlauf erhalten.",
+        "restoreSuccess": "Version wiederhergestellt",
+        "restoreError": "Version konnte nicht wiederhergestellt werden",
+        "downloadError": "Version konnte nicht heruntergeladen werden",
+        "current": "Aktuelle Version",
+        "viewingVersion": "Version vom {{date}}"
     },
     "favorites": {
         "title": "Favoriten",

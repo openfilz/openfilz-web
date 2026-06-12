@@ -170,6 +170,15 @@
                             <mat-icon aria-hidden="true">person</mat-icon>
                             <span>{{ log.username || ('metadataPanel.unknownUser' | translate) }}</span>
                           </div>
+                          @if (versioningEnabled && documentId && getVersionIdFor(log); as versionId) {
+                            <app-audit-version-actions
+                              [documentId]="documentId"
+                              [versionId]="versionId"
+                              [versions]="versions"
+                              [fileName]="documentInfo.name"
+                              [contentType]="documentInfo.contentType"
+                              (restored)="onVersionRestored()" />
+                          }
                         </div>
                       </div>
                     }
