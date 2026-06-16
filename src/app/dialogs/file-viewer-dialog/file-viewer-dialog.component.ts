@@ -484,6 +484,15 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   print() {
+    // OnlyOffice renders the document in a cross-origin iframe that window.print()
+    // cannot reach — it would print the OpenFilz shell instead of the document.
+    // OnlyOffice has no API to trigger its own print, so we rely on the editor's
+    // built-in Print control / Ctrl+P (and the header Print button is hidden in
+    // OnlyOffice mode). For every other viewer mode window.print() prints the
+    // rendered content (toolbar is hidden via the @media print styles).
+    if (this.viewerMode === 'onlyoffice') {
+      return;
+    }
     window.print();
   }
 

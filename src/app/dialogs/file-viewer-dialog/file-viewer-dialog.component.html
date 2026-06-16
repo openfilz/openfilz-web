@@ -66,10 +66,17 @@
       </button>
       }
 
-      <!-- Print -->
+      <!-- Print
+           Hidden for OnlyOffice: the document is rendered inside a cross-origin
+           OnlyOffice iframe, so window.print() can only reach the OpenFilz shell
+           (it would print the toolbar/blank page, not the document). OnlyOffice
+           exposes no API to trigger its own print, so users print from the editor's
+           built-in Print control / Ctrl+P, which prints just the document. -->
+      @if (viewerMode !== 'onlyoffice') {
       <button mat-icon-button (click)="print()" [matTooltip]="'fileViewer.print' | translate">
         <mat-icon>print</mat-icon>
       </button>
+      }
 
       <!-- Fullscreen Toggle -->
       <button mat-icon-button (click)="toggleFullscreen()"
