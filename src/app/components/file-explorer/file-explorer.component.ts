@@ -1,8 +1,8 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { forkJoin, interval, Subscription } from 'rxjs';
-import { take, takeWhile } from 'rxjs/operators';
+import { forkJoin, interval, Observable, Subscription } from 'rxjs';
+import { map, take, takeWhile } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -35,6 +35,7 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
 import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { ResumableUploadService } from '../../services/resumable-upload.service';
+import { FolderUploadService } from '../../services/folder-upload.service';
 
 import {
   AncestorInfo,
@@ -61,6 +62,10 @@ import { DropEvent } from '../../services/drag-drop.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { TUS_THRESHOLD_BYTES } from '../../models/upload.models';
 import { environment } from '../../../environments/environment';
+
+/** A folder-tree upload conflict: a {@link BatchConflictItem} plus the target parent
+ *  folder id, so a "replace as new" / clean upload knows which folder it belongs to. */
+type FolderConflictItem = BatchConflictItem & { parentId?: string };
 
 @Component({
   selector: 'app-file-explorer',
@@ -129,6 +134,7 @@ import { environment } from '../../../environments/environment';
 
       <div class="file-explorer-content" appDragDrop
            (filesDropped)="onFilesDropped($event)"
+           (entriesDropped)="onEntriesDropped($event)"
            (fileOverChange)="onFileOverChange($event)"
            [class.file-over]="fileOver">
 
@@ -263,6 +269,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private location = inject(Location);
   private onlyOfficeService = inject(OnlyOfficeService);
   private resumableUploadService = inject(ResumableUploadService);
+  private folderUploadService = inject(FolderUploadService);
 
   get isOnlyOfficeEnabled(): boolean {
     return this.onlyOfficeService.isOnlyOfficeEnabled();
@@ -1580,6 +1587,258 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
   onFilesDropped(files: FileList) {
     this.handleFileUpload(files);
+  }
+
+  /**
+   * Handle a drop that contains at least one folder: recreate the local folder tree
+   * under the current folder, then upload every file into its matching parent folder.
+   * Files dropped alongside the folders (at the root of the drop) land in the current
+   * folder. See {@link FolderUploadService}.
+   */
+  async onEntriesDropped(entries: FileSystemEntry[]) {
+    const rootParentId = this.currentFolder?.id;
+
+    let tree;
+    try {
+      tree = await this.folderUploadService.traverse(entries);
+    } catch {
+      this.snackBar.open(
+        this.translate.instant('errors.uploadFailed'),
+        this.translate.instant('common.close'),
+        { duration: 4000 }
+      );
+      return;
+    }
+
+    if (tree.folderPaths.length === 0 && tree.files.length === 0) {
+      return;
+    }
+
+    this.snackBar.open(
+      this.translate.instant('fileExplorer.folderUploadStarting', { count: tree.folderPaths.length }),
+      this.translate.instant('common.close'),
+      { duration: 3000 }
+    );
+
+    let pathToId: Map<string, string>;
+    try {
+      pathToId = await this.folderUploadService.createFolderTree(tree.folderPaths, rootParentId);
+    } catch {
+      this.snackBar.open(
+        this.translate.instant('fileExplorer.folderUploadError'),
+        this.translate.instant('common.close'),
+        { duration: 4000 }
+      );
+      this.loadFolder(this.currentFolder);
+      return;
+    }
+
+    const filesWithParent = tree.files.map(({ file, parentPath }) => ({
+      file,
+      parentId: parentPath ? pathToId.get(parentPath) : rootParentId
+    }));
+
+    if (filesWithParent.length === 0) {
+      // Folders were created but there were no files to upload.
+      this.loadFolder(this.currentFolder);
+      return;
+    }
+
+    this.resolveFolderUploadConflicts(filesWithParent);
+  }
+
+  /**
+   * Pre-flight duplicate check for a folder-tree upload. Files can land in many different
+   * parent folders (some freshly created, some merged into pre-existing ones), so we group
+   * by parent folder and look up conflicts per group, then surface a single batch
+   * Replace/Skip dialog spanning the whole tree — mirroring the flat multi-file flow.
+   */
+  private resolveFolderUploadConflicts(filesWithParent: { file: File; parentId?: string }[]) {
+    const byParent = new Map<string | undefined, { file: File; parentId?: string }[]>();
+    filesWithParent.forEach(item => {
+      const group = byParent.get(item.parentId);
+      if (group) {
+        group.push(item);
+      } else {
+        byParent.set(item.parentId, [item]);
+      }
+    });
+
+    type GroupLookup = { group: { file: File; parentId?: string }[]; existing: Map<string, ElementInfo> };
+    const lookups: Observable<GroupLookup>[] = Array.from(byParent.values()).map(group =>
+      this.documentApi.findExistingFiles(group[0].parentId, group.map(g => g.file.name)).pipe(
+        map(existing => ({ group, existing }))
+      )
+    );
+
+    forkJoin(lookups).subscribe({
+      next: (results: GroupLookup[]) => {
+        const cleanFiles: { file: File; parentId?: string }[] = [];
+        const conflicts: FolderConflictItem[] = [];
+
+        for (const { group, existing } of results) {
+          for (const { file, parentId } of group) {
+            const match = existing.get(file.name);
+            if (match) {
+              conflicts.push({
+                file,
+                fileName: file.name,
+                existingDocumentId: match.id,
+                existingSize: match.size ?? 0,
+                existingUpdatedAt: (match as { updatedAt?: string }).updatedAt,
+                newSize: file.size,
+                parentId
+              });
+            } else {
+              cleanFiles.push({ file, parentId });
+            }
+          }
+        }
+
+        if (conflicts.length === 0) {
+          this.startFolderUploadBatch(cleanFiles, []);
+          return;
+        }
+
+        this.openFolderBatchConflictDialog(conflicts, cleanFiles);
+      },
+      error: () => {
+        // Pre-flight lookup failed — fall back to optimistic upload (the backend still
+        // enforces name uniqueness, so nothing is silently overwritten).
+        this.startFolderUploadBatch(filesWithParent, []);
+      }
+    });
+  }
+
+  /**
+   * Show the batch conflict dialog for a folder-tree upload and act on the per-file
+   * Replace/Skip choices. Replacements overwrite the existing document in place (keyed by
+   * id); non-conflicting files upload into their target folder regardless of the outcome.
+   */
+  private openFolderBatchConflictDialog(conflicts: FolderConflictItem[], cleanFiles: { file: File; parentId?: string }[]) {
+    const dialogRef = this.dialog.open(BatchConflictDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: { conflicts, cleanCount: cleanFiles.length } as BatchConflictDialogData,
+      disableClose: true,
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe((result: BatchConflictDialogResult | null) => {
+      // result === null (Cancel) → no decisions → every duplicate is skipped.
+      const replaceItems = (result?.decisions ?? [])
+        .filter(d => d.action === 'replace')
+        .map(d => {
+          const parentId = conflicts.find(c => c.file === d.file)?.parentId;
+          return { file: d.file, existingDocumentId: d.existingDocumentId, parentId };
+        });
+
+      if (cleanFiles.length === 0 && replaceItems.length === 0) {
+        this.snackBar.open(
+          this.translate.instant('duplicateResolution.allSkipped'),
+          this.translate.instant('common.close'),
+          { duration: 3000 }
+        );
+        this.loadFolder(this.currentFolder);
+        return;
+      }
+
+      this.startFolderUploadBatch(cleanFiles, replaceItems);
+    });
+  }
+
+  /**
+   * Upload a folder-tree batch: fresh uploads (each into its own already-created parent
+   * folder) plus in-place content replacements for the duplicates the user chose to keep.
+   * Mirrors {@link startUploadBatch} but keys the parent folder per file instead of using
+   * the current folder. Large files use TUS, small files the regular multipart upload; the
+   * folder is reloaded once the last operation finishes.
+   */
+  private startFolderUploadBatch(
+    items: { file: File; parentId?: string }[],
+    replaceItems: { file: File; existingDocumentId: string; parentId?: string }[]
+  ) {
+    const totalFiles = items.length + replaceItems.length;
+    if (totalFiles === 0) {
+      return;
+    }
+
+    let completedCount = 0;
+    let successCount = 0;
+    const uploadedIds: string[] = [];
+
+    const onFileUploadDone = (documentId?: string) => {
+      if (documentId) {
+        uploadedIds.push(documentId);
+        successCount++;
+      }
+      completedCount++;
+      if (completedCount < totalFiles) return;
+
+      uploadedIds.forEach(id => this.uploadedDocumentIds.add(id));
+      this.loadFolder(this.currentFolder);
+      this.snackBar.open(
+        this.translate.instant('fileExplorer.uploadMultipleSuccess', { count: successCount }),
+        this.translate.instant('common.close'),
+        { duration: 6000 }
+      );
+    };
+
+    replaceItems.forEach(({ file, existingDocumentId, parentId }) => {
+      const progress = this.resumableUploadService.startRegularUploadTracking(
+        file.name, file.size, parentId
+      );
+      const subscription = this.documentApi.replaceDocumentContent(existingDocumentId, file).subscribe({
+        next: () => {
+          this.resumableUploadService.completeRegularUpload(progress.uploadId, existingDocumentId);
+          onFileUploadDone(existingDocumentId);
+        },
+        error: () => {
+          this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.replaceFailed');
+          onFileUploadDone();
+        }
+      });
+      this.resumableUploadService.registerRegularUploadSubscription(progress.uploadId, subscription);
+    });
+
+    items.forEach(({ file, parentId }) => {
+      if (file.size > TUS_THRESHOLD_BYTES) {
+        this.resumableUploadService.startUpload({
+          file,
+          parentFolderId: parentId,
+          allowDuplicateFileNames: false,
+          onSuccess: (progress) => onFileUploadDone(progress.documentId),
+          onError: (_progress, error) => {
+            console.error('TUS folder upload failed:', error);
+            onFileUploadDone();
+          }
+        }).subscribe();
+        return;
+      }
+
+      const progress = this.resumableUploadService.startRegularUploadTracking(
+        file.name, file.size, parentId
+      );
+      const subscription = this.documentApi.uploadDocument(file, parentId, undefined, false).subscribe({
+        next: (response) => {
+          this.resumableUploadService.completeRegularUpload(progress.uploadId, response.id || undefined);
+          onFileUploadDone(response.id || undefined);
+        },
+        error: (error) => {
+          if (error.status === 409) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.duplicateFilename');
+          } else if (error.status === 413) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.fileTooLarge');
+          } else if (error.status === 507) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.quotaExceeded');
+          } else {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, 'errors.uploadFailed');
+          }
+          onFileUploadDone();
+        }
+      });
+      this.resumableUploadService.registerRegularUploadSubscription(progress.uploadId, subscription);
+    });
   }
 
   private handleFileUpload(files: FileList) {

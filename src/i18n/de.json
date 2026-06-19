@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Namenskonflikt erkannt. Maximale Versuche ({{maxAttempts}}) erreicht.",
         "uploadStartingSingle": "Upload von {{name}} wird gestartet...",
         "uploadStartingMultiple": "Upload von {{count}} großen Dateien wird gestartet...",
+        "folderUploadStarting": "{{count}} Ordner werden erstellt und Dateien hochgeladen...",
+        "folderUploadError": "Ordnerstruktur konnte nicht erstellt werden",
         "uploadingFile": "{{name}} wird hochgeladen...",
         "uploadSuccess": "{{name}} erfolgreich hochgeladen",
         "uploadError": "{{name}} konnte nicht hochgeladen werden",

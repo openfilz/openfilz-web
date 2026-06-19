@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Conflitto di nome rilevato. Numero massimo di tentativi ({{maxAttempts}}) raggiunto.",
         "uploadStartingSingle": "Avvio caricamento di {{name}}...",
         "uploadStartingMultiple": "Avvio caricamento di {{count}} file di grandi dimensioni...",
+        "folderUploadStarting": "Creazione di {{count}} cartella/e e caricamento dei file...",
+        "folderUploadError": "Impossibile creare la struttura delle cartelle",
         "uploadingFile": "Caricamento di {{name}}...",
         "uploadSuccess": "{{name}} caricato con successo",
         "uploadError": "Impossibile caricare {{name}}",

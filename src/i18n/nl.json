@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Naamconflict gedetecteerd. Maximaal aantal pogingen ({{maxAttempts}}) bereikt.",
         "uploadStartingSingle": "Upload van {{name}} starten...",
         "uploadStartingMultiple": "Upload van {{count}} grote bestanden starten...",
+        "folderUploadStarting": "{{count}} map(pen) maken en bestanden uploaden...",
+        "folderUploadError": "Kan de mappenstructuur niet maken",
         "uploadingFile": "{{name}} uploaden...",
         "uploadSuccess": "{{name}} succesvol geüpload",
         "uploadError": "Uploaden van {{name}} mislukt",
