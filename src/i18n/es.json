@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Conflicto de nombre detectado. Se alcanzó el número máximo de intentos ({{maxAttempts}}).",
         "uploadStartingSingle": "Iniciando subida de {{name}}...",
         "uploadStartingMultiple": "Iniciando subida de {{count}} archivos grandes...",
+        "folderUploadStarting": "Creando {{count}} carpeta(s) y subiendo archivos...",
+        "folderUploadError": "No se pudo crear la estructura de carpetas",
         "uploadingFile": "Subiendo {{name}}...",
         "uploadSuccess": "{{name}} subido con éxito",
         "uploadError": "Error al subir {{name}}",

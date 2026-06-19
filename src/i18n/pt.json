@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Conflito de nome detectado. Número máximo de tentativas ({{maxAttempts}}) atingido.",
         "uploadStartingSingle": "Iniciando upload de {{name}}...",
         "uploadStartingMultiple": "Iniciando upload de {{count}} arquivos grandes...",
+        "folderUploadStarting": "Criando {{count}} pasta(s) e enviando arquivos...",
+        "folderUploadError": "Falha ao criar a estrutura de pastas",
         "uploadingFile": "Enviando {{name}}...",
         "uploadSuccess": "{{name}} enviado com sucesso",
         "uploadError": "Falha ao enviar {{name}}",

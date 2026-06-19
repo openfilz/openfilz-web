@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "تم اكتشاف تعارض في الاسم. تم الوصول إلى الحد الأقصى لعدد المحاولات ({{maxAttempts}}).",
         "uploadStartingSingle": "بدء رفع {{name}}...",
         "uploadStartingMultiple": "بدء رفع {{count}} ملفات كبيرة...",
+        "folderUploadStarting": "جارٍ إنشاء {{count}} مجلد ورفع الملفات...",
+        "folderUploadError": "تعذّر إنشاء بنية المجلدات",
         "uploadingFile": "جاري رفع {{name}}...",
         "uploadSuccess": "تم رفع {{name}} بنجاح",
         "uploadError": "فشل رفع {{name}}",

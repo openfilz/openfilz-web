@@ -337,6 +337,29 @@ export class DocumentApiService {
     );
   }
 
+  /**
+   * Look up an active sub-folder by exact name inside `parentFolderId` (root when
+   * undefined). Used by the folder-tree drop upload to merge into an existing folder
+   * instead of failing with a DuplicateNameException. Returns null when none matches.
+   */
+  findExistingFolder(parentFolderId: string | undefined, name: string): Observable<ElementInfo | null> {
+    return this.apollo.query<any>({
+      query: FIND_FILE_BY_NAME_QUERY,
+      fetchPolicy: 'no-cache',
+      variables: {
+        request: {
+          id: parentFolderId,
+          type: DocumentType.FOLDER,
+          name,
+          active: true,
+          pageInfo: { pageNumber: 1, pageSize: 1 }
+        }
+      }
+    }).pipe(
+      map(result => (result.data?.listFolder?.[0] as ElementInfo | undefined) ?? null)
+    );
+  }
+
   listFolderAndCount(folderId?: string, page: number = 1, pageSize: number = 50, filters?: SearchFilters, sortBy?: string, sortOrder?: 'ASC' | 'DESC'): Observable<ListFolderAndCountResponse> {
     const filterRequest = this.mapFiltersToRequest(filters);
     const request1 = {

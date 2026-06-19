@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Conflit de nom détecté. Nombre maximum de tentatives ({{maxAttempts}}) atteint.",
         "uploadStartingSingle": "Début du téléversement de {{name}}...",
         "uploadStartingMultiple": "Début du téléversement de {{count}} fichiers volumineux...",
+        "folderUploadStarting": "Création de {{count}} dossier(s) et téléversement des fichiers...",
+        "folderUploadError": "Échec de la création de l'arborescence de dossiers",
         "uploadingFile": "Téléversement de {{name}}...",
         "uploadSuccess": "{{name}} téléversé avec succès",
         "uploadError": "Échec du téléversement de {{name}}",

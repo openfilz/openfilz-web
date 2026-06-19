@@ -153,6 +153,8 @@
         "nameConflictMaxRetries": "Name conflict detected. Maximum retry attempts ({{maxAttempts}}) reached.",
         "uploadStartingSingle": "Starting upload of {{name}}...",
         "uploadStartingMultiple": "Starting upload of {{count}} large files...",
+        "folderUploadStarting": "Creating {{count}} folder(s) and uploading files...",
+        "folderUploadError": "Failed to create the folder structure",
         "uploadingFile": "Uploading {{name}}...",
         "uploadSuccess": "{{name}} uploaded successfully",
         "uploadError": "Failed to upload {{name}}",
