@@ -23,6 +23,7 @@ import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file
 import { FileTooLargeDialogComponent } from '../../dialogs/file-too-large-dialog/file-too-large-dialog.component';
 import { KeyboardShortcutsDialogComponent } from '../../dialogs/keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { ConfirmReplaceDialogComponent, ConfirmReplaceDialogData, ConfirmReplaceDialogResult } from '../../dialogs/confirm-replace-dialog/confirm-replace-dialog.component';
+import { BatchConflictDialogComponent, BatchConflictDialogData, BatchConflictDialogResult, BatchConflictItem } from '../../dialogs/batch-conflict-dialog/batch-conflict-dialog.component';
 import { PartialUploadResultDialogComponent, PartialUploadResultDialogData } from '../../dialogs/partial-upload-result-dialog/partial-upload-result-dialog.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
 
@@ -1583,13 +1584,101 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
   private handleFileUpload(files: FileList) {
     const fileArray = Array.from(files);
+    if (fileArray.length === 0) {
+      return;
+    }
 
+    // Single file keeps the existing optimistic flow: the regular/TUS path surfaces a
+    // 409 and hands off to the single-file replace dialog.
+    if (fileArray.length === 1) {
+      this.startUploadBatch(fileArray, []);
+      return;
+    }
+
+    // Multiple files: pre-flight duplicate check so we can offer one batch Replace/Skip
+    // dialog instead of silently discarding the duplicates.
+    const parentFolderId = this.currentFolder?.id;
+    this.documentApi.findExistingFiles(parentFolderId, fileArray.map(f => f.name)).subscribe({
+      next: (existing) => {
+        if (existing.size === 0) {
+          this.startUploadBatch(fileArray, []);
+          return;
+        }
+
+        const cleanFiles = fileArray.filter(f => !existing.has(f.name));
+        const conflicts: BatchConflictItem[] = fileArray
+          .filter(f => existing.has(f.name))
+          .map(f => {
+            const match = existing.get(f.name)!;
+            return {
+              file: f,
+              fileName: f.name,
+              existingDocumentId: match.id,
+              existingSize: match.size ?? 0,
+              existingUpdatedAt: (match as { updatedAt?: string }).updatedAt,
+              newSize: f.size
+            };
+          });
+
+        this.openBatchConflictDialog(conflicts, cleanFiles);
+      },
+      error: () => {
+        // Pre-flight lookup failed — fall back to optimistic upload (the backend still
+        // enforces name uniqueness, so nothing is silently overwritten).
+        this.startUploadBatch(fileArray, []);
+      }
+    });
+  }
+
+  /**
+   * Show the batch conflict dialog and act on the user's per-file Replace/Skip choices.
+   * Non-conflicting files are uploaded regardless of the outcome here; Cancel skips every
+   * duplicate but still uploads those clean files.
+   */
+  private openBatchConflictDialog(conflicts: BatchConflictItem[], cleanFiles: File[]) {
+    const dialogRef = this.dialog.open(BatchConflictDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      data: { conflicts, cleanCount: cleanFiles.length } as BatchConflictDialogData,
+      disableClose: true,
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe((result: BatchConflictDialogResult | null) => {
+      // result === null (Cancel) → no decisions → every duplicate is skipped.
+      const replaceItems = (result?.decisions ?? [])
+        .filter(d => d.action === 'replace')
+        .map(d => ({ file: d.file, fileName: d.fileName, existingDocumentId: d.existingDocumentId }));
+
+      if (cleanFiles.length === 0 && replaceItems.length === 0) {
+        this.snackBar.open(
+          this.translate.instant('duplicateResolution.allSkipped'),
+          this.translate.instant('common.close'),
+          { duration: 3000 }
+        );
+        return;
+      }
+
+      this.startUploadBatch(cleanFiles, replaceItems);
+    });
+  }
+
+  /**
+   * Run an upload batch: fresh uploads (split into the TUS large-file and regular
+   * small-file paths) plus in-place content replacements for the duplicates the user
+   * chose to keep. Batch-completion tracking (folder reload, navigate-to-file, success
+   * toast) spans the whole set so it fires once after the very last operation finishes.
+   */
+  private startUploadBatch(uploadFiles: File[], replaceItems: { file: File; fileName: string; existingDocumentId: string }[]) {
     // Separate files by size: large files use TUS, small files use regular upload
-    const largeFiles = fileArray.filter(f => f.size > TUS_THRESHOLD_BYTES);
-    const smallFiles = fileArray.filter(f => f.size <= TUS_THRESHOLD_BYTES);
+    const largeFiles = uploadFiles.filter(f => f.size > TUS_THRESHOLD_BYTES);
+    const smallFiles = uploadFiles.filter(f => f.size <= TUS_THRESHOLD_BYTES);
 
     // Unified batch tracking: position endpoint is called only after the very last upload completes
-    const totalFiles = fileArray.length;
+    const totalFiles = uploadFiles.length + replaceItems.length;
+    if (totalFiles === 0) {
+      return;
+    }
     let completedCount = 0;
     let successCount = 0;
     let lastDocumentId: string | undefined;
@@ -1638,6 +1727,42 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     if (smallFiles.length > 0) {
       this.handleRegularUpload(smallFiles, totalFiles, onFileUploadDone);
     }
+
+    // Replace the content of existing documents the user chose to overwrite
+    if (replaceItems.length > 0) {
+      this.handleReplaceUploads(replaceItems, onFileUploadDone);
+    }
+  }
+
+  /**
+   * Replace the content of existing documents in-place, tracked in the upload-progress
+   * panel like regular uploads. Used by the batch conflict dialog for the duplicates the
+   * user chose to overwrite.
+   */
+  private handleReplaceUploads(
+    items: { file: File; fileName: string; existingDocumentId: string }[],
+    onFileUploadDone: (documentId?: string) => void
+  ) {
+    const parentFolderId = this.currentFolder?.id;
+
+    items.forEach(({ file, existingDocumentId }) => {
+      const progress = this.resumableUploadService.startRegularUploadTracking(
+        file.name, file.size, parentFolderId
+      );
+
+      const subscription = this.documentApi.replaceDocumentContent(existingDocumentId, file).subscribe({
+        next: () => {
+          this.resumableUploadService.completeRegularUpload(progress.uploadId, existingDocumentId);
+          onFileUploadDone(existingDocumentId);
+        },
+        error: () => {
+          this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.replaceFailed');
+          onFileUploadDone();
+        }
+      });
+
+      this.resumableUploadService.registerRegularUploadSubscription(progress.uploadId, subscription);
+    });
   }
 
   /**

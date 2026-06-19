@@ -161,6 +161,22 @@
         "replaceSuccess": "{{name}} substituído com sucesso",
         "replaceError": "Falha ao substituir {{name}}"
     },
+    "duplicateResolution": {
+        "title": "Alguns arquivos já existem",
+        "subtitle": "{{count}} arquivo(s) têm o mesmo nome nesta pasta",
+        "applyToAll": "Aplicar a todos:",
+        "replaceAll": "Substituir tudo",
+        "skipAll": "Ignorar tudo",
+        "existing": "Existente",
+        "new": "Novo",
+        "replace": "Substituir",
+        "skip": "Ignorar",
+        "cleanNote": "{{count}} outro(s) arquivo(s) sem conflito serão enviados.",
+        "summary": "Substituir {{replace}} · Ignorar {{skip}}",
+        "allSkipped": "Todos os arquivos duplicados foram ignorados",
+        "cancel": "Cancelar",
+        "apply": "Aplicar"
+    },
     "searchResults": {
         "title": "Resultados da pesquisa para \"{{query}}\"",
         "foundResult": "Encontrado {{count}} resultado",
@@ -583,7 +599,8 @@
             "offsetMismatch": "Deslocamento incorreto - retomar a partir da solicitação HEAD",
             "uploadNotComplete": "O upload não está completo",
             "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
-            "finalizeFailed": "Falha ao finalizar o upload"
+            "finalizeFailed": "Falha ao finalizar o upload",
+            "replaceFailed": "Falha ao substituir o arquivo existente"
         }
     },
     "operations": {

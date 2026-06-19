@@ -1,0 +1,93 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper">
+      <mat-icon>file_copy</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'duplicateResolution.title' | translate }}</h2>
+      <p class="dialog-subtitle">
+        {{ 'duplicateResolution.subtitle' | translate: { count: data.conflicts.length } }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <div class="bulk-bar">
+    <span class="bulk-label">{{ 'duplicateResolution.applyToAll' | translate }}</span>
+    <div class="bulk-actions">
+      <button mat-stroked-button class="bulk-btn" type="button" (click)="setAll('replace')">
+        <mat-icon>swap_horiz</mat-icon>
+        {{ 'duplicateResolution.replaceAll' | translate }}
+      </button>
+      <button mat-stroked-button class="bulk-btn" type="button" (click)="setAll('skip')">
+        <mat-icon>block</mat-icon>
+        {{ 'duplicateResolution.skipAll' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <ul class="conflict-list">
+    @for (conflict of data.conflicts; track conflict.fileName; let i = $index) {
+      <li class="conflict-row" [class.is-skipped]="actions[i] === 'skip'">
+        <mat-icon class="file-icon" [style.color]="iconColor(conflict.fileName)">
+          {{ fileIcon(conflict.fileName) }}
+        </mat-icon>
+
+        <div class="conflict-info">
+          <span class="file-name" [title]="conflict.fileName">{{ conflict.fileName }}</span>
+          <span class="file-meta">
+            <span class="meta-existing">
+              {{ 'duplicateResolution.existing' | translate }}: {{ formatSize(conflict.existingSize) }}
+              @if (conflict.existingUpdatedAt) {
+                · {{ conflict.existingUpdatedAt | date: 'mediumDate' }}
+              }
+            </span>
+            <mat-icon class="meta-arrow">arrow_forward</mat-icon>
+            <span class="meta-new">
+              {{ 'duplicateResolution.new' | translate }}: {{ formatSize(conflict.newSize) }}
+            </span>
+          </span>
+        </div>
+
+        <mat-button-toggle-group
+          class="action-toggle"
+          [value]="actions[i]"
+          (change)="setAction(i, $event.value)"
+          [hideSingleSelectionIndicator]="true"
+          aria-label="Conflict resolution">
+          <mat-button-toggle value="replace" class="toggle-replace">
+            <mat-icon>swap_horiz</mat-icon>
+            <span class="toggle-text">{{ 'duplicateResolution.replace' | translate }}</span>
+          </mat-button-toggle>
+          <mat-button-toggle value="skip" class="toggle-skip">
+            <mat-icon>block</mat-icon>
+            <span class="toggle-text">{{ 'duplicateResolution.skip' | translate }}</span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </li>
+    }
+  </ul>
+
+  @if (data.cleanCount > 0) {
+    <p class="clean-note">
+      <mat-icon>info</mat-icon>
+      {{ 'duplicateResolution.cleanNote' | translate: { count: data.cleanCount } }}
+    </p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <span class="summary">
+    {{ 'duplicateResolution.summary' | translate: { replace: replaceCount, skip: skipCount } }}
+  </span>
+  <span class="actions-spacer"></span>
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()">
+    <mat-icon>close</mat-icon>
+    {{ 'duplicateResolution.cancel' | translate }}
+  </button>
+  <button mat-flat-button class="apply-btn" (click)="onApply()">
+    <mat-icon>check</mat-icon>
+    {{ 'duplicateResolution.apply' | translate }}
+  </button>
+</mat-dialog-actions>
