@@ -161,6 +161,22 @@
         "replaceSuccess": "تم استبدال {{name}} بنجاح",
         "replaceError": "فشل استبدال {{name}}"
     },
+    "duplicateResolution": {
+        "title": "بعض الملفات موجودة بالفعل",
+        "subtitle": "{{count}} ملف(ات) في هذا المجلد تحمل نفس الاسم",
+        "applyToAll": "تطبيق على الكل:",
+        "replaceAll": "استبدال الكل",
+        "skipAll": "تخطّي الكل",
+        "existing": "الموجود",
+        "new": "الجديد",
+        "replace": "استبدال",
+        "skip": "تخطّي",
+        "cleanNote": "سيتم رفع {{count}} ملف(ات) أخرى بدون تعارض.",
+        "summary": "استبدال {{replace}} · تخطّي {{skip}}",
+        "allSkipped": "تم تخطّي جميع الملفات المكررة",
+        "cancel": "إلغاء",
+        "apply": "تطبيق"
+    },
     "searchResults": {
         "title": "نتائج البحث عن \"{{query}}\"",
         "foundResult": "تم العثور على {{count}} نتيجة",
@@ -583,7 +599,8 @@
             "offsetMismatch": "عدم تطابق الإزاحة - استئناف من طلب HEAD",
             "uploadNotComplete": "الرفع غير مكتمل",
             "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
-            "finalizeFailed": "فشل إنهاء الرفع"
+            "finalizeFailed": "فشل إنهاء الرفع",
+            "replaceFailed": "فشل استبدال الملف الموجود"
         }
     },
     "operations": {

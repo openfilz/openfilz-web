@@ -161,6 +161,22 @@
         "replaceSuccess": "{{name}} succesvol vervangen",
         "replaceError": "Vervangen van {{name}} mislukt"
     },
+    "duplicateResolution": {
+        "title": "Sommige bestanden bestaan al",
+        "subtitle": "{{count}} bestand(en) in deze map hebben dezelfde naam",
+        "applyToAll": "Op alles toepassen:",
+        "replaceAll": "Alles vervangen",
+        "skipAll": "Alles overslaan",
+        "existing": "Bestaand",
+        "new": "Nieuw",
+        "replace": "Vervangen",
+        "skip": "Overslaan",
+        "cleanNote": "{{count}} ander(e) bestand(en) zonder conflict worden geüpload.",
+        "summary": "Vervangen {{replace}} · Overslaan {{skip}}",
+        "allSkipped": "Alle dubbele bestanden zijn overgeslagen",
+        "cancel": "Annuleren",
+        "apply": "Toepassen"
+    },
     "searchResults": {
         "title": "Zoekresultaten voor \"{{query}}\"",
         "foundResult": "{{count}} resultaat gevonden",
@@ -583,7 +599,8 @@
             "offsetMismatch": "Offset komt niet overeen - hervat vanaf HEAD-verzoek",
             "uploadNotComplete": "Upload is niet voltooid",
             "fileSizeExceedsQuota": "Bestandsgrootte overschrijdt quota",
-            "finalizeFailed": "Voltooien van upload mislukt"
+            "finalizeFailed": "Voltooien van upload mislukt",
+            "replaceFailed": "Vervangen van bestaand bestand mislukt"
         }
     },
     "operations": {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { filter, map, Observable } from 'rxjs';
+import { filter, forkJoin, map, Observable, of } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 import {
   AncestorInfo,
@@ -44,6 +44,18 @@ const LIST_FOLDER_QUERY = gql`
       updatedBy
       favorite
       thumbnailUrl
+    }
+  }
+`;
+
+const FIND_FILE_BY_NAME_QUERY = gql`
+  query findFileByName($request: ListFolderRequest!) {
+    listFolder(request: $request) {
+      id
+      type
+      name
+      size
+      updatedAt
     }
   }
 `;
@@ -275,6 +287,53 @@ export class DocumentApiService {
     }).valueChanges.pipe(
       filter(result => !result.loading),
       map(result => result.data.listFolder)
+    );
+  }
+
+  /**
+   * Pre-flight duplicate detection for uploads.
+   * Looks up active files in `parentFolderId` whose name exactly matches one of `names`
+   * and returns a map keyed by filename → existing file info. Names with no active
+   * match are absent from the map (they will not conflict on upload).
+   *
+   * One lightweight query is issued per distinct name (exact `name` filter, pageSize 1).
+   * Batches are typically small, so this stays cheap; on any error the caller should
+   * fall back to an optimistic upload since the backend still enforces uniqueness.
+   */
+  findExistingFiles(parentFolderId: string | undefined, names: string[]): Observable<Map<string, ElementInfo>> {
+    const uniqueNames = Array.from(new Set(names));
+    if (uniqueNames.length === 0) {
+      return of(new Map<string, ElementInfo>());
+    }
+
+    const lookups = uniqueNames.map(name =>
+      this.apollo.query<any>({
+        query: FIND_FILE_BY_NAME_QUERY,
+        fetchPolicy: 'no-cache',
+        variables: {
+          request: {
+            id: parentFolderId,
+            type: DocumentType.FILE,
+            name,
+            active: true,
+            pageInfo: { pageNumber: 1, pageSize: 1 }
+          }
+        }
+      }).pipe(
+        map(result => (result.data?.listFolder?.[0] as ElementInfo | undefined) ?? null)
+      )
+    );
+
+    return forkJoin(lookups).pipe(
+      map(results => {
+        const conflicts = new Map<string, ElementInfo>();
+        results.forEach((item, index) => {
+          if (item) {
+            conflicts.set(uniqueNames[index], item);
+          }
+        });
+        return conflicts;
+      })
     );
   }
 

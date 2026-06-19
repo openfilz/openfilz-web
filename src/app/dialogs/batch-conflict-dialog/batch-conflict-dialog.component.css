@@ -1,0 +1,371 @@
+:host {
+  display: block;
+}
+
+/* Dialog Header */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 28px 20px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.03) 100%);
+  border-bottom: 1px solid var(--border-light, rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.icon-wrapper mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.header-text {
+  flex: 1;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #1f2937);
+  line-height: 1.3;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.dialog-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.4;
+}
+
+/* Dialog Content */
+.dialog-content {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px 28px 16px !important;
+  background-color: var(--bg-primary, #ffffff);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Bulk action bar */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.bulk-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.bulk-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 8px;
+  height: 36px;
+  font-size: 13px;
+  border: 1.5px solid var(--border-color, #e5e7eb) !important;
+  color: var(--text-primary, #1f2937);
+}
+
+.bulk-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.bulk-btn:hover {
+  background-color: var(--bg-tertiary, #f3f4f6);
+}
+
+/* Conflict list */
+.conflict-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.conflict-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border-light, rgba(0, 0, 0, 0.06));
+  transition: opacity 180ms ease;
+}
+
+.conflict-row:last-child {
+  border-bottom: none;
+}
+
+.conflict-row.is-skipped {
+  opacity: 0.55;
+}
+
+.file-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+}
+
+.conflict-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary, #6b7280);
+  flex-wrap: wrap;
+}
+
+.meta-arrow {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.meta-new {
+  font-weight: 600;
+  color: var(--text-primary, #374151);
+}
+
+/* Per-row Replace / Skip toggle */
+.action-toggle {
+  border-radius: 8px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.action-toggle .toggle-text {
+  margin-left: 4px;
+}
+
+.action-toggle mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+::ng-deep .action-toggle .mat-button-toggle-checked.toggle-replace {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+::ng-deep .action-toggle .mat-button-toggle-checked.toggle-skip {
+  background-color: var(--bg-tertiary, #e5e7eb);
+  color: var(--text-primary, #374151);
+}
+
+::ng-deep .action-toggle .mat-button-toggle-button {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Note about non-conflicting files */
+.clean-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: var(--bg-tertiary, #f3f4f6);
+  font-size: 13px;
+  color: var(--text-secondary, #6b7280);
+}
+
+.clean-note mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 28px 20px !important;
+  background-color: var(--bg-primary, #ffffff);
+  border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.1));
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  overflow: hidden;
+}
+
+.summary {
+  font-size: 13px;
+  color: var(--text-secondary, #6b7280);
+}
+
+.actions-spacer {
+  flex: 1;
+}
+
+/* Buttons */
+.cancel-btn,
+.apply-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 10px;
+  padding: 0 22px;
+  height: 44px;
+  font-size: 14px;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cancel-btn {
+  border: 2px solid var(--border-color, #e5e7eb) !important;
+  color: var(--text-primary, #1f2937);
+  background-color: var(--bg-primary, #ffffff);
+}
+
+.cancel-btn:hover {
+  background-color: var(--bg-tertiary, #f3f4f6);
+  border-color: var(--text-secondary, #6b7280) !important;
+  transform: translateY(-1px);
+}
+
+.apply-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+}
+
+/* Dialog Container Override */
+::ng-deep .mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 16px;
+  background-color: var(--bg-primary, #ffffff) !important;
+  color: var(--text-primary, #1f2937);
+  border-radius: 16px !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  box-shadow:
+    0 0 0 1px var(--border-color, rgba(0, 0, 0, 0.1)),
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+  max-width: 95vw;
+}
+
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--bg-primary, #ffffff) !important;
+  border-radius: 16px !important;
+  overflow-x: hidden;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .dialog-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px 16px 12px !important;
+  }
+
+  .dialog-header {
+    padding: 20px 18px 16px;
+  }
+
+  .dialog-actions {
+    padding: 14px 18px 18px !important;
+    flex-wrap: wrap;
+  }
+
+  .summary {
+    width: 100%;
+    order: 3;
+    text-align: center;
+  }
+
+  .actions-spacer {
+    display: none;
+  }
+
+  .conflict-row {
+    flex-wrap: wrap;
+  }
+
+  .action-toggle {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  ::ng-deep .action-toggle .mat-button-toggle {
+    flex: 1;
+  }
+
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .dialog-title {
+    font-size: 18px;
+  }
+}
