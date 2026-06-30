@@ -98,6 +98,7 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
       selected: false,
       icon: this.fileIconService.getFileIcon(item.name, item.type)
     }));
+    this.resetSelectionMode();
     this.loading = false;
   }
 

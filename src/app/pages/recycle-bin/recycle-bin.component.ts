@@ -57,6 +57,15 @@ export class RecycleBinComponent implements OnInit {
   // Shift-select support
   lastSelectedIndex = -1;
   private shiftHeld = false;
+  private ctrlHeld = false;
+  private metaHeld = false;
+  /**
+   * True once the current selection was made via an explicit multi-select
+   * gesture (checkbox, Shift-range, Ctrl/Cmd-click, or select-all). While
+   * sticky, a plain click toggles items additively; otherwise a plain click
+   * selects exactly one item (radio-style). Resets once nothing is selected.
+   */
+  private selectionSticky = false;
 
   // Mobile FAB state
   fabOpen = false;
@@ -72,21 +81,23 @@ export class RecycleBinComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Shift') {
-      this.shiftHeld = true;
-    }
+    if (event.key === 'Shift') this.shiftHeld = true;
+    if (event.key === 'Control') this.ctrlHeld = true;
+    if (event.key === 'Meta') this.metaHeld = true;
   }
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    if (event.key === 'Shift') {
-      this.shiftHeld = false;
-    }
+    if (event.key === 'Shift') this.shiftHeld = false;
+    if (event.key === 'Control') this.ctrlHeld = false;
+    if (event.key === 'Meta') this.metaHeld = false;
   }
 
   @HostListener('window:blur')
   onWindowBlur() {
     this.shiftHeld = false;
+    this.ctrlHeld = false;
+    this.metaHeld = false;
   }
 
   ngOnInit() {
@@ -143,6 +154,7 @@ export class RecycleBinComponent implements OnInit {
           icon: this.fileIconService.getFileIcon(item.name, item.type)
         }));
         this.totalItems = this.items.length;
+        this.resetSelectionMode();
         this.loading = false;
         this.updateBreadcrumbs();
       },
@@ -160,6 +172,7 @@ export class RecycleBinComponent implements OnInit {
       selected: false,
       icon: this.fileIconService.getFileIcon(item.name, item.type)
     }));
+    this.resetSelectionMode();
     this.loading = false;
   }
 
@@ -230,13 +243,13 @@ export class RecycleBinComponent implements OnInit {
       clearTimeout(this.clickTimeout);
     }
 
-    // Capture shift state now (before the timeout fires)
+    // Capture modifier state now (before the timeout fires)
     const shiftHeld = this.shiftHeld;
+    const ctrlOrMeta = this.ctrlHeld || this.metaHeld;
 
     // Delay the selection to allow double-click to be detected
     this.clickTimeout = setTimeout(() => {
-      const selected = shiftHeld ? true : !item.selected;
-      this.applySelection(item, selected, shiftHeld);
+      this.selectItem(item, shiftHeld, ctrlOrMeta);
       this.clickTimeout = null;
     }, this.CLICK_DELAY);
   }
@@ -279,13 +292,63 @@ export class RecycleBinComponent implements OnInit {
     }
   }
 
+  /**
+   * Apply a single click on an item's box (not the checkbox). Mirrors the
+   * transient/sticky model in FileOperationsComponent: a plain click selects
+   * exactly one item (radio-style) unless an explicit multi-select is active,
+   * Shift extends a range, and Ctrl/Cmd toggles additively.
+   */
+  private selectItem(item: FileItem, shiftKey: boolean, ctrlOrMeta: boolean): void {
+    if (shiftKey) {
+      this.selectionSticky = true;
+      this.applySelection(item, true, true);
+      return;
+    }
+
+    if (ctrlOrMeta || this.selectionSticky) {
+      this.selectionSticky = true;
+      this.applySelection(item, !item.selected, false);
+      this.resetStickyIfEmpty();
+      return;
+    }
+
+    // Transient mode: select exactly this item, replacing any prior selection.
+    const collapseToNone = item.selected && this.selectedItems.length === 1;
+    this.items.forEach(i => i.selected = false);
+    if (collapseToNone) {
+      this.lastSelectedIndex = -1;
+    } else {
+      item.selected = true;
+      this.lastSelectedIndex = this.items.indexOf(item);
+    }
+  }
+
+  /** After a deselect, drop back to transient mode once nothing is selected. */
+  private resetStickyIfEmpty(): void {
+    if (!this.items.some(i => i.selected)) {
+      this.selectionSticky = false;
+      this.lastSelectedIndex = -1;
+    }
+  }
+
+  /** Drop multi-select (sticky) mode when the item list is replaced, so a fresh
+   *  view always starts in transient single-select mode. */
+  private resetSelectionMode(): void {
+    this.selectionSticky = false;
+    this.lastSelectedIndex = -1;
+  }
+
   onSelectionChange(event: { item: FileItem, selected: boolean }) {
+    // The checkbox is an explicit multi-select gesture → sticky mode.
+    this.selectionSticky = true;
     this.applySelection(event.item, event.selected, this.shiftHeld);
+    this.resetStickyIfEmpty();
   }
 
   onSelectAll(selected: boolean) {
     this.items.forEach(item => item.selected = selected);
     this.lastSelectedIndex = -1;
+    this.selectionSticky = selected;
   }
 
   onClearSelection() {

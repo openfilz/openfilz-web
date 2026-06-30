@@ -786,6 +786,9 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       selected: false,
       icon: this.fileIconService.getFileIcon(item.name, item.type)
     }));
+    // A freshly loaded view starts clean — never inherit the previous folder's
+    // multi-select mode (otherwise transient single-click never returns).
+    this.resetSelectionMode();
     this.showUploadZone = this.items.length === 0;
     this.loading = false;
     this.updateBreadcrumbs();
@@ -905,13 +908,13 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       clearTimeout(this.clickTimeout);
     }
 
-    // Capture shift state now (before the timeout fires)
+    // Capture modifier state now (before the timeout fires)
     const shiftHeld = this.shiftHeld;
+    const ctrlOrMeta = this.ctrlHeld || this.metaHeld;
 
     // Delay the selection to allow double-click to be detected
     this.clickTimeout = setTimeout(() => {
-      const selected = shiftHeld ? true : !item.selected;
-      this.applySelection(item, selected, shiftHeld);
+      this.selectItem(item, shiftHeld, ctrlOrMeta);
       this.clickTimeout = null;
     }, this.CLICK_DELAY);
   }

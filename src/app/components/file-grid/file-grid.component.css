@@ -229,7 +229,9 @@
   align-items: center;
   justify-content: center;
   padding: 12px 0;
-  cursor: pointer;
+  /* Match the draggable item box so the icon doesn't look like a separate
+     button — on desktop a click here selects/opens like the rest of the box. */
+  cursor: inherit;
   position: relative;
   overflow: visible;
   height: 70%;

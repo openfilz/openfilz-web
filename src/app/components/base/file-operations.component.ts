@@ -22,6 +22,16 @@ export abstract class FileOperationsComponent implements OnInit {
   totalItems = 0;
   lastSelectedIndex = -1;
   protected shiftHeld = false;
+  protected ctrlHeld = false;
+  protected metaHeld = false;
+  /**
+   * True once the current selection was made via an explicit multi-select
+   * gesture (checkbox, Shift-range, Ctrl/Cmd-click, or select-all). While
+   * sticky, a plain click toggles items additively. While not sticky, a plain
+   * click selects exactly one item (radio-style), replacing any prior
+   * transient selection. Resets to false once nothing is selected.
+   */
+  protected selectionSticky = false;
   pageSize = AppConfig.pagination.defaultPageSize;
   pageIndex = 0;
   sortBy: string = 'name';
@@ -67,21 +77,23 @@ export abstract class FileOperationsComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Shift') {
-      this.shiftHeld = true;
-    }
+    if (event.key === 'Shift') this.shiftHeld = true;
+    if (event.key === 'Control') this.ctrlHeld = true;
+    if (event.key === 'Meta') this.metaHeld = true;
   }
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    if (event.key === 'Shift') {
-      this.shiftHeld = false;
-    }
+    if (event.key === 'Shift') this.shiftHeld = false;
+    if (event.key === 'Control') this.ctrlHeld = false;
+    if (event.key === 'Meta') this.metaHeld = false;
   }
 
   @HostListener('window:blur')
   onWindowBlur() {
     this.shiftHeld = false;
+    this.ctrlHeld = false;
+    this.metaHeld = false;
   }
 
   get hasSelectedItems(): boolean {
@@ -121,18 +133,76 @@ export abstract class FileOperationsComponent implements OnInit {
     }
   }
 
+  /**
+   * Apply a single click on an item's box (not the checkbox).
+   *
+   * - Plain click, transient mode: exclusive, radio-style selection — selects
+   *   only this item and clears any previously transient-selected item. Clicking
+   *   the lone selected item again clears the selection.
+   * - Plain click, sticky mode: toggles this item while keeping the rest — the
+   *   explicit multi-select started via checkbox/Shift/Ctrl stays in effect.
+   * - Shift click: selects the contiguous range from the anchor (enters sticky).
+   * - Ctrl/Cmd click: toggles this item additively (enters sticky).
+   */
+  protected selectItem(item: FileItem, shiftKey: boolean, ctrlOrMeta: boolean): void {
+    if (shiftKey) {
+      this.selectionSticky = true;
+      this.applySelection(item, true, true);
+      return;
+    }
+
+    if (ctrlOrMeta || this.selectionSticky) {
+      this.selectionSticky = true;
+      this.applySelection(item, !item.selected, false);
+      this.resetStickyIfEmpty();
+      return;
+    }
+
+    // Transient mode: select exactly this item, replacing any prior selection.
+    const collapseToNone = item.selected && this.selectedItems.length === 1;
+    this.items.forEach(i => i.selected = false);
+    if (collapseToNone) {
+      this.lastSelectedIndex = -1;
+    } else {
+      item.selected = true;
+      this.lastSelectedIndex = this.items.indexOf(item);
+    }
+  }
+
+  /** After a deselect, drop back to transient mode once nothing is selected. */
+  protected resetStickyIfEmpty(): void {
+    if (!this.hasSelectedItems) {
+      this.selectionSticky = false;
+      this.lastSelectedIndex = -1;
+    }
+  }
+
+  /**
+   * Drop multi-select (sticky) mode and the range anchor. Call whenever the
+   * displayed item list is replaced — folder navigation, reload, pagination,
+   * search — so a fresh view always starts in transient single-select mode
+   * instead of inheriting a stale multi-select from the previous view.
+   */
+  protected resetSelectionMode(): void {
+    this.selectionSticky = false;
+    this.lastSelectedIndex = -1;
+  }
+
   onItemClick(item: FileItem): void {
-    const selected = this.shiftHeld ? true : !item.selected;
-    this.applySelection(item, selected, this.shiftHeld);
+    this.selectItem(item, this.shiftHeld, this.ctrlHeld || this.metaHeld);
   }
 
   onSelectionChange(event: { item: FileItem, selected: boolean }): void {
+    // The checkbox is an explicit multi-select gesture → sticky mode.
+    this.selectionSticky = true;
     this.applySelection(event.item, event.selected, this.shiftHeld);
+    this.resetStickyIfEmpty();
   }
 
   onSelectAll(selected: boolean): void {
     this.items.forEach(item => item.selected = selected);
     this.lastSelectedIndex = -1;
+    this.selectionSticky = selected;
   }
 
   onRenameItem(item: FileItem): void {

@@ -132,6 +132,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       next: (result) => {
         this.totalItems = result.totalHits;
         this.items = result.documents.map(doc => this.transformToFileItem(doc));
+        this.resetSelectionMode();
         this.loading = false;
       },
       error: (err) => {
@@ -153,6 +154,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         next: (result: ListFolderAndCountResponse) => {
           this.totalItems = result.count;
           this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.resetSelectionMode();
           this.loading = false;
         },
         error: (err) => {
@@ -169,6 +171,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         next: (result: ListFolderAndCountResponse) => {
           this.totalItems = result.count;
           this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.resetSelectionMode();
           this.loading = false;
         },
         error: (err) => {
@@ -286,13 +289,13 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       clearTimeout(this.clickTimeout);
     }
 
-    // Capture shift state now (before the timeout fires)
+    // Capture modifier state now (before the timeout fires)
     const shiftHeld = this.shiftHeld;
+    const ctrlOrMeta = this.ctrlHeld || this.metaHeld;
 
     // Delay the selection to allow double-click to be detected
     this.clickTimeout = setTimeout(() => {
-      const selected = shiftHeld ? true : !item.selected;
-      this.applySelection(item, selected, shiftHeld);
+      this.selectItem(item, shiftHeld, ctrlOrMeta);
       this.clickTimeout = null;
     }, this.CLICK_DELAY);
   }

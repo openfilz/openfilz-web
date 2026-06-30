@@ -90,23 +90,26 @@ export class FileListComponent {
   }
 
   onIconClick(event: Event, item: FileItem) {
+    if (!this.touchDetectionService.isTouchDevice()) {
+      // On desktop, let the click bubble to the row so clicking the icon
+      // selects (single click) / opens (double click) like the rest of the row.
+      return;
+    }
+
     event.stopPropagation(); // Prevent parent click handler
 
-    if (this.touchDetectionService.isTouchDevice()) {
-      // On touch devices, single tap on icon = open
-      // Add ripple effect
-      const iconElement = event.currentTarget as HTMLElement;
-      iconElement.classList.add('ripple');
+    // On touch devices, single tap on icon = open
+    // Add ripple effect
+    const iconElement = event.currentTarget as HTMLElement;
+    iconElement.classList.add('ripple');
 
-      // Remove ripple class after animation completes
-      setTimeout(() => {
-        iconElement.classList.remove('ripple');
-      }, 600);
+    // Remove ripple class after animation completes
+    setTimeout(() => {
+      iconElement.classList.remove('ripple');
+    }, 600);
 
-      // Navigate immediately (same as double-click)
-      this.itemDoubleClick.emit(item);
-    }
-    // On desktop: do nothing, preserve double-click behavior
+    // Navigate immediately (same as double-click)
+    this.itemDoubleClick.emit(item);
   }
 
   onSelectionChange(item: FileItem, selected: boolean) {
