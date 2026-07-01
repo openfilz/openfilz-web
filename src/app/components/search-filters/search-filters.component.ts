@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentType, SearchFilters, SearchScope } from '../../models/document.models';
+import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES } from '../../models/file-type-filters';
 
 @Component({
   selector: 'app-search-filters',
@@ -74,12 +75,12 @@ export class SearchFiltersComponent implements OnInit {
     { labelKey: 'searchFilters.dateOptions.last30', value: 'last30' }
   ];
 
+  // File-type options are sourced from the shared category definitions so the advanced
+  // dialog and the toolbar quick-filter stay in sync. Values are category ids (e.g. 'word'),
+  // resolved to content-type LIKE patterns in DocumentApiService.
   fileTypeOptions = [
-    { labelKey: 'searchFilters.fileTypeOptions.any', value: 'any' },
-    { labelKey: 'searchFilters.fileTypeOptions.pdfs', value: 'application/pdf' },
-    { labelKey: 'searchFilters.fileTypeOptions.images', value: 'image/' },
-    { labelKey: 'searchFilters.fileTypeOptions.documents', value: 'application/msword' },
-    { labelKey: 'searchFilters.fileTypeOptions.spreadsheets', value: 'application/vnd.ms-excel' }
+    { labelKey: 'searchFilters.fileTypeOptions.any', value: ANY_FILE_TYPE },
+    ...FILE_TYPE_CATEGORIES.map(c => ({ labelKey: c.labelKey, value: c.id }))
   ];
 
   scopeOptions: { labelKey: string; value: SearchScope }[] = [

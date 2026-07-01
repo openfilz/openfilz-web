@@ -97,6 +97,7 @@
         "deleteSelected": "حذف العناصر المحددة",
         "gridView": "عرض الشبكة",
         "listView": "عرض القائمة",
+        "filterByType": "تصفية حسب النوع",
         "previousPage": "الصفحة السابقة",
         "nextPage": "الصفحة التالية",
         "firstPage": "الصفحة الأولى",
@@ -214,7 +215,12 @@
             "pdfs": "ملفات PDF",
             "images": "صور",
             "documents": "مستندات",
-            "spreadsheets": "جداول بيانات"
+            "spreadsheets": "جداول بيانات",
+            "presentations": "عروض تقديمية",
+            "text": "نص",
+            "videos": "مقاطع فيديو",
+            "audio": "صوت",
+            "archives": "أرشيفات"
         },
         "scope": "نطاق البحث",
         "scopeOptions": {

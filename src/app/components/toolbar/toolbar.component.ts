@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
+import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
 
 @Component({
   selector: 'app-toolbar',
@@ -62,6 +63,26 @@ export class ToolbarComponent {
 
   @Input() sortBy = 'name';
   @Input() sortOrder: 'ASC' | 'DESC' = 'ASC';
+
+  // Quick file-type filter (folder view only)
+  @Input() showTypeFilter = false;
+  @Input() activeFileType: string = ANY_FILE_TYPE;
+  @Output() fileTypeFilterChange = new EventEmitter<string>();
+
+  readonly fileTypeCategories = FILE_TYPE_CATEGORIES;
+  readonly ANY_FILE_TYPE = ANY_FILE_TYPE;
+
+  get activeCategory(): FileTypeCategory | undefined {
+    return getFileTypeCategory(this.activeFileType);
+  }
+
+  get hasTypeFilter(): boolean {
+    return !!this.activeCategory;
+  }
+
+  onFileTypeSelected(fileType: string): void {
+    this.fileTypeFilterChange.emit(fileType);
+  }
 
   sortOptions = [
     { labelKey: 'common.name', value: 'name' },

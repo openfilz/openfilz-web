@@ -97,6 +97,7 @@
         "deleteSelected": "Geselecteerde items verwijderen",
         "gridView": "Rasterweergave",
         "listView": "Lijstweergave",
+        "filterByType": "Filteren op type",
         "previousPage": "Vorige pagina",
         "nextPage": "Volgende pagina",
         "firstPage": "Eerste pagina",
@@ -214,7 +215,12 @@
             "pdfs": "PDF's",
             "images": "Afbeeldingen",
             "documents": "Documenten",
-            "spreadsheets": "Spreadsheets"
+            "spreadsheets": "Spreadsheets",
+            "presentations": "Presentaties",
+            "text": "Tekst",
+            "videos": "Video's",
+            "audio": "Audio",
+            "archives": "Archieven"
         },
         "scope": "Zoekbereik",
         "scopeOptions": {

@@ -179,6 +179,42 @@
   }
 
   <div class="toolbar-right">
+    <!-- Quick file-type filter (folder view only) -->
+    @if(showTypeFilter) {
+    <button mat-icon-button class="type-filter-btn" [class.active]="hasTypeFilter"
+      [matMenuTriggerFor]="fileTypeMenu"
+      [matTooltip]="(hasTypeFilter ? (activeCategory!.labelKey | translate) : ('toolbar.filterByType' | translate))"
+      [attr.aria-label]="'toolbar.filterByType' | translate" aria-haspopup="menu">
+      @if(activeCategory) {
+      <mat-icon aria-hidden="true" [style.color]="activeCategory.color">{{ activeCategory.icon }}</mat-icon>
+      <span class="type-filter-dot" aria-hidden="true"></span>
+      } @else {
+      <mat-icon aria-hidden="true">filter_alt</mat-icon>
+      }
+    </button>
+    <mat-menu #fileTypeMenu="matMenu" class="file-type-menu">
+      <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(ANY_FILE_TYPE)"
+        [class.active]="!hasTypeFilter">
+        <mat-icon aria-hidden="true">apps</mat-icon>
+        <span>{{ 'searchFilters.fileTypeOptions.any' | translate }}</span>
+        @if(!hasTypeFilter) {
+        <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
+        }
+      </button>
+      <mat-divider></mat-divider>
+      @for(cat of fileTypeCategories; track cat.id) {
+      <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(cat.id)"
+        [class.active]="activeFileType === cat.id">
+        <mat-icon aria-hidden="true" [style.color]="cat.color">{{ cat.icon }}</mat-icon>
+        <span>{{ cat.labelKey | translate }}</span>
+        @if(activeFileType === cat.id) {
+        <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
+        }
+      </button>
+      }
+    </mat-menu>
+    }
+
     <!-- View toggle - always visible -->
     <div class="view-toggle" role="group" aria-label="View mode toggle">
       <button mat-icon-button [class.active]="viewMode === 'grid'" (click)="viewMode !== 'grid' && toggleViewMode()"

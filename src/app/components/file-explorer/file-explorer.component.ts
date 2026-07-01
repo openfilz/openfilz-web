@@ -97,6 +97,9 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         [sortBy]="sortBy"
         [sortOrder]="sortOrder"
         (sortChange)="onSortChange($event)"
+        [showTypeFilter]="true"
+        [activeFileType]="currentFilters?.fileType || 'any'"
+        (fileTypeFilterChange)="onFileTypeFilterChange($event)"
       >
 
         <!-- Breadcrumb projected into toolbar for mobile visibility -->
@@ -894,6 +897,20 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       owner: '',
       fileType: 'any',
       metadata: [],
+      scope: 'CURRENT_ONLY'
+    });
+  }
+
+  /**
+   * Quick file-type filter from the toolbar icon. Preserves any other active filters
+   * (owner, date, metadata) and always scopes to the current folder so the view is
+   * filtered in place rather than routed to the search results page.
+   */
+  onFileTypeFilterChange(fileType: string) {
+    const current = this.searchService.getCurrentFilters();
+    this.searchService.updateFilters({
+      ...current,
+      fileType,
       scope: 'CURRENT_ONLY'
     });
   }
