@@ -28,6 +28,7 @@ import {
   PartialUploadResult,
   UploadErrorGroup
 } from '../models/document.models';
+import { getFileTypePatterns } from '../models/file-type-filters';
 import { environment } from '../../environments/environment';
 
 const LIST_FOLDER_QUERY = gql`
@@ -221,8 +222,9 @@ export class DocumentApiService {
       }
     }
 
-    if (filters.fileType && filters.fileType !== 'any') {
-      request.contentType = filters.fileType;
+    const contentTypePatterns = getFileTypePatterns(filters.fileType);
+    if (contentTypePatterns) {
+      request.contentTypes = contentTypePatterns;
     }
 
     if (filters.metadata && filters.metadata.length > 0) {

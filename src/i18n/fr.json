@@ -97,6 +97,7 @@
         "deleteSelected": "Supprimer les éléments sélectionnés",
         "gridView": "Vue en grille",
         "listView": "Vue en liste",
+        "filterByType": "Filtrer par type",
         "previousPage": "Page précédente",
         "nextPage": "Page suivante",
         "firstPage": "Première page",
@@ -214,7 +215,12 @@
             "pdfs": "PDF",
             "images": "Images",
             "documents": "Documents",
-            "spreadsheets": "Feuilles de calcul"
+            "spreadsheets": "Feuilles de calcul",
+            "presentations": "Présentations",
+            "text": "Texte",
+            "videos": "Vidéos",
+            "audio": "Audio",
+            "archives": "Archives"
         },
         "scope": "Portée de recherche",
         "scopeOptions": {

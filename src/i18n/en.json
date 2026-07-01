@@ -97,6 +97,7 @@
         "deleteSelected": "Delete selected items",
         "gridView": "Grid view",
         "listView": "List view",
+        "filterByType": "Filter by type",
         "previousPage": "Previous page",
         "nextPage": "Next page",
         "firstPage": "First page",
@@ -214,7 +215,12 @@
             "pdfs": "PDFs",
             "images": "Images",
             "documents": "Documents",
-            "spreadsheets": "Spreadsheets"
+            "spreadsheets": "Spreadsheets",
+            "presentations": "Presentations",
+            "text": "Text",
+            "videos": "Videos",
+            "audio": "Audio",
+            "archives": "Archives"
         },
         "scope": "Search scope",
         "scopeOptions": {

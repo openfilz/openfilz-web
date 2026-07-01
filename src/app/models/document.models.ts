@@ -231,6 +231,8 @@ export interface ListFolderRequest {
   id?: string;
   type?: DocumentType;
   contentType?: string;
+  /** Content-type LIKE patterns, matched server-side as a case-insensitive OR (e.g. a file-type category spanning several content-types). */
+  contentTypes?: string[];
   name?: string;
   nameLike?: string;
   metadata?: { [key: string]: any };
