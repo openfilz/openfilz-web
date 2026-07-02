@@ -756,3 +756,22 @@ a,
 .theme-dark .drop-zone-hover {
   background-color: rgba(129, 140, 248, 0.2) !important;
 }
+/* Per-item actions menu (kebab + right-click context menu) */
+.item-actions-menu .mat-mdc-menu-item .mat-icon {
+  color: var(--text-secondary);
+}
+
+.item-actions-menu .danger-menu-item,
+.item-actions-menu .danger-menu-item .mat-icon,
+.item-actions-menu .danger-menu-item .mdc-list-item__primary-text {
+  color: #ef4444 !important;
+}
+
+.item-actions-menu .danger-menu-item:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+/* Selection overflow menu shares the same look */
+.selection-overflow-menu .mat-mdc-menu-item .mat-icon {
+  color: var(--text-secondary);
+}

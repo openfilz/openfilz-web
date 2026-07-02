@@ -1,27 +1,31 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatDialog } from '@angular/material/dialog';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 
-import { MetadataEditorComponent } from '../metadata-editor/metadata-editor.component';
 import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
 import { AuditLog, DocumentInfo } from '../../models/document.models';
 import { DocumentVersionInfo } from '../../models/document-versions.models';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { FileIconService } from '../../services/file-icon.service';
+
+/** A single metadata key/value shown in the inline editor */
+interface MetadataEntry {
+  key: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-metadata-panel',
@@ -30,35 +34,20 @@ import { FileIconService } from '../../services/file-icon.service';
   styleUrls: ['./metadata-panel.component.css'],
   imports: [
     NgClass,
+    FormsModule,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
     MatTabsModule,
-    MetadataEditorComponent,
     AuditVersionActionsComponent,
     TranslatePipe
-],
-  animations: [
-    trigger('slideInOut', [
-      state('in', style({
-        transform: 'translateX(0)',
-        opacity: 1
-      })),
-      state('out', style({
-        transform: 'translateX(100%)',
-        opacity: 0
-      })),
-      transition('in => out', animate('300ms ease-in-out')),
-      transition('out => in', animate('300ms ease-in-out'))
-    ])
-  ]
+]
 })
 export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
-  @ViewChild(MetadataEditorComponent) metadataEditor?: MetadataEditorComponent;
-
   @Input() documentId?: string;
   @Input() isOpen: boolean = false;
   @Output() closePanel = new EventEmitter<void>();
@@ -66,18 +55,23 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   documentInfo?: DocumentInfo;
   loading: boolean = false;
-  saving: boolean = false;
   error?: string;
-  editMode: boolean = false;
-  metadataValid: boolean = true;
-  currentMetadata: { [key: string]: any } = {};
-  originalMetadata: { [key: string]: any } = {};
+  selectedTabIndex: number = 0;
+
+  // Inline metadata editing state (per-field, no global edit mode)
+  metadataEntries: MetadataEntry[] = [];
+  editingKey: string | null = null;
+  editValue: string = '';
+  savingKey: string | null = null;
+  addingEntry: boolean = false;
+  newKey: string = '';
+  newValue: string = '';
+  newEntryError?: string;
 
   // Audit
   auditLogs: AuditLog[] = [];
   auditLoading: boolean = false;
   auditError?: string;
-  selectedTabIndex: number = 0;
 
   // File versions (MinIO bucket versioning, flag-gated)
   versions: DocumentVersionInfo[] = [];
@@ -95,6 +89,8 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   // System metadata keys that should not be editable
   private readonly SYSTEM_METADATA_KEYS = ['sha256'];
+
+  private readonly METADATA_KEY_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
   // MIME type to translation key mapping
   private readonly MIME_TYPE_KEYS: { [key: string]: string } = {
@@ -177,7 +173,6 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   private dragDropService = inject(DragDropService);
   private fileIconService = inject(FileIconService);
   private snackBar = inject(MatSnackBar);
-  private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
 
   constructor() { }
@@ -199,26 +194,30 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.dragSubscription?.unsubscribe();
   }
 
-  ngOnChanges() {
-    if (this.documentId && this.isOpen && !this.documentInfo) {
-      this.loadDocumentInfo();
-    } else if (!this.isOpen) {
-      // Reset state when panel closes
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.isOpen) {
       this.resetState();
+      return;
+    }
+    // Load on open, and reload when the panel stays open but the target
+    // document changes (e.g. clicking Details on another item)
+    if (this.documentId && (changes['isOpen'] || changes['documentId'])) {
+      this.resetState();
+      this.loadDocumentInfo();
     }
   }
 
   private resetState() {
-    this.editMode = false;
     this.documentInfo = undefined;
-    this.currentMetadata = {};
-    this.originalMetadata = {};
     this.error = undefined;
     this.auditLogs = [];
     this.auditError = undefined;
     this.selectedTabIndex = 0;
     this.versions = [];
     this.versionIdByLog.clear();
+    this.metadataEntries = [];
+    this.cancelEdit();
+    this.cancelAdd();
   }
 
   get versioningEnabled(): boolean {
@@ -234,10 +233,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.documentApi.getDocumentInfo(this.documentId, true).subscribe({
       next: (info) => {
         this.documentInfo = info;
-        // Filter out system metadata keys from editable metadata
-        const allMetadata = info.metadata || {};
-        this.originalMetadata = this.filterEditableMetadata(allMetadata);
-        this.currentMetadata = { ...this.originalMetadata };
+        this.buildMetadataEntries();
         this.loading = false;
       },
       error: (err) => {
@@ -248,18 +244,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-
-  /**
-   * Filter out system metadata keys that should not be editable
-   */
-  private filterEditableMetadata(metadata: { [key: string]: any }): { [key: string]: any } {
-    const filtered: { [key: string]: any } = {};
-    for (const key of Object.keys(metadata)) {
-      if (!this.SYSTEM_METADATA_KEYS.includes(key)) {
-        filtered[key] = metadata[key];
-      }
-    }
-    return filtered;
+  private buildMetadataEntries() {
+    const metadata = this.documentInfo?.metadata || {};
+    this.metadataEntries = Object.keys(metadata)
+      .filter(key => !this.SYSTEM_METADATA_KEYS.includes(key))
+      .map(key => ({ key, value: String(metadata[key]) }));
   }
 
   /**
@@ -267,6 +256,16 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
    */
   get sha256Hash(): string | undefined {
     return this.documentInfo?.metadata?.['sha256'];
+  }
+
+  get documentIcon(): string {
+    if (!this.documentInfo) return 'description';
+    return this.fileIconService.getFileIcon(this.documentInfo.name, this.documentInfo.type);
+  }
+
+  get documentColor(): string {
+    if (!this.documentInfo) return 'var(--primary)';
+    return this.fileIconService.getFileColor(this.documentInfo.name, this.documentInfo.type);
   }
 
   getFriendlyTypeKey(): { key: string, params?: any } {
@@ -329,56 +328,124 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  onMetadataChange(metadata: { [key: string]: any }) {
-    this.currentMetadata = metadata;
+  // ===== Inline metadata editing (per-field save, no edit mode) =====
+
+  startEdit(entry: MetadataEntry) {
+    if (this.savingKey) return;
+    this.cancelAdd();
+    this.editingKey = entry.key;
+    this.editValue = entry.value;
   }
 
-  onValidChange(valid: boolean) {
-    this.metadataValid = valid;
+  cancelEdit() {
+    this.editingKey = null;
+    this.editValue = '';
   }
 
-  toggleEditMode() {
-    if (this.editMode) {
-      // Cancel editing - revert to original
-      this.currentMetadata = { ...this.originalMetadata };
-      this.editMode = false;
-    } else {
-      this.editMode = true;
-      // Switch to Metadata tab when entering edit mode
-      this.selectedTabIndex = 1;
+  commitEdit(entry: MetadataEntry) {
+    if (this.editingKey !== entry.key) return;
+    const newValue = this.editValue.trim();
+    if (!newValue || newValue === entry.value) {
+      this.cancelEdit();
+      return;
     }
+    if (!this.documentId) return;
+
+    this.savingKey = entry.key;
+    this.documentApi.updateDocumentMetadata(this.documentId, { [entry.key]: newValue }).subscribe({
+      next: () => {
+        entry.value = newValue;
+        this.syncLocalMetadata(entry.key, newValue);
+        this.savingKey = null;
+        this.cancelEdit();
+        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
+        this.metadataSaved.emit();
+      },
+      error: () => {
+        this.savingKey = null;
+        this.snackBar.open(this.translate.instant('metadataPanel.saveFailed'), this.translate.instant('common.close'), { duration: 3000 });
+      }
+    });
   }
 
-  saveMetadata() {
-    if (!this.metadataValid || !this.documentInfo || !this.documentId) {
+  deleteEntry(entry: MetadataEntry) {
+    if (!this.documentId || this.savingKey) return;
+
+    this.savingKey = entry.key;
+    this.documentApi.deleteDocumentMetadata(this.documentId, [entry.key]).subscribe({
+      next: () => {
+        this.metadataEntries = this.metadataEntries.filter(e => e.key !== entry.key);
+        if (this.documentInfo?.metadata) {
+          delete this.documentInfo.metadata[entry.key];
+        }
+        this.savingKey = null;
+        this.snackBar.open(this.translate.instant('metadataPanel.keyDeleted', { key: entry.key }), this.translate.instant('common.close'), { duration: 2000 });
+        this.metadataSaved.emit();
+      },
+      error: () => {
+        this.savingKey = null;
+        this.snackBar.open(this.translate.instant('metadataPanel.saveFailed'), this.translate.instant('common.close'), { duration: 3000 });
+      }
+    });
+  }
+
+  startAdd() {
+    if (this.savingKey) return;
+    this.cancelEdit();
+    this.addingEntry = true;
+    this.newKey = '';
+    this.newValue = '';
+    this.newEntryError = undefined;
+  }
+
+  cancelAdd() {
+    this.addingEntry = false;
+    this.newKey = '';
+    this.newValue = '';
+    this.newEntryError = undefined;
+  }
+
+  get canCommitAdd(): boolean {
+    return !!this.newKey.trim() && !!this.newValue.trim() && !this.savingKey;
+  }
+
+  commitAdd() {
+    const key = this.newKey.trim();
+    const value = this.newValue.trim();
+    if (!key || !value || !this.documentId) return;
+
+    if (!this.METADATA_KEY_PATTERN.test(key)) {
+      this.newEntryError = 'metadataEditor.errors.invalidKeyFormat';
+      return;
+    }
+    const existingKeys = [...this.metadataEntries.map(e => e.key), ...this.SYSTEM_METADATA_KEYS];
+    if (existingKeys.some(k => k.toLowerCase() === key.toLowerCase())) {
+      this.newEntryError = 'metadataEditor.errors.duplicateKey';
       return;
     }
 
-    this.saving = true;
-
-    // Get the current metadata from the editor
-    const metadataToSave = this.metadataEditor?.getMetadata() || {};
-
-    this.documentApi.updateDocumentMetadata(this.documentId, metadataToSave).subscribe({
+    this.newEntryError = undefined;
+    this.savingKey = key;
+    this.documentApi.updateDocumentMetadata(this.documentId, { [key]: value }).subscribe({
       next: () => {
-        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
-        this.originalMetadata = { ...metadataToSave };
-        this.currentMetadata = { ...metadataToSave };
-        this.editMode = false;
-        this.saving = false;
-
-        // Update the document info
-        if (this.documentInfo) {
-          this.documentInfo.metadata = metadataToSave;
-        }
-
+        this.metadataEntries.push({ key, value });
+        this.syncLocalMetadata(key, value);
+        this.savingKey = null;
+        this.cancelAdd();
+        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
         this.metadataSaved.emit();
       },
-      error: (err) => {
+      error: () => {
+        this.savingKey = null;
         this.snackBar.open(this.translate.instant('metadataPanel.saveFailed'), this.translate.instant('common.close'), { duration: 3000 });
-        this.saving = false;
       }
     });
+  }
+
+  private syncLocalMetadata(key: string, value: string) {
+    if (this.documentInfo) {
+      this.documentInfo.metadata = { ...(this.documentInfo.metadata || {}), [key]: value };
+    }
   }
 
   formatFileSize(bytes?: number): string {
@@ -386,52 +453,15 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     return this.fileIconService.getFileSize(bytes);
   }
 
-  formatDate(date?: string): string {
-    if (!date) return 'N/A';
-    return new Date(date).toLocaleString();
-  }
-
-  get hasChanges(): boolean {
-    return JSON.stringify(this.currentMetadata) !== JSON.stringify(this.originalMetadata);
-  }
-
-  get canSave(): boolean {
-    return this.editMode && this.metadataValid && this.hasChanges && !this.saving;
-  }
-
   onClose() {
-    if (this.editMode && this.hasChanges) {
-      const dialogData: ConfirmDialogData = {
-        title: this.translate.instant('metadataPanel.unsavedChangesTitle'),
-        message: this.translate.instant('metadataPanel.unsavedChangesMessage'),
-        details: this.translate.instant('metadataPanel.unsavedChangesDetails'),
-        type: 'warning',
-        confirmText: this.translate.instant('metadataPanel.discardChanges'),
-        cancelText: this.translate.instant('metadataPanel.keepEditing'),
-        icon: 'edit_off'
-      };
-      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        width: '450px',
-        data: dialogData
-      });
-      dialogRef.afterClosed().subscribe(confirmed => {
-        if (confirmed) {
-          this.closePanel.emit();
-        }
-      });
-    } else {
-      this.closePanel.emit();
-    }
+    this.closePanel.emit();
   }
 
-  get animationState(): string {
-    return this.isOpen ? 'in' : 'out';
-  }
+  // ===== Activity (audit + versions) =====
 
-  // Audit methods
   onTabChange(index: number) {
     this.selectedTabIndex = index;
-    if (index === 2 && this.auditLogs.length === 0 && !this.auditLoading) {
+    if (index === 1 && this.auditLogs.length === 0 && !this.auditLoading) {
       this.loadAuditTrail();
     }
   }

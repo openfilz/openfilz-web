@@ -90,6 +90,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
+        (detailsSelected)="onDetailsSelected()"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
@@ -2274,5 +2275,12 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
   onViewProperties(item: FileItem) {
     this.openMetadataPanel(item.id);
+  }
+
+  onDetailsSelected() {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onViewProperties(selected[0]);
+    }
   }
 }

@@ -38,7 +38,8 @@
         "value": "Value",
         "dropFilesHere": "Drop files here to upload",
         "expand": "Expand",
-        "minimize": "Minimize"
+        "minimize": "Minimize",
+        "details": "Details"
     },
     "languages": {
         "en": "English",
@@ -118,7 +119,8 @@
             "excel": "Excel Spreadsheet",
             "powerpoint": "PowerPoint Presentation",
             "text": "Text File"
-        }
+        },
+        "moreActions": "More actions"
     },
     "sortOptions": {
         "date": "Date",
@@ -269,7 +271,13 @@
         "keepEditing": "Keep editing",
         "hashCopied": "SHA256 hash copied to clipboard",
         "copyFailed": "Failed to copy to clipboard",
-        "saveSuccess": "Document saved successfully"
+        "saveSuccess": "Document saved successfully",
+        "details": "Details",
+        "activity": "Activity",
+        "addMetadata": "Add",
+        "clickToEdit": "Click to edit",
+        "keyDeleted": "\"{{key}}\" removed",
+        "saveFailed": "Failed to save metadata"
     },
     "metadataEditor": {
         "clearAll": "Clear All",

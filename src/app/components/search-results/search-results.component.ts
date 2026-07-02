@@ -270,6 +270,13 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     this.openMetadataPanel(item.id);
   }
 
+  onDetailsSelected() {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onViewProperties(selected[0]);
+    }
+  }
+
   onToggleFavorite(item: FileItem) {
     const action = item.favorite ? 'remove from' : 'add to';
     this.documentApi.toggleFavorite(item.id).subscribe({

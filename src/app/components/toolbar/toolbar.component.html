@@ -32,92 +32,80 @@
     @if(!hasSelection && !isSearchResultsPage) {
     <div class="action-buttons-desktop">
       @if(showUploadButton) {
-      <button mat-raised-button color="primary" class="upload-btn" (click)="onUploadFiles()"
+      <button mat-icon-button class="create-action-btn upload-icon-btn" (click)="onUploadFiles()"
+        [matTooltip]="'common.upload' | translate"
         [attr.aria-label]="'toolbar.uploadFiles' | translate">
         <mat-icon aria-hidden="true">cloud_upload</mat-icon>
-        <span>{{ 'common.upload' | translate }}</span>
       </button>
       }
 
       @if(showCreateFolderButton) {
-      <button mat-stroked-button class="new-folder-btn" (click)="onCreateFolder()"
+      <button mat-icon-button class="create-action-btn" (click)="onCreateFolder()"
+        [matTooltip]="'toolbar.newFolder' | translate"
         [attr.aria-label]="'toolbar.createNewFolder' | translate">
         <mat-icon aria-hidden="true">create_new_folder</mat-icon>
-        <span>{{ 'toolbar.newFolder' | translate }}</span>
       </button>
       }
 
       @if(showCreateDocumentButton && onlyOfficeEnabled) {
-      <button mat-stroked-button class="new-document-btn" [matMenuTriggerFor]="newDocumentMenu"
+      <button mat-icon-button class="create-action-btn" [matMenuTriggerFor]="newDocumentMenu"
+        [matTooltip]="'toolbar.newDocument' | translate"
         [attr.aria-label]="'toolbar.createNewDocument' | translate" aria-haspopup="menu">
         <mat-icon aria-hidden="true">note_add</mat-icon>
-        <span>{{ 'toolbar.newDocument' | translate }}</span>
-        <mat-icon class="dropdown-icon" aria-hidden="true">arrow_drop_down</mat-icon>
       </button>
       }
     </div>
 
-    <!-- Overflow menu for mobile -->
-    <button mat-icon-button class="overflow-menu-btn" [matMenuTriggerFor]="overflowMenu"
-      [attr.aria-label]="'toolbar.moreOptions' | translate" aria-haspopup="menu">
-      <mat-icon aria-hidden="true">more_vert</mat-icon>
+    <!-- Sort + filter triggers for mobile (toolbar-right is hidden there) -->
+    <button mat-icon-button class="sort-menu-btn mobile-sort-btn" [matMenuTriggerFor]="overflowMenu"
+      [matTooltip]="'toolbar.sortBy' | translate"
+      [attr.aria-label]="'toolbar.sortBy' | translate" aria-haspopup="menu">
+      <mat-icon aria-hidden="true">sort</mat-icon>
     </button>
-
-    <mat-menu #overflowMenu="matMenu" class="overflow-menu">
-      <div class="overflow-section-title">{{ 'toolbar.sortBy' | translate }}</div>
-      @for(option of sortOptions; track option.value) {
-      <button mat-menu-item (click)="onSortChange(option.value)" [class.active]="sortBy === option.value">
-        <span>{{ option.labelKey | translate }}</span>
-        @if(sortBy === option.value) {
-        <mat-icon aria-hidden="true">check</mat-icon>
-        }
-      </button>
+    @if(showTypeFilter) {
+    <button mat-icon-button class="type-filter-btn mobile-filter-btn" [class.active]="hasTypeFilter"
+      [matMenuTriggerFor]="fileTypeMenu"
+      [matTooltip]="(hasTypeFilter ? (activeCategory!.labelKey | translate) : ('toolbar.filterByType' | translate))"
+      [attr.aria-label]="'toolbar.filterByType' | translate" aria-haspopup="menu">
+      @if(activeCategory) {
+      <mat-icon aria-hidden="true" [style.color]="activeCategory.color">{{ activeCategory.icon }}</mat-icon>
+      <span class="type-filter-dot" aria-hidden="true"></span>
+      } @else {
+      <mat-icon aria-hidden="true">filter_alt</mat-icon>
       }
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="toggleSortOrder()">
-        <mat-icon aria-hidden="true">{{ sortOrder === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
-        <span>{{ sortOrder === 'ASC' ? ('toolbar.ascending' | translate) : ('toolbar.descending' | translate) }}</span>
-      </button>
-    </mat-menu>
+    </button>
+    }
     }
 
-    <!-- Selection actions - Desktop: all visible, Mobile: primary + more -->
+    <!-- Selection actions - Desktop: icon-only contextual bar, Mobile: actions button + sheet -->
     @if(hasSelection && showStandardSelectionActions) {
-    <!-- Desktop: Traditional horizontal layout -->
+    <!-- Desktop: icon buttons with tooltips + overflow menu -->
     <div class="selection-actions desktop-selection" role="group"
       [attr.aria-label]="'toolbar.managementToolbar' | translate">
-      @if(selectionCount === 1) {
-      <button mat-stroked-button (click)="onOpenSelected()"
-        [attr.aria-label]="'toolbar.openSelected' | translate">
-        <mat-icon aria-hidden="true">visibility</mat-icon>
-        <span>{{ 'common.open' | translate }}</span>
-      </button>
-      <button mat-stroked-button (click)="onRenameSelected()"
-        [attr.aria-label]="'toolbar.renameSelected' | translate">
-        <mat-icon aria-hidden="true">edit</mat-icon>
-        <span>{{ 'common.rename' | translate }}</span>
+      @for(action of primarySelectionActions; track action.id) {
+      <button mat-icon-button class="selection-action-btn" [class.danger-action]="action.danger"
+        (click)="onAction(action.id)"
+        [matTooltip]="action.labelKey | translate"
+        [attr.aria-label]="action.ariaKey | translate">
+        <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
       </button>
       }
-      <button mat-stroked-button (click)="onDownloadSelected()"
-        [attr.aria-label]="'toolbar.downloadSelected' | translate">
-        <mat-icon aria-hidden="true">download</mat-icon>
-        <span>{{ 'common.download' | translate }}</span>
+      @if(overflowSelectionActions.length > 0) {
+      <div class="selection-actions-divider" aria-hidden="true"></div>
+      <button mat-icon-button class="selection-action-btn" [matMenuTriggerFor]="selectionOverflowMenu"
+        [matTooltip]="'toolbar.moreActions' | translate"
+        [attr.aria-label]="'toolbar.moreActions' | translate" aria-haspopup="menu">
+        <mat-icon aria-hidden="true">more_vert</mat-icon>
       </button>
-      <button mat-stroked-button (click)="onMoveSelected()"
-        [attr.aria-label]="'toolbar.moveSelected' | translate">
-        <mat-icon aria-hidden="true">open_with</mat-icon>
-        <span>{{ 'toolbar.move' | translate }}</span>
-      </button>
-      <button mat-stroked-button (click)="onCopySelected()"
-        [attr.aria-label]="'toolbar.copySelected' | translate">
-        <mat-icon aria-hidden="true">content_copy</mat-icon>
-        <span>{{ 'toolbar.copy' | translate }}</span>
-      </button>
-      <button mat-stroked-button color="warn" (click)="onDeleteSelected()"
-        [attr.aria-label]="'toolbar.deleteSelected' | translate">
-        <mat-icon aria-hidden="true">delete</mat-icon>
-        <span>{{ 'common.delete' | translate }}</span>
-      </button>
+      <mat-menu #selectionOverflowMenu="matMenu" class="selection-overflow-menu">
+        @for(action of overflowSelectionActions; track action.id) {
+        <button mat-menu-item (click)="onAction(action.id)" [attr.aria-label]="action.ariaKey | translate">
+          <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+          <span>{{ action.labelKey | translate }}</span>
+        </button>
+        }
+      </mat-menu>
+      }
     </div>
 
     <!-- Mobile: Actions button only -->
@@ -179,6 +167,15 @@
   }
 
   <div class="toolbar-right">
+    <!-- Sort menu (desktop) - grouped with filter and view controls -->
+    @if(!hasSelection && !isSearchResultsPage) {
+    <button mat-icon-button class="sort-menu-btn" [matMenuTriggerFor]="overflowMenu"
+      [matTooltip]="'toolbar.sortBy' | translate"
+      [attr.aria-label]="'toolbar.sortBy' | translate" aria-haspopup="menu">
+      <mat-icon aria-hidden="true">sort</mat-icon>
+    </button>
+    }
+
     <!-- Quick file-type filter (folder view only) -->
     @if(showTypeFilter) {
     <button mat-icon-button class="type-filter-btn" [class.active]="hasTypeFilter"
@@ -192,27 +189,6 @@
       <mat-icon aria-hidden="true">filter_alt</mat-icon>
       }
     </button>
-    <mat-menu #fileTypeMenu="matMenu" class="file-type-menu">
-      <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(ANY_FILE_TYPE)"
-        [class.active]="!hasTypeFilter">
-        <mat-icon aria-hidden="true">apps</mat-icon>
-        <span>{{ 'searchFilters.fileTypeOptions.any' | translate }}</span>
-        @if(!hasTypeFilter) {
-        <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
-        }
-      </button>
-      <mat-divider></mat-divider>
-      @for(cat of fileTypeCategories; track cat.id) {
-      <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(cat.id)"
-        [class.active]="activeFileType === cat.id">
-        <mat-icon aria-hidden="true" [style.color]="cat.color">{{ cat.icon }}</mat-icon>
-        <span>{{ cat.labelKey | translate }}</span>
-        @if(activeFileType === cat.id) {
-        <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
-        }
-      </button>
-      }
-    </mat-menu>
     }
 
     <!-- View toggle - always visible -->
@@ -358,69 +334,75 @@
       <h3>{{ 'common.actions' | translate }}</h3>
     </div>
 
-    <!-- Organize Actions -->
-    <div class="action-category" role="group" aria-labelledby="organize-heading">
-      <div class="action-category-title" id="organize-heading">{{ 'bottomSheet.organize' | translate }}</div>
+    @for(category of sheetCategories; track category.key; let last = $last) {
+    <div class="action-category" role="group" [attr.aria-labelledby]="category.key + '-heading'">
+      <div class="action-category-title" [class.danger-title]="category.key === 'danger'"
+        [id]="category.key + '-heading'">{{ category.titleKey | translate }}</div>
 
-      <button class="action-item" (click)="onActionSelected('open')" [disabled]="selectionCount !== 1" role="menuitem"
-        tabindex="0" [attr.aria-disabled]="selectionCount !== 1">
-        <mat-icon class="action-item-icon" aria-hidden="true">visibility</mat-icon>
-        <span class="action-item-label">{{ 'common.open' | translate }}</span>
-        @if(selectionCount !== 1) {
+      @for(action of sheetActionsFor(category.key); track action.id) {
+      <button class="action-item" [class.action-item-danger]="action.danger" (click)="onAction(action.id)"
+        [disabled]="!isActionEnabled(action)" role="menuitem" tabindex="0"
+        [attr.aria-disabled]="!isActionEnabled(action)">
+        <mat-icon class="action-item-icon" aria-hidden="true">{{ action.icon }}</mat-icon>
+        <span class="action-item-label">{{ (action.sheetLabelKey || action.labelKey) | translate }}</span>
+        @if(!isActionEnabled(action)) {
         <span class="action-item-meta">{{ 'bottomSheet.oneItemOnly' | translate }}</span>
         }
-      </button>
-
-      <button class="action-item" (click)="onActionSelected('move')" role="menuitem" tabindex="0">
-        <mat-icon class="action-item-icon" aria-hidden="true">open_with</mat-icon>
-        <span class="action-item-label">{{ 'bottomSheet.moveTo' | translate }}</span>
-      </button>
-
-      <button class="action-item" (click)="onActionSelected('copy')" role="menuitem" tabindex="0">
-        <mat-icon class="action-item-icon" aria-hidden="true">content_copy</mat-icon>
-        <span class="action-item-label">{{ 'bottomSheet.copyTo' | translate }}</span>
-      </button>
-
-      <button class="action-item" (click)="onActionSelected('rename')" [disabled]="selectionCount !== 1" role="menuitem"
-        tabindex="0" [attr.aria-disabled]="selectionCount !== 1">
-        <mat-icon class="action-item-icon" aria-hidden="true">edit</mat-icon>
-        <span class="action-item-label">{{ 'common.rename' | translate }}</span>
-        @if(selectionCount !== 1) {
-        <span class="action-item-meta">{{ 'bottomSheet.oneItemOnly' | translate }}</span>
-        }
-      </button>
-    </div>
-
-    <mat-divider></mat-divider>
-
-    <!-- Share & Download Actions -->
-    <div class="action-category" role="group" aria-labelledby="share-heading">
-      <div class="action-category-title" id="share-heading">{{ 'bottomSheet.shareAndDownload' | translate }}</div>
-
-      <button class="action-item" (click)="onActionSelected('download')" role="menuitem" tabindex="0">
-        <mat-icon class="action-item-icon" aria-hidden="true">download</mat-icon>
-        <span class="action-item-label">{{ 'common.download' | translate }}</span>
-      </button>
-    </div>
-
-    <mat-divider></mat-divider>
-
-    <!-- Danger Zone -->
-    <div class="action-category" role="group" aria-labelledby="danger-heading">
-      <div class="action-category-title danger-title" id="danger-heading">
-        {{ 'bottomSheet.dangerZone' | translate }}
-      </div>
-
-      <button class="action-item action-item-danger" (click)="onActionSelected('delete')" role="menuitem" tabindex="0">
-        <mat-icon class="action-item-icon" aria-hidden="true">delete</mat-icon>
-        <span class="action-item-label">{{ 'common.delete' | translate }}</span>
+        @if(action.id === 'delete') {
         <span class="action-item-meta">{{ selectionCount === 1 ? ('bottomSheet.item' | translate:{count: 1}) :
           ('bottomSheet.items' | translate:{count: selectionCount}) }}</span>
+        }
       </button>
+      }
     </div>
+    @if(!last) {
+    <mat-divider></mat-divider>
+    }
+    }
   </div>
 </div>
 }
+
+<!-- File-type Filter Menu (shared between the desktop right cluster and the mobile trigger) -->
+<mat-menu #fileTypeMenu="matMenu" class="file-type-menu">
+  <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(ANY_FILE_TYPE)"
+    [class.active]="!hasTypeFilter">
+    <mat-icon aria-hidden="true">apps</mat-icon>
+    <span>{{ 'searchFilters.fileTypeOptions.any' | translate }}</span>
+    @if(!hasTypeFilter) {
+    <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
+    }
+  </button>
+  <mat-divider></mat-divider>
+  @for(cat of fileTypeCategories; track cat.id) {
+  <button mat-menu-item class="file-type-option" (click)="onFileTypeSelected(cat.id)"
+    [class.active]="activeFileType === cat.id">
+    <mat-icon aria-hidden="true" [style.color]="cat.color">{{ cat.icon }}</mat-icon>
+    <span>{{ cat.labelKey | translate }}</span>
+    @if(activeFileType === cat.id) {
+    <mat-icon class="option-check" aria-hidden="true">check</mat-icon>
+    }
+  </button>
+  }
+</mat-menu>
+
+<!-- Sort Menu (shared between the desktop right cluster and the mobile trigger) -->
+<mat-menu #overflowMenu="matMenu" class="overflow-menu">
+  <div class="overflow-section-title">{{ 'toolbar.sortBy' | translate }}</div>
+  @for(option of sortOptions; track option.value) {
+  <button mat-menu-item (click)="onSortChange(option.value)" [class.active]="sortBy === option.value">
+    <span>{{ option.labelKey | translate }}</span>
+    @if(sortBy === option.value) {
+    <mat-icon aria-hidden="true">check</mat-icon>
+    }
+  </button>
+  }
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="toggleSortOrder()">
+    <mat-icon aria-hidden="true">{{ sortOrder === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+    <span>{{ sortOrder === 'ASC' ? ('toolbar.ascending' | translate) : ('toolbar.descending' | translate) }}</span>
+  </button>
+</mat-menu>
 
 <!-- New Document Menu (shared between desktop and mobile) -->
 <mat-menu #newDocumentMenu="matMenu" class="new-document-menu">
