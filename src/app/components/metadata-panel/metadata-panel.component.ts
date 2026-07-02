@@ -457,6 +457,43 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.closePanel.emit();
   }
 
+  /**
+   * True when an inline metadata edit or add is in progress and would be lost
+   * if the panel closed now. Value edits auto-commit on blur, so the only truly
+   * unsaved states are: an active value edit whose text differs from the saved
+   * value, or a new-entry row with any content typed in.
+   */
+  get hasPendingChanges(): boolean {
+    if (this.editingKey !== null) {
+      const entry = this.metadataEntries.find(e => e.key === this.editingKey);
+      if (entry && this.editValue.trim() !== entry.value) {
+        return true;
+      }
+    }
+    if (this.addingEntry && (!!this.newKey.trim() || !!this.newValue.trim())) {
+      return true;
+    }
+    return false;
+  }
+
+  /** Commit the pending inline edit / add (used by the unsaved-changes guard). */
+  savePendingChanges() {
+    if (this.editingKey !== null) {
+      const entry = this.metadataEntries.find(e => e.key === this.editingKey);
+      if (entry) {
+        this.commitEdit(entry);
+      }
+    } else if (this.addingEntry && this.canCommitAdd) {
+      this.commitAdd();
+    }
+  }
+
+  /** Drop the pending inline edit / add without saving. */
+  discardPendingChanges() {
+    this.cancelEdit();
+    this.cancelAdd();
+  }
+
   // ===== Activity (audit + versions) =====
 
   onTabChange(index: number) {

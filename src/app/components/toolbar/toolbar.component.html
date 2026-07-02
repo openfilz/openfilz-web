@@ -79,10 +79,10 @@
 
     <!-- Selection actions - Desktop: icon-only contextual bar, Mobile: actions button + sheet -->
     @if(hasSelection && showStandardSelectionActions) {
-    <!-- Desktop: icon buttons with tooltips + overflow menu -->
-    <div class="selection-actions desktop-selection" role="group"
+    <!-- Desktop: icon buttons with tooltips + responsive overflow menu -->
+    <div #desktopSelection class="selection-actions desktop-selection" role="group"
       [attr.aria-label]="'toolbar.managementToolbar' | translate">
-      @for(action of primarySelectionActions; track action.id) {
+      @for(action of visibleSelectionActions; track action.id) {
       <button mat-icon-button class="selection-action-btn" [class.danger-action]="action.danger"
         (click)="onAction(action.id)"
         [matTooltip]="action.labelKey | translate"

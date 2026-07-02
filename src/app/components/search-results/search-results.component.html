@@ -65,6 +65,7 @@
       @if (viewMode === "grid" && items.length > 0) {
         <app-file-grid
           [items]="items"
+          [selectionCount]="selectedItems.length"
           (itemClick)="onItemClick($event)"
           (itemDoubleClick)="onItemDoubleClick($event)"
           (selectionChange)="onSelectionChange($event)"
@@ -81,6 +82,7 @@
       @if (viewMode === "list" && items.length > 0) {
         <app-file-list
           [items]="items"
+          [selectionCount]="selectedItems.length"
           [sortBy]="sortBy"
           [sortOrder]="sortOrder"
           (itemClick)="onItemClick($event)"
@@ -122,7 +124,7 @@
   <app-metadata-panel
     [documentId]="selectedDocumentForMetadata"
     [isOpen]="metadataPanelOpen"
-    (closePanel)="closeMetadataPanel()"
+    (closePanel)="attemptCloseMetadataPanel()"
     (metadataSaved)="onMetadataSaved()"
   >
   </app-metadata-panel>

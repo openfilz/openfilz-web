@@ -1168,6 +1168,15 @@
   display: flex;
 }
 
+/* Desktop contextual action bar: take the remaining width and clip so the
+   JS overflow measurement (visible icons vs "More actions" menu) is accurate. */
+.selection-actions.desktop-selection {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  flex-wrap: nowrap;
+}
+
 .mobile-selection {
   display: none;
 }

@@ -35,7 +35,7 @@
 
     @if (!loading && items.length > 0) {
     @if (viewMode === 'grid') {
-    <app-file-grid [items]="items" (itemClick)="onItemClick($event)" (itemDoubleClick)="onItemDoubleClick($event)"
+    <app-file-grid [items]="items" [selectionCount]="selectedItems.length" (itemClick)="onItemClick($event)" (itemDoubleClick)="onItemDoubleClick($event)"
       (selectionChange)="onSelectionChange($event)" (toggleFavorite)="onToggleFavorite($event)"
       (rename)="onRenameItem($event)" (download)="onDownloadItem($event)" (move)="onMoveItem($event)"
       (copy)="onCopyItem($event)" (delete)="onDeleteItem($event)" (viewProperties)="onViewProperties($event)">
@@ -43,7 +43,7 @@
     }
 
     @if (viewMode === 'list') {
-    <app-file-list [items]="items" (itemClick)="onItemClick($event)" (itemDoubleClick)="onItemDoubleClick($event)"
+    <app-file-list [items]="items" [selectionCount]="selectedItems.length" (itemClick)="onItemClick($event)" (itemDoubleClick)="onItemDoubleClick($event)"
       (selectionChange)="onSelectionChange($event)" (selectAll)="onSelectAll($event)"
       (toggleFavorite)="onToggleFavorite($event)" (rename)="onRenameItem($event)" (download)="onDownloadItem($event)"
       (move)="onMoveItem($event)" (copy)="onCopyItem($event)" (delete)="onDeleteItem($event)"
@@ -56,6 +56,6 @@
 
   <!-- Metadata Panel -->
   <app-metadata-panel [documentId]="selectedDocumentForMetadata" [isOpen]="metadataPanelOpen"
-    (closePanel)="closeMetadataPanel()" (metadataSaved)="onMetadataSaved()">
+    (closePanel)="attemptCloseMetadataPanel()" (metadataSaved)="onMetadataSaved()">
   </app-metadata-panel>
 </div>

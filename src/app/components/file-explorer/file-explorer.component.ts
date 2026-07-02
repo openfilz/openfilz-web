@@ -159,6 +159,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
               <app-file-grid
                       [items]="items"
                       [fileOver]="fileOver"
+                      [selectionCount]="selectedItems.length"
                       [currentFolderId]="currentFolder?.id ?? null"
                       (itemClick)="onItemClick($event)"
                       (itemDoubleClick)="onItemDoubleClick($event)"
@@ -177,6 +178,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
               <app-file-list
                       [items]="items"
                       [fileOver]="fileOver"
+                      [selectionCount]="selectedItems.length"
                       [currentFolderId]="currentFolder?.id ?? null"
                       (itemClick)="onItemClick($event)"
                       (itemDoubleClick)="onItemDoubleClick($event)"
@@ -213,7 +215,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-metadata-panel
         [documentId]="selectedDocumentForMetadata"
         [isOpen]="metadataPanelOpen"
-        (closePanel)="closeMetadataPanel()"
+        (closePanel)="attemptCloseMetadataPanel()"
         (metadataSaved)="onMetadataSaved()">
       </app-metadata-panel>
     </div>
@@ -240,16 +242,10 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
 export class FileExplorerComponent extends FileOperationsComponent implements OnInit, OnDestroy {
   showUploadZone = false;
   fileOver: boolean = false;
-  metadataPanelOpen: boolean = false;
-  selectedDocumentForMetadata?: string;
 
   breadcrumbTrail: FileItem[] = []; // Track full path
   currentFolder?: FileItem;
   currentFilters?: SearchFilters;
-
-  // Click delay handling
-  private clickTimeout: any = null;
-  private readonly CLICK_DELAY = 250; // milliseconds
 
   // Flag to track if navigation is triggered by URL change (browser back/forward)
   private isNavigatingFromUrl = false;
@@ -920,29 +916,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     this.fileOver = isOver;
   }
 
-  override onItemClick(item: FileItem) {
-    // Clear any existing timeout
-    if (this.clickTimeout) {
-      clearTimeout(this.clickTimeout);
-    }
-
-    // Capture modifier state now (before the timeout fires)
-    const shiftHeld = this.shiftHeld;
-    const ctrlOrMeta = this.ctrlHeld || this.metaHeld;
-
-    // Delay the selection to allow double-click to be detected
-    this.clickTimeout = setTimeout(() => {
-      this.selectItem(item, shiftHeld, ctrlOrMeta);
-      this.clickTimeout = null;
-    }, this.CLICK_DELAY);
-  }
-
   override onItemDoubleClick(item: FileItem) {
-    // Clear the pending single-click timeout
-    if (this.clickTimeout) {
-      clearTimeout(this.clickTimeout);
-      this.clickTimeout = null;
-    }
+    // Clear the pending single-click timeout and hide the details panel
+    this.cancelPendingItemClick();
+    this.closeMetadataPanel();
 
     // Deselect the item if it was selected
     item.selected = false;
@@ -2258,29 +2235,4 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     });
   }
 
-  openMetadataPanel(documentId: string) {
-    this.selectedDocumentForMetadata = documentId;
-    this.metadataPanelOpen = true;
-  }
-
-  closeMetadataPanel() {
-    this.metadataPanelOpen = false;
-    this.selectedDocumentForMetadata = undefined;
-  }
-
-  onMetadataSaved() {
-    // Optionally reload the folder to reflect metadata changes
-    this.loadFolder(this.currentFolder);
-  }
-
-  onViewProperties(item: FileItem) {
-    this.openMetadataPanel(item.id);
-  }
-
-  onDetailsSelected() {
-    const selected = this.selectedItems;
-    if (selected.length === 1) {
-      this.onViewProperties(selected[0]);
-    }
-  }
 }
