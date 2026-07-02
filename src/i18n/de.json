@@ -38,7 +38,8 @@
         "value": "Wert",
         "dropFilesHere": "Dateien zum Hochladen hier ablegen",
         "expand": "Erweitern",
-        "minimize": "Minimieren"
+        "minimize": "Minimieren",
+        "details": "Details"
     },
     "languages": {
         "en": "English",
@@ -118,7 +119,8 @@
             "excel": "Excel-Tabelle",
             "powerpoint": "PowerPoint-Präsentation",
             "text": "Textdatei"
-        }
+        },
+        "moreActions": "Weitere Aktionen"
     },
     "sortOptions": {
         "date": "Datum",
@@ -269,7 +271,13 @@
         "keepEditing": "Bearbeitung fortsetzen",
         "hashCopied": "SHA256-Hash in die Zwischenablage kopiert",
         "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen",
-        "saveSuccess": "Dokument erfolgreich gespeichert"
+        "saveSuccess": "Dokument erfolgreich gespeichert",
+        "details": "Details",
+        "activity": "Aktivität",
+        "addMetadata": "Hinzufügen",
+        "clickToEdit": "Zum Bearbeiten klicken",
+        "keyDeleted": "\"{{key}}\" entfernt",
+        "saveFailed": "Metadaten konnten nicht gespeichert werden"
     },
     "metadataEditor": {
         "clearAll": "Alles löschen",

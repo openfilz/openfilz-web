@@ -2,16 +2,16 @@
   <div class="metadata-panel-overlay"
     [ngClass]="{'drag-through': isExternalFileDragging}"
     (click)="onClose()"
-    [@slideInOut]="animationState"
     aria-hidden="true">
   </div>
 }
 
 @if (isOpen) {
-  <aside class="metadata-panel" [@slideInOut]="animationState" (click)="$event.stopPropagation()"
+  <aside class="metadata-panel" (click)="$event.stopPropagation()"
     role="complementary" [attr.aria-label]="'metadataPanel.description' | translate">
     <!-- Panel Header -->
     <div class="panel-header">
+      <div class="drag-handle" aria-hidden="true"></div>
       <div class="header-content">
         <mat-icon class="header-icon" aria-hidden="true">info</mat-icon>
         <h2 id="panel-title">{{ 'metadataPanel.title' | translate }}</h2>
@@ -41,91 +41,143 @@
       }
       @if(documentInfo && !loading) {
         <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)" class="panel-tabs">
-          <!-- General Tab -->
-          <mat-tab [attr.aria-label]="'metadataPanel.generalInfo' | translate">
+          <!-- Details Tab: general info + inline-editable metadata -->
+          <mat-tab [attr.aria-label]="'metadataPanel.details' | translate">
             <ng-template mat-tab-label>
               <mat-icon aria-hidden="true">info</mat-icon>
-              <span>{{ 'metadataPanel.general' | translate }}</span>
+              <span>{{ 'metadataPanel.details' | translate }}</span>
             </ng-template>
             <div class="tab-content">
-              <div class="info-content">
-                <div class="info-row">
-                  <span class="info-label">{{ 'common.name' | translate }}</span>
-                  <span class="info-value">{{ documentInfo.name }}</span>
-                </div>
-                <mat-divider></mat-divider>
-                <div class="info-row">
-                  <span class="info-label">{{ 'common.type' | translate }}</span>
-                  <span class="info-value">
+              <!-- Document hero -->
+              <div class="doc-hero">
+                <mat-icon class="doc-hero-icon" aria-hidden="true"
+                  [style.color]="documentColor"
+                  [style.background-color]="documentColor + '1a'">{{ documentIcon }}</mat-icon>
+                <div class="doc-hero-text">
+                  <div class="doc-hero-name" [title]="documentInfo.name">{{ documentInfo.name }}</div>
+                  <div class="doc-hero-meta">
                     <span class="type-badge" [class.type-folder]="documentInfo.type === 'FOLDER'">
                       @if (getFriendlyTypeKey(); as typeData) {
                         {{ typeData.key | translate: (typeData.params || {}) }}
                       }
                     </span>
+                    @if(documentInfo.size) {
+                      <span class="size-chip">{{ formatFileSize(documentInfo.size) }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              @if(sha256Hash) {
+                <div class="info-row sha256-row">
+                  <span class="info-label">{{ 'metadataPanel.sha256' | translate }}</span>
+                  <span class="info-value sha256-value">
+                    <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate"
+                      (click)="copySha256ToClipboard()">{{ sha256Hash }}</code>
+                    <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
+                      [matTooltip]="'metadataPanel.copyToClipboard' | translate"
+                      [attr.aria-label]="'metadataPanel.copySha256' | translate">
+                      <mat-icon aria-hidden="true">content_copy</mat-icon>
+                    </button>
                   </span>
                 </div>
-                <mat-divider></mat-divider>
-                @if(documentInfo.size) {
-                  <div class="info-row">
-                    <span class="info-label">{{ 'common.size' | translate }}</span>
-                    <span class="info-value">{{ formatFileSize(documentInfo.size) }}</span>
-                  </div>
-                  <mat-divider></mat-divider>
+              }
+
+              <!-- Metadata: always visible, per-field inline editing -->
+              <div class="metadata-section-header">
+                <h3>{{ 'common.metadata' | translate }}</h3>
+                @if(!addingEntry) {
+                  <button mat-stroked-button class="add-metadata-btn" (click)="startAdd()"
+                    [attr.aria-label]="'metadataPanel.addMetadata' | translate">
+                    <mat-icon aria-hidden="true">add</mat-icon>
+                    <span>{{ 'metadataPanel.addMetadata' | translate }}</span>
+                  </button>
                 }
-                @if(sha256Hash) {
-                  <div class="info-row sha256-row">
-                    <span class="info-label">{{ 'metadataPanel.sha256' | translate }}</span>
-                    <span class="info-value sha256-value">
-                      <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate">{{ sha256Hash }}</code>
-                      <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
-                        [matTooltip]="'metadataPanel.copyToClipboard' | translate"
-                        [attr.aria-label]="'metadataPanel.copySha256' | translate">
-                        <mat-icon aria-hidden="true">content_copy</mat-icon>
+              </div>
+
+              @if(metadataEntries.length === 0 && !addingEntry) {
+                <div class="metadata-empty">
+                  <mat-icon aria-hidden="true">label_off</mat-icon>
+                  <p>{{ 'metadataEditor.noMetadata' | translate }}</p>
+                </div>
+              }
+
+              <div class="metadata-rows" role="list">
+                @for(entry of metadataEntries; track entry.key) {
+                  <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key">
+                    <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
+                    @if(editingKey === entry.key) {
+                      <input class="metadata-value-input" type="text" [(ngModel)]="editValue"
+                        (keydown.enter)="commitEdit(entry)" (keydown.escape)="cancelEdit()"
+                        (blur)="commitEdit(entry)" autofocus
+                        [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                    } @else {
+                      <button class="metadata-value" (click)="startEdit(entry)"
+                        [matTooltip]="'metadataPanel.clickToEdit' | translate"
+                        [attr.aria-label]="('metadataPanel.clickToEdit' | translate) + ': ' + entry.key">
+                        {{ entry.value }}
                       </button>
+                    }
+                    <span class="metadata-row-actions">
+                      @if(savingKey === entry.key) {
+                        <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                      } @else {
+                        <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
+                          [matTooltip]="'common.rename' | translate"
+                          [attr.aria-label]="'metadataPanel.clickToEdit' | translate">
+                          <mat-icon aria-hidden="true">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="row-action-btn danger" (click)="deleteEntry(entry)"
+                          [matTooltip]="'common.delete' | translate"
+                          [attr.aria-label]="('common.delete' | translate) + ' ' + entry.key">
+                          <mat-icon aria-hidden="true">delete</mat-icon>
+                        </button>
+                      }
                     </span>
                   </div>
-                  <mat-divider></mat-divider>
+                }
+
+                @if(addingEntry) {
+                  <div class="metadata-row add-row">
+                    <input class="metadata-key-input" type="text" [(ngModel)]="newKey"
+                      [placeholder]="'metadataEditor.keyPlaceholder' | translate"
+                      (keydown.enter)="commitAdd()" (keydown.escape)="cancelAdd()" autofocus
+                      [attr.aria-label]="'metadataEditor.keyAriaLabel' | translate" />
+                    <input class="metadata-value-input" type="text" [(ngModel)]="newValue"
+                      [placeholder]="'metadataEditor.valuePlaceholder' | translate"
+                      (keydown.enter)="commitAdd()" (keydown.escape)="cancelAdd()"
+                      [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                    <span class="metadata-row-actions">
+                      @if(savingKey && addingEntry) {
+                        <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                      } @else {
+                        <button mat-icon-button class="row-action-btn confirm" (click)="commitAdd()"
+                          [disabled]="!canCommitAdd" [matTooltip]="'common.save' | translate"
+                          [attr.aria-label]="'common.save' | translate">
+                          <mat-icon aria-hidden="true">check</mat-icon>
+                        </button>
+                        <button mat-icon-button class="row-action-btn" (click)="cancelAdd()"
+                          [matTooltip]="'common.cancel' | translate" [attr.aria-label]="'common.cancel' | translate">
+                          <mat-icon aria-hidden="true">close</mat-icon>
+                        </button>
+                      }
+                    </span>
+                  </div>
+                  @if(newEntryError) {
+                    <div class="metadata-add-error" role="alert">
+                      <mat-icon aria-hidden="true">error</mat-icon>
+                      {{ newEntryError | translate }}
+                    </div>
+                  }
                 }
               </div>
             </div>
           </mat-tab>
-          <!-- Metadata Tab -->
-          <mat-tab [attr.aria-label]="'common.metadata' | translate">
-            <ng-template mat-tab-label>
-              <mat-icon aria-hidden="true">label</mat-icon>
-              <span>{{ 'common.metadata' | translate }}</span>
-            </ng-template>
-            <div class="tab-content">
-              @if(saving) {
-                <div class="saving-indicator" role="status" aria-live="polite">
-                  <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
-                  <span>{{ 'metadataPanel.saving' | translate }}</span>
-                </div>
-              }
-              <div class="metadata-content">
-                <app-metadata-editor [metadata]="currentMetadata" [readonly]="!editMode" [showTitle]="false"
-                  (metadataChange)="onMetadataChange($event)" (valid)="onValidChange($event)">
-                </app-metadata-editor>
-              </div>
-              @if(editMode && !metadataValid) {
-                <div class="validation-warning" role="alert">
-                  <mat-icon aria-hidden="true">warning</mat-icon>
-                  {{ 'metadataPanel.fixErrors' | translate }}
-                </div>
-              }
-              @if(editMode && hasChanges) {
-                <div class="changes-indicator" role="status" aria-live="polite">
-                  <mat-icon aria-hidden="true">info</mat-icon>
-                  {{ 'metadataPanel.unsavedChanges' | translate }}
-                </div>
-              }
-            </div>
-          </mat-tab>
-          <!-- Audit Tab -->
+          <!-- Activity Tab: audit trail + file versions -->
           <mat-tab [attr.aria-label]="'metadataPanel.auditHistory' | translate">
             <ng-template mat-tab-label>
               <mat-icon aria-hidden="true">history</mat-icon>
-              <span>{{ 'metadataPanel.audit' | translate }}</span>
+              <span>{{ 'metadataPanel.activity' | translate }}</span>
             </ng-template>
             <div class="tab-content audit-tab">
               @if(auditLoading) {
@@ -190,39 +242,5 @@
         </mat-tab-group>
       }
     </div>
-    <!-- Panel Footer -->
-    @if (documentInfo) {
-      <div class="panel-footer">
-        @if(!editMode) {
-          <button mat-stroked-button class="cancel-btn" (click)="onClose()" [attr.aria-label]="'common.close' | translate">
-            <mat-icon aria-hidden="true">close</mat-icon>
-            <span>{{ 'common.close' | translate }}</span>
-          </button>
-          <button mat-raised-button class="primary-btn" (click)="toggleEditMode()"
-            [attr.aria-label]="'metadataPanel.editMetadata' | translate">
-            <mat-icon aria-hidden="true">edit</mat-icon>
-            <span>{{ 'metadataPanel.editMetadata' | translate }}</span>
-          </button>
-        } @else {
-          <button mat-stroked-button class="cancel-btn" (click)="toggleEditMode()" [disabled]="saving"
-            [attr.aria-label]="'metadataPanel.cancelEditing' | translate">
-            <mat-icon aria-hidden="true">close</mat-icon>
-            <span>{{ 'common.close' | translate }}</span>
-          </button>
-          <button mat-raised-button class="primary-btn" (click)="saveMetadata()" [disabled]="!canSave"
-            [attr.aria-label]="'metadataPanel.saveMetadata' | translate">
-            @if (saving) {
-              <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
-              <span>{{ 'metadataPanel.savingDots' | translate }}</span>
-            } @else {
-              <ng-container>
-                <mat-icon aria-hidden="true">save</mat-icon>
-                <span>{{ 'common.save' | translate }}</span>
-              </ng-container>
-            }
-          </button>
-        }
-      </div>
-    }
   </aside>
 }

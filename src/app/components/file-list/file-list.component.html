@@ -87,9 +87,11 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef [attr.aria-label]="'common.actions' | translate"></th>
       <td mat-cell *matCellDef="let item" class="actions-cell">
-        <button mat-icon-button (click)="onViewProperties(item)" [matTooltip]="'fileList.viewProperties' | translate"
-          [attr.aria-label]="'fileList.viewPropertiesForItem' | translate:{name: item.name}">
-          <mat-icon aria-hidden="true">info</mat-icon>
+        <button mat-icon-button class="item-menu-btn" [matMenuTriggerFor]="itemActionsMenu"
+          (click)="onKebabClick($event, item)"
+          [matTooltip]="'common.actions' | translate" aria-haspopup="menu"
+          [attr.aria-label]="('common.actions' | translate) + ': ' + item.name">
+          <mat-icon aria-hidden="true">more_vert</mat-icon>
         </button>
       </td>
     </ng-container>
@@ -102,6 +104,7 @@
       [appFileDraggable]="row" [allItems]="items"
       [appFolderDropZone]="row.type === 'FOLDER' ? row : null"
       [currentFolderId]="currentFolderId"
+      (contextmenu)="onContextMenu($event, row)"
       (itemsDropped)="onItemsDropped($event)"></tr>
   </table>
   <div class="dropzone-overlay" [class.file-over]="fileOver">
@@ -110,4 +113,23 @@
       <p>{{ 'common.dropFilesHere' | translate }}</p>
     </div>
   </div>
+
+  <!-- Invisible anchor that positions the shared menu at the cursor on right-click -->
+  <div class="context-menu-anchor" [style.left.px]="contextMenuPosition.x" [style.top.px]="contextMenuPosition.y"
+    [matMenuTriggerFor]="itemActionsMenu" #contextMenuTrigger="matMenuTrigger" aria-hidden="true"></div>
+
+  <!-- Shared per-item actions menu (kebab + context menu) -->
+  <mat-menu #itemActionsMenu="matMenu" class="item-actions-menu">
+    <ng-template matMenuContent>
+      @for(action of itemActions; track action.id) {
+      @if(action.danger) {
+      <mat-divider></mat-divider>
+      }
+      <button mat-menu-item [class.danger-menu-item]="action.danger" (click)="onMenuAction(action.id)">
+        <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+        <span>{{ action.labelKey | translate }}</span>
+      </button>
+      }
+    </ng-template>
+  </mat-menu>
 </div>

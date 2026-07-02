@@ -608,6 +608,11 @@ export class DocumentApiService {
     return this.http.patch<ElementInfo>(`${this.baseUrl}/documents/${documentId}/metadata`, { metadataToUpdate: metadata });
   }
 
+  deleteDocumentMetadata(documentId: string, metadataKeys: string[]): Observable<void> {
+    // PATCH merges keys, so removing one requires the dedicated DELETE endpoint
+    return this.http.delete<void>(`${this.baseUrl}/documents/${documentId}/metadata`, { body: { metadataKeysToDelete: metadataKeys } });
+  }
+
   // Dashboard operations
   getDashboardStatistics(): Observable<DashboardStatistics> {
     return this.http.get<DashboardStatistics>(`${this.baseUrl}/dashboard/statistics`);

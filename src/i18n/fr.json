@@ -38,7 +38,8 @@
         "value": "Valeur",
         "dropFilesHere": "Déposez les fichiers ici pour téléverser",
         "expand": "Développer",
-        "minimize": "Réduire"
+        "minimize": "Réduire",
+        "details": "Détails"
     },
     "languages": {
         "en": "English",
@@ -118,7 +119,8 @@
             "excel": "Feuille de calcul Excel",
             "powerpoint": "Présentation PowerPoint",
             "text": "Fichier texte"
-        }
+        },
+        "moreActions": "Plus d'actions"
     },
     "sortOptions": {
         "date": "Date",
@@ -269,7 +271,13 @@
         "keepEditing": "Continuer l'édition",
         "hashCopied": "Hachage SHA256 copié dans le presse-papiers",
         "copyFailed": "Échec de la copie dans le presse-papiers",
-        "saveSuccess": "Document enregistré avec succès"
+        "saveSuccess": "Document enregistré avec succès",
+        "details": "Détails",
+        "activity": "Activité",
+        "addMetadata": "Ajouter",
+        "clickToEdit": "Cliquer pour modifier",
+        "keyDeleted": "« {{key}} » supprimé",
+        "saveFailed": "Échec de l'enregistrement des métadonnées"
     },
     "metadataEditor": {
         "clearAll": "Tout effacer",

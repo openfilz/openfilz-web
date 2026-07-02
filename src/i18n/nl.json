@@ -38,7 +38,8 @@
         "dropFilesHere": "Sleep bestanden hierheen om te uploaden",
         "view": "Bekijken",
         "expand": "Uitvouwen",
-        "minimize": "Minimaliseren"
+        "minimize": "Minimaliseren",
+        "details": "Details"
     },
     "languages": {
         "en": "Engels",
@@ -118,7 +119,8 @@
             "excel": "Excel-spreadsheet",
             "powerpoint": "PowerPoint-presentatie",
             "text": "Tekstbestand"
-        }
+        },
+        "moreActions": "Meer acties"
     },
     "sortOptions": {
         "date": "Datum",
@@ -269,7 +271,13 @@
         "keepEditing": "Blijven bewerken",
         "hashCopied": "SHA256-hash gekopieerd naar klembord",
         "copyFailed": "Kopiëren naar klembord mislukt",
-        "saveSuccess": "Document succesvol opgeslagen"
+        "saveSuccess": "Document succesvol opgeslagen",
+        "details": "Details",
+        "activity": "Activiteit",
+        "addMetadata": "Toevoegen",
+        "clickToEdit": "Klik om te bewerken",
+        "keyDeleted": "\"{{key}}\" verwijderd",
+        "saveFailed": "Opslaan van metadata mislukt"
     },
     "metadataEditor": {
         "clearAll": "Alles wissen",

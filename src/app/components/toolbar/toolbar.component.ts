@@ -10,6 +10,7 @@ import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
+import { FileActionCategory, FileActionDescriptor, FileActionId, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS } from '../../models/file-actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -57,6 +58,7 @@ export class ToolbarComponent {
   @Output() moveSelected = new EventEmitter<void>();
   @Output() copySelected = new EventEmitter<void>();
   @Output() deleteSelected = new EventEmitter<void>();
+  @Output() detailsSelected = new EventEmitter<void>();
   @Output() clearSelection = new EventEmitter<void>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
   @Output() createDocument = new EventEmitter<DocumentTemplateType>();
@@ -254,8 +256,28 @@ export class ToolbarComponent {
     }
   }
 
-  onActionSelected(action: string): void {
-    // Execute action based on type
+  // Selection actions are descriptor-driven so downstream forks can extend
+  // the array instead of forking the templates.
+  readonly selectionActionDefs: FileActionDescriptor[] = STANDARD_SELECTION_ACTIONS;
+  readonly sheetCategories = SHEET_CATEGORIES;
+
+  isActionEnabled(action: FileActionDescriptor): boolean {
+    return !action.singleOnly || this.selectionCount === 1;
+  }
+
+  get primarySelectionActions(): FileActionDescriptor[] {
+    return this.selectionActionDefs.filter(a => a.placement === 'primary' && this.isActionEnabled(a));
+  }
+
+  get overflowSelectionActions(): FileActionDescriptor[] {
+    return this.selectionActionDefs.filter(a => a.placement === 'overflow' && this.isActionEnabled(a));
+  }
+
+  sheetActionsFor(category: FileActionCategory): FileActionDescriptor[] {
+    return this.selectionActionDefs.filter(a => a.category === category);
+  }
+
+  onAction(action: FileActionId): void {
     switch (action) {
       case 'open':
         if (this.selectionCount === 1) {
@@ -273,6 +295,11 @@ export class ToolbarComponent {
           this.onRenameSelected();
         }
         break;
+      case 'details':
+        if (this.selectionCount === 1) {
+          this.detailsSelected.emit();
+        }
+        break;
       case 'download':
         this.onDownloadSelected();
         break;
@@ -286,13 +313,6 @@ export class ToolbarComponent {
   }
 
   getAvailableActionsCount(): number {
-    // Count available actions in bottom sheet
-    // Base actions: move, copy, download, delete = 4
-    // Open + Rename: only if 1 item selected
-    let count = 4;
-    if (this.selectionCount === 1) {
-      count += 2; // Add open and rename
-    }
-    return count;
+    return this.selectionActionDefs.filter(a => this.isActionEnabled(a)).length;
   }
 }

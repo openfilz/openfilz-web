@@ -1,12 +1,15 @@
-import { Component, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { FileItem } from '../../models/document.models';
+import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS } from '../../models/file-actions';
 import { FileIconService } from '../../services/file-icon.service';
 import { TouchDetectionService } from '../../services/touch-detection.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -28,6 +31,8 @@ import { DropEvent } from '../../services/drag-drop.service';
     MatButtonModule,
     MatCheckboxModule,
     MatTooltipModule,
+    MatMenuModule,
+    MatDividerModule,
     TranslatePipe,
     FileDraggableDirective,
     FolderDropZoneDirective,
@@ -38,6 +43,7 @@ export class FileListComponent {
   @Input() items: FileItem[] = [];
   @Input() fileOver: boolean = false;
   @Input() showFavoriteButton: boolean = true; // Control favorite button visibility
+  @Input() showItemActions: boolean = true; // Kebab + context menu (off in recycle bin)
   @Input() sortBy: string = 'name';
   @Input() sortOrder: 'ASC' | 'DESC' = 'ASC';
   @Input() currentFolderId: string | null = null; // Current folder for drop zone validation
@@ -60,10 +66,15 @@ export class FileListComponent {
   focusedIndex = 0;
 
   get displayedColumns(): string[] {
+    const columns = ['drag', 'select'];
     if (this.showFavoriteButton) {
-      return ['drag', 'select', 'favorite', 'name', 'size', 'type', 'actions'];
+      columns.push('favorite');
     }
-    return ['drag', 'select', 'name', 'size', 'type', 'actions'];
+    columns.push('name', 'size', 'type');
+    if (this.showItemActions) {
+      columns.push('actions');
+    }
+    return columns;
   }
 
 
@@ -114,6 +125,56 @@ export class FileListComponent {
 
   onSelectionChange(item: FileItem, selected: boolean) {
     this.selectionChange.emit({ item, selected });
+  }
+
+  // ===== Per-item actions (kebab + right-click context menu) =====
+
+  @ViewChild('contextMenuTrigger') contextMenuTrigger?: MatMenuTrigger;
+  readonly itemActions: FileActionDescriptor[] = STANDARD_ITEM_ACTIONS;
+  contextMenuPosition = { x: 0, y: 0 };
+  /** Item the shared actions menu currently targets (set by kebab click or right-click) */
+  menuItem?: FileItem;
+
+  onContextMenu(event: MouseEvent, item: FileItem) {
+    if (!this.showItemActions) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.menuItem = item;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+    this.contextMenuTrigger?.openMenu();
+  }
+
+  onKebabClick(event: Event, item: FileItem) {
+    event.stopPropagation();
+    this.menuItem = item;
+  }
+
+  onMenuAction(actionId: FileActionId) {
+    const item = this.menuItem;
+    if (!item) return;
+    switch (actionId) {
+      case 'open':
+        this.itemDoubleClick.emit(item);
+        break;
+      case 'download':
+        this.download.emit(item);
+        break;
+      case 'rename':
+        this.rename.emit(item);
+        break;
+      case 'move':
+        this.move.emit(item);
+        break;
+      case 'copy':
+        this.copy.emit(item);
+        break;
+      case 'details':
+        this.viewProperties.emit(item);
+        break;
+      case 'delete':
+        this.delete.emit(item);
+        break;
+    }
   }
 
   onSelectAll(selected: boolean) {

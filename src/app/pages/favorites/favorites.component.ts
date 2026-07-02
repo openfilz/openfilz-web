@@ -137,6 +137,13 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
     this.openMetadataPanel(item.id);
   }
 
+  onDetailsSelected() {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onViewProperties(selected[0]);
+    }
+  }
+
   override onItemDoubleClick(item: FileItem) {
     // Clear the pending single-click timeout
     if (this.clickTimeout) {
