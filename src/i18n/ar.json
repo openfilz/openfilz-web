@@ -130,6 +130,7 @@
         "filesTable": "قائمة الملفات والمجلدات",
         "selectAll": "تحديد الكل",
         "selectItem": "تحديد {{name}}",
+        "selectionHint": "حدد المربع لاختيار عدة عناصر. النقر البسيط يحدد هذا العنصر فقط ويفتح خصائصه.",
         "select": "تحديد",
         "folderDetail": "مجلد: {{name}}",
         "fileDetail": "ملف: {{name}}",

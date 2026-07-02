@@ -130,6 +130,7 @@
         "filesTable": "Files and folders list",
         "selectAll": "Select all files",
         "selectItem": "Select {{name}}",
+        "selectionHint": "Tick to select several items. A single click selects only this one and opens its properties.",
         "select": "Select",
         "folderDetail": "Folder: {{name}}",
         "fileDetail": "File: {{name}}",

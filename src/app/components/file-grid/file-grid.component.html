@@ -16,6 +16,8 @@
                 (click)="$event.stopPropagation()">
                 <mat-checkbox [checked]="item.selected"
                     [attr.aria-label]="'fileList.selectItem' | translate:{name: item.name}"
+                    [matTooltip]="'fileList.selectionHint' | translate"
+                    matTooltipPosition="right" [matTooltipShowDelay]="400"
                     (change)="onSelectionChange(item, $event.checked)">
                 </mat-checkbox>
             </div>
