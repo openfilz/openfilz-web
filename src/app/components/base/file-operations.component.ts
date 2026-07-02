@@ -1,4 +1,4 @@
-import { Directive, HostListener, OnInit, inject } from '@angular/core';
+import { Directive, HostListener, OnInit, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyRequest, DocumentType, FileItem, MoveRequest, RenameRequest } from '../../models/document.models';
@@ -6,6 +6,8 @@ import { DocumentApiService } from '../../services/document-api.service';
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm-dialog/confirm-dialog.component';
+import { UnsavedChangesDialogComponent, UnsavedChangesResult } from '../../dialogs/unsaved-changes-dialog/unsaved-changes-dialog.component';
+import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { Observable } from "rxjs";
 import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
@@ -36,6 +38,18 @@ export abstract class FileOperationsComponent implements OnInit {
   pageIndex = 0;
   sortBy: string = 'name';
   sortOrder: 'ASC' | 'DESC' = 'ASC';
+
+  // ===== Document properties (metadata) panel =====
+  /** Whether the right-side details panel is currently shown. */
+  metadataPanelOpen = false;
+  /** Document currently shown in the details panel. */
+  selectedDocumentForMetadata?: string;
+  /** Panel instance, used to check for/flush pending inline metadata edits. */
+  @ViewChild(MetadataPanelComponent) protected metadataPanel?: MetadataPanelComponent;
+
+  /** Distinguish a single click (select + show details) from a double click (open). */
+  private clickTimeout: any = null;
+  private readonly CLICK_DELAY = 250; // milliseconds
 
   protected router = inject(Router);
   protected documentApi = inject(DocumentApiService);
@@ -189,7 +203,27 @@ export abstract class FileOperationsComponent implements OnInit {
   }
 
   onItemClick(item: FileItem): void {
-    this.selectItem(item, this.shiftHeld, this.ctrlHeld || this.metaHeld);
+    // Cancel any pending single-click so a rapid second click becomes a double-click.
+    this.cancelPendingItemClick();
+
+    // Capture modifier state now (before the timeout fires).
+    const shiftHeld = this.shiftHeld;
+    const ctrlOrMeta = this.ctrlHeld || this.metaHeld;
+
+    // Delay selection so a double-click (open) can pre-empt it.
+    this.clickTimeout = setTimeout(() => {
+      this.clickTimeout = null;
+      this.selectItem(item, shiftHeld, ctrlOrMeta);
+      this.syncMetadataPanelToClick(item, !shiftHeld && !ctrlOrMeta);
+    }, this.CLICK_DELAY);
+  }
+
+  /** Clear the pending single-click timer (called by double-click handlers). */
+  protected cancelPendingItemClick(): void {
+    if (this.clickTimeout) {
+      clearTimeout(this.clickTimeout);
+      this.clickTimeout = null;
+    }
   }
 
   onSelectionChange(event: { item: FileItem, selected: boolean }): void {
@@ -197,6 +231,113 @@ export abstract class FileOperationsComponent implements OnInit {
     this.selectionSticky = true;
     this.applySelection(event.item, event.selected, this.shiftHeld);
     this.resetStickyIfEmpty();
+    // Mirror the plain-click behavior: a checkbox that leaves exactly one item
+    // selected shows that item's details; multi-select (or none) hides the panel.
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.switchMetadataPanel(selected[0].id);
+    } else {
+      this.attemptCloseMetadataPanel();
+    }
+  }
+
+  // ===== Details panel: open on click, close on outside click (guarded) =====
+
+  /**
+   * After a plain single click, show the clicked item's details. Multi-select
+   * gestures or a click that clears the selection close the panel instead.
+   */
+  private syncMetadataPanelToClick(clickedItem: FileItem, isPlainClick: boolean): void {
+    const selected = this.selectedItems;
+    if (isPlainClick && selected.length === 1 && selected[0].id === clickedItem.id) {
+      this.switchMetadataPanel(clickedItem.id);
+    } else {
+      this.attemptCloseMetadataPanel();
+    }
+  }
+
+  openMetadataPanel(documentId: string): void {
+    this.selectedDocumentForMetadata = documentId;
+    this.metadataPanelOpen = true;
+  }
+
+  closeMetadataPanel(): void {
+    this.metadataPanelOpen = false;
+    this.selectedDocumentForMetadata = undefined;
+  }
+
+  onMetadataSaved(): void {
+    // Reflect metadata changes (size, versions, etc.) in the listing.
+    this.reloadData();
+  }
+
+  onViewProperties(item: FileItem): void {
+    this.switchMetadataPanel(item.id);
+  }
+
+  onDetailsSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.switchMetadataPanel(selected[0].id);
+    }
+  }
+
+  /** Open the panel for a document, or switch to it, guarding unsaved edits on the current one. */
+  protected switchMetadataPanel(documentId: string): void {
+    if (this.metadataPanelOpen && this.selectedDocumentForMetadata === documentId) {
+      return;
+    }
+    this.guardPendingMetadata(() => this.openMetadataPanel(documentId));
+  }
+
+  /** Close the details panel, guarding unsaved inline edits first. */
+  attemptCloseMetadataPanel(): void {
+    this.guardPendingMetadata(() => this.closeMetadataPanel());
+  }
+
+  /**
+   * Run `proceed` immediately when there is nothing unsaved; otherwise prompt
+   * the user to save / discard / keep editing and act on their choice.
+   */
+  private guardPendingMetadata(proceed: () => void): void {
+    if (!this.metadataPanelOpen || !this.metadataPanel?.hasPendingChanges) {
+      proceed();
+      return;
+    }
+    const dialogRef = this.dialog.open(UnsavedChangesDialogComponent, {
+      width: '480px',
+      maxWidth: '95vw',
+      disableClose: true
+    });
+    dialogRef.afterClosed().subscribe((result: UnsavedChangesResult | undefined) => {
+      if (result === 'save') {
+        this.metadataPanel?.savePendingChanges();
+        proceed();
+      } else if (result === 'discard') {
+        this.metadataPanel?.discardPendingChanges();
+        proceed();
+      }
+      // undefined → keep editing, leave the panel as-is
+    });
+  }
+
+  /**
+   * A click anywhere outside the open details panel closes it (like the panel's
+   * own close button). Clicks on file/folder items are handled by their own
+   * click flow (which switches the panel), and clicks inside overlays
+   * (menus, dialogs, snackbars, the panel itself) are ignored.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClickOutsidePanel(event: MouseEvent): void {
+    if (!this.metadataPanelOpen) return;
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+    if (target.closest('.metadata-panel')) return;
+    // The mobile backdrop closes the panel itself via (click) — don't double-handle.
+    if (target.closest('.metadata-panel-overlay')) return;
+    if (target.closest('.file-item') || target.closest('.file-row')) return;
+    if (target.closest('.cdk-overlay-container')) return;
+    this.attemptCloseMetadataPanel();
   }
 
   onSelectAll(selected: boolean): void {
@@ -510,6 +651,8 @@ export abstract class FileOperationsComponent implements OnInit {
   }
 
   onItemDoubleClick(item: FileItem): void {
+    this.cancelPendingItemClick();
+    this.closeMetadataPanel();
     if (item.type === 'FOLDER') {
       this.router.navigate(['/my-folder'], { queryParams: { folderId: item.id } });
     } else {

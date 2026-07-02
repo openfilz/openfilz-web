@@ -43,7 +43,13 @@ export class FileGridComponent {
   @Input() fileOver: boolean = false;
   @Input() showFavoriteButton: boolean = true; // Control favorite button visibility
   @Input() showItemActions: boolean = true; // Kebab + context menu (off in recycle bin)
+  @Input() selectionCount = 0; // Number of currently selected items (multi-select hides per-item menu)
   @Input() currentFolderId: string | null = null; // Current folder for drop zone validation
+
+  /** Per-item kebab + right-click menu: shown only when 0 or 1 items are selected. */
+  get showItemMenu(): boolean {
+    return this.showItemActions && this.selectionCount <= 1;
+  }
 
   @Output() itemClick = new EventEmitter<FileItem>();
   @Output() itemDoubleClick = new EventEmitter<FileItem>();
@@ -112,7 +118,7 @@ export class FileGridComponent {
   menuItem?: FileItem;
 
   onContextMenu(event: MouseEvent, item: FileItem) {
-    if (!this.showItemActions) return;
+    if (!this.showItemMenu) return;
     event.preventDefault();
     event.stopPropagation();
     this.menuItem = item;

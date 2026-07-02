@@ -44,6 +44,7 @@ export class FileListComponent {
   @Input() fileOver: boolean = false;
   @Input() showFavoriteButton: boolean = true; // Control favorite button visibility
   @Input() showItemActions: boolean = true; // Kebab + context menu (off in recycle bin)
+  @Input() selectionCount = 0; // Number of currently selected items (multi-select hides per-item menu)
   @Input() sortBy: string = 'name';
   @Input() sortOrder: 'ASC' | 'DESC' = 'ASC';
   @Input() currentFolderId: string | null = null; // Current folder for drop zone validation
@@ -75,6 +76,11 @@ export class FileListComponent {
       columns.push('actions');
     }
     return columns;
+  }
+
+  /** Per-item kebab + right-click menu: shown only when 0 or 1 items are selected. */
+  get showItemMenu(): boolean {
+    return this.showItemActions && this.selectionCount <= 1;
   }
 
 
@@ -136,7 +142,7 @@ export class FileListComponent {
   menuItem?: FileItem;
 
   onContextMenu(event: MouseEvent, item: FileItem) {
-    if (!this.showItemActions) return;
+    if (!this.showItemMenu) return;
     event.preventDefault();
     event.stopPropagation();
     this.menuItem = item;

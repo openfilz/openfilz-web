@@ -87,12 +87,14 @@
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef [attr.aria-label]="'common.actions' | translate"></th>
       <td mat-cell *matCellDef="let item" class="actions-cell">
+        @if(showItemMenu) {
         <button mat-icon-button class="item-menu-btn" [matMenuTriggerFor]="itemActionsMenu"
           (click)="onKebabClick($event, item)"
           [matTooltip]="'common.actions' | translate" aria-haspopup="menu"
           [attr.aria-label]="('common.actions' | translate) + ': ' + item.name">
           <mat-icon aria-hidden="true">more_vert</mat-icon>
         </button>
+        }
       </td>
     </ng-container>
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -27,7 +27,7 @@ import { FileActionCategory, FileActionDescriptor, FileActionId, SHEET_CATEGORIE
     CommonModule
 ],
 })
-export class ToolbarComponent {
+export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() viewMode: 'grid' | 'list' = 'grid';
   @Input() hasSelection = false;
   @Input() selectionCount = 0;
@@ -261,16 +261,106 @@ export class ToolbarComponent {
   readonly selectionActionDefs: FileActionDescriptor[] = STANDARD_SELECTION_ACTIONS;
   readonly sheetCategories = SHEET_CATEGORIES;
 
+  /** Display order for the desktop contextual icon bar (danger last). */
+  private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
+    ['open', 'download', 'rename', 'move', 'copy', 'details', 'delete'];
+
+  /**
+   * How many action icons fit inline in the toolbar; the rest spill into the
+   * "More actions" overflow menu. Recomputed on resize / selection change so
+   * that on a wide screen every action shows as an icon (no overflow menu),
+   * and the menu only appears when horizontal space runs out.
+   */
+  visibleSelectionCount = Number.MAX_SAFE_INTEGER;
+
+  @ViewChild('desktopSelection') private desktopSelectionRef?: ElementRef<HTMLElement>;
+  private resizeObserver?: ResizeObserver;
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   isActionEnabled(action: FileActionDescriptor): boolean {
     return !action.singleOnly || this.selectionCount === 1;
   }
 
-  get primarySelectionActions(): FileActionDescriptor[] {
-    return this.selectionActionDefs.filter(a => a.placement === 'primary' && this.isActionEnabled(a));
+  /** All enabled desktop selection actions, in display order. */
+  get desktopSelectionActions(): FileActionDescriptor[] {
+    return this.DESKTOP_ACTION_ORDER
+      .map(id => this.selectionActionDefs.find(a => a.id === id))
+      .filter((a): a is FileActionDescriptor => !!a && this.isActionEnabled(a));
   }
 
+  /** Actions rendered as inline icon buttons (fit within the available width). */
+  get visibleSelectionActions(): FileActionDescriptor[] {
+    return this.desktopSelectionActions.slice(0, this.visibleSelectionCount);
+  }
+
+  /** Actions that did not fit and are shown in the "More actions" menu. */
   get overflowSelectionActions(): FileActionDescriptor[] {
-    return this.selectionActionDefs.filter(a => a.placement === 'overflow' && this.isActionEnabled(a));
+    return this.desktopSelectionActions.slice(this.visibleSelectionCount);
+  }
+
+  ngAfterViewInit(): void {
+    // Re-flow the contextual action bar whenever the toolbar's width changes.
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.measureSelectionOverflow());
+      this.resizeObserver.observe(this.host.nativeElement);
+    }
+    this.scheduleMeasure();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Selection count changes the number of available actions (1 vs many).
+    if (changes['hasSelection'] || changes['selectionCount']) {
+      this.scheduleMeasure();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver?.disconnect();
+  }
+
+  /** Measure after the current change-detection pass has rendered the icons. */
+  private scheduleMeasure(): void {
+    setTimeout(() => this.measureSelectionOverflow(), 0);
+  }
+
+  /**
+   * Fit as many action icons inline as the available width allows, reserving a
+   * slot for the overflow button only when some actions don't fit.
+   */
+  private measureSelectionOverflow(): void {
+    if (!this.hasSelection) return;
+    const container = this.desktopSelectionRef?.nativeElement;
+    if (!container) return;
+
+    const available = container.clientWidth;
+    // Hidden (mobile bottom-sheet mode) or not laid out yet → show everything.
+    if (available <= 0) {
+      this.setVisibleCount(Number.MAX_SAFE_INTEGER);
+      return;
+    }
+
+    const total = this.desktopSelectionActions.length;
+    const btn = container.querySelector('.selection-action-btn') as HTMLElement | null;
+    const gap = 4; // matches .selection-actions gap
+    const buttonWidth = (btn ? btn.offsetWidth : 44) + gap;
+    if (buttonWidth <= 0) return;
+
+    let fit = Math.floor(available / buttonWidth);
+    if (fit >= total) {
+      fit = total; // everything fits → no overflow menu
+    } else {
+      // Leave room for the "More actions" button (plus its divider ~9px).
+      fit = Math.max(1, Math.floor((available - buttonWidth - 9) / buttonWidth));
+    }
+    this.setVisibleCount(fit);
+  }
+
+  private setVisibleCount(count: number): void {
+    if (count !== this.visibleSelectionCount) {
+      this.visibleSelectionCount = count;
+      this.cdr.detectChanges();
+    }
   }
 
   sheetActionsFor(category: FileActionCategory): FileActionDescriptor[] {
