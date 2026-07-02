@@ -1,6 +1,6 @@
 {
   "name": "angular-starter",
-  "version": "1.2.7",
+  "version": "1.2.8-SNAPSHOT",
   "private": true,
   "scripts": {
     "ng": "ng",
