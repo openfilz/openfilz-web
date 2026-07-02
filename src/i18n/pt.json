@@ -130,6 +130,7 @@
         "filesTable": "Lista de arquivos e pastas",
         "selectAll": "Selecionar todos os arquivos",
         "selectItem": "Selecionar {{name}}",
+        "selectionHint": "Marque para selecionar vários itens. Um único clique seleciona apenas este e abre as suas propriedades.",
         "select": "Selecionar",
         "folderDetail": "Pasta: {{name}}",
         "fileDetail": "Arquivo: {{name}}",

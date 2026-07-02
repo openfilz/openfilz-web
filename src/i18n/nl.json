@@ -130,6 +130,7 @@
         "filesTable": "Lijst met bestanden en mappen",
         "selectAll": "Alle bestanden selecteren",
         "selectItem": "Selecteer {{name}}",
+        "selectionHint": "Vink aan om meerdere items te selecteren. Eén klik selecteert alleen dit item en opent de eigenschappen.",
         "select": "Selecteren",
         "folderDetail": "Map: {{name}}",
         "fileDetail": "Bestand: {{name}}",

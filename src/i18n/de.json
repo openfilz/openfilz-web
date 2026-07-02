@@ -130,6 +130,7 @@
         "filesTable": "Datei- und Ordnerliste",
         "selectAll": "Alle Dateien auswählen",
         "selectItem": "{{name}} auswählen",
+        "selectionHint": "Ankreuzen, um mehrere Elemente auszuwählen. Ein einfacher Klick wählt nur dieses aus und öffnet seine Eigenschaften.",
         "select": "Auswählen",
         "folderDetail": "Ordner: {{name}}",
         "fileDetail": "Datei: {{name}}",
