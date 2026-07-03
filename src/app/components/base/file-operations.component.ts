@@ -337,6 +337,10 @@ export abstract class FileOperationsComponent implements OnInit {
     if (target.closest('.metadata-panel-overlay')) return;
     if (target.closest('.file-item') || target.closest('.file-row')) return;
     if (target.closest('.cdk-overlay-container')) return;
+    // The toolbar is a control surface for the current selection (its "Details"
+    // button opens this very panel). Treat toolbar clicks as inside, so opening
+    // the panel from the toolbar isn't immediately undone by this same click.
+    if (target.closest('app-toolbar')) return;
     this.attemptCloseMetadataPanel();
   }
 
