@@ -204,7 +204,7 @@
                   </div>
                 } @else {
                   <div class="audit-timeline" role="list" [attr.aria-label]="'metadataPanel.auditLogs' | translate">
-                    @for(log of auditLogs; track log.id) {
+                    @for(log of auditLogs; track $index) {
                       <div class="audit-entry" [class]="'audit-' + getAuditActionColor(log.action)" role="listitem">
                         <div class="audit-icon">
                           <mat-icon aria-hidden="true">{{ getAuditActionIcon(log.action) }}</mat-icon>
