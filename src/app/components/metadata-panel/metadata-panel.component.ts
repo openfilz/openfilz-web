@@ -548,10 +548,10 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   /**
    * Map version-creating audit entries to storage versionIds.
-   * Primary (exact): details.versionId, stored on every entry written since the
-   * versioning feature shipped. Legacy fallback (best-effort): when NO entry has a
-   * stored versionId, pair entries with surviving versions index-wise by date — only
-   * when the counts line up exactly; otherwise actions are suppressed on legacy entries.
+   * Primary (exact): details.versionId. Fallback (best-effort): any entry with no
+   * matching stored versionId (legacy entries, or EE uploads written before the audit
+   * carried one) is paired with the still-unclaimed versions in date order — only when
+   * the leftovers line up 1:1, so a version is never mis-attributed to the wrong entry.
    */
   private computeVersionMapping() {
     this.versionIdByLog.clear();
@@ -560,19 +560,28 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       .slice()
       .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
-    let exactCount = 0;
+    // Exact pass: entries whose stored details.versionId matches a surviving version.
+    const usedVersionIds = new Set<string>();
+    const unresolved: AuditLog[] = [];
     for (const log of entries) {
       const versionId = log.details?.['versionId'];
       if (versionId && this.versions.some(v => v.versionId === versionId)) {
         this.versionIdByLog.set(log, versionId);
-        exactCount++;
+        usedVersionIds.add(versionId);
+      } else {
+        unresolved.push(log);
       }
     }
 
-    if (exactCount === 0 && entries.length > 0 && entries.length === this.versions.length) {
-      const ascendingVersions = this.versions.slice()
-        .sort((a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime());
-      entries.forEach((log, i) => this.versionIdByLog.set(log, ascendingVersions[i].versionId));
+    // Fallback: pair each still-unmapped entry with a still-unclaimed version in date
+    // order, but only when the leftovers line up 1:1 (avoids mis-attribution). This
+    // covers e.g. an UPLOAD_DOCUMENT (v1) whose audit predates the stored versionId
+    // while later REPLACE entries already resolved exactly.
+    const remainingVersions = this.versions
+      .filter(v => !usedVersionIds.has(v.versionId))
+      .sort((a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime());
+    if (unresolved.length > 0 && unresolved.length === remainingVersions.length) {
+      unresolved.forEach((log, i) => this.versionIdByLog.set(log, remainingVersions[i].versionId));
     }
   }
 
