@@ -1,0 +1,19 @@
+apiVersion: v2
+name: openfilz-web
+description: >-
+  OpenFilz web UI (Angular, served by nginx). Deployable standalone or as a
+  subchart of the openfilz-ce umbrella chart (openfilz-core repo), which wires
+  the host/auth conventions through the `global:` values block. Released as an
+  OCI artifact by this repository's release workflow, versioned with the web
+  app (chart version = appVersion = image tag).
+type: application
+# Dev version — the release workflow stamps the real version + appVersion at
+# `helm package` time, like the image tags.
+version: 1.2.0
+appVersion: "latest"
+keywords:
+  - openfilz
+  - dms
+home: https://openfilz.com
+sources:
+  - https://github.com/openfilz/openfilz-web
