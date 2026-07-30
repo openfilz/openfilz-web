@@ -89,6 +89,12 @@ openshift:
       caCertificate: ""
       destinationCACertificate: ""
 
+# Pod securityContext ({} = cluster/image defaults). OpenShift: the entrypoint
+# writes ngx-env.js into the nginx html dir, which needs the image's root user
+# — set runAsUser: 0 (with an SCC granted) so the pod doesn't land on the
+# `restricted` SCC's random UID.
+podSecurityContext: {}
+
 resources:
   requests: { cpu: 25m, memory: 64Mi }
   limits: { memory: 128Mi }
