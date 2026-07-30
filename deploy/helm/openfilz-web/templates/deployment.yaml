@@ -20,6 +20,9 @@ spec:
       {{- with (.Values.tolerations | default (dig "tolerations" list (.Values.global | default dict))) }}
       tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: web
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ include "openfilz-web.imageTag" . }}"
