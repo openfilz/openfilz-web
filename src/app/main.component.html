@@ -40,6 +40,10 @@
   }
 
   <app-upload-progress></app-upload-progress>
+
+  @if (isAiEnabled) {
+    <app-ai-chat-fab></app-ai-chat-fab>
+  }
 </div>
 } @else {
 <div class="loading-page">

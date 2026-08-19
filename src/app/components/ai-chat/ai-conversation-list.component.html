@@ -1,0 +1,37 @@
+<div class="conversation-list">
+  <button class="new-conversation-btn" (click)="onNew()">
+    <mat-icon>add</mat-icon>
+    <span>{{ 'aiChat.newConversation' | translate }}</span>
+  </button>
+
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="32"></mat-spinner>
+    </div>
+  } @else if (conversations.length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">forum</mat-icon>
+      <p>{{ 'aiChat.noConversations' | translate }}</p>
+      <span class="hint">{{ 'aiChat.noConversationsHint' | translate }}</span>
+    </div>
+  } @else {
+    <div class="list">
+      @for (conv of conversations; track conv.id) {
+        <div class="conversation-item" (click)="onSelect(conv.id)">
+          <div class="conv-icon">
+            <mat-icon>chat_bubble_outline</mat-icon>
+          </div>
+          <div class="conv-info">
+            <div class="conv-title">{{ conv.title || ('aiChat.untitledConversation' | translate) }}</div>
+            <div class="conv-date">{{ formatDate(conv.updatedAt) }}</div>
+          </div>
+          <button mat-icon-button class="delete-btn"
+            (click)="onDelete($event, conv.id)"
+            [matTooltip]="'aiChat.deleteConversation' | translate">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

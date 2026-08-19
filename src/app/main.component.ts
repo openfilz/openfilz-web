@@ -13,10 +13,12 @@ import { HeaderComponent } from './components/header/header.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { DownloadProgressComponent } from "./components/download-progress/download-progress.component";
 import { UploadProgressComponent } from "./components/upload-progress/upload-progress.component";
+import { AiChatFabComponent } from "./components/ai-chat/ai-chat-fab.component";
 import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
 import { SearchService } from "./services/search.service";
 import { ThemeService } from './services/theme.service';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-main',
@@ -32,6 +34,7 @@ import { ThemeService } from './services/theme.service';
     BreadcrumbComponent,
     DownloadProgressComponent,
     UploadProgressComponent,
+    AiChatFabComponent,
     RouterOutlet
   ],
 })
@@ -44,6 +47,7 @@ export class MainComponent implements OnInit {
   private publicEventsService = environment.authentication.enabled ? inject(PublicEventsService) : null;
   private translateService = inject(TranslateService);
   private searchService = inject(SearchService);
+  private settingsService = inject(SettingsService);
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
@@ -55,6 +59,12 @@ export class MainComponent implements OnInit {
   isMobileMenuOpen = false;
   hasActiveFilters = false;
   private isRedirectingToLogin = false;
+
+  // Settings are loaded by the app initializer before bootstrap completes, so this is
+  // populated by the time the template first renders (same as isRecycleBinEnabled elsewhere).
+  get isAiEnabled(): boolean {
+    return this.settingsService.isAiActive;
+  }
 
   // This is needed for the header component
   get hasSelectedItems(): boolean {

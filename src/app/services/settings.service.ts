@@ -9,6 +9,7 @@ export interface Settings {
   fileQuotaMB: number | null;
   userQuotaMB: number | null;
   thumbnailsActive: boolean;
+  aiActive: boolean;
 }
 
 @Injectable({
@@ -32,8 +33,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false });
       })
     );
   }
@@ -52,5 +53,11 @@ export class SettingsService {
 
   get isThumbnailsActive(): boolean {
     return this.settingsSubject.value?.thumbnailsActive ?? false;
+  }
+
+  // Driven by openfilz.ai.active on the API: the AI endpoints only exist when that flag is on,
+  // so the chat UI follows the backend rather than a frontend toggle of its own.
+  get isAiActive(): boolean {
+    return this.settingsSubject.value?.aiActive ?? false;
   }
 }
