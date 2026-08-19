@@ -13,8 +13,5 @@ export const environment = {
     versioning: {
         // Mirrors STORAGE_MINIO_VERSIONING_ENABLED on the backend — both must be set in tandem
         enabled: true
-    },
-    ai: {
-        enabled: (import.meta.env['NG_APP_AI_ENABLED'] ?? 'true') !== 'false'
     }
 };

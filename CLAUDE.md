@@ -159,7 +159,6 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 | `NG_APP_AUTHENTICATION_ENABLED` | `true` | Enable/disable auth |
 | `NG_APP_ONLYOFFICE_ENABLED` | `true` | Enable OnlyOffice editor |
 | `NG_APP_ONLYOFFICE_MAX_FILE_SIZE` | `30` | Max file size for editing (MB) |
-| `NG_APP_AI_ENABLED` | `true` | Show the AI document-chat UI. Must be set in tandem with `OPENFILZ_AI_ACTIVE` on the backend — the AI endpoints only exist when the backend flag is on |
 
 ---
 

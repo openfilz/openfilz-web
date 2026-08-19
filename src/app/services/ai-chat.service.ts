@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, firstValueFrom, isObservable, of } from 'r
 import { tap } from 'rxjs/operators';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../../environments/environment';
+import { SettingsService } from './settings.service';
 import {
   AiConversation,
   AiMessage,
@@ -16,6 +17,7 @@ export class AiChatService {
   private http = inject(HttpClient);
   private oidcSecurityService = inject(OidcSecurityService);
   private ngZone = inject(NgZone);
+  private settingsService = inject(SettingsService);
 
   private readonly baseUrl = environment.apiURL;
 
@@ -30,7 +32,7 @@ export class AiChatService {
   private abortController: AbortController | null = null;
 
   get isEnabled(): boolean {
-    return environment.ai.enabled;
+    return this.settingsService.isAiActive;
   }
 
   loadConversations(): Observable<AiConversation[]> {

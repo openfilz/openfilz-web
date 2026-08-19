@@ -18,6 +18,7 @@ import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
 import { SearchService } from "./services/search.service";
 import { ThemeService } from './services/theme.service';
+import { SettingsService } from './services/settings.service';
 
 @Component({
   selector: 'app-main',
@@ -46,10 +47,10 @@ export class MainComponent implements OnInit {
   private publicEventsService = environment.authentication.enabled ? inject(PublicEventsService) : null;
   private translateService = inject(TranslateService);
   private searchService = inject(SearchService);
+  private settingsService = inject(SettingsService);
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
-  isAiEnabled = environment.ai.enabled;
   isDownloading = false;
   breadcrumbs: ElementInfo[] = [];
   currentRoute = '';
@@ -58,6 +59,12 @@ export class MainComponent implements OnInit {
   isMobileMenuOpen = false;
   hasActiveFilters = false;
   private isRedirectingToLogin = false;
+
+  // Settings are loaded by the app initializer before bootstrap completes, so this is
+  // populated by the time the template first renders (same as isRecycleBinEnabled elsewhere).
+  get isAiEnabled(): boolean {
+    return this.settingsService.isAiActive;
+  }
 
   // This is needed for the header component
   get hasSelectedItems(): boolean {
