@@ -38,7 +38,8 @@
         "value": "Valore",
         "dropFilesHere": "Trascina i file qui per il caricamento",
         "expand": "Espandi",
-        "minimize": "Minimizza"
+        "minimize": "Minimizza",
+        "details": "Dettagli"
     },
     "languages": {
         "en": "Inglese",
@@ -97,6 +98,7 @@
         "deleteSelected": "Elimina elementi selezionati",
         "gridView": "Vista griglia",
         "listView": "Vista elenco",
+        "filterByType": "Filtra per tipo",
         "previousPage": "Pagina precedente",
         "nextPage": "Pagina successiva",
         "firstPage": "Prima pagina",
@@ -117,7 +119,8 @@
             "excel": "Foglio di calcolo Excel",
             "powerpoint": "Presentazione PowerPoint",
             "text": "File di testo"
-        }
+        },
+        "moreActions": "Altre azioni"
     },
     "sortOptions": {
         "date": "Data",
@@ -127,6 +130,7 @@
         "filesTable": "Elenco file e cartelle",
         "selectAll": "Seleziona tutti i file",
         "selectItem": "Seleziona {{name}}",
+        "selectionHint": "Spunta per selezionare più elementi. Un clic singolo seleziona solo questo e apre le sue proprietà.",
         "select": "Seleziona",
         "folderDetail": "Cartella: {{name}}",
         "fileDetail": "File: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Conflitto di nome rilevato. Numero massimo di tentativi ({{maxAttempts}}) raggiunto.",
         "uploadStartingSingle": "Avvio caricamento di {{name}}...",
         "uploadStartingMultiple": "Avvio caricamento di {{count}} file di grandi dimensioni...",
+        "folderUploadStarting": "Creazione di {{count}} cartella/e e caricamento dei file...",
+        "folderUploadError": "Impossibile creare la struttura delle cartelle",
         "uploadingFile": "Caricamento di {{name}}...",
         "uploadSuccess": "{{name}} caricato con successo",
         "uploadError": "Impossibile caricare {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "Sostituzione di {{name}}...",
         "replaceSuccess": "{{name}} sostituito con successo",
         "replaceError": "Impossibile sostituire {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "Alcuni file esistono già",
+        "subtitle": "{{count}} file in questa cartella hanno lo stesso nome",
+        "applyToAll": "Applica a tutti:",
+        "replaceAll": "Sostituisci tutto",
+        "skipAll": "Ignora tutto",
+        "existing": "Esistente",
+        "new": "Nuovo",
+        "replace": "Sostituisci",
+        "skip": "Ignora",
+        "cleanNote": "Verranno caricati altri {{count}} file senza conflitti.",
+        "summary": "Sostituisci {{replace}} · Ignora {{skip}}",
+        "allSkipped": "Tutti i file duplicati sono stati ignorati",
+        "cancel": "Annulla",
+        "apply": "Applica"
     },
     "searchResults": {
         "title": "Risultati della ricerca per \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDF",
             "images": "Immagini",
             "documents": "Documenti",
-            "spreadsheets": "Fogli di calcolo"
+            "spreadsheets": "Fogli di calcolo",
+            "presentations": "Presentazioni",
+            "text": "Testo",
+            "videos": "Video",
+            "audio": "Audio",
+            "archives": "Archivi"
         },
         "scope": "Ambito di ricerca",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Continua a modificare",
         "hashCopied": "Hash SHA256 copiato negli appunti",
         "copyFailed": "Copia negli appunti fallita",
-        "saveSuccess": "Documento salvato con successo"
+        "saveSuccess": "Documento salvato con successo",
+        "details": "Dettagli",
+        "activity": "Attività",
+        "addMetadata": "Aggiungi",
+        "clickToEdit": "Clicca per modificare",
+        "keyDeleted": "\"{{key}}\" rimosso",
+        "saveFailed": "Impossibile salvare i metadati"
     },
     "metadataEditor": {
         "clearAll": "Pulisci Tutto",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Cartella Spostata",
             "UPLOAD_DOCUMENT": "Documento Caricato",
             "REPLACE_DOCUMENT_CONTENT": "Contenuto Sostituito",
+            "RESTORE_DOCUMENT_VERSION": "Versione ripristinata",
             "REPLACE_DOCUMENT_METADATA": "Metadati Sostituiti",
             "UPDATE_DOCUMENT_METADATA": "Metadati Aggiornati",
             "DOWNLOAD_DOCUMENT": "Documento Scaricato",
@@ -449,6 +483,19 @@
             "dayAgo": "{{count}}g fa",
             "daysAgo": "{{count}}g fa"
         }
+    },
+    "versions": {
+        "actions": "Azioni versione",
+        "view": "Visualizza questa versione",
+        "download": "Scarica questa versione",
+        "restore": "Ripristina questa versione",
+        "restoreConfirmTitle": "Ripristina versione",
+        "restoreConfirmMessage": "Sostituire la versione corrente con la versione del {{date}}? La versione corrente sarà conservata nella cronologia.",
+        "restoreSuccess": "Versione ripristinata",
+        "restoreError": "Impossibile ripristinare la versione",
+        "downloadError": "Impossibile scaricare la versione",
+        "current": "Versione corrente",
+        "viewingVersion": "Versione del {{date}}"
     },
     "favorites": {
         "title": "Preferiti",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Mancata corrispondenza dell'offset - riprendi dalla richiesta HEAD",
             "uploadNotComplete": "Il caricamento non è completo",
             "fileSizeExceedsQuota": "La dimensione del file supera la quota",
-            "finalizeFailed": "Impossibile finalizzare il caricamento"
+            "finalizeFailed": "Impossibile finalizzare il caricamento",
+            "replaceFailed": "Impossibile sostituire il file esistente"
         }
     },
     "operations": {

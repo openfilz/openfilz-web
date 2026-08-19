@@ -38,7 +38,8 @@
         "value": "Value",
         "dropFilesHere": "Drop files here to upload",
         "expand": "Expand",
-        "minimize": "Minimize"
+        "minimize": "Minimize",
+        "details": "Details"
     },
     "languages": {
         "en": "English",
@@ -97,6 +98,7 @@
         "deleteSelected": "Delete selected items",
         "gridView": "Grid view",
         "listView": "List view",
+        "filterByType": "Filter by type",
         "previousPage": "Previous page",
         "nextPage": "Next page",
         "firstPage": "First page",
@@ -117,7 +119,8 @@
             "excel": "Excel Spreadsheet",
             "powerpoint": "PowerPoint Presentation",
             "text": "Text File"
-        }
+        },
+        "moreActions": "More actions"
     },
     "sortOptions": {
         "date": "Date",
@@ -127,6 +130,7 @@
         "filesTable": "Files and folders list",
         "selectAll": "Select all files",
         "selectItem": "Select {{name}}",
+        "selectionHint": "Tick to select several items. A single click selects only this one and opens its properties.",
         "select": "Select",
         "folderDetail": "Folder: {{name}}",
         "fileDetail": "File: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Name conflict detected. Maximum retry attempts ({{maxAttempts}}) reached.",
         "uploadStartingSingle": "Starting upload of {{name}}...",
         "uploadStartingMultiple": "Starting upload of {{count}} large files...",
+        "folderUploadStarting": "Creating {{count}} folder(s) and uploading files...",
+        "folderUploadError": "Failed to create the folder structure",
         "uploadingFile": "Uploading {{name}}...",
         "uploadSuccess": "{{name}} uploaded successfully",
         "uploadError": "Failed to upload {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "Replacing {{name}}...",
         "replaceSuccess": "{{name}} replaced successfully",
         "replaceError": "Failed to replace {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "Some files already exist",
+        "subtitle": "{{count}} file(s) in this folder have the same name",
+        "applyToAll": "Apply to all:",
+        "replaceAll": "Replace all",
+        "skipAll": "Skip all",
+        "existing": "Existing",
+        "new": "New",
+        "replace": "Replace",
+        "skip": "Skip",
+        "cleanNote": "{{count}} other file(s) without conflicts will be uploaded.",
+        "summary": "Replace {{replace}} · Skip {{skip}}",
+        "allSkipped": "All duplicate files were skipped",
+        "cancel": "Cancel",
+        "apply": "Apply"
     },
     "searchResults": {
         "title": "Search results for \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDFs",
             "images": "Images",
             "documents": "Documents",
-            "spreadsheets": "Spreadsheets"
+            "spreadsheets": "Spreadsheets",
+            "presentations": "Presentations",
+            "text": "Text",
+            "videos": "Videos",
+            "audio": "Audio",
+            "archives": "Archives"
         },
         "scope": "Search scope",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Keep editing",
         "hashCopied": "SHA256 hash copied to clipboard",
         "copyFailed": "Failed to copy to clipboard",
-        "saveSuccess": "Document saved successfully"
+        "saveSuccess": "Document saved successfully",
+        "details": "Details",
+        "activity": "Activity",
+        "addMetadata": "Add",
+        "clickToEdit": "Click to edit",
+        "keyDeleted": "\"{{key}}\" removed",
+        "saveFailed": "Failed to save metadata"
     },
     "metadataEditor": {
         "clearAll": "Clear All",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Folder Moved",
             "UPLOAD_DOCUMENT": "Document Uploaded",
             "REPLACE_DOCUMENT_CONTENT": "Content Replaced",
+            "RESTORE_DOCUMENT_VERSION": "Version Restored",
             "REPLACE_DOCUMENT_METADATA": "Metadata Replaced",
             "UPDATE_DOCUMENT_METADATA": "Metadata Updated",
             "DOWNLOAD_DOCUMENT": "Document Downloaded",
@@ -449,6 +483,19 @@
             "dayAgo": "{{count}}d ago",
             "daysAgo": "{{count}}d ago"
         }
+    },
+    "versions": {
+        "actions": "Version actions",
+        "view": "View this version",
+        "download": "Download this version",
+        "restore": "Restore this version",
+        "restoreConfirmTitle": "Restore version",
+        "restoreConfirmMessage": "Replace the current version with the version from {{date}}? The current version will be kept in the history.",
+        "restoreSuccess": "Version restored",
+        "restoreError": "Failed to restore version",
+        "downloadError": "Failed to download version",
+        "current": "Current version",
+        "viewingVersion": "Version of {{date}}"
     },
     "favorites": {
         "title": "Favorites",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Offset mismatch - resume from HEAD request",
             "uploadNotComplete": "Upload is not complete",
             "fileSizeExceedsQuota": "File size exceeds quota",
-            "finalizeFailed": "Failed to finalize upload"
+            "finalizeFailed": "Failed to finalize upload",
+            "replaceFailed": "Failed to replace existing file"
         }
     },
     "operations": {

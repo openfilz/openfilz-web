@@ -38,7 +38,8 @@
         "dropFilesHere": "Sleep bestanden hierheen om te uploaden",
         "view": "Bekijken",
         "expand": "Uitvouwen",
-        "minimize": "Minimaliseren"
+        "minimize": "Minimaliseren",
+        "details": "Details"
     },
     "languages": {
         "en": "Engels",
@@ -97,6 +98,7 @@
         "deleteSelected": "Geselecteerde items verwijderen",
         "gridView": "Rasterweergave",
         "listView": "Lijstweergave",
+        "filterByType": "Filteren op type",
         "previousPage": "Vorige pagina",
         "nextPage": "Volgende pagina",
         "firstPage": "Eerste pagina",
@@ -117,7 +119,8 @@
             "excel": "Excel-spreadsheet",
             "powerpoint": "PowerPoint-presentatie",
             "text": "Tekstbestand"
-        }
+        },
+        "moreActions": "Meer acties"
     },
     "sortOptions": {
         "date": "Datum",
@@ -127,6 +130,7 @@
         "filesTable": "Lijst met bestanden en mappen",
         "selectAll": "Alle bestanden selecteren",
         "selectItem": "Selecteer {{name}}",
+        "selectionHint": "Vink aan om meerdere items te selecteren. Eén klik selecteert alleen dit item en opent de eigenschappen.",
         "select": "Selecteren",
         "folderDetail": "Map: {{name}}",
         "fileDetail": "Bestand: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Naamconflict gedetecteerd. Maximaal aantal pogingen ({{maxAttempts}}) bereikt.",
         "uploadStartingSingle": "Upload van {{name}} starten...",
         "uploadStartingMultiple": "Upload van {{count}} grote bestanden starten...",
+        "folderUploadStarting": "{{count}} map(pen) maken en bestanden uploaden...",
+        "folderUploadError": "Kan de mappenstructuur niet maken",
         "uploadingFile": "{{name}} uploaden...",
         "uploadSuccess": "{{name}} succesvol geüpload",
         "uploadError": "Uploaden van {{name}} mislukt",
@@ -160,6 +166,22 @@
         "replacingFile": "{{name}} vervangen...",
         "replaceSuccess": "{{name}} succesvol vervangen",
         "replaceError": "Vervangen van {{name}} mislukt"
+    },
+    "duplicateResolution": {
+        "title": "Sommige bestanden bestaan al",
+        "subtitle": "{{count}} bestand(en) in deze map hebben dezelfde naam",
+        "applyToAll": "Op alles toepassen:",
+        "replaceAll": "Alles vervangen",
+        "skipAll": "Alles overslaan",
+        "existing": "Bestaand",
+        "new": "Nieuw",
+        "replace": "Vervangen",
+        "skip": "Overslaan",
+        "cleanNote": "{{count}} ander(e) bestand(en) zonder conflict worden geüpload.",
+        "summary": "Vervangen {{replace}} · Overslaan {{skip}}",
+        "allSkipped": "Alle dubbele bestanden zijn overgeslagen",
+        "cancel": "Annuleren",
+        "apply": "Toepassen"
     },
     "searchResults": {
         "title": "Zoekresultaten voor \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDF's",
             "images": "Afbeeldingen",
             "documents": "Documenten",
-            "spreadsheets": "Spreadsheets"
+            "spreadsheets": "Spreadsheets",
+            "presentations": "Presentaties",
+            "text": "Tekst",
+            "videos": "Video's",
+            "audio": "Audio",
+            "archives": "Archieven"
         },
         "scope": "Zoekbereik",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Blijven bewerken",
         "hashCopied": "SHA256-hash gekopieerd naar klembord",
         "copyFailed": "Kopiëren naar klembord mislukt",
-        "saveSuccess": "Document succesvol opgeslagen"
+        "saveSuccess": "Document succesvol opgeslagen",
+        "details": "Details",
+        "activity": "Activiteit",
+        "addMetadata": "Toevoegen",
+        "clickToEdit": "Klik om te bewerken",
+        "keyDeleted": "\"{{key}}\" verwijderd",
+        "saveFailed": "Opslaan van metadata mislukt"
     },
     "metadataEditor": {
         "clearAll": "Alles wissen",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Map verplaatst",
             "UPLOAD_DOCUMENT": "Document geüpload",
             "REPLACE_DOCUMENT_CONTENT": "Inhoud vervangen",
+            "RESTORE_DOCUMENT_VERSION": "Versie hersteld",
             "REPLACE_DOCUMENT_METADATA": "Metadata vervangen",
             "UPDATE_DOCUMENT_METADATA": "Metadata bijgewerkt",
             "DOWNLOAD_DOCUMENT": "Document gedownload",
@@ -449,6 +483,19 @@
             "dayAgo": "{{count}}d geleden",
             "daysAgo": "{{count}}d geleden"
         }
+    },
+    "versions": {
+        "actions": "Versieacties",
+        "view": "Deze versie bekijken",
+        "download": "Deze versie downloaden",
+        "restore": "Deze versie herstellen",
+        "restoreConfirmTitle": "Versie herstellen",
+        "restoreConfirmMessage": "De huidige versie vervangen door de versie van {{date}}? De huidige versie blijft bewaard in de geschiedenis.",
+        "restoreSuccess": "Versie hersteld",
+        "restoreError": "Versie herstellen mislukt",
+        "downloadError": "Versie downloaden mislukt",
+        "current": "Huidige versie",
+        "viewingVersion": "Versie van {{date}}"
     },
     "favorites": {
         "title": "Favorieten",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Offset komt niet overeen - hervat vanaf HEAD-verzoek",
             "uploadNotComplete": "Upload is niet voltooid",
             "fileSizeExceedsQuota": "Bestandsgrootte overschrijdt quota",
-            "finalizeFailed": "Voltooien van upload mislukt"
+            "finalizeFailed": "Voltooien van upload mislukt",
+            "replaceFailed": "Vervangen van bestaand bestand mislukt"
         }
     },
     "operations": {

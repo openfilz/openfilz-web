@@ -38,7 +38,8 @@
         "dropFilesHere": "Solte os arquivos aqui para fazer upload",
         "view": "Visualizar",
         "expand": "Expandir",
-        "minimize": "Minimizar"
+        "minimize": "Minimizar",
+        "details": "Detalhes"
     },
     "languages": {
         "en": "Inglês",
@@ -97,6 +98,7 @@
         "deleteSelected": "Excluir itens selecionados",
         "gridView": "Vista de grade",
         "listView": "Vista de lista",
+        "filterByType": "Filtrar por tipo",
         "previousPage": "Página anterior",
         "nextPage": "Próxima página",
         "firstPage": "Primeira página",
@@ -117,7 +119,8 @@
             "excel": "Planilha Excel",
             "powerpoint": "Apresentação PowerPoint",
             "text": "Arquivo de texto"
-        }
+        },
+        "moreActions": "Mais ações"
     },
     "sortOptions": {
         "date": "Data",
@@ -127,6 +130,7 @@
         "filesTable": "Lista de arquivos e pastas",
         "selectAll": "Selecionar todos os arquivos",
         "selectItem": "Selecionar {{name}}",
+        "selectionHint": "Marque para selecionar vários itens. Um único clique seleciona apenas este e abre as suas propriedades.",
         "select": "Selecionar",
         "folderDetail": "Pasta: {{name}}",
         "fileDetail": "Arquivo: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Conflito de nome detectado. Número máximo de tentativas ({{maxAttempts}}) atingido.",
         "uploadStartingSingle": "Iniciando upload de {{name}}...",
         "uploadStartingMultiple": "Iniciando upload de {{count}} arquivos grandes...",
+        "folderUploadStarting": "Criando {{count}} pasta(s) e enviando arquivos...",
+        "folderUploadError": "Falha ao criar a estrutura de pastas",
         "uploadingFile": "Enviando {{name}}...",
         "uploadSuccess": "{{name}} enviado com sucesso",
         "uploadError": "Falha ao enviar {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "Substituindo {{name}}...",
         "replaceSuccess": "{{name}} substituído com sucesso",
         "replaceError": "Falha ao substituir {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "Alguns arquivos já existem",
+        "subtitle": "{{count}} arquivo(s) têm o mesmo nome nesta pasta",
+        "applyToAll": "Aplicar a todos:",
+        "replaceAll": "Substituir tudo",
+        "skipAll": "Ignorar tudo",
+        "existing": "Existente",
+        "new": "Novo",
+        "replace": "Substituir",
+        "skip": "Ignorar",
+        "cleanNote": "{{count}} outro(s) arquivo(s) sem conflito serão enviados.",
+        "summary": "Substituir {{replace}} · Ignorar {{skip}}",
+        "allSkipped": "Todos os arquivos duplicados foram ignorados",
+        "cancel": "Cancelar",
+        "apply": "Aplicar"
     },
     "searchResults": {
         "title": "Resultados da pesquisa para \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDFs",
             "images": "Imagens",
             "documents": "Documentos",
-            "spreadsheets": "Planilhas"
+            "spreadsheets": "Planilhas",
+            "presentations": "Apresentações",
+            "text": "Texto",
+            "videos": "Vídeos",
+            "audio": "Áudio",
+            "archives": "Arquivos"
         },
         "scope": "Âmbito da pesquisa",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Continuar a editar",
         "hashCopied": "Hash SHA256 copiado para a área de transferência",
         "copyFailed": "Falha ao copiar para a área de transferência",
-        "saveSuccess": "Documento guardado com sucesso"
+        "saveSuccess": "Documento guardado com sucesso",
+        "details": "Detalhes",
+        "activity": "Atividade",
+        "addMetadata": "Adicionar",
+        "clickToEdit": "Clique para editar",
+        "keyDeleted": "\"{{key}}\" removido",
+        "saveFailed": "Falha ao salvar os metadados"
     },
     "metadataEditor": {
         "clearAll": "Limpar Tudo",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Pasta Movida",
             "UPLOAD_DOCUMENT": "Documento Enviado",
             "REPLACE_DOCUMENT_CONTENT": "Conteúdo Substituído",
+            "RESTORE_DOCUMENT_VERSION": "Versão restaurada",
             "REPLACE_DOCUMENT_METADATA": "Metadados Substituídos",
             "UPDATE_DOCUMENT_METADATA": "Metadados Atualizados",
             "DOWNLOAD_DOCUMENT": "Documento Baixado",
@@ -449,6 +483,19 @@
             "dayAgo": "há {{count}}d",
             "daysAgo": "há {{count}}d"
         }
+    },
+    "versions": {
+        "actions": "Ações de versão",
+        "view": "Ver esta versão",
+        "download": "Transferir esta versão",
+        "restore": "Restaurar esta versão",
+        "restoreConfirmTitle": "Restaurar versão",
+        "restoreConfirmMessage": "Substituir a versão atual pela versão de {{date}}? A versão atual será mantida no histórico.",
+        "restoreSuccess": "Versão restaurada",
+        "restoreError": "Falha ao restaurar a versão",
+        "downloadError": "Falha ao transferir a versão",
+        "current": "Versão atual",
+        "viewingVersion": "Versão de {{date}}"
     },
     "favorites": {
         "title": "Favoritos",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Deslocamento incorreto - retomar a partir da solicitação HEAD",
             "uploadNotComplete": "O upload não está completo",
             "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
-            "finalizeFailed": "Falha ao finalizar o upload"
+            "finalizeFailed": "Falha ao finalizar o upload",
+            "replaceFailed": "Falha ao substituir o arquivo existente"
         }
     },
     "operations": {

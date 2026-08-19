@@ -1,0 +1,30 @@
+<div class="dialog-header warning">
+  <div class="header-content">
+    <div class="icon-wrapper warning">
+      <mat-icon>warning</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'metadataPanel.unsavedChangesTitle' | translate }}</h2>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <p class="message">{{ 'metadataPanel.unsavedChangesMessage' | translate }}</p>
+  <p class="details">{{ 'metadataPanel.unsavedChangesDetails' | translate }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="onKeepEditing()">
+    <mat-icon>edit</mat-icon>
+    {{ 'metadataPanel.keepEditing' | translate }}
+  </button>
+  <button mat-stroked-button class="discard-btn" (click)="onDiscard()">
+    <mat-icon>delete_outline</mat-icon>
+    {{ 'metadataPanel.discardChanges' | translate }}
+  </button>
+  <button mat-flat-button class="confirm-btn warning" (click)="onSave()">
+    <mat-icon>check</mat-icon>
+    {{ 'common.save' | translate }}
+  </button>
+</mat-dialog-actions>

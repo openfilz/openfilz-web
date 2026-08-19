@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -7,7 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { FileItem } from '../../models/document.models';
+import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS } from '../../models/file-actions';
 import { FileIconService } from '../../services/file-icon.service';
 import { TouchDetectionService } from '../../services/touch-detection.service';
 
@@ -27,6 +30,8 @@ import { DropEvent } from '../../services/drag-drop.service';
     MatIconModule,
     MatCheckboxModule,
     MatTooltipModule,
+    MatMenuModule,
+    MatDividerModule,
     TranslateModule,
     FileDraggableDirective,
     FolderDropZoneDirective,
@@ -37,7 +42,14 @@ export class FileGridComponent {
   @Input() items: FileItem[] = [];
   @Input() fileOver: boolean = false;
   @Input() showFavoriteButton: boolean = true; // Control favorite button visibility
+  @Input() showItemActions: boolean = true; // Kebab + context menu (off in recycle bin)
+  @Input() selectionCount = 0; // Number of currently selected items (multi-select hides per-item menu)
   @Input() currentFolderId: string | null = null; // Current folder for drop zone validation
+
+  /** Per-item kebab + right-click menu: shown only when 0 or 1 items are selected. */
+  get showItemMenu(): boolean {
+    return this.showItemActions && this.selectionCount <= 1;
+  }
 
   @Output() itemClick = new EventEmitter<FileItem>();
   @Output() itemDoubleClick = new EventEmitter<FileItem>();
@@ -71,32 +83,80 @@ export class FileGridComponent {
   }
 
   onIconClick(event: Event, item: FileItem) {
+    if (!this.touchDetectionService.isTouchDevice()) {
+      // On desktop, let the click bubble to the item box so clicking the icon
+      // selects (single click) / opens (double click) like the rest of the box.
+      return;
+    }
+
     event.stopPropagation(); // Prevent parent click handler
 
-    if (this.touchDetectionService.isTouchDevice()) {
-      // On touch devices, single tap on icon = open
-      // Add ripple effect
-      const iconElement = event.currentTarget as HTMLElement;
-      iconElement.classList.add('ripple');
+    // On touch devices, single tap on icon = open
+    // Add ripple effect
+    const iconElement = event.currentTarget as HTMLElement;
+    iconElement.classList.add('ripple');
 
-      // Remove ripple class after animation completes
-      setTimeout(() => {
-        iconElement.classList.remove('ripple');
-      }, 600);
+    // Remove ripple class after animation completes
+    setTimeout(() => {
+      iconElement.classList.remove('ripple');
+    }, 600);
 
-      // Navigate immediately (same as double-click)
-      this.itemDoubleClick.emit(item);
-    }
-    // On desktop: do nothing, preserve double-click behavior
+    // Navigate immediately (same as double-click)
+    this.itemDoubleClick.emit(item);
   }
 
   onSelectionChange(item: FileItem, selected: boolean) {
     this.selectionChange.emit({ item, selected });
   }
 
+  // ===== Per-item actions (kebab + right-click context menu) =====
+
+  @ViewChild('contextMenuTrigger') contextMenuTrigger?: MatMenuTrigger;
+  readonly itemActions: FileActionDescriptor[] = STANDARD_ITEM_ACTIONS;
+  contextMenuPosition = { x: 0, y: 0 };
+  /** Item the shared actions menu currently targets (set by kebab click or right-click) */
+  menuItem?: FileItem;
+
   onContextMenu(event: MouseEvent, item: FileItem) {
+    if (!this.showItemMenu) return;
     event.preventDefault();
-    // Handle context menu
+    event.stopPropagation();
+    this.menuItem = item;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+    this.contextMenuTrigger?.openMenu();
+  }
+
+  onKebabClick(event: Event, item: FileItem) {
+    event.stopPropagation();
+    this.menuItem = item;
+  }
+
+  onMenuAction(actionId: FileActionId) {
+    const item = this.menuItem;
+    if (!item) return;
+    switch (actionId) {
+      case 'open':
+        this.itemDoubleClick.emit(item);
+        break;
+      case 'download':
+        this.download.emit(item);
+        break;
+      case 'rename':
+        this.rename.emit(item);
+        break;
+      case 'move':
+        this.move.emit(item);
+        break;
+      case 'copy':
+        this.copy.emit(item);
+        break;
+      case 'details':
+        this.viewProperties.emit(item);
+        break;
+      case 'delete':
+        this.delete.emit(item);
+        break;
+    }
   }
 
   onRename(item: FileItem) {

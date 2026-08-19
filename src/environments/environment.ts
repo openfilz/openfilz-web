@@ -10,6 +10,10 @@ export const environment = {
         enabled: import.meta.env['NG_APP_ONLYOFFICE_ENABLED'] === 'true',
         maxFileSize: Number(import.meta.env['NG_APP_ONLYOFFICE_MAX_FILE_SIZE']) || 30
     },
+    versioning: {
+        // Mirrors STORAGE_MINIO_VERSIONING_ENABLED on the backend — both must be set in tandem
+        enabled: import.meta.env['NG_APP_STORAGE_MINIO_VERSIONING_ENABLED'] === 'true'
+    },
     ai: {
         enabled: import.meta.env['NG_APP_AI_ENABLED'] === 'true'
     }

@@ -38,7 +38,8 @@
         "dropFilesHere": "اسحب الملفات هنا للرفع",
         "view": "عرض",
         "expand": "توسيع",
-        "minimize": "تصغير"
+        "minimize": "تصغير",
+        "details": "التفاصيل"
     },
     "languages": {
         "en": "English",
@@ -97,6 +98,7 @@
         "deleteSelected": "حذف العناصر المحددة",
         "gridView": "عرض الشبكة",
         "listView": "عرض القائمة",
+        "filterByType": "تصفية حسب النوع",
         "previousPage": "الصفحة السابقة",
         "nextPage": "الصفحة التالية",
         "firstPage": "الصفحة الأولى",
@@ -117,7 +119,8 @@
             "excel": "جدول بيانات Excel",
             "powerpoint": "عرض PowerPoint تقديمي",
             "text": "ملف نصي"
-        }
+        },
+        "moreActions": "المزيد من الإجراءات"
     },
     "sortOptions": {
         "date": "التاريخ",
@@ -127,6 +130,7 @@
         "filesTable": "قائمة الملفات والمجلدات",
         "selectAll": "تحديد الكل",
         "selectItem": "تحديد {{name}}",
+        "selectionHint": "حدد المربع لاختيار عدة عناصر. النقر البسيط يحدد هذا العنصر فقط ويفتح خصائصه.",
         "select": "تحديد",
         "folderDetail": "مجلد: {{name}}",
         "fileDetail": "ملف: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "تم اكتشاف تعارض في الاسم. تم الوصول إلى الحد الأقصى لعدد المحاولات ({{maxAttempts}}).",
         "uploadStartingSingle": "بدء رفع {{name}}...",
         "uploadStartingMultiple": "بدء رفع {{count}} ملفات كبيرة...",
+        "folderUploadStarting": "جارٍ إنشاء {{count}} مجلد ورفع الملفات...",
+        "folderUploadError": "تعذّر إنشاء بنية المجلدات",
         "uploadingFile": "جاري رفع {{name}}...",
         "uploadSuccess": "تم رفع {{name}} بنجاح",
         "uploadError": "فشل رفع {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "جاري استبدال {{name}}...",
         "replaceSuccess": "تم استبدال {{name}} بنجاح",
         "replaceError": "فشل استبدال {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "بعض الملفات موجودة بالفعل",
+        "subtitle": "{{count}} ملف(ات) في هذا المجلد تحمل نفس الاسم",
+        "applyToAll": "تطبيق على الكل:",
+        "replaceAll": "استبدال الكل",
+        "skipAll": "تخطّي الكل",
+        "existing": "الموجود",
+        "new": "الجديد",
+        "replace": "استبدال",
+        "skip": "تخطّي",
+        "cleanNote": "سيتم رفع {{count}} ملف(ات) أخرى بدون تعارض.",
+        "summary": "استبدال {{replace}} · تخطّي {{skip}}",
+        "allSkipped": "تم تخطّي جميع الملفات المكررة",
+        "cancel": "إلغاء",
+        "apply": "تطبيق"
     },
     "searchResults": {
         "title": "نتائج البحث عن \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "ملفات PDF",
             "images": "صور",
             "documents": "مستندات",
-            "spreadsheets": "جداول بيانات"
+            "spreadsheets": "جداول بيانات",
+            "presentations": "عروض تقديمية",
+            "text": "نص",
+            "videos": "مقاطع فيديو",
+            "audio": "صوت",
+            "archives": "أرشيفات"
         },
         "scope": "نطاق البحث",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "متابعة التعديل",
         "hashCopied": "تم نسخ هاش SHA256 إلى الحافظة",
         "copyFailed": "فشل النسخ إلى الحافظة",
-        "saveSuccess": "تم حفظ المستند بنجاح"
+        "saveSuccess": "تم حفظ المستند بنجاح",
+        "details": "التفاصيل",
+        "activity": "النشاط",
+        "addMetadata": "إضافة",
+        "clickToEdit": "انقر للتعديل",
+        "keyDeleted": "تمت إزالة \"{{key}}\"",
+        "saveFailed": "فشل حفظ البيانات الوصفية"
     },
     "metadataEditor": {
         "clearAll": "مسح الكل",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "تم نقل المجلد",
             "UPLOAD_DOCUMENT": "تم رفع المستند",
             "REPLACE_DOCUMENT_CONTENT": "تم استبدال المحتوى",
+            "RESTORE_DOCUMENT_VERSION": "تمت استعادة الإصدار",
             "REPLACE_DOCUMENT_METADATA": "تم استبدال البيانات الوصفية",
             "UPDATE_DOCUMENT_METADATA": "تم تحديث البيانات الوصفية",
             "DOWNLOAD_DOCUMENT": "تم تنزيل المستند",
@@ -449,6 +483,19 @@
             "dayAgo": "منذ {{count}} يوم",
             "daysAgo": "منذ {{count}} يوم"
         }
+    },
+    "versions": {
+        "actions": "إجراءات الإصدار",
+        "view": "عرض هذا الإصدار",
+        "download": "تنزيل هذا الإصدار",
+        "restore": "استعادة هذا الإصدار",
+        "restoreConfirmTitle": "استعادة الإصدار",
+        "restoreConfirmMessage": "هل تريد استبدال الإصدار الحالي بإصدار {{date}}؟ سيتم الاحتفاظ بالإصدار الحالي في السجل.",
+        "restoreSuccess": "تمت استعادة الإصدار",
+        "restoreError": "فشلت استعادة الإصدار",
+        "downloadError": "فشل تنزيل الإصدار",
+        "current": "الإصدار الحالي",
+        "viewingVersion": "إصدار {{date}}"
     },
     "favorites": {
         "title": "المفضلات",
@@ -569,7 +616,8 @@
             "offsetMismatch": "عدم تطابق الإزاحة - استئناف من طلب HEAD",
             "uploadNotComplete": "الرفع غير مكتمل",
             "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
-            "finalizeFailed": "فشل إنهاء الرفع"
+            "finalizeFailed": "فشل إنهاء الرفع",
+            "replaceFailed": "فشل استبدال الملف الموجود"
         }
     },
     "operations": {

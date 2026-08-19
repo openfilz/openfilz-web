@@ -38,7 +38,8 @@
         "value": "Valor",
         "dropFilesHere": "Suelte archivos aquí para subir",
         "expand": "Expandir",
-        "minimize": "Minimizar"
+        "minimize": "Minimizar",
+        "details": "Detalles"
     },
     "languages": {
         "en": "Inglés",
@@ -97,6 +98,7 @@
         "deleteSelected": "Eliminar elementos seleccionados",
         "gridView": "Vista de cuadrícula",
         "listView": "Vista de lista",
+        "filterByType": "Filtrar por tipo",
         "previousPage": "Página anterior",
         "nextPage": "Página siguiente",
         "firstPage": "Primera página",
@@ -117,7 +119,8 @@
             "excel": "Hoja de cálculo de Excel",
             "powerpoint": "Presentación de PowerPoint",
             "text": "Archivo de texto"
-        }
+        },
+        "moreActions": "Más acciones"
     },
     "sortOptions": {
         "date": "Fecha",
@@ -127,6 +130,7 @@
         "filesTable": "Lista de archivos y carpetas",
         "selectAll": "Seleccionar todos los archivos",
         "selectItem": "Seleccionar {{name}}",
+        "selectionHint": "Marca para seleccionar varios elementos. Un solo clic selecciona solo este y abre sus propiedades.",
         "select": "Seleccionar",
         "folderDetail": "Carpeta: {{name}}",
         "fileDetail": "Archivo: {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Conflicto de nombre detectado. Se alcanzó el número máximo de intentos ({{maxAttempts}}).",
         "uploadStartingSingle": "Iniciando subida de {{name}}...",
         "uploadStartingMultiple": "Iniciando subida de {{count}} archivos grandes...",
+        "folderUploadStarting": "Creando {{count}} carpeta(s) y subiendo archivos...",
+        "folderUploadError": "No se pudo crear la estructura de carpetas",
         "uploadingFile": "Subiendo {{name}}...",
         "uploadSuccess": "{{name}} subido con éxito",
         "uploadError": "Error al subir {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "Reemplazando {{name}}...",
         "replaceSuccess": "{{name}} reemplazado con éxito",
         "replaceError": "Error al reemplazar {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "Algunos archivos ya existen",
+        "subtitle": "{{count}} archivo(s) tienen el mismo nombre en esta carpeta",
+        "applyToAll": "Aplicar a todos:",
+        "replaceAll": "Reemplazar todo",
+        "skipAll": "Omitir todo",
+        "existing": "Existente",
+        "new": "Nuevo",
+        "replace": "Reemplazar",
+        "skip": "Omitir",
+        "cleanNote": "Se subirán {{count}} archivo(s) más sin conflictos.",
+        "summary": "Reemplazar {{replace}} · Omitir {{skip}}",
+        "allSkipped": "Se omitieron todos los archivos duplicados",
+        "cancel": "Cancelar",
+        "apply": "Aplicar"
     },
     "searchResults": {
         "title": "Resultados de búsqueda para \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDFs",
             "images": "Imágenes",
             "documents": "Documentos",
-            "spreadsheets": "Hojas de cálculo"
+            "spreadsheets": "Hojas de cálculo",
+            "presentations": "Presentaciones",
+            "text": "Texto",
+            "videos": "Vídeos",
+            "audio": "Audio",
+            "archives": "Archivos"
         },
         "scope": "Alcance de búsqueda",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Seguir editando",
         "hashCopied": "Hash SHA256 copiado al portapapeles",
         "copyFailed": "Error al copiar al portapapeles",
-        "saveSuccess": "Documento guardado con éxito"
+        "saveSuccess": "Documento guardado con éxito",
+        "details": "Detalles",
+        "activity": "Actividad",
+        "addMetadata": "Añadir",
+        "clickToEdit": "Haz clic para editar",
+        "keyDeleted": "\"{{key}}\" eliminado",
+        "saveFailed": "Error al guardar los metadatos"
     },
     "metadataEditor": {
         "clearAll": "Limpiar todo",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Carpeta movida",
             "UPLOAD_DOCUMENT": "Documento subido",
             "REPLACE_DOCUMENT_CONTENT": "Contenido reemplazado",
+            "RESTORE_DOCUMENT_VERSION": "Versión restaurada",
             "REPLACE_DOCUMENT_METADATA": "Metadatos reemplazados",
             "UPDATE_DOCUMENT_METADATA": "Metadatos actualizados",
             "DOWNLOAD_DOCUMENT": "Documento descargado",
@@ -449,6 +483,19 @@
             "dayAgo": "hace {{count}}d",
             "daysAgo": "hace {{count}}d"
         }
+    },
+    "versions": {
+        "actions": "Acciones de versión",
+        "view": "Ver esta versión",
+        "download": "Descargar esta versión",
+        "restore": "Restaurar esta versión",
+        "restoreConfirmTitle": "Restaurar versión",
+        "restoreConfirmMessage": "¿Reemplazar la versión actual por la versión del {{date}}? La versión actual se conservará en el historial.",
+        "restoreSuccess": "Versión restaurada",
+        "restoreError": "No se pudo restaurar la versión",
+        "downloadError": "No se pudo descargar la versión",
+        "current": "Versión actual",
+        "viewingVersion": "Versión del {{date}}"
     },
     "favorites": {
         "title": "Favoritos",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Desajuste de desplazamiento - reanudar desde solicitud HEAD",
             "uploadNotComplete": "La subida no está completa",
             "fileSizeExceedsQuota": "El tamaño del archivo excede la cuota",
-            "finalizeFailed": "Error al finalizar la subida"
+            "finalizeFailed": "Error al finalizar la subida",
+            "replaceFailed": "Error al reemplazar el archivo existente"
         }
     },
     "operations": {

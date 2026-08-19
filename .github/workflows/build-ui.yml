@@ -21,6 +21,9 @@ permissions:
   contents: write
   packages: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   release:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
@@ -29,18 +32,18 @@ jobs:
     steps:
       - run: echo "Starting release process..."
 
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ secrets.RELEASE_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
 
@@ -128,6 +131,25 @@ jobs:
           docker push ghcr.io/openfilz/openfilz-web:${{ steps.versions.outputs.releaseVersion }}
           docker push ghcr.io/openfilz/openfilz-web:latest
 
+      # The Helm chart rides the same release train as the image: chart version
+      # = appVersion = image tag, pushed to the same registry family. Consumed
+      # standalone and as an OCI dependency (1.x.x) of the openfilz-ce umbrella
+      # chart in openfilz-core. NOTE: the first publish creates a PRIVATE ghcr
+      # package — flip charts/openfilz-web to public once in the ghcr UI.
+      - uses: azure/setup-helm@v4
+
+      - name: Package and push Helm chart
+        run: |
+          set -euo pipefail
+          echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+          helm lint deploy/helm/openfilz-web
+          helm package deploy/helm/openfilz-web \
+            --version "${{ steps.versions.outputs.releaseVersion }}" \
+            --app-version "${{ steps.versions.outputs.releaseVersion }}" \
+            -d target/charts-dist
+          helm push "target/charts-dist/openfilz-web-${{ steps.versions.outputs.releaseVersion }}.tgz" \
+            oci://ghcr.io/${{ github.repository_owner }}/charts
+
       - name: Set next development version
         run: npm version ${{ steps.versions.outputs.developmentVersion }} --no-git-tag-version
 
@@ -151,12 +173,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main -> develop
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: main
-          target_branch: develop
-          github_token: ${{ steps.app-token.outputs.token }}
+        run: |
+          git fetch --unshallow origin
+          git checkout develop
+          git merge main --no-edit
+          git push origin develop
 
       - name: Cleanup credentials
         if: always()

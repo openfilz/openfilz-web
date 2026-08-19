@@ -38,7 +38,8 @@
         "value": "Valeur",
         "dropFilesHere": "Déposez les fichiers ici pour téléverser",
         "expand": "Développer",
-        "minimize": "Réduire"
+        "minimize": "Réduire",
+        "details": "Détails"
     },
     "languages": {
         "en": "English",
@@ -97,6 +98,7 @@
         "deleteSelected": "Supprimer les éléments sélectionnés",
         "gridView": "Vue en grille",
         "listView": "Vue en liste",
+        "filterByType": "Filtrer par type",
         "previousPage": "Page précédente",
         "nextPage": "Page suivante",
         "firstPage": "Première page",
@@ -117,7 +119,8 @@
             "excel": "Feuille de calcul Excel",
             "powerpoint": "Présentation PowerPoint",
             "text": "Fichier texte"
-        }
+        },
+        "moreActions": "Plus d'actions"
     },
     "sortOptions": {
         "date": "Date",
@@ -127,6 +130,7 @@
         "filesTable": "Liste des fichiers et dossiers",
         "selectAll": "Sélectionner tous les fichiers",
         "selectItem": "Sélectionner {{name}}",
+        "selectionHint": "Cochez pour sélectionner plusieurs éléments. Un simple clic ne sélectionne que celui-ci et ouvre ses propriétés.",
         "select": "Sélectionner",
         "folderDetail": "Dossier : {{name}}",
         "fileDetail": "Fichier : {{name}}",
@@ -153,6 +157,8 @@
         "nameConflictMaxRetries": "Conflit de nom détecté. Nombre maximum de tentatives ({{maxAttempts}}) atteint.",
         "uploadStartingSingle": "Début du téléversement de {{name}}...",
         "uploadStartingMultiple": "Début du téléversement de {{count}} fichiers volumineux...",
+        "folderUploadStarting": "Création de {{count}} dossier(s) et téléversement des fichiers...",
+        "folderUploadError": "Échec de la création de l'arborescence de dossiers",
         "uploadingFile": "Téléversement de {{name}}...",
         "uploadSuccess": "{{name}} téléversé avec succès",
         "uploadError": "Échec du téléversement de {{name}}",
@@ -160,6 +166,22 @@
         "replacingFile": "Remplacement de {{name}}...",
         "replaceSuccess": "{{name}} remplacé avec succès",
         "replaceError": "Échec du remplacement de {{name}}"
+    },
+    "duplicateResolution": {
+        "title": "Certains fichiers existent déjà",
+        "subtitle": "{{count}} fichier(s) portent le même nom dans ce dossier",
+        "applyToAll": "Tout appliquer :",
+        "replaceAll": "Tout remplacer",
+        "skipAll": "Tout ignorer",
+        "existing": "Existant",
+        "new": "Nouveau",
+        "replace": "Remplacer",
+        "skip": "Ignorer",
+        "cleanNote": "{{count}} autre(s) fichier(s) sans conflit seront téléversés.",
+        "summary": "Remplacer {{replace}} · Ignorer {{skip}}",
+        "allSkipped": "Tous les fichiers en double ont été ignorés",
+        "cancel": "Annuler",
+        "apply": "Appliquer"
     },
     "searchResults": {
         "title": "Résultats de recherche pour \"{{query}}\"",
@@ -196,7 +218,12 @@
             "pdfs": "PDF",
             "images": "Images",
             "documents": "Documents",
-            "spreadsheets": "Feuilles de calcul"
+            "spreadsheets": "Feuilles de calcul",
+            "presentations": "Présentations",
+            "text": "Texte",
+            "videos": "Vidéos",
+            "audio": "Audio",
+            "archives": "Archives"
         },
         "scope": "Portée de recherche",
         "scopeOptions": {
@@ -245,7 +272,13 @@
         "keepEditing": "Continuer l'édition",
         "hashCopied": "Hachage SHA256 copié dans le presse-papiers",
         "copyFailed": "Échec de la copie dans le presse-papiers",
-        "saveSuccess": "Document enregistré avec succès"
+        "saveSuccess": "Document enregistré avec succès",
+        "details": "Détails",
+        "activity": "Activité",
+        "addMetadata": "Ajouter",
+        "clickToEdit": "Cliquer pour modifier",
+        "keyDeleted": "« {{key}} » supprimé",
+        "saveFailed": "Échec de l'enregistrement des métadonnées"
     },
     "metadataEditor": {
         "clearAll": "Tout effacer",
@@ -429,6 +462,7 @@
             "MOVE_FOLDER": "Dossier déplacé",
             "UPLOAD_DOCUMENT": "Document téléversé",
             "REPLACE_DOCUMENT_CONTENT": "Contenu remplacé",
+            "RESTORE_DOCUMENT_VERSION": "Version restaurée",
             "REPLACE_DOCUMENT_METADATA": "Métadonnées remplacées",
             "UPDATE_DOCUMENT_METADATA": "Métadonnées mises à jour",
             "DOWNLOAD_DOCUMENT": "Document téléchargé",
@@ -449,6 +483,19 @@
             "dayAgo": "Il y a {{count}} j",
             "daysAgo": "Il y a {{count}} j"
         }
+    },
+    "versions": {
+        "actions": "Actions de version",
+        "view": "Voir cette version",
+        "download": "Télécharger cette version",
+        "restore": "Restaurer cette version",
+        "restoreConfirmTitle": "Restaurer la version",
+        "restoreConfirmMessage": "Remplacer la version actuelle par la version du {{date}} ? La version actuelle sera conservée dans l'historique.",
+        "restoreSuccess": "Version restaurée",
+        "restoreError": "Échec de la restauration de la version",
+        "downloadError": "Échec du téléchargement de la version",
+        "current": "Version actuelle",
+        "viewingVersion": "Version du {{date}}"
     },
     "favorites": {
         "title": "Favoris",
@@ -569,7 +616,8 @@
             "offsetMismatch": "Décalage incorrect - reprendre à partir de la requête HEAD",
             "uploadNotComplete": "Le téléversement n'est pas terminé",
             "fileSizeExceedsQuota": "La taille du fichier dépasse le quota",
-            "finalizeFailed": "Échec de la finalisation du téléversement"
+            "finalizeFailed": "Échec de la finalisation du téléversement",
+            "replaceFailed": "Échec du remplacement du fichier existant"
         }
     },
     "operations": {

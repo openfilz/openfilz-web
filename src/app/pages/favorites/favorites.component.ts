@@ -43,13 +43,7 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
 })
 export class FavoritesComponent extends FileOperationsComponent implements OnInit {
 
-  // Click delay handling
-  private clickTimeout: any = null;
-  private readonly CLICK_DELAY = 250; // milliseconds
   currentFilters?: SearchFilters;
-
-  metadataPanelOpen: boolean = false;
-  selectedDocumentForMetadata?: string;
 
   private route = inject(ActivatedRoute);
   private searchService = inject(SearchService);
@@ -98,6 +92,7 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
       selected: false,
       icon: this.fileIconService.getFileIcon(item.name, item.type)
     }));
+    this.resetSelectionMode();
     this.loading = false;
   }
 
@@ -118,30 +113,10 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
     });
   }
 
-  openMetadataPanel(documentId: string) {
-    this.selectedDocumentForMetadata = documentId;
-    this.metadataPanelOpen = true;
-  }
-
-  closeMetadataPanel() {
-    this.metadataPanelOpen = false;
-    this.selectedDocumentForMetadata = undefined;
-  }
-
-  onMetadataSaved() {
-    this.loadFavorites();
-  }
-
-  onViewProperties(item: FileItem) {
-    this.openMetadataPanel(item.id);
-  }
-
   override onItemDoubleClick(item: FileItem) {
-    // Clear the pending single-click timeout
-    if (this.clickTimeout) {
-      clearTimeout(this.clickTimeout);
-      this.clickTimeout = null;
-    }
+    // Clear the pending single-click timeout and hide the details panel
+    this.cancelPendingItemClick();
+    this.closeMetadataPanel();
 
     // Deselect the item if it was selected
     item.selected = false;

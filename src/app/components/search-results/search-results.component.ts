@@ -42,8 +42,6 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
 })
 export class SearchResultsComponent extends FileOperationsComponent implements OnInit {
   searchQuery = '';
-  metadataPanelOpen: boolean = false;
-  selectedDocumentForMetadata?: string;
 
   // Scope-based filter search (not text search)
   scopeMode?: SearchScope;
@@ -51,10 +49,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
 
   // Remember the original search query so we can restore it after clearing filters
   private originalSearchQuery = '';
-
-  // Click delay handling to distinguish single-click from double-click
-  private clickTimeout: any = null;
-  private readonly CLICK_DELAY = 250; // milliseconds
 
   private route = inject(ActivatedRoute);
   private searchService = inject(SearchService);
@@ -132,6 +126,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       next: (result) => {
         this.totalItems = result.totalHits;
         this.items = result.documents.map(doc => this.transformToFileItem(doc));
+        this.resetSelectionMode();
         this.loading = false;
       },
       error: (err) => {
@@ -153,6 +148,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         next: (result: ListFolderAndCountResponse) => {
           this.totalItems = result.count;
           this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.resetSelectionMode();
           this.loading = false;
         },
         error: (err) => {
@@ -169,6 +165,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         next: (result: ListFolderAndCountResponse) => {
           this.totalItems = result.count;
           this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
+          this.resetSelectionMode();
           this.loading = false;
         },
         error: (err) => {
@@ -249,24 +246,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     }
   }
 
-  openMetadataPanel(documentId: string) {
-    this.selectedDocumentForMetadata = documentId;
-    this.metadataPanelOpen = true;
-  }
-
-  closeMetadataPanel() {
-    this.metadataPanelOpen = false;
-    this.selectedDocumentForMetadata = undefined;
-  }
-
-  onMetadataSaved() {
-    this.reloadData();
-  }
-
-  onViewProperties(item: FileItem) {
-    this.openMetadataPanel(item.id);
-  }
-
   onToggleFavorite(item: FileItem) {
     const action = item.favorite ? 'remove from' : 'add to';
     this.documentApi.toggleFavorite(item.id).subscribe({
@@ -280,29 +259,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     });
   }
 
-  override onItemClick(item: FileItem) {
-    // Clear any existing timeout
-    if (this.clickTimeout) {
-      clearTimeout(this.clickTimeout);
-    }
-
-    // Capture shift state now (before the timeout fires)
-    const shiftHeld = this.shiftHeld;
-
-    // Delay the selection to allow double-click to be detected
-    this.clickTimeout = setTimeout(() => {
-      const selected = shiftHeld ? true : !item.selected;
-      this.applySelection(item, selected, shiftHeld);
-      this.clickTimeout = null;
-    }, this.CLICK_DELAY);
-  }
-
   override onItemDoubleClick(item: FileItem) {
-    // Clear the pending single-click timeout
-    if (this.clickTimeout) {
-      clearTimeout(this.clickTimeout);
-      this.clickTimeout = null;
-    }
+    // Clear the pending single-click timeout and hide the details panel
+    this.cancelPendingItemClick();
+    this.closeMetadataPanel();
 
     // Deselect the item if it was selected
     item.selected = false;
