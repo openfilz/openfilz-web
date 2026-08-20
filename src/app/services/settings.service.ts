@@ -10,6 +10,7 @@ export interface Settings {
   userQuotaMB: number | null;
   thumbnailsActive: boolean;
   aiActive: boolean;
+  aiUserSettingsEnabled: boolean;
 }
 
 @Injectable({
@@ -33,8 +34,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
       })
     );
   }
@@ -59,5 +60,12 @@ export class SettingsService {
   // so the chat UI follows the backend rather than a frontend toggle of its own.
   get isAiActive(): boolean {
     return this.settingsSubject.value?.aiActive ?? false;
+  }
+
+  // BYOK: users may override the chat LLM with their own provider + API key.
+  // Follows the backend's openfilz.ai.user-settings.enabled flag.
+  get isAiUserSettingsEnabled(): boolean {
+    return (this.settingsSubject.value?.aiActive ?? false)
+      && (this.settingsSubject.value?.aiUserSettingsEnabled ?? false);
   }
 }

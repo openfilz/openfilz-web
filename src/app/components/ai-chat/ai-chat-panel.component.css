@@ -52,6 +52,22 @@
   height: 18px;
 }
 
+.header-title-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.model-badge {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
 .header-title {
   font-size: 15px;
   font-weight: 600;
