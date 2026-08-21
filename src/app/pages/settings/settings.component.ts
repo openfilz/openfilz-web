@@ -5,11 +5,12 @@ import { ThemeService, Theme } from '../../services/theme.service';
 import { SettingsService, Settings } from '../../services/settings.service';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, TranslatePipe],
+  imports: [CommonModule, MatIconModule, TranslatePipe, AiSettingsComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -44,6 +45,10 @@ export class SettingsComponent implements OnInit {
         this.firstName = this.translate.instant('common.user');
       }
     });
+  }
+
+  get showAiSettings(): boolean {
+    return this.settingsService.isAiUserSettingsEnabled;
   }
 
   get hasQuotaInfo(): boolean {

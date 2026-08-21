@@ -11,7 +11,12 @@
       <div class="header-icon">
         <mat-icon>smart_toy</mat-icon>
       </div>
-      <span class="header-title">{{ 'aiChat.title' | translate }}</span>
+      <div class="header-title-block">
+        <span class="header-title">{{ 'aiChat.title' | translate }}</span>
+        @if (modelBadge) {
+          <span class="model-badge" [matTooltip]="'aiChat.activeModel' | translate">{{ modelBadge }}</span>
+        }
+      </div>
     </div>
     <div class="header-right">
       @if (currentView === 'conversations') {

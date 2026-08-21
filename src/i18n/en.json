@@ -435,6 +435,35 @@
             "midnight": "Midnight",
             "slate": "Slate",
             "copper": "Copper"
+        },
+        "ai": {
+            "title": "AI Assistant",
+            "description": "Choose which AI model answers your chats. By default the server's model is used; you can switch to your own OpenAI, Anthropic Claude or Google Gemini account with your own API key.",
+            "provider": "AI model provider",
+            "providers": {
+                "DEFAULT": "Server default",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "Custom (OpenAI-compatible)"
+            },
+            "defaultHint": "Conversations use the model configured by your administrator.",
+            "model": "Model",
+            "baseUrl": "Base URL",
+            "baseUrlHint": "The OpenAI-compatible endpoint of your provider (e.g. OpenRouter, Mistral, a local vLLM).",
+            "apiKey": "API key",
+            "apiKeyPlaceholder": "Paste your API key",
+            "apiKeyStored": "A key is stored - leave empty to keep it.",
+            "whereKey": "Where do I get a key?",
+            "subscriptionWarning": "An API account is required - a ChatGPT / Claude.ai chat subscription does not include API access. Your key is stored encrypted and never displayed again.",
+            "testConnection": "Test connection",
+            "testing": "Testing...",
+            "testOk": "Connection successful ({{latency}} ms)",
+            "testFailed": "Connection failed: {{message}}",
+            "save": "Save",
+            "saved": "AI settings saved.",
+            "saveError": "Could not save AI settings.",
+            "loadError": "Could not load AI settings."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "Delete conversation",
         "back": "Back to conversations",
         "close": "Close chat",
-        "errorStreaming": "An error occurred while generating a response"
+        "errorStreaming": "An error occurred while generating a response",
+        "activeModel": "Model answering this chat"
     }
 }

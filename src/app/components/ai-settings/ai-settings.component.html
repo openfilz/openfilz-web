@@ -1,0 +1,100 @@
+<div class="ai-settings">
+  @if (!loaded) {
+    <p class="setting-description">{{ 'common.loading' | translate }}</p>
+  } @else {
+    <p class="setting-description">{{ 'settings.ai.description' | translate }}</p>
+
+    <!-- Provider choice -->
+    <div class="ai-field">
+      <label class="setting-label" for="ai-provider">{{ 'settings.ai.provider' | translate }}</label>
+      <select id="ai-provider" class="ai-input" [(ngModel)]="provider" (ngModelChange)="onProviderChange()">
+        @for (p of providers; track p) {
+          <option [ngValue]="p">{{ 'settings.ai.providers.' + p | translate }}</option>
+        }
+      </select>
+      @if (isDefault) {
+        <span class="ai-hint">
+          {{ 'settings.ai.defaultHint' | translate }}
+          @if (defaultModelLabel) {
+            <strong>({{ defaultModelLabel }})</strong>
+          }
+        </span>
+      }
+    </div>
+
+    @if (!isDefault) {
+      <!-- Base URL (OpenAI-compatible only) -->
+      @if (needsBaseUrl) {
+        <div class="ai-field">
+          <label class="setting-label" for="ai-base-url">{{ 'settings.ai.baseUrl' | translate }}</label>
+          <input id="ai-base-url" class="ai-input" type="url" [(ngModel)]="baseUrl"
+                 placeholder="https://openrouter.ai/api/v1" autocomplete="off" />
+          <span class="ai-hint">{{ 'settings.ai.baseUrlHint' | translate }}</span>
+        </div>
+      }
+
+      <!-- Model -->
+      <div class="ai-field">
+        <label class="setting-label" for="ai-model">{{ 'settings.ai.model' | translate }}</label>
+        <input id="ai-model" class="ai-input" type="text" [(ngModel)]="model"
+               [attr.list]="'ai-model-suggestions'" autocomplete="off" spellcheck="false" />
+        <datalist id="ai-model-suggestions">
+          @for (m of modelSuggestions; track m) {
+            <option [value]="m"></option>
+          }
+        </datalist>
+      </div>
+
+      <!-- API key (write-only) -->
+      <div class="ai-field">
+        <label class="setting-label" for="ai-api-key">{{ 'settings.ai.apiKey' | translate }}</label>
+        <input id="ai-api-key" class="ai-input" type="password" [(ngModel)]="apiKey"
+               [placeholder]="apiKeyPlaceholder" autocomplete="new-password" spellcheck="false" />
+        <span class="ai-hint">
+          @if (hasStoredKey) {
+            {{ 'settings.ai.apiKeyStored' | translate }}
+          }
+          @if (keyHelpUrl) {
+            <a class="ai-help-link" [href]="keyHelpUrl" target="_blank" rel="noopener noreferrer">
+              {{ 'settings.ai.whereKey' | translate }}
+              <mat-icon inline>open_in_new</mat-icon>
+            </a>
+          }
+        </span>
+        @if (!isDefault) {
+          <span class="ai-hint ai-warning">
+            <mat-icon inline>info</mat-icon>
+            {{ 'settings.ai.subscriptionWarning' | translate }}
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Result banner -->
+    @if (banner) {
+      <div class="ai-banner" [class.success]="banner.kind === 'success'"
+           [class.error]="banner.kind === 'error'" [class.info]="banner.kind === 'info'">
+        <mat-icon inline>
+          {{ banner.kind === 'success' ? 'check_circle' : banner.kind === 'error' ? 'error' : 'hourglass_top' }}
+        </mat-icon>
+        <span>{{ banner.text }}</span>
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="ai-actions">
+      @if (!isDefault) {
+        <button type="button" class="ai-btn secondary" (click)="onTest()"
+                [disabled]="!canSubmit || testing || saving">
+          <mat-icon inline>network_check</mat-icon>
+          {{ (testing ? 'settings.ai.testing' : 'settings.ai.testConnection') | translate }}
+        </button>
+      }
+      <button type="button" class="ai-btn primary" (click)="onSave()"
+              [disabled]="!canSubmit || saving || testing">
+        <mat-icon inline>save</mat-icon>
+        {{ 'settings.ai.save' | translate }}
+      </button>
+    </div>
+  }
+</div>

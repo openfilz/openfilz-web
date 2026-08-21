@@ -435,6 +435,35 @@
             "midnight": "Mitternacht",
             "slate": "Schiefer",
             "copper": "Kupfer"
+        },
+        "ai": {
+            "title": "KI-Assistent",
+            "description": "Wählen Sie, welches KI-Modell Ihre Chats beantwortet. Standardmäßig wird das Modell des Servers verwendet; Sie können Ihr eigenes OpenAI-, Anthropic-Claude- oder Google-Gemini-Konto mit eigenem API-Schlüssel nutzen.",
+            "provider": "KI-Modell-Anbieter",
+            "providers": {
+                "DEFAULT": "Server-Standard",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "Benutzerdefiniert (OpenAI-kompatibel)"
+            },
+            "defaultHint": "Unterhaltungen verwenden das von Ihrem Administrator konfigurierte Modell.",
+            "model": "Modell",
+            "baseUrl": "Basis-URL",
+            "baseUrlHint": "Der OpenAI-kompatible Endpunkt Ihres Anbieters (z. B. OpenRouter, Mistral, lokales vLLM).",
+            "apiKey": "API-Schlüssel",
+            "apiKeyPlaceholder": "API-Schlüssel einfügen",
+            "apiKeyStored": "Ein Schlüssel ist gespeichert - leer lassen, um ihn zu behalten.",
+            "whereKey": "Wo bekomme ich einen Schlüssel?",
+            "subscriptionWarning": "Ein API-Konto ist erforderlich - ein ChatGPT- / Claude.ai-Chat-Abo enthält keinen API-Zugang. Ihr Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt.",
+            "testConnection": "Verbindung testen",
+            "testing": "Wird getestet...",
+            "testOk": "Verbindung erfolgreich ({{latency}} ms)",
+            "testFailed": "Verbindung fehlgeschlagen: {{message}}",
+            "save": "Speichern",
+            "saved": "KI-Einstellungen gespeichert.",
+            "saveError": "KI-Einstellungen konnten nicht gespeichert werden.",
+            "loadError": "KI-Einstellungen konnten nicht geladen werden."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "Unterhaltung loschen",
         "back": "Zuruck zu Unterhaltungen",
         "close": "Chat schliessen",
-        "errorStreaming": "Beim Generieren der Antwort ist ein Fehler aufgetreten"
+        "errorStreaming": "Beim Generieren der Antwort ist ein Fehler aufgetreten",
+        "activeModel": "Modell, das diesen Chat beantwortet"
     }
 }

@@ -36,6 +36,7 @@ import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.serv
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { ResumableUploadService } from '../../services/resumable-upload.service';
 import { FolderUploadService } from '../../services/folder-upload.service';
+import { AiChatService } from '../../services/ai-chat.service';
 
 import {
   AncestorInfo,
@@ -259,6 +260,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private uploadedDocumentIds = new Set<string>();
   private thumbnailPollSubscription?: Subscription;
   private filtersSubscription?: Subscription;
+  private aiFolderChangedSubscription?: Subscription;
 
   private http = inject(HttpClient);
   private fileIconService = inject(FileIconService);
@@ -270,6 +272,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private onlyOfficeService = inject(OnlyOfficeService);
   private resumableUploadService = inject(ResumableUploadService);
   private folderUploadService = inject(FolderUploadService);
+  private aiChatService = inject(AiChatService);
 
   get isOnlyOfficeEnabled(): boolean {
     return this.onlyOfficeService.isOnlyOfficeEnabled();
@@ -301,6 +304,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     }
     this.thumbnailPollSubscription?.unsubscribe();
     this.filtersSubscription?.unsubscribe();
+    this.aiFolderChangedSubscription?.unsubscribe();
   }
 
   @HostListener('keydown', ['$event'])
@@ -539,6 +543,13 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           this.currentFilters = filters;
           this.reloadData();
         }
+      }
+    });
+
+    // Refresh when an AI chat action modified the content of the currently displayed folder
+    this.aiFolderChangedSubscription = this.aiChatService.folderContentChanged$.subscribe(folderIds => {
+      if (folderIds.includes(this.currentFolder?.id ?? 'root')) {
+        this.reloadData();
       }
     });
 

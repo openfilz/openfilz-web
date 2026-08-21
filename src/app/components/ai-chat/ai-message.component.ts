@@ -11,6 +11,19 @@ import { MatIconModule } from '@angular/material/icon';
  */
 const DOC_REF_REGEX = /\[\[doc:([a-f0-9-]+):([a-f0-9-]+|root):(FILE|FOLDER):([^\]]+)\]\]/g;
 
+/**
+ * Malformed marker with a plain-text name (e.g. [[doc::root:FILE:name]] — id mangled by
+ * older backend post-processing). Degrades to just the name.
+ */
+const BROKEN_DOC_REF_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):([^\][<]+)\]\]/g;
+
+/**
+ * Malformed marker shell wrapped around an already-rendered doc link
+ * (nested markers like [[doc::root:FILE:[[doc:id:...]]]] — inner one became an <a>).
+ * Unwraps to keep only the link.
+ */
+const BROKEN_DOC_SHELL_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):(<a[\s\S]*?<\/a>)\]\]/g;
+
 @Component({
   selector: 'app-ai-message',
   standalone: true,
@@ -193,6 +206,11 @@ export class AiMessageComponent implements AfterViewInit {
       const icon = type === 'FOLDER' ? 'folder' : 'description';
       return `<a class="doc-link" data-doc-id="${id}" data-parent-id="${parentId}" data-type="${type}"><span class="doc-icon">${icon}</span>${name}</a>`;
     });
+    // 3. Clean up malformed markers (mangled by older backend post-processing, possibly
+    //    persisted in conversation history): unwrap shells around rendered links, then
+    //    degrade unresolvable markers to their plain name
+    html = html.replace(BROKEN_DOC_SHELL_REGEX, '$1');
+    html = html.replace(BROKEN_DOC_REF_REGEX, '$1');
     // Bypass Angular sanitizer to preserve data-* attributes on doc-links
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }

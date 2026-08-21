@@ -435,6 +435,35 @@
             "midnight": "Medianoche",
             "slate": "Pizarra",
             "copper": "Cobre"
+        },
+        "ai": {
+            "title": "Asistente de IA",
+            "description": "Elige qué modelo de IA responde a tus conversaciones. De forma predeterminada se usa el modelo del servidor; puedes usar tu propia cuenta de OpenAI, Anthropic Claude o Google Gemini con tu clave API.",
+            "provider": "Proveedor del modelo de IA",
+            "providers": {
+                "DEFAULT": "Predeterminado del servidor",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "Personalizado (compatible con OpenAI)"
+            },
+            "defaultHint": "Las conversaciones usan el modelo configurado por tu administrador.",
+            "model": "Modelo",
+            "baseUrl": "URL base",
+            "baseUrlHint": "El punto de acceso compatible con OpenAI de tu proveedor (p. ej. OpenRouter, Mistral, un vLLM local).",
+            "apiKey": "Clave API",
+            "apiKeyPlaceholder": "Pega tu clave API",
+            "apiKeyStored": "Hay una clave guardada - déjalo vacío para conservarla.",
+            "whereKey": "¿Dónde consigo una clave?",
+            "subscriptionWarning": "Se requiere una cuenta API - una suscripción de chat ChatGPT / Claude.ai no incluye acceso a la API. Tu clave se guarda cifrada y no se volverá a mostrar.",
+            "testConnection": "Probar conexión",
+            "testing": "Probando...",
+            "testOk": "Conexión correcta ({{latency}} ms)",
+            "testFailed": "Error de conexión: {{message}}",
+            "save": "Guardar",
+            "saved": "Ajustes de IA guardados.",
+            "saveError": "No se pudieron guardar los ajustes de IA.",
+            "loadError": "No se pudieron cargar los ajustes de IA."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "Eliminar conversacion",
         "back": "Volver a conversaciones",
         "close": "Cerrar chat",
-        "errorStreaming": "Se produjo un error al generar la respuesta"
+        "errorStreaming": "Se produjo un error al generar la respuesta",
+        "activeModel": "Modelo que responde a este chat"
     }
 }
