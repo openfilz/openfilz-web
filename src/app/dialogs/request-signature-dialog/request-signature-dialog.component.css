@@ -1,0 +1,301 @@
+/* Fixed header / scrolling body / pinned footer column, capped to the dynamic viewport
+   height so the action bar stays reachable behind mobile browser chrome. */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 94dvh;
+}
+
+::ng-deep .request-signature-dialog-panel .mat-mdc-dialog-container {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: 16px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+::ng-deep .request-signature-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.dialog-header {
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+.header-icon {
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+  border-radius: 12px;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-text { flex: 1; min-width: 0; }
+.header-text h2 { margin: 0; font-size: 18px; color: var(--text-primary); }
+.header-text .subtitle {
+  margin: 2px 0 0; font-size: 13px; color: var(--text-secondary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.close-btn { color: var(--text-secondary); }
+
+.dialog-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  max-height: none !important;
+  padding: 18px 24px;
+  color: var(--text-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) minmax(360px, 7fr);
+  gap: 24px;
+}
+@media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+
+/* ── Form fields ─────────────────────────────────────────────────────── */
+.ff { width: 100%; }
+.ff.small { max-width: 170px; }
+.ff.dense ::ng-deep .mat-mdc-text-field-wrapper { padding: 0 10px; }
+.ff ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
+.ff ::ng-deep input, .ff ::ng-deep textarea, .ff ::ng-deep .mat-mdc-select-value { color: var(--text-primary); }
+.ff ::ng-deep .mat-mdc-form-field-label { color: var(--text-secondary); }
+.ff ::ng-deep .mdc-notched-outline__leading,
+.ff ::ng-deep .mdc-notched-outline__trailing,
+.ff ::ng-deep .mdc-notched-outline__notch { border-color: var(--border-color) !important; }
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing,
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch {
+  border-color: var(--primary) !important; border-width: 2px !important;
+}
+
+.template-row { display: flex; gap: 10px; align-items: flex-start; }
+.template-row .ff { flex: 1; }
+.tpl-save { height: 56px; border-radius: 10px; white-space: nowrap; }
+.tpl-save mat-icon { margin-right: 4px; }
+
+.options-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.seq-toggle { margin-bottom: 18px; color: var(--text-primary); }
+
+/* ── Recipients ──────────────────────────────────────────────────────── */
+.recipients { margin-top: 4px; }
+.recipients-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-weight: 600; color: var(--text-primary); margin-bottom: 8px;
+}
+.recipient-row {
+  --rc: var(--primary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--rc);
+  border-radius: 10px;
+  padding: 8px 12px 2px;
+  margin-bottom: 10px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.recipient-row.active {
+  border-color: var(--rc);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--rc) 25%, transparent);
+}
+.recipient-row.invalid { border-color: #ef4444; }
+.recipient-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.recipient-title {
+  flex: 1; min-width: 0; font-weight: 600; font-size: 13.5px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-primary);
+}
+.color-dot {
+  display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rc); flex: 0 0 auto;
+}
+.order-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--rc); color: #fff; font-size: 12px; font-weight: 700;
+}
+.mini { width: 30px; height: 30px; padding: 0; }
+.mini mat-icon { font-size: 18px; width: 18px; height: 18px; line-height: 18px; }
+.recipient-fields { display: flex; gap: 10px; }
+.recipient-fields .ff { flex: 1; min-width: 0; }
+.chip {
+  font-size: 12px; padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+  background: color-mix(in srgb, #f59e0b 16%, transparent); color: var(--text-primary);
+}
+.chip.placed { background: color-mix(in srgb, #10b981 18%, transparent); }
+
+.problems {
+  margin: 0 0 10px; padding: 10px 12px 10px 28px; border-radius: 8px;
+  background: color-mix(in srgb, #ef4444 10%, transparent);
+  border-left: 3px solid #ef4444; color: var(--text-primary); font-size: 12.5px;
+}
+.problems li { margin: 2px 0; }
+
+.hint {
+  display: flex; gap: 8px; padding: 10px 12px; border-radius: 8px;
+  font-size: 12.5px; color: var(--text-primary);
+}
+.hint.info { background: color-mix(in srgb, #3b82f6 8%, transparent); border-left: 3px solid #3b82f6; }
+.hint mat-icon { font-size: 18px; width: 18px; height: 18px; flex: 0 0 auto; }
+
+/* ── Palette ─────────────────────────────────────────────────────────── */
+.right-col { display: flex; flex-direction: column; min-width: 0; }
+.palette {
+  --rc: var(--primary);
+  border: 1px solid var(--border-color); border-radius: 10px;
+  padding: 8px 10px; margin-bottom: 8px; background: var(--bg-secondary);
+}
+.palette-for {
+  display: flex; align-items: center; gap: 8px; font-size: 12.5px;
+  color: var(--text-secondary); margin-bottom: 6px;
+}
+.palette-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.palette-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--rc) 12%, transparent);
+  color: var(--text-primary); cursor: grab; user-select: none;
+  border: 1px dashed color-mix(in srgb, var(--rc) 55%, transparent);
+  touch-action: none;
+}
+.palette-chip:hover { background: color-mix(in srgb, var(--rc) 22%, transparent); }
+.palette-chip:focus-visible { outline: 2px solid var(--rc); outline-offset: 1px; }
+.palette-chip:active { cursor: grabbing; }
+.palette-chip mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--rc); }
+
+/* ── PDF stage ───────────────────────────────────────────────────────── */
+.pdf-toolbar {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--text-primary); margin-bottom: 8px;
+}
+.pdf-toolbar .spacer { flex: 1; }
+.page-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+.page-input {
+  width: 44px; text-align: center; font: inherit; padding: 3px 4px;
+  border: 1px solid var(--border-color); border-radius: 6px;
+  background: var(--bg-tertiary); color: var(--text-primary);
+}
+.zoom-label { font-size: 12.5px; min-width: 40px; text-align: center; }
+.pdf-stage {
+  overflow: auto; max-height: 60vh;
+  border: 1px solid var(--border-color); border-radius: 10px;
+  background: var(--bg-tertiary); padding: 10px;
+}
+.pdf-rel { position: relative; display: inline-block; border-radius: 4px; }
+.pdf-rel.drop-active { outline: 2px dashed var(--primary); outline-offset: 2px; }
+.pdf-rel canvas { display: block; max-width: 100%; height: auto; }
+
+.marker {
+  --rc: var(--primary);
+  position: absolute;
+  border: 2px dashed var(--rc);
+  background: color-mix(in srgb, var(--rc) 16%, transparent);
+  /* Sits on the (always light) PDF page, not the themed surface: use the recipient colour
+     + white halo so the label stays legible on dark themes and over dark page content. */
+  color: var(--rc);
+  font-weight: 600;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.95), 0 0 3px rgba(255, 255, 255, 0.95);
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  overflow: hidden; border-radius: 4px;
+  cursor: move; touch-action: none; box-sizing: border-box;
+}
+.marker.active { border-style: solid; }
+.marker.selected { box-shadow: 0 0 0 2px color-mix(in srgb, var(--rc) 45%, transparent); z-index: 2; }
+.marker.optional { border-style: dotted; }
+.marker:focus-visible { outline: 2px solid var(--rc); }
+.marker-icon { font-size: 14px; width: 14px; height: 14px; flex: 0 0 auto; }
+.marker-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.marker-del {
+  position: absolute; top: -9px; right: -9px;
+  width: 18px; height: 18px; border-radius: 50%; padding: 0;
+  border: none; background: var(--rc); color: #fff; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+}
+.marker-del mat-icon { font-size: 12px; width: 12px; height: 12px; }
+.marker:hover .marker-del, .marker.selected .marker-del, .marker:focus-within .marker-del { display: inline-flex; }
+.marker-resize {
+  position: absolute; right: -1px; bottom: -1px; width: 12px; height: 12px;
+  background: var(--rc); border-radius: 3px 0 3px 0; cursor: nwse-resize; touch-action: none;
+}
+
+/* ── Field property popover ─────────────────────────────────────────── */
+.field-popover {
+  --rc: var(--primary);
+  position: absolute; z-index: 5; width: 260px; max-width: 90%;
+  background: var(--bg-primary); color: var(--text-primary);
+  border: 1px solid var(--border-color); border-top: 3px solid var(--rc);
+  border-radius: 10px; padding: 10px 12px 4px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  cursor: default;
+}
+.popover-head { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; margin-bottom: 8px; }
+.popover-head span { flex: 1; }
+.popover-head mat-icon { color: var(--rc); }
+.auto-note { margin: 0 0 10px; font-size: 12px; color: var(--text-secondary); }
+.field-popover mat-slide-toggle { margin-bottom: 10px; display: block; }
+
+.pdf-state {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 240px; color: var(--text-secondary);
+}
+.pdf-state.error { color: #ef4444; }
+
+/* ── Footer ──────────────────────────────────────────────────────────── */
+.dialog-actions {
+  flex: 0 0 auto;
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding: 14px 24px; border-top: 1px solid var(--border-light);
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  background: var(--bg-primary);
+}
+.cancel-btn {
+  border: 2px solid var(--border-color); background: var(--bg-primary);
+  color: var(--text-primary); border-radius: 10px; height: 44px;
+}
+.primary-btn {
+  background: var(--primary); color: #fff; border-radius: 10px; height: 44px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+.primary-btn[disabled] { opacity: .55; }
+.dialog-actions mat-icon { margin-right: 6px; }
+.btn-spinner { display: inline-block; margin-right: 8px; --mdc-circular-progress-active-indicator-color: #fff; }
+
+/* Floating badge following the pointer/finger while placing a field. */
+.drag-ghost {
+  --rc: var(--primary);
+  position: fixed; z-index: 10001;
+  transform: translate(-50%, -50%);
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--rc); color: #fff;
+  font-size: 12px; font-weight: 600; white-space: nowrap;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--rc) 45%, transparent);
+  pointer-events: none;
+}
+.drag-ghost mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+/* ── Small screens / mobile ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .dialog-header { padding: 12px 16px; gap: 10px; }
+  .header-icon { width: 38px; height: 38px; }
+  .header-text h2 { font-size: 16px; }
+  .dialog-content { padding: 12px 16px; }
+  .grid { gap: 16px; }
+  .template-row { flex-direction: column; }
+  .tpl-save { height: 44px; width: 100%; }
+  .recipient-fields { flex-direction: column; gap: 0; }
+  .recipients-head { flex-wrap: wrap; gap: 8px; }
+  .ff.small { max-width: none; flex: 1 1 45%; }
+  .pdf-stage { max-height: 50vh; }
+  .dialog-actions {
+    flex-direction: column-reverse; align-items: stretch;
+    padding: 12px 16px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); gap: 10px;
+  }
+  .dialog-actions button { width: 100%; height: auto; min-height: 44px; white-space: normal; line-height: 1.15; }
+  .dialog-actions button ::ng-deep .mdc-button__label { white-space: normal; }
+}

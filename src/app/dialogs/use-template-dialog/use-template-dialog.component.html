@@ -1,0 +1,69 @@
+<div class="dialog-header">
+  <mat-icon class="header-icon" aria-hidden="true">bookmark</mat-icon>
+  <div class="header-text">
+    <h2>{{ 'signature.templates.use' | translate }}</h2>
+    <p class="subtitle">{{ data.template.name }}</p>
+  </div>
+  <button mat-icon-button class="close-btn" type="button" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  @if (!sourceDocId) {
+    <div class="hint warn">
+      <mat-icon aria-hidden="true">warning</mat-icon>
+      <span>{{ 'signature.templates.noDocument' | translate }}</span>
+    </div>
+  } @else if (data.sourceDocName) {
+    <p class="doc-line"><mat-icon aria-hidden="true">picture_as_pdf</mat-icon> {{ data.sourceDocName }}</p>
+  }
+
+  <mat-form-field appearance="outline" class="ff full">
+    <mat-label>{{ 'signature.request.envelopeTitle' | translate }}</mat-label>
+    <input matInput [(ngModel)]="title" maxlength="255" required>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="ff full">
+    <mat-label>{{ 'signature.request.message' | translate }}</mat-label>
+    <textarea matInput [(ngModel)]="message" rows="2" maxlength="2000"></textarea>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="ff small">
+    <mat-label>{{ 'signature.request.expiresInDays' | translate }}</mat-label>
+    <input matInput type="number" min="1" max="365" [(ngModel)]="expiresInDays">
+  </mat-form-field>
+
+  <h3 class="section">{{ 'signature.templates.bindRoles' | translate }}</h3>
+  @for (b of bindings; track b.role; let i = $index) {
+    <div class="binding" [style.--rc]="color(i)">
+      <div class="binding-head">
+        <span class="color-dot" aria-hidden="true"></span>
+        <span class="role-name">{{ b.roleLabel }}</span>
+        <span class="chip">{{ 'signature.request.role' + b.kind | translate }}</span>
+      </div>
+      <div class="binding-fields">
+        <mat-form-field appearance="outline" class="ff">
+          <mat-label>{{ 'signature.request.recipientName' | translate }}</mat-label>
+          <input matInput [(ngModel)]="b.name" maxlength="255">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ff">
+          <mat-label>{{ 'signature.request.recipientEmail' | translate }}</mat-label>
+          <input matInput type="email" [(ngModel)]="b.email" maxlength="255" required>
+        </mat-form-field>
+        @if (b.needsPhone) {
+          <mat-form-field appearance="outline" class="ff">
+            <mat-label>{{ 'signature.request.phone' | translate }}</mat-label>
+            <input matInput type="tel" [(ngModel)]="b.phone" maxlength="32" required>
+          </mat-form-field>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button type="button" class="cancel-btn" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+  <button mat-raised-button color="primary" type="button" class="primary-btn" [disabled]="!canSend" (click)="send()">
+    @if (sending) { <mat-spinner diameter="18" class="btn-spinner"></mat-spinner> } @else { <mat-icon aria-hidden="true">send</mat-icon> }
+    <span>{{ 'signature.request.send' | translate }}</span>
+  </button>
+</div>

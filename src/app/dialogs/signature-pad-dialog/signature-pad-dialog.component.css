@@ -1,0 +1,83 @@
+:host { display: flex; flex-direction: column; min-height: 0; max-height: 94dvh; }
+
+.dialog-header {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px; border-bottom: 1px solid var(--border-light);
+}
+.header-icon {
+  background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary);
+  border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+}
+.header-text { flex: 1; }
+.header-text h2 { margin: 0; font-size: 17px; color: var(--text-primary); }
+.close-btn { color: var(--text-secondary); }
+
+.dialog-content {
+  flex: 1 1 auto; min-height: 0; overflow: auto; max-height: none !important;
+  padding: 8px 22px 12px; color: var(--text-primary);
+}
+
+.modes ::ng-deep .mat-mdc-tab .mdc-tab__text-label { display: inline-flex; align-items: center; gap: 6px; }
+.modes ::ng-deep .mat-mdc-tab-body-wrapper { padding-top: 14px; }
+
+.pad-wrap, .type-wrap, .upload-wrap { display: flex; flex-direction: column; gap: 10px; }
+.pad-canvas { position: relative; }
+.pad-canvas canvas {
+  display: block; width: 100%; height: auto;
+  background: #fff; border: 1px dashed var(--border-color); border-radius: 8px; touch-action: none;
+  /* Explicit dark crosshair so the pen position is visible on the white pad. */
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M12 2 V22 M2 12 H22' stroke='%23333333' stroke-width='1.5'/></svg>") 12 12, crosshair;
+}
+.sig-placeholder {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; pointer-events: none; color: #64748b; font-size: 13px;
+}
+.sig-placeholder mat-icon { font-size: 28px; width: 28px; height: 28px; opacity: .6; }
+.clear-btn { align-self: flex-end; border-radius: 10px; }
+.clear-btn mat-icon { margin-right: 4px; }
+
+.ff { width: 100%; }
+.ff ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
+.ff ::ng-deep input { color: var(--text-primary); }
+.type-preview {
+  background: #fff; color: #111; border: 1px dashed var(--border-color); border-radius: 8px;
+  min-height: 90px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Segoe Script', 'Brush Script MT', 'Snell Roundhand', cursive; font-style: italic;
+  font-size: clamp(22px, 6vw, 40px); padding: 8px 16px; word-break: break-word; text-align: center;
+}
+
+.dropzone {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  min-height: 150px; border: 2px dashed var(--border-color); border-radius: 10px; background: var(--bg-tertiary);
+  color: var(--text-primary); font: inherit; cursor: pointer; width: 100%;
+}
+.dropzone:hover, .dropzone:focus-visible { border-color: var(--primary); outline: none; }
+.dropzone mat-icon { font-size: 36px; width: 36px; height: 36px; color: var(--primary); }
+.dropzone .sub { font-size: 12px; color: var(--text-secondary); }
+.upload-preview {
+  border: 1px dashed var(--border-color); border-radius: 8px; padding: 10px;
+  display: flex; align-items: center; justify-content: center; min-height: 120px;
+  background-color: #fff;
+  background-image: linear-gradient(45deg, #eee 25%, transparent 25%), linear-gradient(-45deg, #eee 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eee 75%), linear-gradient(-45deg, transparent 75%, #eee 75%);
+  background-size: 16px 16px; background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+.upload-preview img { max-width: 100%; max-height: 220px; object-fit: contain; }
+.error { color: #ef4444; font-size: 13px; margin: 0; }
+
+.apply-all { margin-top: 10px; display: block; }
+
+.dialog-actions {
+  flex: 0 0 auto; display: flex; justify-content: flex-end; gap: 12px;
+  padding: 12px 22px; padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-light); background: var(--bg-primary);
+}
+.cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
+.primary-btn { background: var(--primary); color: #fff; border-radius: 10px; height: 44px; }
+.primary-btn[disabled] { opacity: .55; }
+.primary-btn mat-icon { margin-right: 6px; }
+
+@media (max-width: 640px) {
+  .dialog-actions { flex-direction: column-reverse; align-items: stretch; }
+  .dialog-actions button { width: 100%; }
+}

@@ -1,0 +1,80 @@
+<div class="dialog-header">
+  <mat-icon class="header-icon" aria-hidden="true">{{ imageOnly ? 'image' : 'draw' }}</mat-icon>
+  <div class="header-text">
+    <h2>{{ 'signature.pad.title' + data.fieldType | translate }}</h2>
+  </div>
+  <button mat-icon-button class="close-btn" type="button" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <mat-tab-group (selectedIndexChange)="onTabChange($event)" animationDuration="0ms" class="modes">
+    @if (!imageOnly) {
+      <mat-tab>
+        <ng-template mat-tab-label><mat-icon aria-hidden="true">gesture</mat-icon>{{ 'signature.sign.draw' | translate }}</ng-template>
+        <div class="pad-wrap">
+          <div class="pad-canvas">
+            <canvas #pad [width]="padW" [height]="padH"
+                    (pointerdown)="padDown($event)" (pointermove)="padMove($event)"
+                    (pointerup)="padUp()" (pointerleave)="padUp()" (pointercancel)="padUp()"
+                    [attr.aria-label]="'signature.sign.drawPlaceholder' | translate" role="img"></canvas>
+            @if (!hasStroke) {
+              <div class="sig-placeholder" aria-hidden="true">
+                <mat-icon>gesture</mat-icon>
+                <span>{{ 'signature.sign.drawPlaceholder' | translate }}</span>
+              </div>
+            }
+          </div>
+          <button mat-stroked-button type="button" class="clear-btn" (click)="clearPad()" [disabled]="!hasStroke">
+            <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
+          </button>
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label><mat-icon aria-hidden="true">keyboard</mat-icon>{{ 'signature.sign.type' | translate }}</ng-template>
+        <div class="type-wrap">
+          <mat-form-field appearance="outline" class="ff">
+            <mat-label>{{ (data.fieldType === 'INITIALS' ? 'signature.pad.typeInitials' : 'signature.sign.typedName') | translate }}</mat-label>
+            <input matInput [(ngModel)]="typedName" maxlength="255">
+          </mat-form-field>
+          <div class="type-preview" aria-live="polite">{{ typedName || '…' }}</div>
+        </div>
+      </mat-tab>
+    }
+    <mat-tab>
+      <ng-template mat-tab-label><mat-icon aria-hidden="true">upload</mat-icon>{{ 'signature.pad.upload' | translate }}</ng-template>
+      <div class="upload-wrap">
+        <input #fileInput type="file" accept="image/*" hidden (change)="onFile($event)">
+        @if (uploadPreview) {
+          <div class="upload-preview">
+            <img [src]="uploadPreview" [alt]="'signature.pad.upload' | translate">
+          </div>
+          <button mat-stroked-button type="button" class="clear-btn" (click)="clearUpload()">
+            <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
+          </button>
+        } @else {
+          <button type="button" class="dropzone" (click)="pickFile()">
+            <mat-icon aria-hidden="true">add_photo_alternate</mat-icon>
+            <span>{{ 'signature.pad.uploadHint' | translate }}</span>
+            <span class="sub">{{ 'signature.pad.uploadFormats' | translate }}</span>
+          </button>
+        }
+        @if (uploadError) { <p class="error" role="alert">{{ uploadError | translate }}</p> }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  @if (data.offerApplyToAll) {
+    <mat-checkbox [(ngModel)]="applyToAll" class="apply-all">
+      {{ 'signature.pad.applyToAll' + data.fieldType | translate }}
+    </mat-checkbox>
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button type="button" class="cancel-btn" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+  <button mat-raised-button color="primary" type="button" class="primary-btn" [disabled]="!canApply" (click)="apply()">
+    <mat-icon aria-hidden="true">check</mat-icon>{{ 'signature.pad.apply' | translate }}
+  </button>
+</div>

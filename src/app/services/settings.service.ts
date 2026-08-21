@@ -11,6 +11,8 @@ export interface Settings {
   thumbnailsActive: boolean;
   aiActive: boolean;
   aiUserSettingsEnabled: boolean;
+  /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
+  signatureActive?: boolean;
 }
 
 @Injectable({
@@ -34,8 +36,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false });
       })
     );
   }
@@ -67,5 +69,11 @@ export class SettingsService {
   get isAiUserSettingsEnabled(): boolean {
     return (this.settingsSubject.value?.aiActive ?? false)
       && (this.settingsSubject.value?.aiUserSettingsEnabled ?? false);
+  }
+
+  // Driven by openfilz.signature.active on the API: the e-Sign endpoints only exist when
+  // that flag is on, so the "Signatures" menu + "Request signature" action follow it.
+  get isSignatureActive(): boolean {
+    return this.settingsSubject.value?.signatureActive ?? false;
   }
 }

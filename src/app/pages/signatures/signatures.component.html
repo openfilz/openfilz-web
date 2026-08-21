@@ -1,0 +1,334 @@
+<div class="page" [class.has-detail]="!!detail">
+  <div class="page-main">
+    <header class="page-head">
+      <mat-icon aria-hidden="true">draw</mat-icon>
+      <h1>{{ 'signature.list.title' | translate }}</h1>
+    </header>
+
+    <mat-tab-group animationDuration="150ms">
+      <!-- ── Waiting for my signature ─────────────────────────────────── -->
+      <mat-tab [label]="'signature.list.toSignTab' | translate">
+        @if (loadingToSign) {
+          <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+        } @else if (toSign.length === 0) {
+          <div class="state empty">
+            <mat-icon aria-hidden="true">task_alt</mat-icon>
+            <p>{{ 'signature.list.noToSign' | translate }}</p>
+          </div>
+        } @else {
+          <div class="table-wrap">
+            <table mat-table [dataSource]="toSign" class="tbl">
+              <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.document' | translate }}</th>
+                <td mat-cell *matCellDef="let e" class="title-cell">{{ e.title }}</td>
+              </ng-container>
+              <ng-container matColumnDef="from">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.from' | translate }}</th>
+                <td mat-cell *matCellDef="let e">{{ e.initiatorEmail }}</td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.status' | translate }}</th>
+                <td mat-cell *matCellDef="let e">
+                  <span class="badge s-{{ e.status }}">{{ 'signature.status.' + e.status | translate }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="expires">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.expires' | translate }}</th>
+                <td mat-cell *matCellDef="let e">{{ e.expiresAt | date:'medium' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let e" class="row-actions">
+                  <span class="mail-hint" [matTooltip]="'signature.list.toSignHint' | translate">
+                    <mat-icon aria-hidden="true">mark_email_unread</mat-icon>
+                    {{ 'signature.list.checkEmail' | translate }}
+                  </span>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="toSignColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: toSignColumns;"></tr>
+            </table>
+          </div>
+          <p class="foot-hint">{{ 'signature.list.toSignHint' | translate }}</p>
+        }
+      </mat-tab>
+
+      <!-- ── Sent ─────────────────────────────────────────────────────── -->
+      <mat-tab [label]="'signature.list.sentTab' | translate">
+        <div class="filter-bar">
+          <button mat-stroked-button type="button" [matMenuTriggerFor]="statusMenu" class="filter-btn">
+            <mat-icon aria-hidden="true">filter_list</mat-icon>
+            {{ sentFilter ? ('signature.status.' + sentFilter | translate) : ('signature.list.allStatuses' | translate) }}
+          </button>
+          <mat-menu #statusMenu="matMenu">
+            <button mat-menu-item (click)="setSentFilter(null)">{{ 'signature.list.allStatuses' | translate }}</button>
+            @for (s of statuses; track s) {
+              <button mat-menu-item (click)="setSentFilter(s)">{{ 'signature.status.' + s | translate }}</button>
+            }
+          </mat-menu>
+          <button mat-icon-button type="button" (click)="reloadSent()" [attr.aria-label]="'common.refresh' | translate"
+                  [matTooltip]="'common.refresh' | translate">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+          </button>
+        </div>
+
+        @if (loadingSent) {
+          <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+        } @else if (sent.length === 0) {
+          <div class="state empty">
+            <mat-icon aria-hidden="true">outbox</mat-icon>
+            <p>{{ 'signature.list.noSent' | translate }}</p>
+          </div>
+        } @else {
+          <div class="table-wrap">
+            <table mat-table [dataSource]="sent" class="tbl clickable">
+              <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.document' | translate }}</th>
+                <td mat-cell *matCellDef="let e" class="title-cell">
+                  {{ e.title }}
+                  @if (e.sequential) {
+                    <mat-icon class="inline-ico" [matTooltip]="'signature.request.sequential' | translate" aria-hidden="true">low_priority</mat-icon>
+                  }
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="recipients">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.signed' | translate }}</th>
+                <td mat-cell *matCellDef="let e">
+                  <div class="progress" [attr.aria-label]="signedCount(e)">
+                    <div class="progress-bar"><div class="progress-fill" [style.width.%]="progressPct(e)"></div></div>
+                    <span>{{ signedCount(e) }}</span>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.status' | translate }}</th>
+                <td mat-cell *matCellDef="let e">
+                  <span class="badge s-{{ e.status }}">{{ 'signature.status.' + e.status | translate }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="created">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.created' | translate }}</th>
+                <td mat-cell *matCellDef="let e">{{ e.createdAt | date:'medium' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="expires">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.expires' | translate }}</th>
+                <td mat-cell *matCellDef="let e">{{ e.expiresAt | date:'mediumDate' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let e" class="row-actions" (click)="$event.stopPropagation()">
+                  <button mat-icon-button type="button" (click)="openDetail(e)"
+                          [matTooltip]="'signature.list.details' | translate" [attr.aria-label]="'signature.list.details' | translate">
+                    <mat-icon aria-hidden="true">info</mat-icon>
+                  </button>
+                  @if (e.status === 'DRAFT') {
+                    <button mat-icon-button type="button" (click)="sendDraft(e)" [disabled]="isBusy(e.id)"
+                            [matTooltip]="'signature.list.sendNow' | translate" [attr.aria-label]="'signature.list.sendNow' | translate">
+                      <mat-icon aria-hidden="true">send</mat-icon>
+                    </button>
+                  }
+                  @if (e.status === 'COMPLETED') {
+                    <button mat-icon-button type="button" (click)="downloadSigned(e)" [disabled]="isBusy(e.id + ':dl')"
+                            [matTooltip]="'signature.list.downloadSigned' | translate" [attr.aria-label]="'signature.list.downloadSigned' | translate">
+                      <mat-icon aria-hidden="true">download</mat-icon>
+                    </button>
+                    @if (e.signedDocId) {
+                      <button mat-icon-button type="button" (click)="openSigned(e)"
+                              [matTooltip]="'signature.list.openSigned' | translate" [attr.aria-label]="'signature.list.openSigned' | translate">
+                        <mat-icon aria-hidden="true">picture_as_pdf</mat-icon>
+                      </button>
+                    }
+                  }
+                  @if (canCancel(e)) {
+                    <button mat-icon-button type="button" class="danger" (click)="cancel(e)" [disabled]="isBusy(e.id)"
+                            [matTooltip]="'signature.list.cancel' | translate" [attr.aria-label]="'signature.list.cancel' | translate">
+                      <mat-icon aria-hidden="true">cancel</mat-icon>
+                    </button>
+                  }
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="sentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: sentColumns;" (click)="openDetail(row)"
+                  [class.selected]="detail?.id === row.id" tabindex="0" (keydown.enter)="openDetail(row)"></tr>
+            </table>
+          </div>
+        }
+      </mat-tab>
+
+      <!-- ── Templates ────────────────────────────────────────────────── -->
+      <mat-tab [label]="'signature.templates.tab' | translate">
+        @if (loadingTemplates) {
+          <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+        } @else if (templates.length === 0) {
+          <div class="state empty">
+            <mat-icon aria-hidden="true">bookmark_border</mat-icon>
+            <p>{{ 'signature.templates.none' | translate }}</p>
+            <p class="sub">{{ 'signature.templates.emptyHint' | translate }}</p>
+          </div>
+        } @else {
+          <div class="table-wrap">
+            <table mat-table [dataSource]="templates" class="tbl">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.templates.name' | translate }}</th>
+                <td mat-cell *matCellDef="let t" class="title-cell">
+                  {{ t.name }}
+                  @if (t.sequential) {
+                    <mat-icon class="inline-ico" [matTooltip]="'signature.request.sequential' | translate" aria-hidden="true">low_priority</mat-icon>
+                  }
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="roles">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.templates.roles' | translate }}</th>
+                <td mat-cell *matCellDef="let t">
+                  @for (r of t.roles; track r.name; let i = $index) {
+                    <span class="role-chip" [style.--rc]="color(i)">{{ r.name }}</span>
+                  }
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="fields">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.templates.fields' | translate }}</th>
+                <td mat-cell *matCellDef="let t">{{ t.fields?.length || 0 }}</td>
+              </ng-container>
+              <ng-container matColumnDef="updated">
+                <th mat-header-cell *matHeaderCellDef>{{ 'signature.templates.updated' | translate }}</th>
+                <td mat-cell *matCellDef="let t">{{ t.updatedAt | date:'medium' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let t" class="row-actions">
+                  <button mat-stroked-button type="button" class="use-btn" (click)="useTemplate(t)" [disabled]="isBusy(t.id)">
+                    <mat-icon aria-hidden="true">send</mat-icon>
+                    {{ 'signature.templates.use' | translate }}
+                  </button>
+                  <button mat-icon-button type="button" (click)="renameTemplate(t)" [disabled]="isBusy(t.id)"
+                          [matTooltip]="'common.rename' | translate" [attr.aria-label]="'common.rename' | translate">
+                    <mat-icon aria-hidden="true">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" class="danger" (click)="deleteTemplate(t)" [disabled]="isBusy(t.id)"
+                          [matTooltip]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate">
+                    <mat-icon aria-hidden="true">delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="templateColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: templateColumns;"></tr>
+            </table>
+          </div>
+        }
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- ── Detail drawer ──────────────────────────────────────────────────── -->
+  @if (detail; as d) {
+    <aside class="detail" role="complementary" [attr.aria-label]="d.title">
+      <div class="detail-head">
+        <div class="detail-title">
+          <h2>{{ d.title }}</h2>
+          <span class="badge s-{{ d.status }}">{{ 'signature.status.' + d.status | translate }}</span>
+        </div>
+        <button mat-icon-button type="button" (click)="closeDetail()" [attr.aria-label]="'common.close' | translate">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </div>
+
+      <dl class="meta">
+        <dt>{{ 'signature.list.created' | translate }}</dt><dd>{{ d.createdAt | date:'medium' }}</dd>
+        @if (d.sentAt) { <dt>{{ 'signature.list.sentAt' | translate }}</dt><dd>{{ d.sentAt | date:'medium' }}</dd> }
+        <dt>{{ 'signature.list.expires' | translate }}</dt><dd>{{ d.expiresAt | date:'medium' }}</dd>
+        @if (d.completedAt) { <dt>{{ 'signature.list.completedAt' | translate }}</dt><dd>{{ d.completedAt | date:'medium' }}</dd> }
+        <dt>{{ 'signature.request.sequential' | translate }}</dt><dd>{{ (d.sequential ? 'common.yes' : 'common.no') | translate }}</dd>
+        @if (d.reminderDays) { <dt>{{ 'signature.request.reminderDays' | translate }}</dt><dd>{{ d.reminderDays }}</dd> }
+        @if (d.sealProvider) { <dt>{{ 'signature.list.seal' | translate }}</dt><dd>{{ d.sealProvider }}</dd> }
+      </dl>
+      @if (d.message) { <div class="msg">{{ d.message }}</div> }
+
+      <div class="detail-actions">
+        <button mat-stroked-button type="button" (click)="openSource(d)">
+          <mat-icon aria-hidden="true">description</mat-icon>{{ 'signature.list.openSource' | translate }}
+        </button>
+        @if (d.status === 'COMPLETED') {
+          <button mat-stroked-button type="button" (click)="downloadSigned(d)" [disabled]="isBusy(d.id + ':dl')">
+            <mat-icon aria-hidden="true">download</mat-icon>{{ 'signature.list.downloadSigned' | translate }}
+          </button>
+        }
+        @if (canCancel(d)) {
+          <button mat-stroked-button type="button" class="danger" (click)="cancel(d)" [disabled]="isBusy(d.id)">
+            <mat-icon aria-hidden="true">cancel</mat-icon>{{ 'signature.list.cancel' | translate }}
+          </button>
+        }
+      </div>
+
+      <h3>{{ 'signature.request.recipients' | translate }}</h3>
+      <div class="table-wrap">
+        <table class="rtbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ 'signature.list.recipient' | translate }}</th>
+              <th>{{ 'signature.request.role' | translate }}</th>
+              <th>{{ 'signature.request.authMethod' | translate }}</th>
+              <th>{{ 'signature.list.status' | translate }}</th>
+              <th>{{ 'signature.list.viewedAt' | translate }}</th>
+              <th>{{ 'signature.list.signedAt' | translate }}</th>
+              <th>{{ 'signature.list.reminders' | translate }}</th>
+              <th>{{ 'signature.templates.fields' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of sortedRecipients(d); track r.id; let i = $index) {
+              <tr [style.--rc]="color(i)">
+                <td><span class="color-dot" aria-hidden="true"></span>{{ d.sequential ? r.orderIndex + 1 : '' }}</td>
+                <td>
+                  <div class="who">{{ r.name || r.email }}</div>
+                  @if (r.name) { <div class="sub">{{ r.email }}</div> }
+                  @if (r.declineReason) { <div class="sub decline">“{{ r.declineReason }}”</div> }
+                </td>
+                <td>{{ 'signature.request.role' + r.role | translate }}</td>
+                <td>{{ 'signature.authMethods.' + r.authMethod | translate }}</td>
+                <td><span class="badge r-{{ r.status }}">{{ 'signature.recipientStatus.' + r.status | translate }}</span></td>
+                <td>{{ r.viewedAt ? (r.viewedAt | date:'short') : '—' }}</td>
+                <td>{{ r.signedAt ? (r.signedAt | date:'short') : '—' }}</td>
+                <td>{{ r.reminderCount }}</td>
+                <td>{{ r.fields.length || 0 }}</td>
+                <td class="row-actions">
+                  @if (canResend(d, r)) {
+                    <button mat-icon-button type="button" (click)="resend(d, r)" [disabled]="isBusy(d.id + ':' + r.id)"
+                            [matTooltip]="'signature.list.resend' | translate" [attr.aria-label]="'signature.list.resend' | translate">
+                      <mat-icon aria-hidden="true">forward_to_inbox</mat-icon>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h3>{{ 'signature.list.events' | translate }}</h3>
+      @if (loadingDetail) {
+        <div class="state small"><mat-spinner diameter="26"></mat-spinner></div>
+      } @else if (detailEvents.length === 0) {
+        <p class="sub">{{ 'signature.list.noEvents' | translate }}</p>
+      } @else {
+        <ol class="timeline">
+          @for (ev of detailEvents; track $index) {
+            <li class="ev ev-{{ ev.type }}">
+              <span class="ev-dot" aria-hidden="true"></span>
+              <div class="ev-body">
+                <div class="ev-title">{{ 'signature.events.' + ev.type | translate }}</div>
+                <div class="sub">
+                  {{ ev.createdAt | date:'medium' }}
+                  @if (ev.actor) { · {{ ev.actor }} }
+                  @if (ev.signerIp) { · {{ ev.signerIp }} }
+                </div>
+                @if (ev.details) { <div class="sub">{{ ev.details }}</div> }
+              </div>
+            </li>
+          }
+        </ol>
+      }
+    </aside>
+  }
+</div>

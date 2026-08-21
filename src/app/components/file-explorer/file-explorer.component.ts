@@ -171,7 +171,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -192,7 +192,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"

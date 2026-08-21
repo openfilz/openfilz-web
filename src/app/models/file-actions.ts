@@ -6,7 +6,7 @@
  * Downstream forks (openfilz-web-ee) extend the UI by contributing extra
  * descriptors instead of forking the templates.
  */
-export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details';
+export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature';
 
 export type FileActionCategory = 'organize' | 'transfer' | 'danger';
 
@@ -36,6 +36,20 @@ export const STANDARD_SELECTION_ACTIONS: FileActionDescriptor[] = [
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'overflow', singleOnly: true },
 ];
 
+/**
+ * e-Sign "Request signature" per-item action. Only offered for PDF files and only
+ * when the API reports `signatureActive` — see `visibleItemActions()` in file-list/file-grid.
+ */
+export const REQUEST_SIGNATURE_ACTION: FileActionDescriptor = {
+  id: 'requestSignature', icon: 'draw', labelKey: 'toolbar.requestSignature', ariaKey: 'toolbar.requestSignature', category: 'transfer', placement: 'primary', singleOnly: true
+};
+
+/** True for PDF documents (by content type, falling back to the extension). */
+export function isPdfItem(item: { name?: string; contentType?: string; type?: string }): boolean {
+  if (item.type === 'FOLDER') return false;
+  return item.contentType === 'application/pdf' || /\.pdf$/i.test(item.name ?? '');
+}
+
 /** Per-item kebab / right-click context menu actions (order = menu order) */
 export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'open', icon: 'visibility', labelKey: 'common.open', ariaKey: 'toolbar.openSelected', category: 'organize', placement: 'primary' },
@@ -43,6 +57,7 @@ export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'rename', icon: 'edit', labelKey: 'common.rename', ariaKey: 'toolbar.renameSelected', category: 'organize', placement: 'primary' },
   { id: 'move', icon: 'drive_file_move', labelKey: 'toolbar.move', ariaKey: 'toolbar.moveSelected', category: 'organize', placement: 'primary' },
   { id: 'copy', icon: 'content_copy', labelKey: 'toolbar.copy', ariaKey: 'toolbar.copySelected', category: 'organize', placement: 'primary' },
+  REQUEST_SIGNATURE_ACTION,
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'primary' },
   { id: 'delete', icon: 'delete', labelKey: 'common.delete', ariaKey: 'toolbar.deleteSelected', category: 'danger', placement: 'primary', danger: true },
 ];

@@ -21,6 +21,7 @@ import { saveAs } from 'file-saver';
 
 // PDF.js imports
 import * as pdfjsLib from 'pdfjs-dist';
+import { PDFJS_WORKER_SRC } from '../../utils/pdfjs-worker';
 
 // Syntax highlighting
 import hljs from 'highlight.js';
@@ -121,8 +122,8 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   constructor() {
     // Configure PDF.js worker
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`;
+    // Worker is bundled from node_modules/pdfjs-dist via angular.json assets (no CDN dependency).
+    pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_SRC;
   }
 
   /**
