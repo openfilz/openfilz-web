@@ -1,6 +1,6 @@
 import { Injectable, inject, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, firstValueFrom, isObservable, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, firstValueFrom, isObservable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../../environments/environment';
@@ -28,6 +28,8 @@ export class AiChatService {
   isStreaming$ = new BehaviorSubject<boolean>(false);
   panelView$ = new BehaviorSubject<AiChatPanelView>('conversations');
   conversationsLoading$ = new BehaviorSubject<boolean>(false);
+  /** Emits after a chat turn whose tool calls modified folder contents (folder ids, 'root' for root level). */
+  folderContentChanged$ = new Subject<string[]>();
 
   private abortController: AbortController | null = null;
 
@@ -207,6 +209,9 @@ export class AiChatService {
     } else if (event.type === 'DONE') {
       if (event.conversationId) {
         this.currentConversationId$.next(event.conversationId);
+      }
+      if (event.modifiedFolderIds?.length) {
+        this.folderContentChanged$.next(event.modifiedFolderIds);
       }
       this.isStreaming$.next(false);
     } else if (event.type === 'ERROR') {

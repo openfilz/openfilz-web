@@ -17,6 +17,8 @@ export interface AiChatStreamEvent {
   conversationId: string;
   content: string;
   type: 'MESSAGE' | 'DONE' | 'ERROR';
+  /** On DONE events: folders whose content was modified by tool calls ('root' for root level). */
+  modifiedFolderIds?: string[];
 }
 
 export type AiChatPanelView = 'conversations' | 'chat';
