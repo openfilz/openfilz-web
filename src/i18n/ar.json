@@ -435,6 +435,35 @@
             "midnight": "منتصف الليل",
             "slate": "إردواز",
             "copper": "نحاسي"
+        },
+        "ai": {
+            "title": "مساعد الذكاء الاصطناعي",
+            "description": "اختر نموذج الذكاء الاصطناعي الذي يجيب على محادثاتك. يُستخدم نموذج الخادم افتراضيًا؛ يمكنك استخدام حسابك الخاص في OpenAI أو Anthropic Claude أو Google Gemini بمفتاح API خاص بك.",
+            "provider": "مزوّد نموذج الذكاء الاصطناعي",
+            "providers": {
+                "DEFAULT": "الافتراضي للخادم",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "مخصص (متوافق مع OpenAI)"
+            },
+            "defaultHint": "تستخدم المحادثات النموذج الذي قام المسؤول بتكوينه.",
+            "model": "النموذج",
+            "baseUrl": "عنوان URL الأساسي",
+            "baseUrlHint": "نقطة النهاية المتوافقة مع OpenAI لمزوّدك (مثل OpenRouter أو Mistral أو vLLM محلي).",
+            "apiKey": "مفتاح API",
+            "apiKeyPlaceholder": "الصق مفتاح API الخاص بك",
+            "apiKeyStored": "يوجد مفتاح محفوظ - اتركه فارغًا للاحتفاظ به.",
+            "whereKey": "من أين أحصل على مفتاح؟",
+            "subscriptionWarning": "يلزم حساب API - اشتراك المحادثة في ChatGPT / Claude.ai لا يتضمن الوصول إلى API. يُخزَّن مفتاحك مشفّرًا ولن يُعرض مرة أخرى.",
+            "testConnection": "اختبار الاتصال",
+            "testing": "جارٍ الاختبار...",
+            "testOk": "نجح الاتصال ({{latency}} مللي ثانية)",
+            "testFailed": "فشل الاتصال: {{message}}",
+            "save": "حفظ",
+            "saved": "تم حفظ إعدادات الذكاء الاصطناعي.",
+            "saveError": "تعذّر حفظ إعدادات الذكاء الاصطناعي.",
+            "loadError": "تعذّر تحميل إعدادات الذكاء الاصطناعي."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "حذف المحادثة",
         "back": "العودة إلى المحادثات",
         "close": "إغلاق الدردشة",
-        "errorStreaming": "حدث خطأ أثناء إنشاء الاستجابة"
+        "errorStreaming": "حدث خطأ أثناء إنشاء الاستجابة",
+        "activeModel": "النموذج الذي يجيب على هذه المحادثة"
     }
 }

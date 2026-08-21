@@ -42,6 +42,18 @@
     </div>
   }
 
+  @if (showAiSettings) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>smart_toy</mat-icon>
+        {{ 'settings.ai.title' | translate }}
+      </div>
+      <div class="section-content">
+        <app-ai-settings></app-ai-settings>
+      </div>
+    </div>
+  }
+
   <div class="settings-section">
     <div class="section-title">
       <mat-icon>palette</mat-icon>

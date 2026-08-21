@@ -435,6 +435,35 @@
             "midnight": "Middernacht",
             "slate": "Leisteen",
             "copper": "Koper"
+        },
+        "ai": {
+            "title": "AI-assistent",
+            "description": "Kies welk AI-model je chats beantwoordt. Standaard wordt het model van de server gebruikt; je kunt je eigen OpenAI-, Anthropic Claude- of Google Gemini-account met je eigen API-sleutel gebruiken.",
+            "provider": "AI-modelprovider",
+            "providers": {
+                "DEFAULT": "Serverstandaard",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "Aangepast (OpenAI-compatibel)"
+            },
+            "defaultHint": "Gesprekken gebruiken het model dat door je beheerder is geconfigureerd.",
+            "model": "Model",
+            "baseUrl": "Basis-URL",
+            "baseUrlHint": "Het OpenAI-compatibele endpoint van je provider (bijv. OpenRouter, Mistral, een lokale vLLM).",
+            "apiKey": "API-sleutel",
+            "apiKeyPlaceholder": "Plak je API-sleutel",
+            "apiKeyStored": "Er is een sleutel opgeslagen - laat leeg om deze te behouden.",
+            "whereKey": "Waar krijg ik een sleutel?",
+            "subscriptionWarning": "Een API-account is vereist - een ChatGPT- / Claude.ai-chatabonnement bevat geen API-toegang. Je sleutel wordt versleuteld opgeslagen en nooit meer getoond.",
+            "testConnection": "Verbinding testen",
+            "testing": "Testen...",
+            "testOk": "Verbinding geslaagd ({{latency}} ms)",
+            "testFailed": "Verbinding mislukt: {{message}}",
+            "save": "Opslaan",
+            "saved": "AI-instellingen opgeslagen.",
+            "saveError": "Kan AI-instellingen niet opslaan.",
+            "loadError": "Kan AI-instellingen niet laden."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "Gesprek verwijderen",
         "back": "Terug naar gesprekken",
         "close": "Chat sluiten",
-        "errorStreaming": "Er is een fout opgetreden bij het genereren van het antwoord"
+        "errorStreaming": "Er is een fout opgetreden bij het genereren van het antwoord",
+        "activeModel": "Model dat deze chat beantwoordt"
     }
 }

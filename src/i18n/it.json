@@ -435,6 +435,35 @@
             "midnight": "Mezzanotte",
             "slate": "Ardesia",
             "copper": "Rame"
+        },
+        "ai": {
+            "title": "Assistente IA",
+            "description": "Scegli quale modello di IA risponde alle tue conversazioni. Per impostazione predefinita viene usato il modello del server; puoi usare il tuo account OpenAI, Anthropic Claude o Google Gemini con la tua chiave API.",
+            "provider": "Fornitore del modello IA",
+            "providers": {
+                "DEFAULT": "Predefinito del server",
+                "OPENAI": "OpenAI",
+                "ANTHROPIC": "Anthropic Claude",
+                "GOOGLE": "Google Gemini",
+                "OPENAI_COMPATIBLE": "Personalizzato (compatibile OpenAI)"
+            },
+            "defaultHint": "Le conversazioni usano il modello configurato dal tuo amministratore.",
+            "model": "Modello",
+            "baseUrl": "URL di base",
+            "baseUrlHint": "L'endpoint compatibile OpenAI del tuo fornitore (es. OpenRouter, Mistral, un vLLM locale).",
+            "apiKey": "Chiave API",
+            "apiKeyPlaceholder": "Incolla la tua chiave API",
+            "apiKeyStored": "Una chiave è memorizzata - lascia vuoto per mantenerla.",
+            "whereKey": "Dove ottengo una chiave?",
+            "subscriptionWarning": "È necessario un account API - un abbonamento chat ChatGPT / Claude.ai non include l'accesso all'API. La chiave è salvata cifrata e non verrà più mostrata.",
+            "testConnection": "Prova connessione",
+            "testing": "Test in corso...",
+            "testOk": "Connessione riuscita ({{latency}} ms)",
+            "testFailed": "Connessione non riuscita: {{message}}",
+            "save": "Salva",
+            "saved": "Impostazioni IA salvate.",
+            "saveError": "Impossibile salvare le impostazioni IA.",
+            "loadError": "Impossibile caricare le impostazioni IA."
         }
     },
     "bottomSheet": {
@@ -674,6 +703,7 @@
         "deleteConversation": "Elimina conversazione",
         "back": "Torna alle conversazioni",
         "close": "Chiudi chat",
-        "errorStreaming": "Si e verificato un errore durante la generazione della risposta"
+        "errorStreaming": "Si e verificato un errore durante la generazione della risposta",
+        "activeModel": "Modello che risponde a questa chat"
     }
 }
