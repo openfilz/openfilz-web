@@ -92,7 +92,9 @@ src/app/
 | `document-api.service` | GraphQL & REST API client (core service) |
 | `role.service` | Role-based access (READER, CONTRIBUTOR, AUDITOR, CLEANER) |
 | `theme.service` | 10 themes (light, dark, ocean, forest, sunset, lavender, rose, midnight, slate, copper) |
-| `settings.service` | App settings (bin interval, quotas, thumbnails) |
+| `settings.service` | App settings (bin interval, quotas, thumbnails, AI flags incl. `aiUserSettingsEnabled`) |
+| `ai-chat.service` | AI chat panel state + SSE streaming (`/ai/chat`, conversations) |
+| `ai-settings.service` | Per-user AI model settings — BYOK (`/settings/ai`, key is write-only) |
 | `search.service` | Search with filters and suggestions |
 | `user-preferences.service` | User preferences persistence |
 | `breadcrumb.service` | Navigation breadcrumb state |
