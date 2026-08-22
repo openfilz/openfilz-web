@@ -10,6 +10,7 @@
 }
 .header-text { flex: 1; }
 .header-text h2 { margin: 0; font-size: 17px; color: var(--text-primary); }
+.header-text .subtitle { margin: 2px 0 0; font-size: 12.5px; color: var(--text-secondary); }
 .close-btn { color: var(--text-secondary); }
 
 .dialog-content {
@@ -33,7 +34,12 @@
   gap: 4px; pointer-events: none; color: #64748b; font-size: 13px;
 }
 .sig-placeholder mat-icon { font-size: 28px; width: 28px; height: 28px; opacity: .6; }
+/* Initials live in a small, near-square box: keep the pad proportional to it. */
+.pad-canvas.initials { max-width: 300px; margin: 0 auto; }
 .clear-btn { align-self: flex-end; border-radius: 10px; }
+.suggest-btn { align-self: flex-start; border-radius: 10px; font-size: 13px; }
+.suggest-btn mat-icon { margin-right: 4px; font-size: 18px; width: 18px; height: 18px; }
+.initials-input { text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
 .clear-btn mat-icon { margin-right: 4px; }
 
 .ff { width: 100%; }
@@ -45,6 +51,7 @@
   font-family: 'Segoe Script', 'Brush Script MT', 'Snell Roundhand', cursive; font-style: italic;
   font-size: clamp(22px, 6vw, 40px); padding: 8px 16px; word-break: break-word; text-align: center;
 }
+.type-preview.initials { min-height: 120px; font-size: clamp(34px, 9vw, 56px); letter-spacing: 3px; }
 
 .dropzone {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;

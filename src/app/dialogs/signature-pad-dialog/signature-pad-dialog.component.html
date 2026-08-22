@@ -1,7 +1,8 @@
 <div class="dialog-header">
-  <mat-icon class="header-icon" aria-hidden="true">{{ imageOnly ? 'image' : 'draw' }}</mat-icon>
+  <mat-icon class="header-icon" aria-hidden="true">{{ imageOnly ? 'image' : (isInitials ? 'short_text' : 'draw') }}</mat-icon>
   <div class="header-text">
     <h2>{{ 'signature.pad.title' + data.fieldType | translate }}</h2>
+    @if (isInitials) { <p class="subtitle">{{ 'signature.pad.initialsSubtitle' | translate }}</p> }
   </div>
   <button mat-icon-button class="close-btn" type="button" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
     <mat-icon aria-hidden="true">close</mat-icon>
@@ -10,59 +11,77 @@
 
 <div mat-dialog-content class="dialog-content">
   <mat-tab-group (selectedIndexChange)="onTabChange($event)" animationDuration="0ms" class="modes">
-    @if (!imageOnly) {
+    @for (m of modes; track m) {
       <mat-tab>
-        <ng-template mat-tab-label><mat-icon aria-hidden="true">gesture</mat-icon>{{ 'signature.sign.draw' | translate }}</ng-template>
-        <div class="pad-wrap">
-          <div class="pad-canvas">
-            <canvas #pad [width]="padW" [height]="padH"
-                    (pointerdown)="padDown($event)" (pointermove)="padMove($event)"
-                    (pointerup)="padUp()" (pointerleave)="padUp()" (pointercancel)="padUp()"
-                    [attr.aria-label]="'signature.sign.drawPlaceholder' | translate" role="img"></canvas>
-            @if (!hasStroke) {
-              <div class="sig-placeholder" aria-hidden="true">
-                <mat-icon>gesture</mat-icon>
-                <span>{{ 'signature.sign.drawPlaceholder' | translate }}</span>
+        <ng-template mat-tab-label>
+          <mat-icon aria-hidden="true">{{ m === 'draw' ? 'gesture' : m === 'type' ? 'keyboard' : 'upload' }}</mat-icon>
+          {{ (m === 'draw' ? 'signature.sign.draw' : m === 'type' ? 'signature.sign.type' : 'signature.pad.upload') | translate }}
+        </ng-template>
+
+        @switch (m) {
+          @case ('draw') {
+            <div class="pad-wrap">
+              <div class="pad-canvas" [class.initials]="isInitials">
+                <canvas #pad [width]="padW" [height]="padH"
+                        (pointerdown)="padDown($event)" (pointermove)="padMove($event)"
+                        (pointerup)="padUp()" (pointerleave)="padUp()" (pointercancel)="padUp()"
+                        [attr.aria-label]="drawPlaceholderKey | translate" role="img"></canvas>
+                @if (!hasStroke) {
+                  <div class="sig-placeholder" aria-hidden="true">
+                    <mat-icon>gesture</mat-icon>
+                    <span>{{ drawPlaceholderKey | translate }}</span>
+                  </div>
+                }
               </div>
-            }
-          </div>
-          <button mat-stroked-button type="button" class="clear-btn" (click)="clearPad()" [disabled]="!hasStroke">
-            <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
-          </button>
-        </div>
-      </mat-tab>
-      <mat-tab>
-        <ng-template mat-tab-label><mat-icon aria-hidden="true">keyboard</mat-icon>{{ 'signature.sign.type' | translate }}</ng-template>
-        <div class="type-wrap">
-          <mat-form-field appearance="outline" class="ff">
-            <mat-label>{{ (data.fieldType === 'INITIALS' ? 'signature.pad.typeInitials' : 'signature.sign.typedName') | translate }}</mat-label>
-            <input matInput [(ngModel)]="typedName" maxlength="255">
-          </mat-form-field>
-          <div class="type-preview" aria-live="polite">{{ typedName || '…' }}</div>
-        </div>
+              <button mat-stroked-button type="button" class="clear-btn" (click)="clearPad()" [disabled]="!hasStroke">
+                <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
+              </button>
+            </div>
+          }
+
+          @case ('type') {
+            <div class="type-wrap">
+              <mat-form-field appearance="outline" class="ff">
+                <mat-label>{{ (isInitials ? 'signature.pad.typeInitials' : 'signature.sign.typedName') | translate }}</mat-label>
+                <input matInput [ngModel]="typedName" (ngModelChange)="onTypedInput($event)"
+                       [maxlength]="maxTypedLength" [class.initials-input]="isInitials"
+                       [attr.autocapitalize]="isInitials ? 'characters' : null"
+                       [attr.spellcheck]="isInitials ? 'false' : null">
+                @if (isInitials) { <mat-hint>{{ 'signature.pad.initialsHint' | translate }}</mat-hint> }
+              </mat-form-field>
+              @if (canRestoreSuggestion) {
+                <button mat-stroked-button type="button" class="suggest-btn" (click)="restoreSuggestion()">
+                  <mat-icon aria-hidden="true">undo</mat-icon>
+                  {{ 'signature.pad.useSuggested' | translate:{ value: suggestion } }}
+                </button>
+              }
+              <div class="type-preview" [class.initials]="isInitials" aria-live="polite">{{ typedName || '…' }}</div>
+            </div>
+          }
+
+          @default {
+            <div class="upload-wrap">
+              <input #fileInput type="file" accept="image/*" hidden (change)="onFile($event)">
+              @if (uploadPreview) {
+                <div class="upload-preview">
+                  <img [src]="uploadPreview" [alt]="'signature.pad.upload' | translate">
+                </div>
+                <button mat-stroked-button type="button" class="clear-btn" (click)="clearUpload()">
+                  <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
+                </button>
+              } @else {
+                <button type="button" class="dropzone" (click)="pickFile()">
+                  <mat-icon aria-hidden="true">add_photo_alternate</mat-icon>
+                  <span>{{ 'signature.pad.uploadHint' | translate }}</span>
+                  <span class="sub">{{ 'signature.pad.uploadFormats' | translate }}</span>
+                </button>
+              }
+              @if (uploadError) { <p class="error" role="alert">{{ uploadError | translate }}</p> }
+            </div>
+          }
+        }
       </mat-tab>
     }
-    <mat-tab>
-      <ng-template mat-tab-label><mat-icon aria-hidden="true">upload</mat-icon>{{ 'signature.pad.upload' | translate }}</ng-template>
-      <div class="upload-wrap">
-        <input #fileInput type="file" accept="image/*" hidden (change)="onFile($event)">
-        @if (uploadPreview) {
-          <div class="upload-preview">
-            <img [src]="uploadPreview" [alt]="'signature.pad.upload' | translate">
-          </div>
-          <button mat-stroked-button type="button" class="clear-btn" (click)="clearUpload()">
-            <mat-icon aria-hidden="true">clear</mat-icon>{{ 'signature.sign.clear' | translate }}
-          </button>
-        } @else {
-          <button type="button" class="dropzone" (click)="pickFile()">
-            <mat-icon aria-hidden="true">add_photo_alternate</mat-icon>
-            <span>{{ 'signature.pad.uploadHint' | translate }}</span>
-            <span class="sub">{{ 'signature.pad.uploadFormats' | translate }}</span>
-          </button>
-        }
-        @if (uploadError) { <p class="error" role="alert">{{ uploadError | translate }}</p> }
-      </div>
-    </mat-tab>
   </mat-tab-group>
 
   @if (data.offerApplyToAll) {

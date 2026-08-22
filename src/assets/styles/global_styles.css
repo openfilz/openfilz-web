@@ -478,6 +478,25 @@ html {
   overflow: hidden;
 }
 
+/* Dialog surface — paint it from the app theme variables.
+   `mat.theme()` is fed legacy (50..900) palette maps, so the Material 3 system colours
+   resolve to an empty `light-dark(, )` and `--mdc-dialog-container-color` ends up unset:
+   every dialog would render with a fully transparent surface. It goes unnoticed over the
+   app's flat background but is glaring on the public signing page, where a white PDF full
+   of text shows through the dialog. Driving the tokens from `--bg-primary`/`--text-primary`
+   keeps every theme (including the dark ones) correct. */
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--bg-primary);
+  --mdc-dialog-subhead-color: var(--text-primary);
+  --mdc-dialog-supporting-text-color: var(--text-secondary);
+}
+.mat-mdc-dialog-surface {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+/* Same cause: the scrim colour token is empty, so the backdrop dims nothing. */
+.cdk-overlay-dark-backdrop { background: rgba(15, 23, 42, 0.45); }
+
 /* File Viewer Dialog Custom Styles */
 .file-viewer-dialog-container .mat-mdc-dialog-container {
   padding: 0 !important;

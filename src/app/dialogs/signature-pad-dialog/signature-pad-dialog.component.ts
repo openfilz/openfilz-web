@@ -55,21 +55,34 @@ export class SignaturePadDialogComponent implements AfterViewInit {
   readonly data = inject<SignaturePadDialogData>(MAT_DIALOG_DATA);
 
   readonly imageOnly = this.data.fieldType === 'IMAGE' || this.data.fieldType === 'STAMP';
-  readonly modes: PadMode[] = this.imageOnly ? ['upload'] : ['draw', 'type', 'upload'];
+  readonly isInitials = this.data.fieldType === 'INITIALS';
+
+  /**
+   * Initials open on "type": they are pre-filled from the name the sender entered, so the
+   * signer usually just confirms. A signature opens on "draw", the expected gesture there.
+   */
+  readonly modes: PadMode[] = this.imageOnly ? ['upload']
+      : this.isInitials ? ['type', 'draw', 'upload'] : ['draw', 'type', 'upload'];
   mode: PadMode = this.modes[0];
-  typedName = this.data.fieldType === 'INITIALS' ? initialsOf(this.data.suggestedName) : (this.data.suggestedName ?? '');
-  applyToAll = false;
+
+  /** Initials derived from the recipient name — kept so the signer can restore them after editing. */
+  readonly suggestion = this.isInitials ? initialsOf(this.data.suggestedName) : (this.data.suggestedName ?? '');
+  typedName = this.suggestion;
+  /** Repeated initials are identical by nature: adopt once, apply to every field by default. */
+  applyToAll = this.isInitials && !!this.data.offerApplyToAll;
   hasStroke = false;
   uploadPreview: string | null = null;
   uploadError = '';
 
-  readonly padW = 480;
-  readonly padH = this.data.fieldType === 'INITIALS' ? 240 : 180;
+  readonly maxTypedLength = this.isInitials ? 6 : 255;
+  /** Initials get a squarer pad so the glyphs fill their (small, near-square) field box. */
+  readonly padW = this.isInitials ? 300 : 480;
+  readonly padH = this.isInitials ? 240 : 180;
 
   private drawing = false;
 
   ngAfterViewInit(): void {
-    this.initPad();
+    if (this.mode === 'draw') this.initPad();
   }
 
   onTabChange(index: number): void {
@@ -77,12 +90,36 @@ export class SignaturePadDialogComponent implements AfterViewInit {
     if (this.mode === 'draw') setTimeout(() => this.initPad());
   }
 
+  /** Initials are conventionally uppercase and short — normalise as the signer types. */
+  onTypedInput(value: string): void {
+    this.typedName = this.isInitials
+        ? value.replace(/\s+/g, '').toUpperCase().slice(0, this.maxTypedLength)
+        : value;
+  }
+
+  restoreSuggestion(): void {
+    this.typedName = this.suggestion;
+  }
+
+  get canRestoreSuggestion(): boolean {
+    return !!this.suggestion && this.typedName.trim() !== this.suggestion;
+  }
+
+  /** Placeholder / label keys differ per field type ("draw your signature" vs "your initials"). */
+  get drawPlaceholderKey(): string {
+    return this.isInitials ? 'signature.pad.drawInitialsPlaceholder' : 'signature.sign.drawPlaceholder';
+  }
+
   // ── Draw ────────────────────────────────────────────────────────────────
 
   private initPad(): void {
-    const c = this.pad?.nativeElement;
-    if (!c) return;
-    this.applyPen(c.getContext('2d')!);
+    const ctx = this.ctx();
+    if (ctx) this.applyPen(ctx);
+  }
+
+  /** 2D context of the pad, or null when the canvas is not (yet) renderable. */
+  private ctx(): CanvasRenderingContext2D | null {
+    return this.pad?.nativeElement.getContext('2d') ?? null;
   }
 
   private applyPen(ctx: CanvasRenderingContext2D): void {
@@ -94,10 +131,10 @@ export class SignaturePadDialogComponent implements AfterViewInit {
 
   padDown(e: PointerEvent): void {
     const c = this.pad?.nativeElement;
-    if (!c) return;
+    const ctx = this.ctx();
+    if (!c || !ctx) return;
     c.setPointerCapture?.(e.pointerId);
     this.drawing = true;
-    const ctx = c.getContext('2d')!;
     this.applyPen(ctx);
     const { x, y } = this.pos(e);
     ctx.beginPath();
@@ -109,9 +146,8 @@ export class SignaturePadDialogComponent implements AfterViewInit {
   }
 
   padMove(e: PointerEvent): void {
-    if (!this.drawing) return;
-    const c = this.pad!.nativeElement;
-    const ctx = c.getContext('2d')!;
+    const ctx = this.ctx();
+    if (!this.drawing || !ctx) return;
     const { x, y } = this.pos(e);
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -121,8 +157,7 @@ export class SignaturePadDialogComponent implements AfterViewInit {
 
   clearPad(): void {
     const c = this.pad?.nativeElement;
-    if (!c) return;
-    c.getContext('2d')!.clearRect(0, 0, c.width, c.height);
+    this.ctx()?.clearRect(0, 0, c?.width ?? 0, c?.height ?? 0);
     this.hasStroke = false;
   }
 
@@ -180,12 +215,17 @@ export function initialsOf(name?: string): string {
   return (name ?? '').split(/[\s-]+/).filter(Boolean).map(p => p[0].toUpperCase()).join('').slice(0, 4);
 }
 
+/** 1×1 transparent PNG — only used when the canvas has no 2D context (never in a real browser). */
+const TRANSPARENT_PNG =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
 /** Render typed text as a transparent PNG data URL in a script font. */
 export function renderTypedSignature(text: string, w: number, h: number): string {
   const c = document.createElement('canvas');
   c.width = w;
   c.height = h;
-  const ctx = c.getContext('2d')!;
+  const ctx = c.getContext('2d');
+  if (!ctx) return TRANSPARENT_PNG;
   ctx.clearRect(0, 0, w, h);
   ctx.fillStyle = '#111';
   ctx.textAlign = 'center';
