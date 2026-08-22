@@ -312,6 +312,22 @@ export abstract class FileOperationsComponent implements OnInit {
     });
   }
 
+  /**
+   * Same action from the contextual selection toolbar: exactly one PDF selected.
+   * Kept next to {@link onRequestSignature} so both entry points share the gating.
+   */
+  get canRequestSignatureForSelection(): boolean {
+    const selected = this.selectedItems;
+    return this.settingsService.isSignatureActive && selected.length === 1 && isPdfItem(selected[0]);
+  }
+
+  onRequestSignatureSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onRequestSignature(selected[0]);
+    }
+  }
+
   onViewProperties(item: FileItem): void {
     this.switchMetadataPanel(item.id);
   }

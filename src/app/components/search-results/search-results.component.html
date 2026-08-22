@@ -4,7 +4,7 @@
     [totalItems]="totalItems"
     [isSearchResultsPage]="true"
     [hasSelection]="hasSelectedItems"
-    [selectionCount]="selectedItems.length"
+    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection"
     [sortBy]="sortBy"
     [sortOrder]="sortOrder"
     (viewModeChange)="onViewModeChange($event)"
@@ -14,7 +14,7 @@
     (moveSelected)="onMoveSelected()"
     (copySelected)="onCopySelected()"
     (deleteSelected)="onDeleteSelected()"
-    (detailsSelected)="onDetailsSelected()"
+    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()"
     (clearSelection)="onSelectAll(false)"
   >
   </app-toolbar>

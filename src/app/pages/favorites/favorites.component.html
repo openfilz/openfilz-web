@@ -1,10 +1,10 @@
 <div class="favorites-container">
   <!-- Toolbar with integrated pagination (no upload/create folder buttons) -->
-  <app-toolbar [viewMode]="viewMode" [hasSelection]="hasSelectedItems" [selectionCount]="selectedItems.length"
+  <app-toolbar [viewMode]="viewMode" [hasSelection]="hasSelectedItems" [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection"
     [pageIndex]="pageIndex" [pageSize]="pageSize" [totalItems]="totalItems" [showUploadButton]="false"
     [showCreateFolderButton]="false" (viewModeChange)="onViewModeChange($event)" (renameSelected)="onRenameSelected()"
     (downloadSelected)="onDownloadSelected()" (moveSelected)="onMoveSelected()" (copySelected)="onCopySelected()"
-    (deleteSelected)="onDeleteSelected()" (detailsSelected)="onDetailsSelected()" (clearSelection)="onClearSelection()" (previousPage)="onPreviousPage()"
+    (deleteSelected)="onDeleteSelected()" (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (clearSelection)="onClearSelection()" (previousPage)="onPreviousPage()"
     (nextPage)="onNextPage()" (pageSizeChange)="onPageSizeChange($event)" [sortBy]="sortBy" [sortOrder]="sortOrder"
     (sortChange)="onSortChange($event)">
 

@@ -10,7 +10,7 @@ import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
-import { FileActionCategory, FileActionDescriptor, FileActionId, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS } from '../../models/file-actions';
+import { FileActionCategory, FileActionDescriptor, FileActionId, REQUEST_SIGNATURE_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS } from '../../models/file-actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -42,6 +42,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() showCreateDocumentButton = true;
   @Input() onlyOfficeEnabled = false;
   @Input() showStandardSelectionActions = true; // Show rename, download, move, copy, delete buttons
+  /** e-Sign: offer "Request signature" for the current selection (single PDF + feature on). */
+  @Input() canRequestSignature = false;
 
   // Pagination inputs
   @Input() pageIndex = 0;
@@ -59,6 +61,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Output() copySelected = new EventEmitter<void>();
   @Output() deleteSelected = new EventEmitter<void>();
   @Output() detailsSelected = new EventEmitter<void>();
+  @Output() requestSignatureSelected = new EventEmitter<void>();
   @Output() clearSelection = new EventEmitter<void>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
   @Output() createDocument = new EventEmitter<DocumentTemplateType>();
@@ -258,7 +261,11 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   // Selection actions are descriptor-driven so downstream forks can extend
   // the array instead of forking the templates.
-  readonly selectionActionDefs: FileActionDescriptor[] = STANDARD_SELECTION_ACTIONS;
+  get selectionActionDefs(): FileActionDescriptor[] {
+    return this.canRequestSignature
+        ? [...STANDARD_SELECTION_ACTIONS, REQUEST_SIGNATURE_ACTION]
+        : STANDARD_SELECTION_ACTIONS;
+  }
   readonly sheetCategories = SHEET_CATEGORIES;
 
   /**
@@ -271,7 +278,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
    * item's own Details menu entry).
    */
   private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
-    ['open', 'download', 'rename', 'move', 'copy', 'delete'];
+    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'delete'];
 
   /**
    * How many action icons fit inline in the toolbar; the rest spill into the
@@ -318,7 +325,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Selection count changes the number of available actions (1 vs many).
-    if (changes['hasSelection'] || changes['selectionCount']) {
+    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature']) {
       this.scheduleMeasure();
     }
   }
@@ -400,6 +407,11 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
         break;
       case 'download':
         this.onDownloadSelected();
+        break;
+      case 'requestSignature':
+        if (this.selectionCount === 1) {
+          this.requestSignatureSelected.emit();
+        }
         break;
       case 'delete':
         this.onDeleteSelected();

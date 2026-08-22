@@ -15,6 +15,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import * as pdfjsLib from 'pdfjs-dist';
 
 import { DocumentApiService } from '../../services/document-api.service';
+import { SettingsService } from '../../services/settings.service';
 import { SignatureService } from '../../services/signature.service';
 import {
   FIELD_TYPE_ICONS,
@@ -86,6 +87,7 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
+  private settingsService = inject(SettingsService);
 
   // ── Envelope state ──────────────────────────────────────────────────────
   title = '';
@@ -100,7 +102,10 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
   readonly fieldTypes = SIGNATURE_FIELD_TYPES;
   readonly fieldIcons = FIELD_TYPE_ICONS;
   readonly roles: SignatureRecipientRole[] = ['SIGNER', 'CC'];
-  readonly authMethods: SignatureAuthMethod[] = ['NONE', 'EMAIL_OTP', 'SMS_OTP'];
+  /** Filtered by what the server advertises on /settings — never offer an undeliverable channel. */
+  readonly authMethods: SignatureAuthMethod[] =
+      (['NONE', 'EMAIL_OTP', 'SMS_OTP'] as SignatureAuthMethod[])
+          .filter(m => this.settingsService.signatureAuthMethods.includes(m));
 
   // ── Templates ───────────────────────────────────────────────────────────
   templates: SignatureTemplateDTO[] = [];

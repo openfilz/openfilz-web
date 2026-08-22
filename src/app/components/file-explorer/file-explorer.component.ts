@@ -76,7 +76,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-toolbar
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
-        [selectionCount]="selectedItems.length"
+        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [totalItems]="totalItems"
@@ -91,7 +91,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
-        (detailsSelected)="onDetailsSelected()"
+        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
