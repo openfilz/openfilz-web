@@ -269,3 +269,37 @@ describe('SignComponent', () => {
     });
   });
 });
+
+describe('SignComponent language switcher', () => {
+  function build(): SignComponent {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [SignComponent],
+      providers: [
+        provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations(), provideTranslateService(),
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } }
+      ]
+    });
+    return TestBed.createComponent(SignComponent).componentInstance;
+  }
+
+  afterEach(() => localStorage.removeItem('preferredLanguage'));
+
+  it('offers the eight shipped locales and starts from the saved preference', () => {
+    localStorage.setItem('preferredLanguage', 'de');
+    const c = build();
+    expect(c.languages.map(l => l.code)).toEqual(['ar', 'de', 'en', 'es', 'fr', 'it', 'nl', 'pt']);
+    expect(c.currentLanguage.code).toBe('de');
+  });
+
+  it('switches the language, remembers it and flips the document direction for Arabic', () => {
+    const c = build();
+    c.switchLanguage({ code: 'ar', name: 'العربية', flag: 'AR' });
+    expect(c.currentLanguage.code).toBe('ar');
+    expect(localStorage.getItem('preferredLanguage')).toBe('ar');
+    expect(document.documentElement.getAttribute('dir')).toBe('rtl');
+    c.switchLanguage({ code: 'fr', name: 'Français', flag: 'FR' });
+    expect(document.documentElement.getAttribute('dir')).toBe('ltr');
+    expect(document.documentElement.getAttribute('lang')).toBe('fr');
+  });
+});

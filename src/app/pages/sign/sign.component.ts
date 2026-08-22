@@ -8,6 +8,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,6 +25,7 @@ import {
 } from '../../models/signature.models';
 import { pdfToPercentStyle } from '../../utils/signature-geometry';
 import { PDFJS_WORKER_SRC } from '../../utils/pdfjs-worker';
+import { APP_LANGUAGES, AppLanguage, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
 import {
   SignaturePadDialogComponent, SignaturePadDialogData, SignaturePadResult
 } from '../../dialogs/signature-pad-dialog/signature-pad-dialog.component';
@@ -58,7 +60,7 @@ const RENDER_SCALE = 1.4;
   imports: [
     CommonModule, FormsModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatFormFieldModule,
     MatIconModule, MatInputModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule,
-    MatSnackBarModule, MatTooltipModule, TranslatePipe
+    MatMenuModule, MatSnackBarModule, MatTooltipModule, TranslatePipe
   ]
 })
 export class SignComponent implements OnInit, OnDestroy {
@@ -106,18 +108,30 @@ export class SignComponent implements OnInit, OnDestroy {
     this.initLanguage();
   }
 
+  /** Languages the signer can pick from — the invitation locale is only a starting point. */
+  readonly languages = APP_LANGUAGES;
+  currentLanguage: AppLanguage = APP_LANGUAGES.find(l => l.code === DEFAULT_LANGUAGE)!;
+
   /**
    * This page renders outside the authenticated shell, so the header's language bootstrap
    * never runs. Mirror its precedence: saved preference → browser language → English.
    */
   private initLanguage(): void {
-    const supported = ['en', 'fr', 'de', 'ar', 'es', 'pt', 'it', 'nl'];
-    const saved = localStorage.getItem('preferredLanguage');
-    const browser = this.translate.getBrowserLang();
-    const lang = saved && supported.includes(saved) ? saved
-      : (browser && supported.includes(browser) ? browser : 'en');
-    this.translate.use(lang);
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    const saved = findLanguage(localStorage.getItem('preferredLanguage'));
+    const browser = findLanguage(this.translate.getBrowserLang());
+    this.applyLanguage(saved ?? browser ?? this.currentLanguage);
+  }
+
+  /** Signer-facing language switch: the recipient may not read the sender's language. */
+  switchLanguage(lang: AppLanguage): void {
+    this.applyLanguage(lang);
+    localStorage.setItem('preferredLanguage', lang.code);
+  }
+
+  private applyLanguage(lang: AppLanguage): void {
+    this.currentLanguage = lang;
+    this.translate.use(lang.code);
+    applyDocumentLanguage(lang.code);
   }
 
   ngOnInit(): void {

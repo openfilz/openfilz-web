@@ -141,14 +141,48 @@
   background: var(--bg-primary); border-top: 1px solid var(--border-color);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, .08);
 }
+/* Language switcher (pushed to the far end of the sticky header). */
+.lang-btn {
+  margin-inline-start: auto; border-radius: 999px; height: 38px; padding: 0 10px;
+  color: var(--text-secondary); border: 1px solid var(--border-color); background: var(--bg-primary);
+}
+/* A globe rather than a flag: Windows renders flag emoji as bare country letters,
+   which would just repeat the code next to it. Flags stay in the menu, next to the name. */
+.lang-btn .lang-globe { font-size: 19px; width: 19px; height: 19px; margin-inline-end: 6px; }
+.lang-btn .lang-code { font-size: 13px; font-weight: 600; letter-spacing: .4px; }
+.lang-btn mat-icon { font-size: 18px; width: 18px; height: 18px; margin-inline-start: 2px; }
+.lang-flag { font-size: 16px; margin-inline-end: 8px; }
+
 .progress { display: flex; align-items: center; gap: 10px; flex: 1 1 220px; min-width: 0; }
 .progress-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--bg-tertiary); overflow: hidden; }
 .progress-fill { height: 100%; background: #10b981; border-radius: 999px; transition: width .2s ease; }
 .progress span { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
 .actions { display: flex; gap: 10px; align-items: center; }
 
-.primary-btn, .secondary-btn { border-radius: 999px; height: 42px; padding: 0 20px; }
-.primary-btn mat-icon, .secondary-btn mat-icon { margin-right: 6px; }
+/* The signing action must dominate: Material's filled-button colour token resolves empty in
+   this app (see global_styles.css), which left "Sign" as bare text next to a bordered
+   "Decline". Paint it from the theme and give it more weight than the secondary action. */
+.primary-btn, .secondary-btn { border-radius: 999px; height: 46px; padding: 0 26px; }
+.primary-btn mat-icon, .secondary-btn mat-icon { margin-inline-end: 6px; }
+.primary-btn {
+  /* Material paints filled buttons from its own tokens with `:not(:disabled)` — a plain
+     `background` here loses that cascade — and those tokens fall back to the empty
+     --mat-sys-* colours (see global_styles.css). Drive the tokens instead. */
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-state-layer-color: #fff;
+  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
+  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
+  font-weight: 600; font-size: 15px; min-width: 168px;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 38%, transparent);
+}
+.primary-btn[disabled] { box-shadow: none; }
+/* Declining is the exceptional path: keep it reachable but visually quiet. */
+.secondary-btn {
+  background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);
+  font-weight: 500; padding: 0 18px; min-width: 0;
+}
+.secondary-btn:hover:not([disabled]) { color: #ef4444; border-color: #ef4444; }
 .btn-spinner { display: inline-block; margin-right: 8px; }
 .signing-progress {
   display: inline-flex; align-items: center; gap: 10px;
