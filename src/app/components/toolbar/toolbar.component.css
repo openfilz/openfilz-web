@@ -733,9 +733,12 @@
     display: flex !important;
   }
 
-  /* Show FAB on mobile */
+  /* Show FAB on mobile, in the same column as the AI assistant button that
+     sits above it (both 16px from the edge). */
   .fab-container {
     display: block;
+    bottom: 16px;
+    right: 16px;
   }
 
   /* Right section: hide on mobile - view toggle moves to pagination row */

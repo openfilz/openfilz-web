@@ -799,3 +799,14 @@ a,
 .swipe-tabs-dragging .mat-mdc-tab-body.swipe-tabs-preview > .mat-mdc-tab-body-content {
   visibility: visible;
 }
+
+/* ── Assistant button vs. the add-documents button ─────────────────────────
+   On phones the file explorer's add-documents FAB and the AI assistant button
+   are both pinned to the bottom-right corner, and the assistant (higher
+   z-index) covered it completely. Lift the assistant above it — but only while
+   that button is actually on screen, so it keeps the corner everywhere else. */
+@media (max-width: 768px) {
+  body:has(app-toolbar .fab-container) app-ai-chat-fab {
+    bottom: 88px;
+  }
+}
