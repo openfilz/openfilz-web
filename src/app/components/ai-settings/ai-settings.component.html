@@ -28,6 +28,7 @@
         <div class="ai-field">
           <label class="setting-label" for="ai-base-url">{{ 'settings.ai.baseUrl' | translate }}</label>
           <input id="ai-base-url" class="ai-input" type="url" [(ngModel)]="baseUrl"
+                 (change)="onCredentialsChange()"
                  placeholder="https://openrouter.ai/api/v1" autocomplete="off" />
           <span class="ai-hint">{{ 'settings.ai.baseUrlHint' | translate }}</span>
         </div>
@@ -43,12 +44,20 @@
             <option [value]="m"></option>
           }
         </datalist>
+        @if (loadingModels) {
+          <span class="ai-hint">{{ 'settings.ai.modelsLoading' | translate }}</span>
+        } @else if (modelsFallbackReason !== null) {
+          <span class="ai-hint">{{ 'settings.ai.modelsFallback' | translate }}</span>
+        } @else if (models.length > 0) {
+          <span class="ai-hint">{{ 'settings.ai.modelsLive' | translate: { count: models.length } }}</span>
+        }
       </div>
 
       <!-- API key (write-only) -->
       <div class="ai-field">
         <label class="setting-label" for="ai-api-key">{{ 'settings.ai.apiKey' | translate }}</label>
         <input id="ai-api-key" class="ai-input" type="password" [(ngModel)]="apiKey"
+               (change)="onCredentialsChange()"
                [placeholder]="apiKeyPlaceholder" autocomplete="new-password" spellcheck="false" />
         <span class="ai-hint">
           @if (hasStoredKey) {

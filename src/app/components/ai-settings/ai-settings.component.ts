@@ -46,6 +46,19 @@ export class AiSettingsComponent implements OnInit {
 
   banner: { kind: 'success' | 'error' | 'info'; text: string } | null = null;
 
+  /**
+   * Models offered in the picker. Filled from the provider via the backend; falls back to the
+   * built-in list until a key is entered, or when the provider cannot be reached — the field is
+   * free text either way, so the form is never blocked on this.
+   */
+  models: string[] = [];
+  loadingModels = false;
+  /** Set when the list shown is the built-in one, with the provider's reason where there is one. */
+  modelsFallbackReason: string | null = null;
+
+  /** Guards against an out-of-order response overwriting a newer one (provider/key changed twice). */
+  private modelsRequestId = 0;
+
   readonly providers: AiProviderChoice[] = ['DEFAULT', 'OPENAI', 'ANTHROPIC', 'GOOGLE', 'OPENAI_COMPATIBLE'];
 
   ngOnInit(): void {
@@ -56,6 +69,9 @@ export class AiSettingsComponent implements OnInit {
         this.model = settings.model ?? '';
         this.baseUrl = settings.baseUrl ?? '';
         this.loaded = true;
+        if (!this.isDefault) {
+          this.refreshModels();   // a stored key can list models with nothing typed
+        }
       },
       error: () => {
         this.loaded = true;
@@ -72,8 +88,16 @@ export class AiSettingsComponent implements OnInit {
     return this.provider === 'OPENAI_COMPATIBLE';
   }
 
-  get modelSuggestions(): string[] {
+  /** The built-in list for the selected provider — what the picker shows before the live one arrives. */
+  get builtInModels(): string[] {
     return this.isDefault ? [] : AI_MODEL_SUGGESTIONS[this.provider as AiProvider] ?? [];
+  }
+
+  get modelSuggestions(): string[] {
+    if (this.isDefault) {
+      return [];
+    }
+    return this.models.length > 0 ? this.models : this.builtInModels;
   }
 
   get keyHelpUrl(): string {
@@ -113,12 +137,62 @@ export class AiSettingsComponent implements OnInit {
 
   onProviderChange(): void {
     this.banner = null;
+    this.models = [];
+    this.modelsFallbackReason = null;
     if (!this.isDefault) {
-      const suggestions = this.modelSuggestions;
       const keepModel = this.current?.provider === this.provider && this.current?.model;
-      this.model = keepModel ? this.current!.model! : (suggestions[0] ?? '');
+      this.model = keepModel ? this.current!.model! : (this.builtInModels[0] ?? '');
       this.baseUrl = this.current?.provider === this.provider ? (this.current?.baseUrl ?? '') : '';
+      this.refreshModels();
     }
+  }
+
+  /**
+   * Called when the key or base URL is edited: a different key can reach a different set of
+   * models, so the list is re-fetched once the user stops typing rather than on every keystroke.
+   */
+  onCredentialsChange(): void {
+    if (!this.isDefault) {
+      this.refreshModels();
+    }
+  }
+
+  /**
+   * Ask the provider (through the backend) what it currently offers.
+   *
+   * The model already typed is kept if the provider still lists it; only a model the provider does
+   * not know is replaced, and then by the first entry — the backend orders the list so that entry
+   * is a sensible default. Failures are silent by design: the backend answers with its built-in
+   * list rather than an error, and the field takes free text, so there is nothing to interrupt the
+   * user with.
+   */
+  private refreshModels(): void {
+    const requestId = ++this.modelsRequestId;
+    this.loadingModels = true;
+    this.aiSettingsService.listModels({
+      provider: this.provider as AiProvider,
+      baseUrl: this.needsBaseUrl ? this.baseUrl.trim() : null,
+      apiKey: this.apiKey.trim() || null
+    }).subscribe({
+      next: response => {
+        if (requestId !== this.modelsRequestId) {
+          return;   // a newer request is in flight — this answer is already stale
+        }
+        this.loadingModels = false;
+        this.models = response.models ?? [];
+        this.modelsFallbackReason = response.source === 'FALLBACK' ? (response.message ?? '') : null;
+        if (this.models.length > 0 && !this.models.includes(this.model)) {
+          this.model = this.models[0];
+        }
+      },
+      error: () => {
+        if (requestId !== this.modelsRequestId) {
+          return;
+        }
+        this.loadingModels = false;
+        this.models = [];
+      }
+    });
   }
 
   onTest(): void {

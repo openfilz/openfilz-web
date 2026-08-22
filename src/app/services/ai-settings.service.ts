@@ -2,7 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AiConnectionTestResult, AiUserSettings, SaveAiSettingsRequest } from '../models/ai-settings.models';
+import {
+  AiConnectionTestResult,
+  AiModelsResponse,
+  AiUserSettings,
+  ListAiModelsRequest,
+  SaveAiSettingsRequest
+} from '../models/ai-settings.models';
 
 /**
  * Per-user AI model settings (BYOK). Dedicated service file to keep the
@@ -47,6 +53,15 @@ export class AiSettingsService {
 
   testConnection(request: SaveAiSettingsRequest): Observable<AiConnectionTestResult> {
     return this.http.post<AiConnectionTestResult>(`${this.baseUrl}/test`, request);
+  }
+
+  /**
+   * The chat models the provider currently offers for this key. POST, not GET: the key travels in
+   * the body so it never lands in an access log or the browser's history. The backend answers with
+   * its built-in list (source: 'FALLBACK') rather than an error when the provider cannot be asked.
+   */
+  listModels(request: ListAiModelsRequest): Observable<AiModelsResponse> {
+    return this.http.post<AiModelsResponse>(`${this.baseUrl}/models`, request);
   }
 
   get settings(): AiUserSettings | null {
