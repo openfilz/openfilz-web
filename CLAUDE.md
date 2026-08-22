@@ -170,6 +170,7 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 - `drag-drop.directive` — file drag-drop zone
 - `file-draggable.directive` — make elements draggable
 - `folder-drop-zone.directive` — drop target for folders
+- `swipe-tabs.directive` — `appSwipeTabs` on a `mat-tab-group`: swipe horizontally to move between tabs on touch screens (used by the metadata panel and the document properties dialog)
 
 ---
 
