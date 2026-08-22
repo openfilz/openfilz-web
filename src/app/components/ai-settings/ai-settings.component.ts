@@ -59,6 +59,18 @@ export class AiSettingsComponent implements OnInit {
   /** Guards against an out-of-order response overwriting a newer one (provider/key changed twice). */
   private modelsRequestId = 0;
 
+  /**
+   * Sentinel option that swaps the model dropdown for a free-text field.
+   * <p>
+   * The list comes from the provider, so it cannot cover a model the provider does not advertise,
+   * nor an OpenAI-compatible gateway that implements no /v1/models at all. Free text stays
+   * reachable for both — it is just no longer the default way in.
+   */
+  readonly CUSTOM_MODEL = '__custom__';
+
+  /** True while the model is being typed by hand rather than picked from the list. */
+  useCustomModel = false;
+
   readonly providers: AiProviderChoice[] = ['DEFAULT', 'OPENAI', 'ANTHROPIC', 'GOOGLE', 'OPENAI_COMPATIBLE'];
 
   ngOnInit(): void {
@@ -70,6 +82,7 @@ export class AiSettingsComponent implements OnInit {
         this.baseUrl = settings.baseUrl ?? '';
         this.loaded = true;
         if (!this.isDefault) {
+          this.syncCustomModelFlag();
           this.refreshModels();   // a stored key can list models with nothing typed
         }
       },
@@ -143,8 +156,37 @@ export class AiSettingsComponent implements OnInit {
       const keepModel = this.current?.provider === this.provider && this.current?.model;
       this.model = keepModel ? this.current!.model! : (this.builtInModels[0] ?? '');
       this.baseUrl = this.current?.provider === this.provider ? (this.current?.baseUrl ?? '') : '';
+      this.syncCustomModelFlag();
       this.refreshModels();
     }
+  }
+
+  /** Picking the sentinel switches to free text; anything else is a plain choice. */
+  onModelSelected(value: string): void {
+    if (value === this.CUSTOM_MODEL) {
+      this.useCustomModel = true;
+      this.model = '';
+    } else {
+      this.model = value;
+    }
+  }
+
+  /** Back to the dropdown, landing on the model the provider recommends. */
+  useListedModel(): void {
+    this.useCustomModel = false;
+    if (!this.modelSuggestions.includes(this.model)) {
+      this.model = this.modelSuggestions[0] ?? '';
+    }
+  }
+
+  /**
+   * A model the current list does not contain can only be shown as free text — otherwise the
+   * dropdown would silently rewrite a deliberate choice (a stored model the provider has since
+   * stopped advertising, or a custom gateway's own id).
+   */
+  private syncCustomModelFlag(): void {
+    const suggestions = this.modelSuggestions;
+    this.useCustomModel = suggestions.length === 0 || !suggestions.includes(this.model);
   }
 
   /**
@@ -181,9 +223,11 @@ export class AiSettingsComponent implements OnInit {
         this.loadingModels = false;
         this.models = response.models ?? [];
         this.modelsFallbackReason = response.source === 'FALLBACK' ? (response.message ?? '') : null;
-        if (this.models.length > 0 && !this.models.includes(this.model)) {
+        // Only replace a model the provider does not know, and only when it was not typed by hand.
+        if (this.models.length > 0 && !this.useCustomModel && !this.models.includes(this.model)) {
           this.model = this.models[0];
         }
+        this.syncCustomModelFlag();
       },
       error: () => {
         if (requestId !== this.modelsRequestId) {
@@ -191,6 +235,7 @@ export class AiSettingsComponent implements OnInit {
         }
         this.loadingModels = false;
         this.models = [];
+        this.syncCustomModelFlag();
       }
     });
   }

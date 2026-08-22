@@ -26,6 +26,21 @@
   border-color: var(--primary);
 }
 
+/* Link-styled control for switching the model field back to the provider's list. */
+.ai-link-button {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ai-link-button:hover {
+  text-decoration: underline;
+}
+
 .ai-hint {
   font-size: 12px;
   color: var(--text-secondary);
