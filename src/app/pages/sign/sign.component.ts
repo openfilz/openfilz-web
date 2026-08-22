@@ -26,6 +26,7 @@ import {
 import { pdfToPercentStyle } from '../../utils/signature-geometry';
 import { PDFJS_WORKER_SRC } from '../../utils/pdfjs-worker';
 import { APP_LANGUAGES, AppLanguage, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
+import { LanguageFlagComponent } from '../../i18n/language-flag.component';
 import {
   SignaturePadDialogComponent, SignaturePadDialogData, SignaturePadResult
 } from '../../dialogs/signature-pad-dialog/signature-pad-dialog.component';
@@ -60,7 +61,7 @@ const RENDER_SCALE = 1.4;
   imports: [
     CommonModule, FormsModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatFormFieldModule,
     MatIconModule, MatInputModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule,
-    MatMenuModule, MatSnackBarModule, MatTooltipModule, TranslatePipe
+    MatMenuModule, MatSnackBarModule, MatTooltipModule, TranslatePipe, LanguageFlagComponent
   ]
 })
 export class SignComponent implements OnInit, OnDestroy {

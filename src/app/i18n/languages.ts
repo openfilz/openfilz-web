@@ -1,8 +1,8 @@
 /** A UI language offered by the language switchers (app header + public signing page). */
 export interface AppLanguage {
   code: string;
+  /** Endonym — shown as-is in the picker. The flag is drawn by `LanguageFlagComponent`. */
   name: string;
-  flag: string;
 }
 
 /**
@@ -10,14 +10,14 @@ export interface AppLanguage {
  * Shared so the authenticated header and the public signing page can never drift apart.
  */
 export const APP_LANGUAGES: AppLanguage[] = [
-  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' }
+  { code: 'ar', name: 'العربية' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Español' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'nl', name: 'Nederlands' },
+  { code: 'pt', name: 'Português' }
 ];
 
 export const DEFAULT_LANGUAGE = 'en';

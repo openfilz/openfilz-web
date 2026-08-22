@@ -496,6 +496,14 @@ html {
 /* Same cause: the scrim colour token is empty, so the backdrop dims nothing. */
 .cdk-overlay-dark-backdrop { background: rgba(15, 23, 42, 0.45); }
 
+/* Language pickers: menu panels render in the CDK overlay, outside the component's view
+   encapsulation, so their spacing has to live here. */
+.language-menu .mat-mdc-menu-item, .sign-lang-menu .mat-mdc-menu-item {
+  display: flex; align-items: center; gap: 10px;
+}
+.language-menu .mat-mdc-menu-item .mat-mdc-menu-item-text,
+.sign-lang-menu .mat-mdc-menu-item .mat-mdc-menu-item-text { display: inline-flex; align-items: center; gap: 10px; }
+
 /* File Viewer Dialog Custom Styles */
 .file-viewer-dialog-container .mat-mdc-dialog-container {
   padding: 0 !important;

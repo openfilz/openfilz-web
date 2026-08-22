@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, Output, EventEmitter, inject } from "@angular/core";
-import { APP_LANGUAGES, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
+import { APP_LANGUAGES, AppLanguage, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
+import { LanguageFlagComponent } from '../../i18n/language-flag.component';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
@@ -19,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchFiltersComponent, MatIconModule, MatTooltipModule, TranslatePipe, MatMenuModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, SearchFiltersComponent, MatIconModule, MatTooltipModule, TranslatePipe, MatMenuModule, MatButtonModule, LanguageFlagComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -90,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.updateDocumentDirection(this.currentLanguage.code);
   }
 
-  switchLanguage(lang: { code: string; name: string; flag: string }): void {
+  switchLanguage(lang: AppLanguage): void {
     this.currentLanguage = lang;
     this.translate.use(lang.code);
     localStorage.setItem('preferredLanguage', lang.code);

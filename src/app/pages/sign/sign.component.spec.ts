@@ -294,11 +294,11 @@ describe('SignComponent language switcher', () => {
 
   it('switches the language, remembers it and flips the document direction for Arabic', () => {
     const c = build();
-    c.switchLanguage({ code: 'ar', name: 'العربية', flag: 'AR' });
+    c.switchLanguage({ code: 'ar', name: 'العربية' });
     expect(c.currentLanguage.code).toBe('ar');
     expect(localStorage.getItem('preferredLanguage')).toBe('ar');
     expect(document.documentElement.getAttribute('dir')).toBe('rtl');
-    c.switchLanguage({ code: 'fr', name: 'Français', flag: 'FR' });
+    c.switchLanguage({ code: 'fr', name: 'Français' });
     expect(document.documentElement.getAttribute('dir')).toBe('ltr');
     expect(document.documentElement.getAttribute('lang')).toBe('fr');
   });

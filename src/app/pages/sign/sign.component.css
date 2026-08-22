@@ -146,12 +146,11 @@
   margin-inline-start: auto; border-radius: 999px; height: 38px; padding: 0 10px;
   color: var(--text-secondary); border: 1px solid var(--border-color); background: var(--bg-primary);
 }
-/* A globe rather than a flag: Windows renders flag emoji as bare country letters,
-   which would just repeat the code next to it. Flags stay in the menu, next to the name. */
-.lang-btn .lang-globe { font-size: 19px; width: 19px; height: 19px; margin-inline-end: 6px; }
+.lang-btn app-language-flag { margin-inline-end: 7px; }
 .lang-btn .lang-code { font-size: 13px; font-weight: 600; letter-spacing: .4px; }
 .lang-btn mat-icon { font-size: 18px; width: 18px; height: 18px; margin-inline-start: 2px; }
-.lang-flag { font-size: 16px; margin-inline-end: 8px; }
+.sign-lang-menu app-language-flag { margin-inline-end: 10px; }
+.lang-name { vertical-align: middle; }
 
 .progress { display: flex; align-items: center; gap: 10px; flex: 1 1 220px; min-width: 0; }
 .progress-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--bg-tertiary); overflow: hidden; }
