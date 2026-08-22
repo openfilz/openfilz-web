@@ -680,9 +680,13 @@
     bottom: 0;
     width: 100%;
     max-width: 100vw;
-    /* dvh keeps the sheet inside the visible viewport with dynamic browser
-       chrome; safe-area padding clears the phone's nav/home bar */
-    height: auto;
+    /* A definite height, not auto: the tabs hold very different amounts of
+       content (a one-line audit trail vs. a full details form), and an
+       auto-height sheet jumps between the two as the user switches or swipes
+       between them. dvh keeps the sheet inside the visible viewport with dynamic
+       browser chrome; safe-area padding clears the phone's nav/home bar */
+    height: 85vh;
+    height: 85dvh;
     max-height: 85vh;
     max-height: 85dvh;
     border-left: none;

@@ -40,7 +40,7 @@
         </div>
       }
       @if(documentInfo && !loading) {
-        <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)" class="panel-tabs">
+        <mat-tab-group appSwipeTabs [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)" class="panel-tabs">
           <!-- Details Tab: general info + inline-editable metadata -->
           <mat-tab [attr.aria-label]="'metadataPanel.details' | translate">
             <ng-template mat-tab-label>

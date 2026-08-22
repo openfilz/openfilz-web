@@ -775,3 +775,50 @@ a,
 .selection-overflow-menu .mat-mdc-menu-item .mat-icon {
   color: var(--text-secondary);
 }
+
+/* ── Swipe between tabs (appSwipeTabs) ─────────────────────────────────────
+   Touch users move between the tabs of a mat-tab-group by dragging its content
+   sideways. Horizontal gestures belong to the tab group; vertical panning still
+   scrolls the tab content. Left off ([swipeTabsLockAxis]="false") where the tabs
+   hold something that must stay pannable sideways, such as a wide table. */
+.swipe-tabs-lock-axis .mat-mdc-tab-body-wrapper {
+  touch-action: pan-y;
+}
+
+/* While the finger is down, the tab being dragged towards has to show: Material
+   parks it one panel-width to the side, hidden and clipped away. The wrapper does
+   the clipping instead, so the tab appears exactly as it is dragged into view. */
+.swipe-tabs-dragging .mat-mdc-tab-body-wrapper {
+  overflow-x: hidden;
+}
+
+.swipe-tabs-dragging .mat-mdc-tab-body.swipe-tabs-preview {
+  overflow: visible;
+}
+
+.swipe-tabs-dragging .mat-mdc-tab-body.swipe-tabs-preview > .mat-mdc-tab-body-content {
+  visibility: visible;
+}
+
+/* ── Assistant button vs. the add-documents button ─────────────────────────
+   On phones the file explorer's add-documents FAB and the AI assistant button
+   are both pinned to the bottom-right corner, and the assistant (higher
+   z-index) covered it completely. Lift the assistant above it — but only while
+   that button is actually on screen, so it keeps the corner everywhere else. */
+@media (max-width: 768px) {
+  app-ai-chat-fab {
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+
+  body:has(app-toolbar .fab-container) app-ai-chat-fab {
+    bottom: 88px;
+  }
+
+  /* Opening that button expands a speed dial straight up through the spot the
+     assistant now occupies, so it steps aside until the dial is closed again. */
+  body:has(app-toolbar .fab-container.fab-open) app-ai-chat-fab {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+}

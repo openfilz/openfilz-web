@@ -28,27 +28,47 @@
         <div class="ai-field">
           <label class="setting-label" for="ai-base-url">{{ 'settings.ai.baseUrl' | translate }}</label>
           <input id="ai-base-url" class="ai-input" type="url" [(ngModel)]="baseUrl"
+                 (change)="onCredentialsChange()"
                  placeholder="https://openrouter.ai/api/v1" autocomplete="off" />
           <span class="ai-hint">{{ 'settings.ai.baseUrlHint' | translate }}</span>
         </div>
       }
 
-      <!-- Model -->
+      <!-- Model. A <select> rather than an <input list=...>: a datalist filters its options
+           against whatever is already typed, so a pre-filled field offers only itself. -->
       <div class="ai-field">
         <label class="setting-label" for="ai-model">{{ 'settings.ai.model' | translate }}</label>
-        <input id="ai-model" class="ai-input" type="text" [(ngModel)]="model"
-               [attr.list]="'ai-model-suggestions'" autocomplete="off" spellcheck="false" />
-        <datalist id="ai-model-suggestions">
-          @for (m of modelSuggestions; track m) {
-            <option [value]="m"></option>
+        @if (!useCustomModel) {
+          <select id="ai-model" class="ai-input" [ngModel]="model" (ngModelChange)="onModelSelected($event)">
+            @for (m of modelSuggestions; track m) {
+              <option [value]="m">{{ m }}</option>
+            }
+            <option [value]="CUSTOM_MODEL">{{ 'settings.ai.modelOther' | translate }}</option>
+          </select>
+        } @else {
+          <input id="ai-model" class="ai-input" type="text" [(ngModel)]="model"
+                 [placeholder]="'settings.ai.modelPlaceholder' | translate"
+                 autocomplete="off" spellcheck="false" />
+          @if (modelSuggestions.length > 0) {
+            <button type="button" class="ai-link-button" (click)="useListedModel()">
+              {{ 'settings.ai.modelBackToList' | translate }}
+            </button>
           }
-        </datalist>
+        }
+        @if (loadingModels) {
+          <span class="ai-hint">{{ 'settings.ai.modelsLoading' | translate }}</span>
+        } @else if (modelsFallbackReason !== null) {
+          <span class="ai-hint">{{ 'settings.ai.modelsFallback' | translate }}</span>
+        } @else if (models.length > 0) {
+          <span class="ai-hint">{{ 'settings.ai.modelsLive' | translate: { count: models.length } }}</span>
+        }
       </div>
 
       <!-- API key (write-only) -->
       <div class="ai-field">
         <label class="setting-label" for="ai-api-key">{{ 'settings.ai.apiKey' | translate }}</label>
         <input id="ai-api-key" class="ai-input" type="password" [(ngModel)]="apiKey"
+               (change)="onCredentialsChange()"
                [placeholder]="apiKeyPlaceholder" autocomplete="new-password" spellcheck="false" />
         <span class="ai-hint">
           @if (hasStoredKey) {

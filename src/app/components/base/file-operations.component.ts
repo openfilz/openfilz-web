@@ -16,6 +16,7 @@ import { SettingsService } from '../../services/settings.service';
 import { TranslateService } from '@ngx-translate/core';
 import { isPdfItem } from '../../models/file-actions';
 import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
+import { isCompactViewport } from '../../utils/layout.util';
 
 @Directive()
 export abstract class FileOperationsComponent implements OnInit {
@@ -235,6 +236,10 @@ export abstract class FileOperationsComponent implements OnInit {
     this.resetStickyIfEmpty();
     // Mirror the plain-click behavior: a checkbox that leaves exactly one item
     // selected shows that item's details; multi-select (or none) hides the panel.
+    // Phones open the panel deliberately instead — see syncMetadataPanelToClick.
+    if (isCompactViewport()) {
+      return;
+    }
     const selected = this.selectedItems;
     if (selected.length === 1) {
       this.switchMetadataPanel(selected[0].id);
@@ -248,8 +253,16 @@ export abstract class FileOperationsComponent implements OnInit {
   /**
    * After a plain single click, show the clicked item's details. Multi-select
    * gestures or a click that clears the selection close the panel instead.
+   *
+   * Phones are left out: there the panel is a bottom sheet covering the list
+   * and the actions the user may actually be after, so it is opened
+   * deliberately — from the selection sheet's Details action, or an item's own
+   * Details menu entry — never as a side effect of picking an item.
    */
   private syncMetadataPanelToClick(clickedItem: FileItem, isPlainClick: boolean): void {
+    if (isCompactViewport()) {
+      return;
+    }
     const selected = this.selectedItems;
     if (isPlainClick && selected.length === 1 && selected[0].id === clickedItem.id) {
       this.switchMetadataPanel(clickedItem.id);
