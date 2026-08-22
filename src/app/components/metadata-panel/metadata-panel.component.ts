@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
+import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
@@ -43,6 +44,7 @@ interface MetadataEntry {
     MatDividerModule,
     MatTooltipModule,
     MatTabsModule,
+    SwipeTabsDirective,
     AuditVersionActionsComponent,
     TranslatePipe
 ]

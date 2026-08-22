@@ -14,6 +14,7 @@ import { FileIconService } from '../../services/file-icon.service';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentInfo } from '../../models/document.models';
 import { MetadataEditorComponent } from '../../components/metadata-editor/metadata-editor.component';
+import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 
 export interface DocumentPropertiesDialogData {
@@ -35,7 +36,8 @@ export interface DocumentPropertiesDialogData {
     MatProgressSpinnerModule,
     MatDividerModule,
     MatTooltipModule,
-    MetadataEditorComponent
+    MetadataEditorComponent,
+    SwipeTabsDirective
   ],
 })
 export class DocumentPropertiesDialogComponent implements OnInit {
