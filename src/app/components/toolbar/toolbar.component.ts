@@ -261,9 +261,17 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   readonly selectionActionDefs: FileActionDescriptor[] = STANDARD_SELECTION_ACTIONS;
   readonly sheetCategories = SHEET_CATEGORIES;
 
-  /** Display order for the desktop contextual icon bar (danger last). */
+  /**
+   * Display order for the desktop contextual icon bar (danger last).
+   *
+   * No 'details': this bar only shows from 769px up, and at those widths
+   * selecting an item already opens the details panel beside the listing, so
+   * the button had nothing left to do. It stays in the mobile actions sheet,
+   * which is one of the two ways into the panel on a phone (the other being an
+   * item's own Details menu entry).
+   */
   private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
-    ['open', 'download', 'rename', 'move', 'copy', 'details', 'delete'];
+    ['open', 'download', 'rename', 'move', 'copy', 'delete'];
 
   /**
    * How many action icons fit inline in the toolbar; the rest spill into the

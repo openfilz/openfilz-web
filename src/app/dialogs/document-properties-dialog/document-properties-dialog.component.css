@@ -16,7 +16,10 @@ h2[mat-dialog-title] mat-icon {
 mat-dialog-content {
   min-width: 700px;
   max-width: 900px;
-  min-height: 400px;
+  /* A definite height rather than min/max: the General and Metadata tabs hold
+     different amounts of content, and the dialog must not resize under the user
+     when they switch — or swipe — between them. */
+  height: 70vh;
   max-height: 70vh;
   padding: 0 24px;
 }
@@ -223,12 +226,13 @@ mat-dialog-content {
   }
 }
 
-/* Tab styling */
-::ng-deep .mat-mdc-tab-body-content {
+/* Tab styling — :host-scoped, otherwise these leak to every tab group in the
+   app as soon as this dialog is opened once. */
+:host ::ng-deep .mat-mdc-tab-body-content {
   overflow: visible !important;
 }
 
-::ng-deep .mat-mdc-tab-label {
+:host ::ng-deep .mat-mdc-tab-label {
   min-width: 120px;
 }
 
