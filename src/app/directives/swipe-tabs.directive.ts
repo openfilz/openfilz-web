@@ -54,23 +54,38 @@ const SELF_HANDLED_CONTROLS =
  *
  * Two things to know before enabling it on a tab group:
  * - the body wrapper gets `touch-action: pan-y`, so content that needs to be
- *   panned horizontally by finger (a wide table, a code block with its own
- *   scrollbar) can no longer be panned inside these tabs;
+ *   panned horizontally by finger (a wide table, a chart) can no longer be panned
+ *   inside these tabs — set `[swipeTabsLockAxis]="false"` for those;
  * - `preserveContent` is turned on, so a tab that has been shown once can be seen
  *   sliding in during the drag. A tab that has never been opened is still built
  *   only when the swipe completes, so the very first drag towards it uncovers the
  *   panel background rather than its content.
+ *
+ * The tabs of a group should be the same height, or committing a swipe resizes
+ * the panel under the user's finger — give the container a definite height
+ * rather than letting it grow with whichever tab is showing.
  */
 @Directive({
   selector: 'mat-tab-group[appSwipeTabs]',
   standalone: true,
   host: {
-    '[class.swipe-tabs]': 'enabled'
+    '[class.swipe-tabs]': 'enabled',
+    '[class.swipe-tabs-lock-axis]': 'enabled && swipeTabsLockAxis'
   }
 })
 export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
   /** Set to `false` to leave the tab group untouched (e.g. behind a feature flag). */
   @Input({ alias: 'appSwipeTabs', transform: booleanAttribute }) enabled = true;
+
+  /**
+   * Whether the tab group claims the horizontal axis outright, via
+   * `touch-action: pan-y` on the tab bodies. That makes the gesture more robust,
+   * but it also stops anything inside the tabs from being panned sideways by
+   * finger, so tabs holding a wide table or a chart should set this to `false`:
+   * the swipe still works, it just leaves the axis to the browser until the
+   * gesture has been recognised.
+   */
+  @Input({ transform: booleanAttribute }) swipeTabsLockAxis = true;
 
   private readonly tabGroup = inject(MatTabGroup, { self: true });
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
