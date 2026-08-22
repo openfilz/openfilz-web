@@ -775,3 +775,26 @@ a,
 .selection-overflow-menu .mat-mdc-menu-item .mat-icon {
   color: var(--text-secondary);
 }
+
+/* ── Swipe between tabs (appSwipeTabs) ─────────────────────────────────────
+   Touch users move between the tabs of a mat-tab-group by dragging its content
+   sideways. Horizontal gestures belong to the tab group; vertical panning still
+   scrolls the tab content. */
+.swipe-tabs .mat-mdc-tab-body-wrapper {
+  touch-action: pan-y;
+}
+
+/* While the finger is down, the tab being dragged towards has to show: Material
+   parks it one panel-width to the side, hidden and clipped away. The wrapper does
+   the clipping instead, so the tab appears exactly as it is dragged into view. */
+.swipe-tabs-dragging .mat-mdc-tab-body-wrapper {
+  overflow-x: hidden;
+}
+
+.swipe-tabs-dragging .mat-mdc-tab-body.swipe-tabs-preview {
+  overflow: visible;
+}
+
+.swipe-tabs-dragging .mat-mdc-tab-body.swipe-tabs-preview > .mat-mdc-tab-body-content {
+  visibility: visible;
+}
