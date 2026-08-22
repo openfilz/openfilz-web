@@ -27,6 +27,21 @@ export interface SaveAiSettingsRequest {
   apiKey?: string | null;
 }
 
+/** Ask a provider which models the given key can use (POST — the key must not ride in a query string). */
+export interface ListAiModelsRequest {
+  provider: AiProvider;
+  baseUrl?: string | null;
+  apiKey?: string | null;
+}
+
+/** LIVE when the list came from the provider, FALLBACK when the built-in list is being offered. */
+export interface AiModelsResponse {
+  provider: AiProvider;
+  models: string[];
+  source: 'LIVE' | 'FALLBACK';
+  message?: string | null;
+}
+
 export interface AiConnectionTestResult {
   ok: boolean;
   message: string;
@@ -36,12 +51,15 @@ export interface AiConnectionTestResult {
 /**
  * Model suggestions shown per provider (datalist — free text stays possible).
  *
- * The FIRST entry is not just a suggestion: picking a provider pre-fills the model field with
- * it (see AiSettingsComponent#onProviderChange), so it has to be a model that currently works.
- * Providers retire ids without warning — `gemini-2.5-flash` sat here until it started answering
- * every chat with `404 ... no longer available to new users` — so lead each list with the id the
- * server itself defaults to, and keep the "-latest" aliases available for anyone who would
- * rather track the current model than pin one.
+ * These are the OFFLINE fallback only. The picker asks the backend
+ * (`POST /settings/ai/models`) what the provider offers for the user's key, because a list baked
+ * into a release goes stale: `gemini-2.5-flash` sat here until Google retired it and every chat
+ * started answering `404 ... no longer available to new users`. These values are what the picker
+ * shows before a key is entered, or when the provider cannot be reached.
+ *
+ * The FIRST entry is not just a suggestion: picking a provider pre-fills the model field with it
+ * (see AiSettingsComponent#onProviderChange), so it has to be a model that currently works. The
+ * backend applies the same ordering to the live list.
  */
 export const AI_MODEL_SUGGESTIONS: Record<AiProvider, string[]> = {
   OPENAI: ['gpt-4o', 'gpt-4o-mini'],
