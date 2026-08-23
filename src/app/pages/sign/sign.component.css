@@ -143,11 +143,10 @@
 }
 /* Language switcher (pushed to the far end of the sticky header). */
 .lang-btn {
-  margin-inline-start: auto; border-radius: 999px; height: 38px; padding: 0 10px;
+  margin-inline-start: auto; border-radius: 999px; height: 38px; padding: 0 8px; min-width: 0;
   color: var(--text-secondary); border: 1px solid var(--border-color); background: var(--bg-primary);
 }
-.lang-btn app-language-flag { margin-inline-end: 7px; }
-.lang-btn .lang-code { font-size: 13px; font-weight: 600; letter-spacing: .4px; }
+.lang-btn app-language-flag { margin-inline-end: 2px; }
 .lang-btn mat-icon { font-size: 18px; width: 18px; height: 18px; margin-inline-start: 2px; }
 .sign-lang-menu app-language-flag { margin-inline-end: 10px; }
 .lang-name { vertical-align: middle; }

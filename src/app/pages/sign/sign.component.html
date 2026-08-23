@@ -12,9 +12,11 @@
     }
     <!-- The signer may not read the language the sender used — let them switch. -->
     <button mat-button class="lang-btn" type="button" [matMenuTriggerFor]="langMenu"
-            [attr.aria-label]="'header.changeLanguage' | translate" [matTooltip]="'header.language' | translate">
+            [attr.aria-label]="('header.changeLanguage' | translate) + ' — ' + currentLanguage.name"
+            [matTooltip]="('header.language' | translate) + ' : ' + currentLanguage.name">
+      <!-- Flag only: the code beside it was redundant. The language *name* stays in the
+           tooltip and the accessible name — a flag alone means nothing to a screen reader. -->
       <app-language-flag [code]="currentLanguage.code"></app-language-flag>
-      <span class="lang-code">{{ currentLanguage.code | uppercase }}</span>
       <mat-icon aria-hidden="true">expand_more</mat-icon>
     </button>
     <mat-menu #langMenu="matMenu" class="sign-lang-menu">
