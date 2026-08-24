@@ -8,7 +8,7 @@ import { HttpLink } from "apollo-angular/http";
 import { SetContextLink } from "@apollo/client/link/context";
 import { ApolloLink, InMemoryCache } from "@apollo/client/core";
 import { environment } from "./environments/environment";
-import { provideRouter } from '@angular/router';
+import { provideRouter, RouterOutlet } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideAuth, LogLevel, authInterceptor, OidcSecurityService } from 'angular-auth-oidc-client';
 import { MockAuthService } from './app/services/mock-auth.service';
@@ -21,11 +21,30 @@ import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 
 @Component({
   selector: 'app-root',
-  template: `<app-main></app-main>`,
+  // The public e-Sign signing page (/sign?token=...) is reached by external
+  // recipients who have no Keycloak session. It must render shell-less: booting
+  // the authenticated MainComponent would wait on OIDC and the /settings call.
+  // Render a bare router-outlet for /sign, the full app shell for everything else.
+  // Exact match (not startsWith) so the authenticated /signatures route is unaffected.
+  template: `
+    @if (publicShell) {
+      <router-outlet></router-outlet>
+    } @else {
+      <app-main></app-main>
+    }
+  `,
   standalone: true,
-  imports: [MainComponent]
+  imports: [MainComponent, RouterOutlet]
 })
-export class App { }
+export class App {
+  readonly publicShell = isPublicSignPage();
+}
+
+/** True when the browser is on the shell-less public signing page. */
+function isPublicSignPage(): boolean {
+  const path = window.location.pathname.replace(/\/+$/, '');
+  return path === '/sign' || path.endsWith('/sign');
+}
 
 bootstrapApplication(App, {
   providers: [
@@ -55,6 +74,11 @@ bootstrapApplication(App, {
         const oidcSecurityService = inject(OidcSecurityService);
         const roleService = inject(RoleService);
         const settingsService = inject(SettingsService);
+
+        // Public signing page: no session, no settings — don't trigger the OIDC flow.
+        if (isPublicSignPage()) {
+          return null;
+        }
 
         let result;
         try {

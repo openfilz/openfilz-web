@@ -53,6 +53,11 @@
                 "input": "node_modules/monaco-editor/min/vs",
                 "output": "/assets/monaco/min/vs"
               },
+              {
+                "glob": "pdf.worker.min.mjs",
+                "input": "node_modules/pdfjs-dist/build",
+                "output": "/assets/pdfjs"
+              },
               "src/assets"
             ],
             "index": "src/index.html",

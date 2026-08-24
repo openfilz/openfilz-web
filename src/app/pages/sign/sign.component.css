@@ -1,0 +1,199 @@
+/* The global stylesheet locks html/body to `height:100dvh; overflow:hidden` — this public
+   page renders bare under <body>, so it must be its OWN viewport-tall scroll container.
+   dvh (not vh) tracks the visible area below the mobile browser chrome. */
+:host {
+  display: block;
+  height: 100dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.sign-shell { min-height: 100dvh; display: flex; flex-direction: column; }
+/* Leave room for the fixed action bar (+ the phone's home indicator). */
+.sign-shell.has-bar { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+
+.sign-top {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  padding: 12px 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; color: var(--primary); font-weight: 700; font-size: 18px; white-space: nowrap; }
+.top-meta { display: flex; flex-direction: column; min-width: 0; }
+.top-title { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top-sub { font-size: 12.5px; color: var(--text-secondary); }
+
+.state {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 40px 16px; color: var(--text-secondary); text-align: center;
+}
+.state.small { flex: 0; padding: 24px 0; }
+.state.error { color: #ef4444; }
+.state.error mat-icon { font-size: 40px; width: 40px; height: 40px; }
+
+/* ── OTP card ─────────────────────────────────────────────────────────── */
+.card {
+  margin: 40px auto; width: min(460px, calc(100% - 32px));
+  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 14px;
+  padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+}
+.card-icon { font-size: 40px; width: 40px; height: 40px; color: var(--primary); }
+.card h2 { margin: 0; font-size: 20px; }
+.muted { color: var(--text-secondary); font-size: 14px; margin: 0; }
+.otp-form { width: 100%; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+.otp-form .ff { width: 100%; }
+.otp-form input { letter-spacing: .25em; font-size: 18px; text-align: center; }
+.otp-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.error-text { color: #ef4444; font-size: 13px; margin: 4px 0 0; }
+
+/* ── Banners ──────────────────────────────────────────────────────────── */
+.banner {
+  display: flex; align-items: center; gap: 12px; margin: 16px 20px 0;
+  padding: 14px 16px; border-radius: 12px; font-size: 14.5px;
+  background: var(--bg-primary); border: 1px solid var(--border-color);
+}
+.banner p { margin: 0; }
+.banner.ok { border-color: #10b981; background: color-mix(in srgb, #10b981 12%, var(--bg-primary)); }
+.banner.ok mat-icon { color: #10b981; }
+.banner.bad { border-color: #ef4444; background: color-mix(in srgb, #ef4444 10%, var(--bg-primary)); }
+.banner.bad mat-icon { color: #ef4444; }
+.banner.info { border-color: #3b82f6; background: color-mix(in srgb, #3b82f6 10%, var(--bg-primary)); }
+.banner.info mat-icon { color: #3b82f6; }
+
+/* ── Document ─────────────────────────────────────────────────────────── */
+.sign-main { flex: 1; padding: 16px 20px 24px; max-width: 1100px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+.msg {
+  display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin-bottom: 10px;
+  background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 10px;
+  font-size: 14px; white-space: pre-wrap;
+}
+.msg mat-icon { color: var(--text-secondary); flex-shrink: 0; }
+.doc-name { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; font-size: 13px; color: var(--text-secondary); }
+.doc-name mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+.pages { display: flex; flex-direction: column; gap: 18px; align-items: center; }
+.page {
+  position: relative; width: 100%; max-width: 900px;
+  background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .18); border-radius: 4px;
+}
+.page canvas { display: block; width: 100%; height: auto; border-radius: 4px; }
+
+/* Field overlays — percent-positioned so they track the canvas at any width. */
+.field {
+  position: absolute; box-sizing: border-box; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  border-radius: 4px; font-size: clamp(9px, 1.3vw, 13px); line-height: 1.1;
+}
+.field mat-icon { font-size: 16px; width: 16px; height: 16px; flex-shrink: 0; }
+.field-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.field-text { color: #111; padding: 0 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.field-text.placeholder { color: var(--primary); font-weight: 600; }
+.field-text.auto-text { color: #555; font-style: italic; }
+
+.field.other { border: 1px dashed rgba(120, 120, 120, .7); background: rgba(200, 200, 200, .18); color: #666; }
+
+.field.mine {
+  border: 2px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--primary);
+  text-shadow: 0 0 3px rgba(255, 255, 255, .9);
+}
+.field.mine.editable { cursor: pointer; }
+.field.mine.editable:hover, .field.mine.active { background: color-mix(in srgb, var(--primary) 28%, transparent); }
+.field.mine:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 60%, transparent); outline-offset: 2px; }
+.field.mine.required:not(.filled)::after {
+  content: '*'; position: absolute; top: 0; right: 3px; color: #ef4444; font-weight: 700; font-size: 12px;
+}
+.field.mine.filled { border-color: #10b981; background: transparent; text-shadow: none; }
+.field.mine.auto { border-style: dotted; cursor: default; background: transparent; }
+.field.mine.done { border-style: solid; background: transparent; cursor: default; }
+
+.field-clear {
+  position: absolute; top: -1px; right: -1px; width: 16px; height: 16px; padding: 0; border: 0;
+  border-radius: 0 4px 0 4px; background: #10b981; color: #fff; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+}
+.field-clear mat-icon { font-size: 12px; width: 12px; height: 12px; }
+.field.mine:hover .field-clear, .field.mine:focus-within .field-clear { display: flex; }
+
+/* Inline editor popover anchored under the field */
+.editor {
+  position: absolute; z-index: 4; margin-top: 6px; min-width: 240px; max-width: 92%;
+  background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .2); padding: 10px 12px 8px;
+}
+.editor-head { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.editor-head mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--primary); }
+.editor .req { color: #ef4444; }
+.editor .ff { width: 100%; }
+.editor .ff.dense ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+.editor .choices { display: flex; flex-direction: column; gap: 2px; }
+.editor-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
+
+/* ── Bottom action bar ────────────────────────────────────────────────── */
+.action-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  background: var(--bg-primary); border-top: 1px solid var(--border-color);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, .08);
+}
+/* Language switcher (pushed to the far end of the sticky header). */
+.lang-btn {
+  margin-inline-start: auto; border-radius: 999px; height: 38px; padding: 0 8px; min-width: 0;
+  color: var(--text-secondary); border: 1px solid var(--border-color); background: var(--bg-primary);
+}
+.lang-btn app-language-flag { margin-inline-end: 2px; }
+.lang-btn mat-icon { font-size: 18px; width: 18px; height: 18px; margin-inline-start: 2px; }
+.sign-lang-menu app-language-flag { margin-inline-end: 10px; }
+.lang-name { vertical-align: middle; }
+
+.progress { display: flex; align-items: center; gap: 10px; flex: 1 1 220px; min-width: 0; }
+.progress-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--bg-tertiary); overflow: hidden; }
+.progress-fill { height: 100%; background: #10b981; border-radius: 999px; transition: width .2s ease; }
+.progress span { font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+.actions { display: flex; gap: 10px; align-items: center; }
+
+/* The signing action must dominate: Material's filled-button colour token resolves empty in
+   this app (see global_styles.css), which left "Sign" as bare text next to a bordered
+   "Decline". Paint it from the theme and give it more weight than the secondary action. */
+.primary-btn, .secondary-btn { border-radius: 999px; height: 46px; padding: 0 26px; }
+.primary-btn mat-icon, .secondary-btn mat-icon { margin-inline-end: 6px; }
+.primary-btn {
+  /* Material paints filled buttons from its own tokens with `:not(:disabled)` — a plain
+     `background` here loses that cascade — and those tokens fall back to the empty
+     --mat-sys-* colours (see global_styles.css). Drive the tokens instead. */
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-state-layer-color: #fff;
+  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
+  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
+  font-weight: 600; font-size: 15px; min-width: 168px;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 38%, transparent);
+}
+.primary-btn[disabled] { box-shadow: none; }
+/* Declining is the exceptional path: keep it reachable but visually quiet. */
+.secondary-btn {
+  background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);
+  font-weight: 500; padding: 0 18px; min-width: 0;
+}
+.secondary-btn:hover:not([disabled]) { color: #ef4444; border-color: #ef4444; }
+.btn-spinner { display: inline-block; margin-right: 8px; }
+.signing-progress {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary); font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .sign-top { padding: 10px 14px; gap: 8px; }
+  .sign-main { padding: 12px 10px 20px; }
+  .banner { margin: 12px 10px 0; }
+  .action-bar { padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); }
+  .actions { width: 100%; justify-content: stretch; }
+  .actions > * { flex: 1; }
+  .signing-progress { justify-content: center; }
+  .sign-shell.has-bar { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
+}

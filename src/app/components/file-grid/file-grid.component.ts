@@ -10,7 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { FileItem } from '../../models/document.models';
-import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS } from '../../models/file-actions';
+import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS, isPdfItem } from '../../models/file-actions';
+import { SettingsService } from '../../services/settings.service';
 import { FileIconService } from '../../services/file-icon.service';
 import { TouchDetectionService } from '../../services/touch-detection.service';
 
@@ -61,6 +62,7 @@ export class FileGridComponent {
   @Output() delete = new EventEmitter<FileItem>();
   @Output() toggleFavorite = new EventEmitter<FileItem>();
   @Output() viewProperties = new EventEmitter<FileItem>();
+  @Output() requestSignature = new EventEmitter<FileItem>();
   @Output() itemsDroppedOnFolder = new EventEmitter<DropEvent>();
 
   // Keyboard navigation
@@ -70,6 +72,7 @@ export class FileGridComponent {
 
 
   private fileIconService = inject(FileIconService);
+  private settingsService = inject(SettingsService);
   private touchDetectionService = inject(TouchDetectionService);
 
   constructor() { }
@@ -113,6 +116,13 @@ export class FileGridComponent {
 
   @ViewChild('contextMenuTrigger') contextMenuTrigger?: MatMenuTrigger;
   readonly itemActions: FileActionDescriptor[] = STANDARD_ITEM_ACTIONS;
+
+  /** Actions applicable to the item the menu targets (e-Sign only for PDFs when the feature is on). */
+  get visibleItemActions(): FileActionDescriptor[] {
+    const item = this.menuItem;
+    const signAllowed = this.settingsService.isSignatureActive && !!item && isPdfItem(item);
+    return this.itemActions.filter(a => a.id !== 'requestSignature' || signAllowed);
+  }
   contextMenuPosition = { x: 0, y: 0 };
   /** Item the shared actions menu currently targets (set by kebab click or right-click) */
   menuItem?: FileItem;
@@ -152,6 +162,9 @@ export class FileGridComponent {
         break;
       case 'details':
         this.viewProperties.emit(item);
+        break;
+      case 'requestSignature':
+        this.requestSignature.emit(item);
         break;
       case 'delete':
         this.delete.emit(item);

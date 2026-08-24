@@ -14,6 +14,8 @@ import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
 import { TranslateService } from '@ngx-translate/core';
+import { isPdfItem } from '../../models/file-actions';
+import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
 import { isCompactViewport } from '../../utils/layout.util';
 
 @Directive()
@@ -282,6 +284,48 @@ export abstract class FileOperationsComponent implements OnInit {
   onMetadataSaved(): void {
     // Reflect metadata changes (size, versions, etc.) in the listing.
     this.reloadData();
+  }
+
+  /**
+   * e-Sign: open the envelope builder for a single PDF. Gated by the API's
+   * `signatureActive` flag (same switch as the sidebar entry) and PDF-only.
+   * The dialog is lazy-loaded so non-e-Sign deployments never ship pdf.js twice.
+   */
+  onRequestSignature(item: FileItem): void {
+    if (!this.settingsService.isSignatureActive || !isPdfItem(item)) {
+      return;
+    }
+    import('../../dialogs/request-signature-dialog/request-signature-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.RequestSignatureDialogComponent, {
+        width: '1200px',
+        maxWidth: '98vw',
+        maxHeight: '94dvh',
+        panelClass: 'request-signature-dialog-panel',
+        autoFocus: false,
+        data: { documentId: item.id, documentName: item.name } as RequestSignatureDialogData
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.success) {
+          this.router.navigate(['/signatures']);
+        }
+      });
+    });
+  }
+
+  /**
+   * Same action from the contextual selection toolbar: exactly one PDF selected.
+   * Kept next to {@link onRequestSignature} so both entry points share the gating.
+   */
+  get canRequestSignatureForSelection(): boolean {
+    const selected = this.selectedItems;
+    return this.settingsService.isSignatureActive && selected.length === 1 && isPdfItem(selected[0]);
+  }
+
+  onRequestSignatureSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onRequestSignature(selected[0]);
+    }
   }
 
   onViewProperties(item: FileItem): void {

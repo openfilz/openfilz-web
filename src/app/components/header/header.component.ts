@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, Output, EventEmitter, inject } from "@angular/core";
+import { APP_LANGUAGES, AppLanguage, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
+import { LanguageFlagComponent } from '../../i18n/language-flag.component';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
@@ -18,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, SearchFiltersComponent, MatIconModule, MatTooltipModule, TranslatePipe, MatMenuModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, SearchFiltersComponent, MatIconModule, MatTooltipModule, TranslatePipe, MatMenuModule, MatButtonModule, LanguageFlagComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -41,18 +43,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private translate = inject(TranslateService);
   private sanitizer = inject(DomSanitizer);
 
-  // Language selector
-  availableLanguages = [
-    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-    { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-    { code: 'pt', name: 'Português', flag: '🇵🇹' }
-  ];
-  currentLanguage = this.availableLanguages.find(l => l.code === 'en') || this.availableLanguages[2];
+  // Language selector — shared with the public signing page so the two never drift.
+  availableLanguages = APP_LANGUAGES;
+  currentLanguage = findLanguage(DEFAULT_LANGUAGE) ?? this.availableLanguages[0];
 
   @Input() hasSelection: boolean = false;
   @Input() set userData(value: any) {
@@ -98,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.updateDocumentDirection(this.currentLanguage.code);
   }
 
-  switchLanguage(lang: { code: string; name: string; flag: string }): void {
+  switchLanguage(lang: AppLanguage): void {
     this.currentLanguage = lang;
     this.translate.use(lang.code);
     localStorage.setItem('preferredLanguage', lang.code);
@@ -106,9 +99,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateDocumentDirection(langCode: string): void {
-    const dir = langCode === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.setAttribute('dir', dir);
-    document.documentElement.setAttribute('lang', langCode);
+    applyDocumentLanguage(langCode);
   }
 
   @HostListener('document:click', ['$event'])

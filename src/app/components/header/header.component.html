@@ -110,6 +110,7 @@
         <mat-menu #languageMenu="matMenu" class="language-menu">
             @for (lang of availableLanguages; track lang.code) {
             <button mat-menu-item (click)="switchLanguage(lang)" [class.active]="lang.code === currentLanguage.code">
+                <app-language-flag [code]="lang.code"></app-language-flag>
                 <span class="lang-name">{{ lang.name }}</span>
                 @if (lang.code === currentLanguage.code) {
                 <mat-icon class="check-icon">check</mat-icon>

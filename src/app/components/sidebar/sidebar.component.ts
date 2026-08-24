@@ -38,6 +38,7 @@ export class SidebarComponent implements OnInit {
     { id: 'my-folder', labelKey: 'sidebar.myFolder', active: false, route: '/my-folder' },
     { id: 'recycle-bin', labelKey: 'sidebar.recycleBin', active: false, route: '/recycle-bin' },
     { id: 'favorites', labelKey: 'sidebar.favorites', active: false, route: '/favorites' },
+    { id: 'signatures', labelKey: 'sidebar.signatures', active: false, route: '/signatures' },
     //{ id: 'shared-files', labelKey: 'sidebar.sharedFiles', active: false, route: '/shared-files' },
     { id: 'settings', labelKey: 'sidebar.settings', active: false, route: '/settings' },
     { id: 'logout', labelKey: 'sidebar.logout', active: false, route: null }
@@ -47,11 +48,10 @@ export class SidebarComponent implements OnInit {
   private settingsService = inject(SettingsService);
 
   get navigationItems() {
-    // Hide recycle-bin menu when emptyBinInterval is null
-    if (!this.settingsService.isRecycleBinEnabled) {
-      return this.allNavigationItems.filter(item => item.id !== 'recycle-bin');
-    }
-    return this.allNavigationItems;
+    // Hide recycle-bin menu when emptyBinInterval is null; hide signatures when e-Sign is off
+    return this.allNavigationItems.filter(item =>
+      (item.id !== 'recycle-bin' || this.settingsService.isRecycleBinEnabled)
+      && (item.id !== 'signatures' || this.settingsService.isSignatureActive));
   }
 
   constructor() { }
@@ -95,6 +95,7 @@ export class SidebarComponent implements OnInit {
       case 'my-folder': return 'folder';
       case 'recycle-bin': return 'delete';
       case 'favorites': return 'favorite';
+      case 'signatures': return 'draw';
       //case 'shared-files': return 'share';
       case 'settings': return 'settings';
       case 'logout': return 'logout';

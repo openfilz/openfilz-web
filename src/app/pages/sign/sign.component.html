@@ -1,0 +1,238 @@
+<div class="sign-shell" [class.has-bar]="phase === 'signing'">
+  <header class="sign-top">
+    <div class="brand">
+      <mat-icon aria-hidden="true">verified</mat-icon>
+      <span>OpenFilz e-Sign</span>
+    </div>
+    @if (view) {
+      <div class="top-meta">
+        <span class="top-title">{{ view.envelopeTitle }}</span>
+        <span class="top-sub">{{ 'signature.sign.requestedBy' | translate }} {{ view.initiatorEmail }}</span>
+      </div>
+    }
+    <!-- The signer may not read the language the sender used — let them switch. -->
+    <button mat-button class="lang-btn" type="button" [matMenuTriggerFor]="langMenu"
+            [attr.aria-label]="('header.changeLanguage' | translate) + ' — ' + currentLanguage.name"
+            [matTooltip]="('header.language' | translate) + ' : ' + currentLanguage.name">
+      <!-- Flag only: the code beside it was redundant. The language *name* stays in the
+           tooltip and the accessible name — a flag alone means nothing to a screen reader. -->
+      <app-language-flag [code]="currentLanguage.code"></app-language-flag>
+      <mat-icon aria-hidden="true">expand_more</mat-icon>
+    </button>
+    <mat-menu #langMenu="matMenu" class="sign-lang-menu">
+      @for (lang of languages; track lang.code) {
+        <button mat-menu-item type="button" (click)="switchLanguage(lang)"
+                [class.active]="lang.code === currentLanguage.code">
+          <app-language-flag [code]="lang.code"></app-language-flag>
+          <span class="lang-name">{{ lang.name }}</span>
+          @if (lang.code === currentLanguage.code) { <mat-icon class="check" aria-hidden="true">check</mat-icon> }
+        </button>
+      }
+    </mat-menu>
+  </header>
+
+  @switch (phase) {
+    @case ('loading') {
+      <div class="state"><mat-spinner diameter="40"></mat-spinner></div>
+    }
+    @case ('error') {
+      <div class="state error">
+        <mat-icon aria-hidden="true">link_off</mat-icon>
+        <p>{{ error | translate }}</p>
+      </div>
+    }
+    @case ('otp') {
+      <section class="card otp-card">
+        <mat-icon class="card-icon" aria-hidden="true">lock</mat-icon>
+        <h2>{{ 'signature.sign.otpTitle' | translate }}</h2>
+        <p class="muted">
+          {{ (view!.authMethod === 'SMS_OTP' ? 'signature.sign.otpHintSms' : 'signature.sign.otpHintEmail') | translate }}
+        </p>
+        @if (!otpSent) {
+          <button mat-flat-button color="primary" class="primary-btn" type="button" (click)="requestOtp()" [disabled]="otpBusy">
+            @if (otpBusy) { <mat-spinner diameter="18" class="btn-spinner"></mat-spinner> } @else { <mat-icon aria-hidden="true">send</mat-icon> }
+            <span>{{ 'signature.sign.otpRequest' | translate }}</span>
+          </button>
+        } @else {
+          <form class="otp-form" (ngSubmit)="verifyOtp()">
+            <mat-form-field appearance="outline" class="ff">
+              <mat-label>{{ 'signature.sign.otpCode' | translate }}</mat-label>
+              <input matInput [(ngModel)]="otpCode" name="otpCode" inputmode="numeric" autocomplete="one-time-code"
+                     maxlength="12" required cdkFocusInitial>
+            </mat-form-field>
+            <div class="otp-actions">
+              <button mat-stroked-button type="button" (click)="requestOtp()" [disabled]="otpBusy">
+                {{ 'signature.sign.otpResend' | translate }}
+              </button>
+              <button mat-flat-button color="primary" class="primary-btn" type="submit" [disabled]="otpBusy || !otpCode.trim()">
+                @if (otpBusy) { <mat-spinner diameter="18" class="btn-spinner"></mat-spinner> } @else { <mat-icon aria-hidden="true">check</mat-icon> }
+                <span>{{ 'signature.sign.otpVerify' | translate }}</span>
+              </button>
+            </div>
+          </form>
+        }
+        @if (otpError) { <p class="error-text" role="alert">{{ otpError | translate }}</p> }
+      </section>
+    }
+    @default {
+      <!-- Status banners (signed / declined / closed / waiting) -->
+      @if (phase === 'signed') {
+        <div class="banner ok" role="status">
+          <mat-icon aria-hidden="true">check_circle</mat-icon>
+          <p>{{ (view!.envelopeStatus === 'COMPLETED' ? 'signature.sign.completedAll' : 'signature.sign.thanksPending') | translate }}</p>
+        </div>
+      } @else if (phase === 'declined') {
+        <div class="banner bad" role="status">
+          <mat-icon aria-hidden="true">cancel</mat-icon>
+          <p>{{ 'signature.sign.wasDeclined' | translate }}</p>
+        </div>
+      } @else if (phase === 'closed') {
+        <div class="banner bad" role="status">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          <p>{{ 'signature.sign.envelope' + view!.envelopeStatus | translate }}</p>
+        </div>
+      } @else if (phase === 'waiting') {
+        <div class="banner info" role="status">
+          <mat-icon aria-hidden="true">hourglass_top</mat-icon>
+          <p>{{ 'signature.sign.notYourTurn' | translate }}</p>
+        </div>
+      }
+
+      <main class="sign-main">
+        @if (view!.message) {
+          <div class="msg">
+            <mat-icon aria-hidden="true">chat_bubble_outline</mat-icon>
+            <span>{{ view!.message }}</span>
+          </div>
+        }
+        <p class="doc-name">
+          <mat-icon aria-hidden="true">picture_as_pdf</mat-icon>{{ view!.documentName }}
+        </p>
+
+        @if (pdfLoading) {
+          <div class="state small"><mat-spinner diameter="32"></mat-spinner></div>
+        } @else if (pdfError) {
+          <div class="state error small">
+            <mat-icon aria-hidden="true">error_outline</mat-icon>
+            <p>{{ 'signature.sign.pdfError' | translate }}</p>
+          </div>
+        }
+
+        <div class="pages" (click)="closeEditor()">
+          @for (p of pages; track p) {
+            <div class="page" [attr.aria-label]="('signature.request.page' | translate) + ' ' + (p + 1)">
+              <canvas #pageCanvas></canvas>
+
+              <!-- Other recipients' fields: read-only marks -->
+              @for (f of otherFieldsOn(p); track f.id) {
+                <div class="field other" [ngStyle]="fieldStyle(f)" [matTooltip]="fieldLabel(f)">
+                  @if (f.valueImage) {
+                    <img [src]="f.valueImage" alt="" class="field-img">
+                  } @else if (f.value) {
+                    <span class="field-text">{{ displayValue(f) }}</span>
+                  } @else {
+                    <mat-icon aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
+                  }
+                </div>
+              }
+
+              <!-- My fields -->
+              @for (f of myFieldsOn(p); track f.id) {
+                <div class="field mine" [ngStyle]="fieldStyle(f)"
+                     [class.filled]="isFilled(f)" [class.required]="f.required" [class.auto]="isAuto(f)"
+                     [class.editable]="canAct && !isAuto(f)" [class.active]="activeFieldId === f.id"
+                     [class.done]="!canAct"
+                     role="button" [attr.tabindex]="canAct && !isAuto(f) ? 0 : null"
+                     [attr.aria-label]="fieldLabel(f)"
+                     (click)="onFieldClick(f); $event.stopPropagation()"
+                     (keydown.enter)="onFieldClick(f)" (keydown.space)="onFieldClick(f); $event.preventDefault()">
+                  @if (entry(f).valueImage) {
+                    <img [src]="entry(f).valueImage" alt="" class="field-img">
+                  } @else if (isAuto(f)) {
+                    <span class="field-text auto-text">{{ canAct ? ('signature.sign.autoFilled' | translate) : (f.value || '') }}</span>
+                  } @else if (f.type === 'CHECKBOX') {
+                    <mat-icon aria-hidden="true">{{ isChecked(f) ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+                  } @else if (entry(f).value) {
+                    <span class="field-text">{{ entry(f).value }}</span>
+                  } @else {
+                    <mat-icon aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
+                    <span class="field-text placeholder">{{ fieldLabel(f) }}</span>
+                  }
+                  @if (canAct && !isAuto(f) && isFilled(f) && f.type !== 'CHECKBOX') {
+                    <button type="button" class="field-clear" (click)="clearField(f, $event)"
+                            [attr.aria-label]="'signature.sign.clear' | translate">
+                      <mat-icon aria-hidden="true">close</mat-icon>
+                    </button>
+                  }
+                </div>
+
+                <!-- Inline editor popover for text-like / choice fields -->
+                @if (canAct && activeFieldId === f.id) {
+                  <div class="editor" [ngStyle]="{ left: fieldStyle(f)['left'], top: 'calc(' + fieldStyle(f)['top'] + ' + ' + fieldStyle(f)['height'] + ')' }"
+                       (click)="$event.stopPropagation()" role="dialog" [attr.aria-label]="fieldLabel(f)">
+                    <div class="editor-head">
+                      <mat-icon aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
+                      <span>{{ fieldLabel(f) }}</span>
+                      @if (f.required) { <span class="req">*</span> }
+                    </div>
+                    @if (isInline(f)) {
+                      <mat-form-field appearance="outline" class="ff dense">
+                        <input matInput [type]="inputType(f)" [ngModel]="entry(f).value" (ngModelChange)="setValue(f, $event)"
+                               (keydown.enter)="closeEditor()" maxlength="1000" cdkFocusInitial>
+                      </mat-form-field>
+                    } @else if (f.type === 'RADIO') {
+                      <mat-radio-group class="choices" [ngModel]="entry(f).value" (ngModelChange)="setValue(f, $event)">
+                        @for (c of choices(f); track c) {
+                          <mat-radio-button [value]="c">{{ c }}</mat-radio-button>
+                        }
+                      </mat-radio-group>
+                    } @else if (f.type === 'SELECT') {
+                      <mat-form-field appearance="outline" class="ff dense">
+                        <mat-select [ngModel]="entry(f).value" (ngModelChange)="setValue(f, $event)">
+                          @for (c of choices(f); track c) {
+                            <mat-option [value]="c">{{ c }}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    }
+                    <div class="editor-actions">
+                      <button mat-flat-button color="primary" type="button" (click)="closeEditor()">{{ 'common.ok' | translate }}</button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      </main>
+
+      <!-- Bottom action bar (signing phase only) -->
+      @if (phase === 'signing') {
+        <footer class="action-bar">
+          <div class="progress" [attr.aria-label]="'signature.sign.progress' | translate: { done: completedRequired, total: requiredFields.length }">
+            <div class="progress-bar"><div class="progress-fill" [style.width.%]="progressPct"></div></div>
+            <span>{{ 'signature.sign.progress' | translate: { done: completedRequired, total: requiredFields.length } }}</span>
+          </div>
+          <div class="actions">
+            <button mat-stroked-button class="secondary-btn" type="button" (click)="decline()" [disabled]="submitting">
+              <mat-icon aria-hidden="true">close</mat-icon>
+              <span>{{ 'signature.sign.declineBtn' | translate }}</span>
+            </button>
+            @if (signing) {
+              <div class="primary-btn signing-progress" role="status" aria-live="polite">
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>{{ 'signature.sign.signingInProgress' | translate }}</span>
+              </div>
+            } @else {
+              <button mat-flat-button color="primary" class="primary-btn" type="button" (click)="sign()" [disabled]="!canSign"
+                      [matTooltip]="allRequiredDone ? '' : ('signature.sign.fillRequired' | translate)">
+                <mat-icon aria-hidden="true">draw</mat-icon>
+                <span>{{ 'signature.sign.signBtn' | translate }}</span>
+              </button>
+            }
+          </div>
+        </footer>
+      }
+    }
+  }
+</div>

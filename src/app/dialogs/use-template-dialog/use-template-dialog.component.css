@@ -1,0 +1,59 @@
+:host { display: flex; flex-direction: column; min-height: 0; max-height: 94dvh; }
+
+.dialog-header {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 14px;
+  padding: 18px 24px; border-bottom: 1px solid var(--border-light);
+}
+.header-icon {
+  background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary);
+  border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.header-text { flex: 1; min-width: 0; }
+.header-text h2 { margin: 0; font-size: 18px; color: var(--text-primary); }
+.header-text .subtitle { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); }
+.close-btn { color: var(--text-secondary); }
+
+.dialog-content { flex: 1 1 auto; min-height: 0; overflow: auto; max-height: none !important; padding: 18px 24px; color: var(--text-primary); }
+
+.ff { width: 100%; }
+.ff.small { max-width: 170px; }
+.ff ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
+.ff ::ng-deep input, .ff ::ng-deep textarea { color: var(--text-primary); }
+.ff ::ng-deep .mdc-notched-outline__leading, .ff ::ng-deep .mdc-notched-outline__trailing,
+.ff ::ng-deep .mdc-notched-outline__notch { border-color: var(--border-color) !important; }
+
+.doc-line { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 13px; margin: 0 0 12px; }
+.section { font-size: 14px; font-weight: 600; margin: 6px 0 10px; color: var(--text-primary); }
+
+.hint { display: flex; gap: 8px; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; margin-bottom: 12px; color: var(--text-primary); }
+.hint.warn { background: color-mix(in srgb, #f59e0b 12%, transparent); border-left: 3px solid #f59e0b; }
+.hint mat-icon { font-size: 18px; width: 18px; height: 18px; flex: 0 0 auto; }
+
+.binding {
+  --rc: var(--primary);
+  border: 1px solid var(--border-color); border-left: 4px solid var(--rc); border-radius: 10px;
+  padding: 8px 12px 0; margin-bottom: 10px; background: var(--bg-secondary);
+}
+.binding-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.color-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--rc); }
+.role-name { flex: 1; font-weight: 600; font-size: 13.5px; }
+.chip { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--bg-tertiary); }
+.binding-fields { display: flex; gap: 10px; }
+.binding-fields .ff { flex: 1; min-width: 0; }
+
+.dialog-actions {
+  flex: 0 0 auto; display: flex; justify-content: flex-end; gap: 12px;
+  padding: 14px 24px; padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-light); background: var(--bg-primary);
+}
+.cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
+.primary-btn { background: var(--primary); color: #fff; border-radius: 10px; height: 44px; }
+.primary-btn[disabled] { opacity: .55; }
+.primary-btn mat-icon { margin-right: 6px; }
+.btn-spinner { display: inline-block; margin-right: 8px; --mdc-circular-progress-active-indicator-color: #fff; }
+
+@media (max-width: 640px) {
+  .binding-fields { flex-direction: column; gap: 0; }
+  .dialog-actions { flex-direction: column-reverse; align-items: stretch; }
+  .dialog-actions button { width: 100%; }
+}
