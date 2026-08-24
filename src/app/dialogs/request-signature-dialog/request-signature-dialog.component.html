@@ -48,11 +48,15 @@
           <mat-label>{{ 'signature.request.expiresInDays' | translate }}</mat-label>
           <input matInput type="number" min="1" max="365" [(ngModel)]="expiresInDays">
         </mat-form-field>
-        <mat-form-field appearance="outline" class="ff small">
-          <mat-label>{{ 'signature.request.reminderDays' | translate }}</mat-label>
-          <input matInput type="number" min="1" max="90" [(ngModel)]="reminderDays"
-                 [placeholder]="'signature.request.noReminder' | translate">
-        </mat-form-field>
+        <!-- Only where something actually sends the reminders: the core stores the cadence but
+             has no scheduler, so offering the field there would record a setting that never fires. -->
+        @if (remindersActive) {
+          <mat-form-field appearance="outline" class="ff small">
+            <mat-label>{{ 'signature.request.reminderDays' | translate }}</mat-label>
+            <input matInput type="number" min="1" max="90" [(ngModel)]="reminderDays"
+                   [placeholder]="'signature.request.noReminder' | translate">
+          </mat-form-field>
+        }
         <mat-slide-toggle class="seq-toggle" [(ngModel)]="sequential"
                           [matTooltip]="'signature.request.sequentialHint' | translate">
           {{ 'signature.request.sequential' | translate }}

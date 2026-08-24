@@ -95,6 +95,9 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
   expiresInDays: number | null = 30;
   sequential = false;
   reminderDays: number | null = null;
+
+  /** Whether this deployment can honour a reminder cadence at all (Enterprise scheduler). */
+  readonly remindersActive = inject(SettingsService).areSignatureRemindersActive;
   recipients: RecipientRow[] = [newRecipient()];
   activeRecipient = 0;
   templateId?: string;

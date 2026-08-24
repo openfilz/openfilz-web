@@ -15,6 +15,8 @@ export interface Settings {
   signatureActive?: boolean;
   /** Recipient authentication methods this deployment can actually deliver (NONE + available OTP channels). */
   signatureAuthMethods?: string[];
+  /** False when the backend records a reminder cadence but has nothing to act on it. */
+  signatureRemindersActive?: boolean;
 }
 
 @Injectable({
@@ -80,6 +82,10 @@ export class SettingsService {
    * optional, and creating an envelope with SMS_OTP without one strands the signer on an OTP
    * step that can never be sent (the API refuses it with 422).
    */
+  get areSignatureRemindersActive(): boolean {
+    return this.settingsSubject.value?.signatureRemindersActive === true;
+  }
+
   get signatureAuthMethods(): string[] {
     return this.settingsSubject.value?.signatureAuthMethods ?? ['NONE'];
   }
