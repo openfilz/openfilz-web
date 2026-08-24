@@ -43,6 +43,16 @@ The official open-source web application for [OpenFilz](https://github.com/openf
 - **Metadata Panel** - Right-side sliding panel (420px) showing document properties and custom metadata. Auto-opens for single file uploads.
 - **Document Properties** - Tabbed dialog with general info and metadata tabs. View and edit modes with unsaved changes detection.
 
+### Electronic Signature (e-Sign)
+
+- **Request Signature** - Send any PDF for electronic signature from the toolbar or the item menu, when the backend has e-Sign enabled.
+- **Field Placement** - Drop typed fields onto the pages and assign each one to a recipient: signature, initials, date, text, number, email, phone, checkbox, radio, dropdown, image and stamp.
+- **Signing Page** - Public `/sign` route driven by a one-time token — no account needed. Draw, type or upload your signature and initials, with a per-signer language switcher (8 locales, RTL included).
+- **Envelope Tracking** - Follow who has signed, resend a link, or cancel an envelope.
+
+> The feature is surfaced only when `GET /settings` reports `signatureActive: true`; the backend
+> configuration is documented in the [core e-Sign Guide](https://github.com/openfilz/openfilz-core/blob/main/docs/esign.md).
+
 ### Dashboard & Statistics
 
 - **Dashboard** - Home page showing storage usage, document counts, file type distribution, and recent activity.
