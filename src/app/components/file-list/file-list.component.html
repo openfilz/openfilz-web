@@ -125,7 +125,7 @@
   <!-- Shared per-item actions menu (kebab + context menu) -->
   <mat-menu #itemActionsMenu="matMenu" class="item-actions-menu">
     <ng-template matMenuContent>
-      @for(action of itemActions; track action.id) {
+      @for(action of visibleItemActions; track action.id) {
       @if(action.danger) {
       <mat-divider></mat-divider>
       }

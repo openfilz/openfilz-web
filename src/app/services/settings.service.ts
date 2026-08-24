@@ -11,6 +11,12 @@ export interface Settings {
   thumbnailsActive: boolean;
   aiActive: boolean;
   aiUserSettingsEnabled: boolean;
+  /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
+  signatureActive?: boolean;
+  /** Recipient authentication methods this deployment can actually deliver (NONE + available OTP channels). */
+  signatureAuthMethods?: string[];
+  /** False when the backend records a reminder cadence but has nothing to act on it. */
+  signatureRemindersActive?: boolean;
 }
 
 @Injectable({
@@ -34,8 +40,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
       })
     );
   }
@@ -67,5 +73,24 @@ export class SettingsService {
   get isAiUserSettingsEnabled(): boolean {
     return (this.settingsSubject.value?.aiActive ?? false)
       && (this.settingsSubject.value?.aiUserSettingsEnabled ?? false);
+  }
+
+  // Driven by openfilz.signature.active on the API: the e-Sign endpoints only exist when
+  // that flag is on, so the "Signatures" menu + "Request signature" action follow it.
+  /**
+   * Only offer a recipient authentication method the server can deliver: an SMS gateway is
+   * optional, and creating an envelope with SMS_OTP without one strands the signer on an OTP
+   * step that can never be sent (the API refuses it with 422).
+   */
+  get areSignatureRemindersActive(): boolean {
+    return this.settingsSubject.value?.signatureRemindersActive === true;
+  }
+
+  get signatureAuthMethods(): string[] {
+    return this.settingsSubject.value?.signatureAuthMethods ?? ['NONE'];
+  }
+
+  get isSignatureActive(): boolean {
+    return this.settingsSubject.value?.signatureActive ?? false;
   }
 }
