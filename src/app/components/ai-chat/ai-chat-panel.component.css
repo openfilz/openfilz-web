@@ -60,7 +60,10 @@
 
 .model-badge {
   font-size: 10px;
-  color: var(--text-secondary);
+  font-weight: 500;
+  /* Sits on the coloured gradient header -> must be an "on-primary" tone,
+     not var(--text-secondary) which is dark grey and unreadable there. */
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
