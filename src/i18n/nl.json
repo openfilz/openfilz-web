@@ -424,6 +424,23 @@
       "userQuota": "Totale opslaglimiet",
       "userQuotaDescription": "Maximale totale opslag voor uw account"
     },
+    "cloudSigning": {
+      "title": "Cloud-ondertekening",
+      "planIncluded": "Handtekeningen inbegrepen in uw abonnement",
+      "planMetered": "Verbruiksplan (betalen per handtekening)",
+      "status": {
+        "ACTIVE": "Actief",
+        "SUSPENDED": "Opgeschort",
+        "REVOKED": "Ingetrokken"
+      },
+      "hardCapOn": "Ondertekenen wordt geblokkeerd zodra het maandelijkse quotum is bereikt.",
+      "hardCapOff": "Handtekeningen boven het maandelijkse quotum worden als meerverbruik gefactureerd.",
+      "used": "{{used}} van {{quota}} handtekeningen gebruikt deze maand",
+      "remaining": "{{count}} resterend",
+      "resetsOn": "Quotum wordt gereset op {{date}}",
+      "memberSince": "Abonnee sinds {{date}}",
+      "loadError": "Abonnementsinformatie is momenteel niet beschikbaar."
+    },
     "appearance": "Uiterlijk",
     "theme": "Thema",
     "themeDescription": "Kies een kleurenthema voor de applicatie-interface.",

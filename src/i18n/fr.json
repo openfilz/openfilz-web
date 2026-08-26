@@ -424,6 +424,23 @@
       "userQuota": "Limite de stockage total",
       "userQuotaDescription": "Stockage total maximum pour votre compte"
     },
+    "cloudSigning": {
+      "title": "Signature Cloud",
+      "planIncluded": "Signatures incluses dans votre abonnement",
+      "planMetered": "Forfait à l’usage (paiement par signature)",
+      "status": {
+        "ACTIVE": "Actif",
+        "SUSPENDED": "Suspendu",
+        "REVOKED": "Révoqué"
+      },
+      "hardCapOn": "La signature est bloquée une fois le quota mensuel atteint.",
+      "hardCapOff": "Les signatures au-delà du quota mensuel sont facturées en dépassement.",
+      "used": "{{used}} signature(s) sur {{quota}} utilisée(s) ce mois-ci",
+      "remaining": "{{count}} restante(s)",
+      "resetsOn": "Le quota se réinitialise le {{date}}",
+      "memberSince": "Abonné depuis le {{date}}",
+      "loadError": "Les informations d’abonnement sont momentanément indisponibles."
+    },
     "appearance": "Apparence",
     "theme": "Thème",
     "themeDescription": "Choisissez un thème de couleur pour l'interface de l'application.",

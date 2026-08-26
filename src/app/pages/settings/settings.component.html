@@ -42,6 +42,62 @@
     </div>
   }
 
+  @if (showCloudSigning) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>cloud_done</mat-icon>
+        {{ 'settings.cloudSigning.title' | translate }}
+      </div>
+
+      <div class="section-content">
+        @if (cloudSubscription; as sub) {
+          <div class="cloud-sub">
+            <div class="cloud-head">
+              <div class="cloud-plan">
+                <span class="cloud-plan-name">
+                  {{ (sub.billingMode === 'METERED' ? 'settings.cloudSigning.planMetered' : 'settings.cloudSigning.planIncluded') | translate }}
+                </span>
+                <span class="cloud-status st-{{ sub.status }}">{{ 'settings.cloudSigning.status.' + sub.status | translate }}</span>
+              </div>
+              <p class="setting-description cloud-cap-note">
+                {{ (sub.hardCap ? 'settings.cloudSigning.hardCapOn' : 'settings.cloudSigning.hardCapOff') | translate }}
+              </p>
+            </div>
+
+            <div class="cloud-usage">
+              <div class="cloud-usage-labels">
+                <span>{{ 'settings.cloudSigning.used' | translate:{ used: sub.usedThisMonth, quota: sub.monthlyQuota } }}</span>
+                <span class="cloud-remaining" [class.low]="sub.remaining <= 5">
+                  {{ 'settings.cloudSigning.remaining' | translate:{ count: sub.remaining } }}
+                </span>
+              </div>
+              <div class="cloud-usage-bar" role="progressbar" [attr.aria-valuenow]="cloudUsagePct" aria-valuemin="0" aria-valuemax="100">
+                <div class="cloud-usage-fill" [class.warn]="cloudUsagePct >= 80" [style.width.%]="cloudUsagePct"></div>
+              </div>
+            </div>
+
+            <div class="cloud-meta">
+              <div class="cloud-meta-item">
+                <mat-icon aria-hidden="true">event_repeat</mat-icon>
+                <span>{{ 'settings.cloudSigning.resetsOn' | translate:{ date: (sub.periodEnd | date:'mediumDate') } }}</span>
+              </div>
+              @if (sub.memberSince) {
+                <div class="cloud-meta-item">
+                  <mat-icon aria-hidden="true">workspace_premium</mat-icon>
+                  <span>{{ 'settings.cloudSigning.memberSince' | translate:{ date: (sub.memberSince | date:'mediumDate') } }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        } @else if (cloudSubscriptionError) {
+          <p class="cloud-error">{{ 'settings.cloudSigning.loadError' | translate }}</p>
+        } @else {
+          <div class="cloud-loading"><mat-spinner diameter="26"></mat-spinner></div>
+        }
+      </div>
+    </div>
+  }
+
   @if (showAiSettings) {
     <div class="settings-section">
       <div class="section-title">

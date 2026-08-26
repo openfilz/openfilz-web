@@ -17,6 +17,8 @@ export interface Settings {
   signatureAuthMethods?: string[];
   /** False when the backend records a reminder cadence but has nothing to act on it. */
   signatureRemindersActive?: boolean;
+  /** True when the openfilz-cloud seal provider is configured — Settings shows the subscription card. */
+  signatureCloudActive?: boolean;
 }
 
 @Injectable({

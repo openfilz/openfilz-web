@@ -424,6 +424,23 @@
       "userQuota": "Limite archiviazione totale",
       "userQuotaDescription": "Archiviazione totale massima per il tuo account"
     },
+    "cloudSigning": {
+      "title": "Firma cloud",
+      "planIncluded": "Firme incluse nel tuo abbonamento",
+      "planMetered": "Piano a consumo (pagamento per firma)",
+      "status": {
+        "ACTIVE": "Attivo",
+        "SUSPENDED": "Sospeso",
+        "REVOKED": "Revocato"
+      },
+      "hardCapOn": "La firma viene bloccata al raggiungimento della quota mensile.",
+      "hardCapOff": "Le firme oltre la quota mensile vengono fatturate come eccedenza.",
+      "used": "{{used}} firme su {{quota}} utilizzate questo mese",
+      "remaining": "{{count}} rimanenti",
+      "resetsOn": "La quota si azzera il {{date}}",
+      "memberSince": "Abbonato dal {{date}}",
+      "loadError": "Le informazioni sull’abbonamento non sono al momento disponibili."
+    },
     "appearance": "Aspetto",
     "theme": "Tema",
     "themeDescription": "Scegli un tema di colore per l'interfaccia dell'applicazione.",

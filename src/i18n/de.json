@@ -424,6 +424,23 @@
       "userQuota": "Gesamtspeicherlimit",
       "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto"
     },
+    "cloudSigning": {
+      "title": "Cloud-Signatur",
+      "planIncluded": "Signaturen in Ihrem Abonnement enthalten",
+      "planMetered": "Nutzungsbasierter Tarif (Zahlung pro Signatur)",
+      "status": {
+        "ACTIVE": "Aktiv",
+        "SUSPENDED": "Ausgesetzt",
+        "REVOKED": "Widerrufen"
+      },
+      "hardCapOn": "Das Signieren wird blockiert, sobald das Monatskontingent erreicht ist.",
+      "hardCapOff": "Signaturen über das Monatskontingent hinaus werden als Mehrverbrauch abgerechnet.",
+      "used": "{{used}} von {{quota}} Signaturen diesen Monat verwendet",
+      "remaining": "{{count}} verbleibend",
+      "resetsOn": "Kontingent wird am {{date}} zurückgesetzt",
+      "memberSince": "Abonnent seit {{date}}",
+      "loadError": "Die Abonnementinformationen sind derzeit nicht verfügbar."
+    },
     "appearance": "Erscheinungsbild",
     "theme": "Design",
     "themeDescription": "Wählen Sie ein Farbschema für die Benutzeroberfläche.",

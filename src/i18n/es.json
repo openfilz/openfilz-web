@@ -424,6 +424,23 @@
       "userQuota": "Límite de almacenamiento total",
       "userQuotaDescription": "Almacenamiento total máximo para su cuenta"
     },
+    "cloudSigning": {
+      "title": "Firma en la nube",
+      "planIncluded": "Firmas incluidas en su suscripción",
+      "planMetered": "Plan medido (pago por firma)",
+      "status": {
+        "ACTIVE": "Activa",
+        "SUSPENDED": "Suspendida",
+        "REVOKED": "Revocada"
+      },
+      "hardCapOn": "La firma se bloquea al alcanzar la cuota mensual.",
+      "hardCapOff": "Las firmas que superen la cuota mensual se facturan como excedente.",
+      "used": "{{used}} de {{quota}} firmas utilizadas este mes",
+      "remaining": "{{count}} restantes",
+      "resetsOn": "La cuota se restablece el {{date}}",
+      "memberSince": "Suscriptor desde el {{date}}",
+      "loadError": "La información de la suscripción no está disponible en este momento."
+    },
     "appearance": "Apariencia",
     "theme": "Tema",
     "themeDescription": "Elija un tema de color para la interfaz de la aplicación.",

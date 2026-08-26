@@ -424,6 +424,23 @@
       "userQuota": "Total Storage Limit",
       "userQuotaDescription": "Maximum total storage for your account"
     },
+    "cloudSigning": {
+      "title": "Cloud Signing",
+      "planIncluded": "Signatures included in your subscription",
+      "planMetered": "Metered plan (pay per signature)",
+      "status": {
+        "ACTIVE": "Active",
+        "SUSPENDED": "Suspended",
+        "REVOKED": "Revoked"
+      },
+      "hardCapOn": "Signing is blocked once the monthly quota is reached.",
+      "hardCapOff": "Signatures beyond the monthly quota are billed as overage.",
+      "used": "{{used}} of {{quota}} signatures used this month",
+      "remaining": "{{count}} remaining",
+      "resetsOn": "Quota resets on {{date}}",
+      "memberSince": "Subscriber since {{date}}",
+      "loadError": "Subscription information is currently unavailable."
+    },
     "appearance": "Appearance",
     "theme": "Theme",
     "themeDescription": "Choose a color theme for the application interface.",
