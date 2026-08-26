@@ -424,6 +424,23 @@
       "userQuota": "Limite de armazenamento total",
       "userQuotaDescription": "Armazenamento total máximo para sua conta"
     },
+    "cloudSigning": {
+      "title": "Assinatura em nuvem",
+      "planIncluded": "Assinaturas incluídas na sua subscrição",
+      "planMetered": "Plano medido (pagamento por assinatura)",
+      "status": {
+        "ACTIVE": "Ativa",
+        "SUSPENDED": "Suspensa",
+        "REVOKED": "Revogada"
+      },
+      "hardCapOn": "A assinatura é bloqueada quando a cota mensal é atingida.",
+      "hardCapOff": "As assinaturas além da cota mensal são cobradas como excedente.",
+      "used": "{{used}} de {{quota}} assinaturas usadas este mês",
+      "remaining": "{{count}} restantes",
+      "resetsOn": "A cota é redefinida em {{date}}",
+      "memberSince": "Assinante desde {{date}}",
+      "loadError": "As informações da subscrição estão temporariamente indisponíveis."
+    },
     "appearance": "Aparência",
     "theme": "Tema",
     "themeDescription": "Escolha um tema de cor para a interface do aplicativo.",

@@ -306,7 +306,7 @@ export abstract class FileOperationsComponent implements OnInit {
       });
       dialogRef.afterClosed().subscribe(result => {
         if (result?.success) {
-          this.router.navigate(['/signatures']);
+          this.router.navigate(['/signatures'], { queryParams: { tab: 'sent' } });
         }
       });
     });

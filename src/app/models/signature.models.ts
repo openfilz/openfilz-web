@@ -180,6 +180,21 @@ export interface SignatureEnvelopeDTO {
   recipients: SignatureRecipientDTO[];
 }
 
+/** Cloud Signing plan + month-to-date usage relayed from sign.openfilz.com (Settings page). */
+export interface CloudSignatureSubscription {
+  status: 'ACTIVE' | 'SUSPENDED' | 'REVOKED' | string;
+  billingMode: 'INCLUDED' | 'METERED' | string;
+  monthlyQuota: number;
+  usedThisMonth: number;
+  remaining: number;
+  periodStart: string;
+  /** When the monthly quota resets (start of next UTC month). */
+  periodEnd: string;
+  /** True when signing is blocked once the quota is reached (otherwise overage is billed). */
+  hardCap: boolean;
+  memberSince?: string;
+}
+
 export interface SignatureEventDTO {
   type: SignatureEventType;
   actor?: string;

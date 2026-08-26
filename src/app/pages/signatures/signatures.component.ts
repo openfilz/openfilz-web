@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +38,7 @@ import { recipientColor } from '../../utils/signature-envelope';
 export class SignaturesComponent implements OnInit {
   private api = inject(SignatureService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
@@ -48,6 +49,10 @@ export class SignaturesComponent implements OnInit {
   sent: SignatureEnvelopeDTO[] = [];
   toSign: SignatureEnvelopeDTO[] = [];
   templates: SignatureTemplateDTO[] = [];
+
+  /** Active tab index, driven by the `?tab=` query param (to-sign | sent | templates). */
+  selectedTab = 0;
+  private static readonly TAB_INDEX: Record<string, number> = { 'to-sign': 0, 'sent': 1, 'templates': 2 };
 
   /** Optional status filter for the Sent tab. */
   sentFilter: SignatureEnvelopeStatus | null = null;
@@ -65,6 +70,10 @@ export class SignaturesComponent implements OnInit {
   recipientColumns = ['order', 'recipient', 'role', 'auth', 'status', 'viewed', 'signed', 'reminders', 'fields', 'actions'];
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      const tab = params.get('tab');
+      if (tab && tab in SignaturesComponent.TAB_INDEX) this.selectedTab = SignaturesComponent.TAB_INDEX[tab];
+    });
     this.reloadSent();
     this.reloadToSign();
     this.reloadTemplates();

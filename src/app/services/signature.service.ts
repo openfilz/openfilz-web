@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   ApplySignatureRequest,
+  CloudSignatureSubscription,
   CreateSignatureEnvelopeRequest,
   DeclineSignatureRequest,
   InstantiateTemplateRequest,
@@ -69,6 +70,11 @@ export class SignatureService {
 
   downloadSignedDocument(id: string): Observable<Blob> {
     return this.http.get(`${this.base}/${id}/signed-document`, { responseType: 'blob' });
+  }
+
+  /** 404 unless the deployment uses the openfilz-cloud seal provider. */
+  cloudSubscription(): Observable<CloudSignatureSubscription> {
+    return this.http.get<CloudSignatureSubscription>(`${this.base}/cloud-subscription`);
   }
 
   // ── Templates ──────────────────────────────────────────────────────────

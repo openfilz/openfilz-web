@@ -131,6 +131,105 @@
   height: 20px;
 }
 
+/* Cloud Signing subscription */
+.cloud-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.cloud-plan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cloud-plan-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cloud-status {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.cloud-status.st-ACTIVE { background: color-mix(in srgb, #10b981 18%, transparent); }
+.cloud-status.st-SUSPENDED { background: color-mix(in srgb, #f59e0b 18%, transparent); }
+.cloud-status.st-REVOKED { background: color-mix(in srgb, #ef4444 16%, transparent); }
+
+.cloud-cap-note {
+  margin: 6px 0 0;
+}
+
+.cloud-usage-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.cloud-remaining { color: #10b981; font-weight: 500; }
+.cloud-remaining.low { color: #ef4444; }
+
+.cloud-usage-bar {
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.cloud-usage-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #10b981;
+  transition: width .2s ease;
+}
+.cloud-usage-fill.warn { background: #f59e0b; }
+
+.cloud-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.cloud-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.cloud-meta-item mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--primary);
+}
+
+.cloud-error {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.cloud-loading {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+}
+
 /* Quota Grid */
 .quota-grid {
   display: grid;
