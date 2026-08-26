@@ -5,7 +5,7 @@
       <h1>{{ 'signature.list.title' | translate }}</h1>
     </header>
 
-    <mat-tab-group animationDuration="150ms">
+    <mat-tab-group animationDuration="150ms" [(selectedIndex)]="selectedTab">
       <!-- ── Waiting for my signature ─────────────────────────────────── -->
       <mat-tab [label]="'signature.list.toSignTab' | translate">
         @if (loadingToSign) {
@@ -117,34 +117,36 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let e" class="row-actions" (click)="$event.stopPropagation()">
-                  <button mat-icon-button type="button" (click)="openDetail(e)"
-                          [matTooltip]="'signature.list.details' | translate" [attr.aria-label]="'signature.list.details' | translate">
-                    <mat-icon aria-hidden="true">info</mat-icon>
-                  </button>
-                  @if (e.status === 'DRAFT') {
-                    <button mat-icon-button type="button" (click)="sendDraft(e)" [disabled]="isBusy(e.id)"
-                            [matTooltip]="'signature.list.sendNow' | translate" [attr.aria-label]="'signature.list.sendNow' | translate">
-                      <mat-icon aria-hidden="true">send</mat-icon>
+                  <div class="acts">
+                    <button mat-icon-button type="button" class="tint-blue" (click)="openDetail(e)"
+                            [matTooltip]="'signature.list.details' | translate" [attr.aria-label]="'signature.list.details' | translate">
+                      <mat-icon aria-hidden="true">info</mat-icon>
                     </button>
-                  }
-                  @if (e.status === 'COMPLETED') {
-                    <button mat-icon-button type="button" (click)="downloadSigned(e)" [disabled]="isBusy(e.id + ':dl')"
-                            [matTooltip]="'signature.list.downloadSigned' | translate" [attr.aria-label]="'signature.list.downloadSigned' | translate">
-                      <mat-icon aria-hidden="true">download</mat-icon>
-                    </button>
-                    @if (e.signedDocId) {
-                      <button mat-icon-button type="button" (click)="openSigned(e)"
-                              [matTooltip]="'signature.list.openSigned' | translate" [attr.aria-label]="'signature.list.openSigned' | translate">
-                        <mat-icon aria-hidden="true">picture_as_pdf</mat-icon>
+                    @if (e.status === 'DRAFT') {
+                      <button mat-icon-button type="button" class="tint-violet" (click)="sendDraft(e)" [disabled]="isBusy(e.id)"
+                              [matTooltip]="'signature.list.sendNow' | translate" [attr.aria-label]="'signature.list.sendNow' | translate">
+                        <mat-icon aria-hidden="true">send</mat-icon>
                       </button>
                     }
-                  }
-                  @if (canCancel(e)) {
-                    <button mat-icon-button type="button" class="danger" (click)="cancel(e)" [disabled]="isBusy(e.id)"
-                            [matTooltip]="'signature.list.cancel' | translate" [attr.aria-label]="'signature.list.cancel' | translate">
-                      <mat-icon aria-hidden="true">cancel</mat-icon>
-                    </button>
-                  }
+                    @if (e.status === 'COMPLETED') {
+                      <button mat-icon-button type="button" class="tint-green" (click)="downloadSigned(e)" [disabled]="isBusy(e.id + ':dl')"
+                              [matTooltip]="'signature.list.downloadSigned' | translate" [attr.aria-label]="'signature.list.downloadSigned' | translate">
+                        <mat-icon aria-hidden="true">download</mat-icon>
+                      </button>
+                      @if (e.signedDocId) {
+                        <button mat-icon-button type="button" class="tint-orange" (click)="openSigned(e)"
+                                [matTooltip]="'signature.list.openSigned' | translate" [attr.aria-label]="'signature.list.openSigned' | translate">
+                          <mat-icon aria-hidden="true">picture_as_pdf</mat-icon>
+                        </button>
+                      }
+                    }
+                    @if (canCancel(e)) {
+                      <button mat-icon-button type="button" class="tint-red" (click)="cancel(e)" [disabled]="isBusy(e.id)"
+                              [matTooltip]="'signature.list.cancel' | translate" [attr.aria-label]="'signature.list.cancel' | translate">
+                        <mat-icon aria-hidden="true">cancel</mat-icon>
+                      </button>
+                    }
+                  </div>
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="sentColumns"></tr>
@@ -196,18 +198,20 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let t" class="row-actions">
-                  <button mat-stroked-button type="button" class="use-btn" (click)="useTemplate(t)" [disabled]="isBusy(t.id)">
-                    <mat-icon aria-hidden="true">send</mat-icon>
-                    {{ 'signature.templates.use' | translate }}
-                  </button>
-                  <button mat-icon-button type="button" (click)="renameTemplate(t)" [disabled]="isBusy(t.id)"
-                          [matTooltip]="'common.rename' | translate" [attr.aria-label]="'common.rename' | translate">
-                    <mat-icon aria-hidden="true">edit</mat-icon>
-                  </button>
-                  <button mat-icon-button type="button" class="danger" (click)="deleteTemplate(t)" [disabled]="isBusy(t.id)"
-                          [matTooltip]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate">
-                    <mat-icon aria-hidden="true">delete</mat-icon>
-                  </button>
+                  <div class="acts">
+                    <button mat-stroked-button type="button" class="use-btn" (click)="useTemplate(t)" [disabled]="isBusy(t.id)">
+                      <mat-icon aria-hidden="true">send</mat-icon>
+                      {{ 'signature.templates.use' | translate }}
+                    </button>
+                    <button mat-icon-button type="button" class="tint-amber" (click)="renameTemplate(t)" [disabled]="isBusy(t.id)"
+                            [matTooltip]="'common.rename' | translate" [attr.aria-label]="'common.rename' | translate">
+                      <mat-icon aria-hidden="true">edit</mat-icon>
+                    </button>
+                    <button mat-icon-button type="button" class="tint-red" (click)="deleteTemplate(t)" [disabled]="isBusy(t.id)"
+                            [matTooltip]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate">
+                      <mat-icon aria-hidden="true">delete</mat-icon>
+                    </button>
+                  </div>
                 </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="templateColumns"></tr>
@@ -294,7 +298,7 @@
                 <td>{{ r.fields.length || 0 }}</td>
                 <td class="row-actions">
                   @if (canResend(d, r)) {
-                    <button mat-icon-button type="button" (click)="resend(d, r)" [disabled]="isBusy(d.id + ':' + r.id)"
+                    <button mat-icon-button type="button" class="tint-blue" (click)="resend(d, r)" [disabled]="isBusy(d.id + ':' + r.id)"
                             [matTooltip]="'signature.list.resend' | translate" [attr.aria-label]="'signature.list.resend' | translate">
                       <mat-icon aria-hidden="true">forward_to_inbox</mat-icon>
                     </button>

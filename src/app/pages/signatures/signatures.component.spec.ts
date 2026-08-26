@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideTranslateService } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { SignaturesComponent } from './signatures.component';
 import { SignatureEnvelopeDTO, SignatureRecipientDTO, SignatureTemplateDTO } from '../../models/signature.models';
@@ -39,15 +39,18 @@ describe('SignaturesComponent', () => {
   let http: HttpTestingController;
   let dialog: FakeDialog;
   const navigations: unknown[][] = [];
+  const queryParams = new BehaviorSubject(convertToParamMap({}));
 
   beforeEach(() => {
     dialog = new FakeDialog();
     navigations.length = 0;
+    queryParams.next(convertToParamMap({}));
     TestBed.configureTestingModule({
       imports: [SignaturesComponent],
       providers: [
         provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations(), provideTranslateService(),
-        { provide: Router, useValue: { navigate: (...args: unknown[]) => { navigations.push(args); return Promise.resolve(true); } } }
+        { provide: Router, useValue: { navigate: (...args: unknown[]) => { navigations.push(args); return Promise.resolve(true); } } },
+        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } }
       ]
     });
     // MatDialogModule (imported by the standalone component) would shadow a root-level override.
@@ -76,6 +79,17 @@ describe('SignaturesComponent', () => {
     expect(component.loadingSent).toBe(false);
     expect(component.loadingToSign).toBe(false);
     expect(component.loadingTemplates).toBe(false);
+  });
+
+  it('selects the tab named by the ?tab= query param', () => {
+    flushInitialLoads();
+    expect(component.selectedTab).toBe(0);
+    queryParams.next(convertToParamMap({ tab: 'sent' }));
+    expect(component.selectedTab).toBe(1);
+    queryParams.next(convertToParamMap({ tab: 'templates' }));
+    expect(component.selectedTab).toBe(2);
+    queryParams.next(convertToParamMap({ tab: 'nope' }));
+    expect(component.selectedTab).toBe(2);
   });
 
   it('computes signer progress ignoring CC recipients', () => {

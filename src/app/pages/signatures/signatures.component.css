@@ -39,8 +39,21 @@
 .use-btn { border-radius: 999px; margin-right: 4px; }
 .use-btn mat-icon { margin-right: 4px; }
 
+/* Action icons: one single line, each with its own accent color. */
+.acts { display: inline-flex; align-items: center; justify-content: flex-end; gap: 2px; flex-wrap: nowrap; }
+button[class*="tint-"] { --tint: var(--text-secondary); }
+button[class*="tint-"] mat-icon { color: var(--tint); }
+button[class*="tint-"]:not([disabled]):hover { background: color-mix(in srgb, var(--tint) 14%, transparent); }
+button[class*="tint-"][disabled] mat-icon { opacity: .4; }
+button.tint-blue { --tint: #3b82f6; }
+button.tint-violet { --tint: #8b5cf6; }
+button.tint-green { --tint: #10b981; }
+button.tint-orange { --tint: #f97316; }
+button.tint-amber { --tint: #f59e0b; }
+button.tint-red { --tint: #ef4444; }
+
 .mail-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-secondary); }
-.mail-hint mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.mail-hint mat-icon { font-size: 18px; width: 18px; height: 18px; color: #f59e0b; }
 
 .progress { display: flex; align-items: center; gap: 8px; min-width: 120px; }
 .progress-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--bg-tertiary); overflow: hidden; }
