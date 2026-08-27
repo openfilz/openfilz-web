@@ -19,6 +19,10 @@ export interface Settings {
   signatureRemindersActive?: boolean;
   /** True when the openfilz-cloud seal provider is configured — Settings shows the subscription card. */
   signatureCloudActive?: boolean;
+  /** True on shared public demo deployments — shows the demo disclaimers. */
+  demoMode?: boolean;
+  /** Effective e-Sign seal provider id (null/absent when e-Sign is off) — 'self-signed-dev' triggers the untrusted-seal notice. */
+  sealProvider?: string | null;
 }
 
 @Injectable({
@@ -94,5 +98,19 @@ export class SettingsService {
 
   get isSignatureActive(): boolean {
     return this.settingsSubject.value?.signatureActive ?? false;
+  }
+
+  /** Shared public demo deployment — the demo disclaimers follow this backend flag. */
+  get isDemoMode(): boolean {
+    return this.settingsSubject.value?.demoMode === true;
+  }
+
+  /**
+   * True when completed envelopes are sealed with the throwaway dev certificate —
+   * Acrobat reports those signatures as untrusted, so the UI shows the seal notice.
+   * Any real seal (pkcs12, azure-keyvault, openfilz-cloud) turns the notice off.
+   */
+  get isDevSeal(): boolean {
+    return this.isSignatureActive && this.settingsSubject.value?.sealProvider === 'self-signed-dev';
   }
 }

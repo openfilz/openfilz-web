@@ -246,6 +246,8 @@
 .pdf-state.error { color: #ef4444; }
 
 /* ── Footer ──────────────────────────────────────────────────────────── */
+.dialog-seal-notice { display: block; flex: 0 0 auto; margin: 8px 24px 0; }
+
 .dialog-actions {
   flex: 0 0 auto;
   display: flex; justify-content: flex-end; gap: 12px;

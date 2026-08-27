@@ -5,6 +5,12 @@
 
 <mat-dialog-content>
   <div class="upload-dialog-content">
+    @if (showDemoPrivacyWarning) {
+      <div class="hint warn demo-upload-warning" role="alert">
+        <mat-icon aria-hidden="true">visibility</mat-icon>
+        <span>{{ 'notice.demo.ce.uploadWarning' | translate }}</span>
+      </div>
+    }
     <!-- File list section -->
     <div class="files-section">
       <div class="section-header">

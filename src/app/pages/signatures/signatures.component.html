@@ -5,6 +5,8 @@
       <h1>{{ 'signature.list.title' | translate }}</h1>
     </header>
 
+    <app-seal-notice></app-seal-notice>
+
     <mat-tab-group animationDuration="150ms" [(selectedIndex)]="selectedTab">
       <!-- ── Waiting for my signature ─────────────────────────────────── -->
       <mat-tab [label]="'signature.list.toSignTab' | translate">

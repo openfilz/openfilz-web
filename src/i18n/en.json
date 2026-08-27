@@ -439,7 +439,15 @@
       "remaining": "{{count}} remaining",
       "resetsOn": "Quota resets on {{date}}",
       "memberSince": "Subscriber since {{date}}",
-      "loadError": "Subscription information is currently unavailable."
+      "loadError": "Subscription information is currently unavailable.",
+      "upsell": {
+        "title": "Adobe-trusted signatures",
+        "devSeal": "This deployment seals completed envelopes with a demo certificate, so Adobe Acrobat reports the signatures as untrusted.",
+        "pitch": "With OpenFilz Cloud Signing, envelopes are sealed with OpenFilz's Adobe-approved (AATL) certificate — signatures show as valid in Acrobat, for €1 per user per month. Only a document hash ever leaves your deployment.",
+        "byoc": "Prefer your own identity? Bring your own AATL certificate (PKCS#12 file or Azure Key Vault HSM) — the AATL Onboarding Pack guides you from purchase to first sealed PDF.",
+        "learnMore": "Discover Cloud Signing",
+        "aatlPack": "AATL Onboarding Pack"
+      }
     },
     "appearance": "Appearance",
     "theme": "Theme",
@@ -490,6 +498,12 @@
       "saved": "AI settings saved.",
       "saveError": "Could not save AI settings.",
       "loadError": "Could not load AI settings."
+    },
+    "discoverEe": {
+      "title": "Discover OpenFilz Enterprise",
+      "pitch": "You are running the open-source Community Edition. OpenFilz Enterprise adds private per-user spaces, document sharing & permissions, comments & mentions, teams, analytics, webhooks & integrations, document scanning with OCR, antivirus, backups and PDF/A archiving with trusted e-signatures.",
+      "learnMore": "Explore Enterprise",
+      "tryDemo": "Try the Enterprise demo"
     }
   },
   "bottomSheet": {
@@ -971,6 +985,12 @@
       "expired": "This signing request has expired.",
       "validation": "The request was rejected.",
       "tooMany": "Too many attempts — please wait and retry."
+    },
+    "sealNotice": {
+      "message": "Signatures here are sealed with a demo certificate — Adobe Acrobat will report them as untrusted.",
+      "cloud": "Get Adobe-trusted signatures with OpenFilz Cloud Signing",
+      "or": "or",
+      "byoc": "bring your own AATL certificate — our AATL Onboarding Pack can help"
     }
   },
   "aiChat": {
@@ -989,5 +1009,21 @@
     "close": "Close chat",
     "errorStreaming": "An error occurred while generating a response",
     "activeModel": "Model answering this chat"
+  },
+  "notice": {
+    "dismiss": "Dismiss",
+    "demo": {
+      "ce": {
+        "message": "Public demo — every visitor can see all files. Do not upload confidential documents.",
+        "tryEe": "Need privacy? Try the Enterprise demo",
+        "openSource": "OpenFilz is open source",
+        "uploadWarning": "This is a public shared demo: anyone can see the files you upload. Do not upload confidential documents."
+      },
+      "ee": {
+        "message": "You are exploring the OpenFilz Enterprise demo — data may be reset at any time.",
+        "startTrial": "Start a free trial",
+        "pricing": "Pricing"
+      }
+    }
   }
 }

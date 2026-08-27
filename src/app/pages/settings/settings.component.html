@@ -98,6 +98,56 @@
     </div>
   }
 
+  @if (showCloudSigningUpsell) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>verified</mat-icon>
+        {{ 'settings.cloudSigning.upsell.title' | translate }}
+      </div>
+
+      <div class="section-content">
+        <div class="upsell-card">
+          <p class="upsell-text">{{ 'settings.cloudSigning.upsell.devSeal' | translate }}</p>
+          <p class="upsell-text">{{ 'settings.cloudSigning.upsell.pitch' | translate }}</p>
+          <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
+          <div class="upsell-actions">
+            <a mat-raised-button color="primary" [href]="cloudSigningUrl" target="_blank" rel="noopener">
+              <mat-icon aria-hidden="true">cloud_done</mat-icon>
+              {{ 'settings.cloudSigning.upsell.learnMore' | translate }}
+            </a>
+            <a mat-stroked-button [href]="aatlPackUrl" target="_blank" rel="noopener">
+              {{ 'settings.cloudSigning.upsell.aatlPack' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showDiscoverEe) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>rocket_launch</mat-icon>
+        {{ 'settings.discoverEe.title' | translate }}
+      </div>
+
+      <div class="section-content">
+        <div class="upsell-card">
+          <p class="upsell-text">{{ 'settings.discoverEe.pitch' | translate }}</p>
+          <div class="upsell-actions">
+            <a mat-raised-button color="primary" [href]="enterpriseUrl" target="_blank" rel="noopener">
+              <mat-icon aria-hidden="true">open_in_new</mat-icon>
+              {{ 'settings.discoverEe.learnMore' | translate }}
+            </a>
+            <a mat-stroked-button [href]="eeDemoUrl" target="_blank" rel="noopener">
+              {{ 'settings.discoverEe.tryDemo' | translate }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   @if (showAiSettings) {
     <div class="settings-section">
       <div class="section-title">

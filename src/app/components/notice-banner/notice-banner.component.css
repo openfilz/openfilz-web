@@ -1,0 +1,131 @@
+/* Demo notice bar — same layout mechanics as the EE agent-update-banner (fixed under the
+   64px header, 57px tall on desktop; the shell's .has-notice-banner offsets assume that). */
+.notice-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 57px;
+  box-sizing: border-box;
+  padding: 8px 20px;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--primary) 8%, var(--bg-primary)) 0%,
+    color-mix(in srgb, var(--primary) 3%, var(--bg-primary)) 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border-light));
+  border-left: 3px solid var(--primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: fixed;
+  top: 64px;
+  left: 240px;
+  right: 0;
+  z-index: 99;
+  transition: left 0.3s ease;
+}
+
+/* CE privacy warning: amber, not primary — it is a caution, not a promotion */
+.notice-banner.notice-warn {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, #f59e0b 12%, var(--bg-primary)) 0%,
+    color-mix(in srgb, #f59e0b 4%, var(--bg-primary)) 100%);
+  border-bottom-color: color-mix(in srgb, #f59e0b 30%, var(--border-light));
+  border-left-color: #f59e0b;
+}
+
+:host-context([dir="rtl"]) .notice-banner {
+  left: 0;
+  right: 240px;
+  border-left: none;
+  border-right: 3px solid var(--primary);
+  transition: right 0.3s ease;
+}
+
+:host-context([dir="rtl"]) .notice-banner.notice-warn {
+  border-right-color: #f59e0b;
+}
+
+.notice-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.notice-warn .notice-icon {
+  color: #f59e0b;
+}
+
+.notice-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 2px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.notice-message {
+  font-weight: 500;
+}
+
+.notice-links {
+  white-space: nowrap;
+}
+
+.notice-links a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.notice-links a:hover {
+  text-decoration: underline;
+}
+
+.notice-sep {
+  margin: 0 6px;
+  color: var(--text-secondary);
+}
+
+.notice-dismiss {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .notice-banner {
+    left: 200px;
+  }
+
+  :host-context([dir="rtl"]) .notice-banner {
+    left: 0;
+    right: 200px;
+  }
+}
+
+/* Mobile: header is 60px, text wraps — the shell budgets ~80px for the banner */
+@media (max-width: 768px) {
+  .notice-banner {
+    height: 80px;
+    padding: 8px 12px;
+    top: 60px;
+    left: 0;
+    right: 0;
+  }
+
+  :host-context([dir="rtl"]) .notice-banner {
+    right: 0;
+  }
+
+  .notice-text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notice-banner {
+    top: 56px;
+  }
+}

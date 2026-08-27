@@ -15,6 +15,16 @@
   left: 60px;
 }
 
+/* Adjust notice banner position when sidebar is collapsed */
+.sidebar-collapsed ::ng-deep app-notice-banner .notice-banner {
+  left: 60px;
+}
+
+:host-context([dir="rtl"]) .sidebar-collapsed ::ng-deep app-notice-banner .notice-banner {
+  left: 0;
+  right: 60px;
+}
+
 .main-content {
   flex-grow: 1;
   margin-top: 64px;
@@ -69,6 +79,24 @@
   height: calc(100vh - 92px);
   height: calc(100dvh - 92px);
   /* Include breadcrumb in calculation */
+}
+
+/* When the notice banner is visible (57px tall), shift breadcrumb and content down */
+.has-notice-banner ::ng-deep app-breadcrumb .breadcrumb {
+  top: 121px; /* 64px header + 57px banner */
+}
+
+.has-notice-banner .main-content:not(.dashboard-content) {
+  margin-top: 149px; /* 92px + 57px banner */
+  height: calc(100vh - 149px);
+  height: calc(100dvh - 149px);
+}
+
+.dashboard-view.has-notice-banner .main-content,
+.has-notice-banner .main-content.dashboard-content {
+  margin-top: 121px; /* 64px + 57px banner */
+  height: calc(100vh - 121px);
+  height: calc(100dvh - 121px);
 }
 
 /* File explorer views (my-folder, recycle-bin, search, favorites) need overflow hidden
@@ -154,6 +182,14 @@
     height: calc(100dvh - 60px);
   }
 
+  /* Notice banner on mobile is taller (80px, text wraps) */
+  .has-notice-banner .main-content,
+  .has-notice-banner .main-content:not(.dashboard-content) {
+    margin-top: 140px;
+    height: calc(100vh - 140px);
+    height: calc(100dvh - 140px);
+  }
+
   /* Mobile overlay for sidebar */
   .mobile-overlay {
     backdrop-filter: blur(2px);
@@ -175,6 +211,13 @@
     /* No separate breadcrumb on mobile - integrated in toolbar */
     height: calc(100vh - 56px);
     height: calc(100dvh - 56px);
+  }
+
+  .has-notice-banner .main-content,
+  .has-notice-banner .main-content:not(.dashboard-content) {
+    margin-top: 136px;
+    height: calc(100vh - 136px);
+    height: calc(100dvh - 136px);
   }
 
   .empty-state {

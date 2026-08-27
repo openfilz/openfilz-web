@@ -8,6 +8,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { FileIconService } from '../../services/file-icon.service';
+import { TranslatePipe } from '@ngx-translate/core';
+import { SettingsService } from '../../services/settings.service';
+import { IS_ENTERPRISE } from '../../edition';
 
 export interface UploadDialogData {
   files: File[];
@@ -32,7 +35,8 @@ export interface UploadDialogResult {
     MatProgressBarModule,
     MatListModule,
     MatCheckboxModule,
-    FormsModule
+    FormsModule,
+    TranslatePipe
   ],
 })
 export class UploadDialogComponent {
@@ -43,6 +47,12 @@ export class UploadDialogComponent {
   readonly dialogRef = inject(MatDialogRef<UploadDialogComponent>);
   readonly data = inject<UploadDialogData>(MAT_DIALOG_DATA);
   private fileIconService = inject(FileIconService);
+  private settingsService = inject(SettingsService);
+
+  /** CE shared demo only: every visitor sees every file — warn before an upload. */
+  get showDemoPrivacyWarning(): boolean {
+    return this.settingsService.isDemoMode && !IS_ENTERPRISE;
+  }
 
   constructor() {
     this.files = this.data.files;

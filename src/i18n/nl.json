@@ -439,7 +439,15 @@
       "remaining": "{{count}} resterend",
       "resetsOn": "Quotum wordt gereset op {{date}}",
       "memberSince": "Abonnee sinds {{date}}",
-      "loadError": "Abonnementsinformatie is momenteel niet beschikbaar."
+      "loadError": "Abonnementsinformatie is momenteel niet beschikbaar.",
+      "upsell": {
+        "title": "Door Adobe erkende handtekeningen",
+        "devSeal": "Deze installatie verzegelt voltooide enveloppen met een democertificaat, waardoor Adobe Acrobat de handtekeningen als niet vertrouwd markeert.",
+        "pitch": "Met OpenFilz Cloud Signing worden enveloppen verzegeld met het door Adobe erkende (AATL) certificaat van OpenFilz — handtekeningen verschijnen als geldig in Acrobat, voor € 1 per gebruiker per maand. Alleen een hash van het document verlaat uw installatie.",
+        "byoc": "Liever uw eigen identiteit? Gebruik uw eigen AATL-certificaat (PKCS#12-bestand of Azure Key Vault HSM) — het AATL-onboardingpakket begeleidt u van aankoop tot het eerste verzegelde PDF-bestand.",
+        "learnMore": "Ontdek Cloud Signing",
+        "aatlPack": "AATL-onboardingpakket"
+      }
     },
     "appearance": "Uiterlijk",
     "theme": "Thema",
@@ -490,6 +498,12 @@
       "saved": "AI-instellingen opgeslagen.",
       "saveError": "Kan AI-instellingen niet opslaan.",
       "loadError": "Kan AI-instellingen niet laden."
+    },
+    "discoverEe": {
+      "title": "Ontdek OpenFilz Enterprise",
+      "pitch": "U gebruikt de open source Community Edition. OpenFilz Enterprise voegt privéruimtes per gebruiker toe, documenten delen met rechten, reacties en vermeldingen, teams, analyses, webhooks en integraties, scannen met OCR, antivirus, back-ups en PDF/A-archivering met vertrouwde e-handtekeningen.",
+      "learnMore": "Verken Enterprise",
+      "tryDemo": "Probeer de Enterprise-demo"
     }
   },
   "bottomSheet": {
@@ -971,6 +985,12 @@
       "expired": "Dit handtekeningverzoek is verlopen.",
       "validation": "Het verzoek is afgewezen.",
       "tooMany": "Te veel pogingen — wacht even en probeer opnieuw."
+    },
+    "sealNotice": {
+      "message": "Handtekeningen worden hier verzegeld met een democertificaat — Adobe Acrobat markeert ze als niet vertrouwd.",
+      "cloud": "Krijg door Adobe erkende handtekeningen met OpenFilz Cloud Signing",
+      "or": "of",
+      "byoc": "gebruik uw eigen AATL-certificaat — ons AATL-onboardingpakket kan helpen"
     }
   },
   "aiChat": {
@@ -989,5 +1009,21 @@
     "close": "Chat sluiten",
     "errorStreaming": "Er is een fout opgetreden bij het genereren van het antwoord",
     "activeModel": "Model dat deze chat beantwoordt"
+  },
+  "notice": {
+    "dismiss": "Sluiten",
+    "demo": {
+      "ce": {
+        "message": "Openbare demo — alle bezoekers zien alle bestanden. Upload geen vertrouwelijke documenten.",
+        "tryEe": "Privacy nodig? Probeer de Enterprise-demo",
+        "openSource": "OpenFilz is open source",
+        "uploadWarning": "Dit is een openbare gedeelde demo: iedereen kan de bestanden zien die u uploadt. Upload geen vertrouwelijke documenten."
+      },
+      "ee": {
+        "message": "U verkent de OpenFilz Enterprise-demo — gegevens kunnen op elk moment worden gewist.",
+        "startTrial": "Start een gratis proefperiode",
+        "pricing": "Prijzen"
+      }
+    }
   }
 }
