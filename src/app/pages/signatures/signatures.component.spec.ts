@@ -8,6 +8,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { SignaturesComponent } from './signatures.component';
+import { SignatureAccessService } from '../../services/signature-access.service';
 import { SignatureEnvelopeDTO, SignatureRecipientDTO, SignatureTemplateDTO } from '../../models/signature.models';
 import { environment } from '../../../environments/environment';
 
@@ -50,7 +51,9 @@ describe('SignaturesComponent', () => {
       providers: [
         provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations(), provideTranslateService(),
         { provide: Router, useValue: { navigate: (...args: unknown[]) => { navigations.push(args); return Promise.resolve(true); } } },
-        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } }
+        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } },
+        // Feature on + requester role not required — the pre-toggle behaviour the spec pins.
+        { provide: SignatureAccessService, useValue: { canRequestSignature: true } }
       ]
     });
     // MatDialogModule (imported by the standalone component) would shadow a root-level override.

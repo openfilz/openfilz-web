@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { SignatureService } from '../../services/signature.service';
+import { SignatureAccessService } from '../../services/signature-access.service';
 import {
   SignatureEnvelopeDTO, SignatureEnvelopeStatus, SignatureEventDTO, SignatureRecipientDTO, SignatureTemplateDTO
 } from '../../models/signature.models';
@@ -39,6 +40,7 @@ import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.co
 })
 export class SignaturesComponent implements OnInit {
   private api = inject(SignatureService);
+  protected signatureAccess = inject(SignatureAccessService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
@@ -78,7 +80,10 @@ export class SignaturesComponent implements OnInit {
     });
     this.reloadSent();
     this.reloadToSign();
-    this.reloadTemplates();
+    // Templates are an initiator surface — skip when the user may not request signatures.
+    if (this.signatureAccess.canRequestSignature) {
+      this.reloadTemplates();
+    }
   }
 
   // ── Loading ─────────────────────────────────────────────────────────────
