@@ -159,7 +159,8 @@
         }
       </mat-tab>
 
-      <!-- ── Templates ────────────────────────────────────────────────── -->
+      <!-- ── Templates (initiator surface — hidden without the requester role) ── -->
+      @if (signatureAccess.canRequestSignature) {
       <mat-tab [label]="'signature.templates.tab' | translate">
         @if (loadingTemplates) {
           <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
@@ -222,6 +223,7 @@
           </div>
         }
       </mat-tab>
+      }
     </mat-tab-group>
   </div>
 

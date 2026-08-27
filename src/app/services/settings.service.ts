@@ -13,6 +13,8 @@ export interface Settings {
   aiUserSettingsEnabled: boolean;
   /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
   signatureActive?: boolean;
+  /** True when initiating signature requests also requires the SIGN_REQUESTER role (openfilz.signature.require-requester-role). */
+  signatureRequesterRoleRequired?: boolean;
   /** Recipient authentication methods this deployment can actually deliver (NONE + available OTP channels). */
   signatureAuthMethods?: string[];
   /** False when the backend records a reminder cadence but has nothing to act on it. */
@@ -98,6 +100,11 @@ export class SettingsService {
 
   get isSignatureActive(): boolean {
     return this.settingsSubject.value?.signatureActive ?? false;
+  }
+
+  /** When true, only users holding the SIGN_REQUESTER role may initiate signature requests. */
+  get isSignatureRequesterRoleRequired(): boolean {
+    return this.settingsSubject.value?.signatureRequesterRoleRequired === true;
   }
 
   /** Shared public demo deployment — the demo disclaimers follow this backend flag. */

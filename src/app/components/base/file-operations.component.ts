@@ -13,6 +13,7 @@ import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
+import { SignatureAccessService } from '../../services/signature-access.service';
 import { TranslateService } from '@ngx-translate/core';
 import { isPdfItem } from '../../models/file-actions';
 import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
@@ -60,6 +61,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected snackBar = inject(MatSnackBar);
   protected userPreferencesService = inject(UserPreferencesService);
   protected settingsService = inject(SettingsService);
+  protected signatureAccess = inject(SignatureAccessService);
   protected translate = inject(TranslateService);
 
   constructor() {
@@ -292,7 +294,7 @@ export abstract class FileOperationsComponent implements OnInit {
    * The dialog is lazy-loaded so non-e-Sign deployments never ship pdf.js twice.
    */
   onRequestSignature(item: FileItem): void {
-    if (!this.settingsService.isSignatureActive || !isPdfItem(item)) {
+    if (!this.signatureAccess.canRequestSignature || !isPdfItem(item)) {
       return;
     }
     import('../../dialogs/request-signature-dialog/request-signature-dialog.component').then(m => {
@@ -318,7 +320,7 @@ export abstract class FileOperationsComponent implements OnInit {
    */
   get canRequestSignatureForSelection(): boolean {
     const selected = this.selectedItems;
-    return this.settingsService.isSignatureActive && selected.length === 1 && isPdfItem(selected[0]);
+    return this.signatureAccess.canRequestSignature && selected.length === 1 && isPdfItem(selected[0]);
   }
 
   onRequestSignatureSelected(): void {
