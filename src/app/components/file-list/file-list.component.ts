@@ -11,6 +11,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { FileItem } from '../../models/document.models';
 import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS, isPdfItem } from '../../models/file-actions';
 import { SettingsService } from '../../services/settings.service';
+import { SignatureAccessService } from '../../services/signature-access.service';
 import { FileIconService } from '../../services/file-icon.service';
 import { TouchDetectionService } from '../../services/touch-detection.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -88,6 +89,7 @@ export class FileListComponent {
 
   private fileIconService = inject(FileIconService);
   private settingsService = inject(SettingsService);
+  private signatureAccess = inject(SignatureAccessService);
   private touchDetectionService = inject(TouchDetectionService
   );
 
@@ -144,7 +146,7 @@ export class FileListComponent {
   /** Actions applicable to the item the menu targets (e-Sign only for PDFs when the feature is on). */
   get visibleItemActions(): FileActionDescriptor[] {
     const item = this.menuItem;
-    const signAllowed = this.settingsService.isSignatureActive && !!item && isPdfItem(item);
+    const signAllowed = this.signatureAccess.canRequestSignature && !!item && isPdfItem(item);
     return this.itemActions.filter(a => a.id !== 'requestSignature' || signAllowed);
   }
   contextMenuPosition = { x: 0, y: 0 };
