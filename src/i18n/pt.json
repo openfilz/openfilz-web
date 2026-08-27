@@ -439,7 +439,15 @@
       "remaining": "{{count}} restantes",
       "resetsOn": "A cota é redefinida em {{date}}",
       "memberSince": "Assinante desde {{date}}",
-      "loadError": "As informações da subscrição estão temporariamente indisponíveis."
+      "loadError": "As informações da subscrição estão temporariamente indisponíveis.",
+      "upsell": {
+        "title": "Assinaturas reconhecidas pela Adobe",
+        "devSeal": "Esta instalação sela os envelopes concluídos com um certificado de demonstração, pelo que o Adobe Acrobat assinala as assinaturas como não fidedignas.",
+        "pitch": "Com o OpenFilz Cloud Signing, os envelopes são selados com o certificado AATL da OpenFilz aprovado pela Adobe — as assinaturas aparecem como válidas no Acrobat, por 1 € por utilizador por mês. Apenas um hash do documento sai da sua instalação.",
+        "byoc": "Prefere a sua própria identidade? Use o seu certificado AATL (ficheiro PKCS#12 ou HSM do Azure Key Vault) — o Pacote de integração AATL orienta-o da compra ao primeiro PDF selado.",
+        "learnMore": "Descobrir o Cloud Signing",
+        "aatlPack": "Pacote de integração AATL"
+      }
     },
     "appearance": "Aparência",
     "theme": "Tema",
@@ -490,6 +498,12 @@
       "saved": "Definições de IA guardadas.",
       "saveError": "Não foi possível guardar as definições de IA.",
       "loadError": "Não foi possível carregar as definições de IA."
+    },
+    "discoverEe": {
+      "title": "Descubra o OpenFilz Enterprise",
+      "pitch": "Está a usar a edição Community de código aberto. O OpenFilz Enterprise acrescenta espaços privados por utilizador, partilha de documentos com permissões, comentários e menções, equipas, análises, webhooks e integrações, digitalização com OCR, antivírus, cópias de segurança e arquivo PDF/A com assinaturas eletrónicas fidedignas.",
+      "learnMore": "Explorar o Enterprise",
+      "tryDemo": "Experimentar a demo Enterprise"
     }
   },
   "bottomSheet": {
@@ -971,6 +985,12 @@
       "expired": "Este pedido de assinatura expirou.",
       "validation": "O pedido foi rejeitado.",
       "tooMany": "Demasiadas tentativas — aguarde e tente novamente."
+    },
+    "sealNotice": {
+      "message": "Aqui as assinaturas são seladas com um certificado de demonstração — o Adobe Acrobat irá assinalá-las como não fidedignas.",
+      "cloud": "Obtenha assinaturas reconhecidas pela Adobe com o OpenFilz Cloud Signing",
+      "or": "ou",
+      "byoc": "use o seu próprio certificado AATL — o nosso Pacote de integração AATL pode ajudar"
     }
   },
   "aiChat": {
@@ -989,5 +1009,21 @@
     "close": "Fechar chat",
     "errorStreaming": "Ocorreu um erro ao gerar a resposta",
     "activeModel": "Modelo que responde a esta conversa"
+  },
+  "notice": {
+    "dismiss": "Fechar",
+    "demo": {
+      "ce": {
+        "message": "Demonstração pública — todos os visitantes veem todos os ficheiros. Não carregue documentos confidenciais.",
+        "tryEe": "Precisa de privacidade? Experimente a demo Enterprise",
+        "openSource": "O OpenFilz é open source",
+        "uploadWarning": "Esta é uma demonstração pública partilhada: qualquer pessoa pode ver os ficheiros que carregar. Não carregue documentos confidenciais."
+      },
+      "ee": {
+        "message": "Está a explorar a demo do OpenFilz Enterprise — os dados podem ser repostos a qualquer momento.",
+        "startTrial": "Iniciar um teste gratuito",
+        "pricing": "Preços"
+      }
+    }
   }
 }

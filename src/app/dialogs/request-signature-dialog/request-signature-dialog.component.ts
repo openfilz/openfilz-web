@@ -35,6 +35,7 @@ import {
 } from '../../utils/signature-envelope';
 import { PDFJS_WORKER_SRC } from '../../utils/pdfjs-worker';
 import { TemplateNameDialogComponent } from './template-name-dialog.component';
+import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
 
 export interface RequestSignatureDialogData {
   documentId: string;
@@ -72,7 +73,8 @@ interface DragState {
   imports: [
     CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatSlideToggleModule,
-    MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, TranslatePipe
+    MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, TranslatePipe,
+    SealNoticeComponent
   ]
 })
 export class RequestSignatureDialogComponent implements OnInit, OnDestroy {

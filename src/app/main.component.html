@@ -2,7 +2,8 @@
 <div class="app-layout"
      [class.sidebar-collapsed]="isSidebarCollapsed"
      [class.mobile-menu-open]="isMobileMenuOpen"
-     [class.dashboard-view]="currentRoute === 'dashboard'">
+     [class.dashboard-view]="currentRoute === 'dashboard'"
+     [class.has-notice-banner]="noticeBannerService.demoBannerVisible$ | async">
 
   <!-- Mobile Overlay -->
   @if (isMobileMenuOpen) {
@@ -21,6 +22,10 @@
     (mobileMenuToggle)="toggleMobileMenu()"
     (logout)="logout()">
   </app-header>
+
+  @if (noticeBannerService.demoBannerVisible$ | async) {
+    <app-notice-banner></app-notice-banner>
+  }
 
   @if(currentRoute == 'my-folder') {
   <app-breadcrumb [breadcrumbs]="breadcrumbs" [hasActiveFilters]="hasActiveFilters"

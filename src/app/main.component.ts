@@ -13,6 +13,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { DownloadProgressComponent } from "./components/download-progress/download-progress.component";
 import { UploadProgressComponent } from "./components/upload-progress/upload-progress.component";
+import { NoticeBannerComponent } from "./components/notice-banner/notice-banner.component";
+import { NoticeBannerService } from "./components/notice-banner/notice-banner.service";
 import { AiChatFabComponent } from "./components/ai-chat/ai-chat-fab.component";
 import { ElementInfo } from "./models/document.models";
 import { BreadcrumbService } from "./services/breadcrumb.service";
@@ -34,6 +36,7 @@ import { SettingsService } from './services/settings.service';
     BreadcrumbComponent,
     DownloadProgressComponent,
     UploadProgressComponent,
+    NoticeBannerComponent,
     AiChatFabComponent,
     RouterOutlet
   ],
@@ -48,6 +51,7 @@ export class MainComponent implements OnInit {
   private translateService = inject(TranslateService);
   private searchService = inject(SearchService);
   private settingsService = inject(SettingsService);
+  readonly noticeBannerService = inject(NoticeBannerService);
 
   userData$ = this.oidcSecurityService.userData$;
   isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;

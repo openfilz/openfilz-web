@@ -20,6 +20,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm
 import { TemplateNameDialogComponent } from '../../dialogs/request-signature-dialog/template-name-dialog.component';
 import { UseTemplateDialogComponent, UseTemplateDialogData } from '../../dialogs/use-template-dialog/use-template-dialog.component';
 import { recipientColor } from '../../utils/signature-envelope';
+import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
 
 /**
  * e-Sign hub: envelopes waiting for my signature, envelopes I sent (with a detail
@@ -32,7 +33,8 @@ import { recipientColor } from '../../utils/signature-envelope';
   styleUrls: ['./signatures.component.css'],
   imports: [
     CommonModule, MatTabsModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
-    MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, TranslatePipe
+    MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, TranslatePipe,
+    SealNoticeComponent
   ]
 })
 export class SignaturesComponent implements OnInit {

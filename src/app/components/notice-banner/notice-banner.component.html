@@ -1,0 +1,28 @@
+<div class="notice-banner" [class.notice-warn]="!isEnterprise" role="note">
+  <mat-icon class="notice-icon" aria-hidden="true">{{ isEnterprise ? 'science' : 'visibility' }}</mat-icon>
+
+  <div class="notice-text">
+    @if (!isEnterprise) {
+      <span class="notice-message">{{ 'notice.demo.ce.message' | translate }}</span>
+      <span class="notice-links">
+        <a [href]="eeDemoUrl" target="_blank" rel="noopener">{{ 'notice.demo.ce.tryEe' | translate }}</a>
+        <span class="notice-sep" aria-hidden="true">·</span>
+        <a [href]="openSourceUrl" target="_blank" rel="noopener">{{ 'notice.demo.ce.openSource' | translate }}</a>
+      </span>
+    } @else {
+      <span class="notice-message">{{ 'notice.demo.ee.message' | translate }}</span>
+      <span class="notice-links">
+        <a class="notice-cta" [href]="startTrialUrl" target="_blank" rel="noopener">{{ 'notice.demo.ee.startTrial' | translate }}</a>
+        <span class="notice-sep" aria-hidden="true">·</span>
+        <a [href]="pricingUrl" target="_blank" rel="noopener">{{ 'notice.demo.ee.pricing' | translate }}</a>
+      </span>
+    }
+  </div>
+
+  @if (noticeBannerService.dismissible) {
+    <button mat-icon-button class="notice-dismiss" (click)="dismiss()"
+            [attr.aria-label]="'notice.dismiss' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</div>

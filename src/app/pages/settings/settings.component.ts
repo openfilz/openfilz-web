@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ThemeService, Theme } from '../../services/theme.service';
 import { SettingsService, Settings } from '../../services/settings.service';
@@ -9,11 +10,12 @@ import { CloudSignatureSubscription } from '../../models/signature.models';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
+import { IS_ENTERPRISE } from '../../edition';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -74,6 +76,25 @@ export class SettingsComponent implements OnInit {
   get showCloudSigning(): boolean {
     return this.settings?.signatureCloudActive === true;
   }
+
+  /**
+   * Upsell card in the Cloud Signing slot: only when envelopes are sealed with the
+   * throwaway dev certificate. A deployment with its own AATL seal (pkcs12,
+   * azure-keyvault) already paid for trusted signatures — never upsell those.
+   */
+  get showCloudSigningUpsell(): boolean {
+    return !this.showCloudSigning
+      && this.settings?.signatureActive === true
+      && this.settings?.sealProvider === 'self-signed-dev';
+  }
+
+  /** Passive "Discover Enterprise" card — CE only (the EE fork sets IS_ENTERPRISE). */
+  readonly showDiscoverEe = !IS_ENTERPRISE;
+
+  readonly cloudSigningUrl = 'https://www.openfilz.com/esign/cloud-signing';
+  readonly aatlPackUrl = 'https://www.openfilz.com/esign/aatl-onboarding';
+  readonly enterpriseUrl = 'https://www.openfilz.com/enterprise';
+  readonly eeDemoUrl = 'https://app.openfilz.com';
 
   get cloudUsagePct(): number {
     const sub = this.cloudSubscription;

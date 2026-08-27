@@ -6,6 +6,7 @@
 .page-main { flex: 1 1 auto; min-width: 0; padding: 24px 28px; }
 
 .page-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+app-seal-notice { display: block; margin-bottom: 14px; }
 .page-head mat-icon { color: var(--primary); }
 .page-head h1 { margin: 0; font-size: 22px; }
 
