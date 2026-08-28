@@ -91,8 +91,13 @@ export class SettingsComponent implements OnInit {
   /** Passive "Discover Enterprise" card — CE only (the EE fork sets IS_ENTERPRISE). */
   readonly showDiscoverEe = !IS_ENTERPRISE;
 
+  /** EE branches the upsell card copy + CTA (license option vs CE marketing signup). */
+  readonly isEnterprise = IS_ENTERPRISE;
+
   readonly cloudSigningUrl = 'https://www.openfilz.com/esign/cloud-signing';
   readonly aatlPackUrl = 'https://www.openfilz.com/esign/aatl-onboarding';
+  /** Self-service license upgrade in the customer portal, CLOUD_SIGN preselected (EE). */
+  readonly licenseUpgradeUrl = 'https://www.openfilz.com/portal/upgrade?feature=CLOUD_SIGN';
   readonly enterpriseUrl = 'https://www.openfilz.com/enterprise';
   readonly eeDemoUrl = 'https://app.openfilz.com';
 

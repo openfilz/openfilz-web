@@ -446,7 +446,11 @@
         "pitch": "Con OpenFilz Cloud Signing le buste vengono sigillate con il certificato AATL di OpenFilz approvato da Adobe — le firme risultano valide in Acrobat, a 1 € per utente al mese. Solo un hash del documento lascia la tua installazione.",
         "byoc": "Preferisci la tua identità? Usa il tuo certificato AATL (file PKCS#12 o HSM di Azure Key Vault) — il Pacchetto di onboarding AATL ti guida dall'acquisto al primo PDF sigillato.",
         "learnMore": "Scopri Cloud Signing",
-        "aatlPack": "Pacchetto di onboarding AATL"
+        "aatlPack": "Pacchetto di onboarding AATL",
+        "ee": {
+          "pitch": "Come cliente Enterprise, OpenFilz Cloud Signing è disponibile come opzione del tuo abbonamento (+1 € per utente al mese): le buste vengono sigillate con il certificato AATL di OpenFilz approvato da Adobe e le firme risultano valide in Acrobat. Solo un hash del documento lascia la tua installazione.",
+          "enable": "Attiva dal tuo portale licenze"
+        }
       }
     },
     "appearance": "Aspetto",
@@ -990,7 +994,11 @@
       "message": "Qui le firme sono sigillate con un certificato dimostrativo — Adobe Acrobat le segnalerà come non attendibili.",
       "cloud": "Ottieni firme riconosciute da Adobe con OpenFilz Cloud Signing",
       "or": "oppure",
-      "byoc": "usa il tuo certificato AATL — il nostro Pacchetto di onboarding AATL può aiutarti"
+      "byoc": "usa il tuo certificato AATL — il nostro Pacchetto di onboarding AATL può aiutarti",
+      "ee": {
+        "enable": "Attiva OpenFilz Cloud Signing per la tua organizzazione (+1 €/utente/mese sul tuo abbonamento)",
+        "askAdmin": "Chiedi al tuo amministratore di attivare OpenFilz Cloud Signing per la tua organizzazione."
+      }
     }
   },
   "aiChat": {
