@@ -446,7 +446,11 @@
         "pitch": "Met OpenFilz Cloud Signing worden enveloppen verzegeld met het door Adobe erkende (AATL) certificaat van OpenFilz — handtekeningen verschijnen als geldig in Acrobat, voor € 1 per gebruiker per maand. Alleen een hash van het document verlaat uw installatie.",
         "byoc": "Liever uw eigen identiteit? Gebruik uw eigen AATL-certificaat (PKCS#12-bestand of Azure Key Vault HSM) — het AATL-onboardingpakket begeleidt u van aankoop tot het eerste verzegelde PDF-bestand.",
         "learnMore": "Ontdek Cloud Signing",
-        "aatlPack": "AATL-onboardingpakket"
+        "aatlPack": "AATL-onboardingpakket",
+        "ee": {
+          "pitch": "Als Enterprise-klant is OpenFilz Cloud Signing beschikbaar als optie op uw abonnement (+ € 1 per gebruiker per maand): enveloppen worden verzegeld met het door Adobe erkende (AATL) certificaat van OpenFilz en handtekeningen verschijnen als geldig in Acrobat. Alleen een hash van het document verlaat uw installatie.",
+          "enable": "Activeren via uw licentieportaal"
+        }
       }
     },
     "appearance": "Uiterlijk",
@@ -990,7 +994,11 @@
       "message": "Handtekeningen worden hier verzegeld met een democertificaat — Adobe Acrobat markeert ze als niet vertrouwd.",
       "cloud": "Krijg door Adobe erkende handtekeningen met OpenFilz Cloud Signing",
       "or": "of",
-      "byoc": "gebruik uw eigen AATL-certificaat — ons AATL-onboardingpakket kan helpen"
+      "byoc": "gebruik uw eigen AATL-certificaat — ons AATL-onboardingpakket kan helpen",
+      "ee": {
+        "enable": "Activeer OpenFilz Cloud Signing voor uw organisatie (+ € 1/gebruiker/maand op uw abonnement)",
+        "askAdmin": "Vraag uw beheerder om OpenFilz Cloud Signing voor uw organisatie te activeren."
+      }
     }
   },
   "aiChat": {

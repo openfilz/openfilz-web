@@ -446,7 +446,11 @@
         "pitch": "مع OpenFilz Cloud Signing تُختم المظاريف بشهادة OpenFilz المعتمدة من Adobe (AATL) — تظهر التوقيعات صالحة في Acrobat مقابل 1 يورو لكل مستخدم شهريًا. لا يغادر نشرَك سوى بصمة (hash) المستند.",
         "byoc": "تفضّل هويتك الخاصة؟ استخدم شهادة AATL الخاصة بك (ملف PKCS#12 أو Azure Key Vault HSM) — ترافقك باقة تأهيل AATL من الشراء حتى أول PDF مختوم.",
         "learnMore": "اكتشف Cloud Signing",
-        "aatlPack": "باقة تأهيل AATL"
+        "aatlPack": "باقة تأهيل AATL",
+        "ee": {
+          "pitch": "بصفتك عميل Enterprise، يتوفر OpenFilz Cloud Signing كخيار في اشتراكك (+1 € لكل مستخدم شهريًا): تُختم المظاريف بشهادة OpenFilz المعتمدة من Adobe ‏(AATL) وتظهر التوقيعات صالحة في Acrobat. لا يغادر نشرك سوى بصمة المستند.",
+          "enable": "فعّله من بوابة الترخيص الخاصة بك"
+        }
       }
     },
     "appearance": "المظهر",
@@ -990,7 +994,11 @@
       "message": "تُختم التوقيعات هنا بشهادة تجريبية — سيُظهرها Adobe Acrobat كتوقيعات غير موثوقة.",
       "cloud": "احصل على توقيعات معتمدة من Adobe مع OpenFilz Cloud Signing",
       "or": "أو",
-      "byoc": "استخدم شهادة AATL الخاصة بك — يمكن لباقة تأهيل AATL مساعدتك"
+      "byoc": "استخدم شهادة AATL الخاصة بك — يمكن لباقة تأهيل AATL مساعدتك",
+      "ee": {
+        "enable": "فعّل OpenFilz Cloud Signing لمؤسستك (+1 € لكل مستخدم شهريًا على اشتراكك)",
+        "askAdmin": "اطلب من مسؤول النظام لديك تفعيل OpenFilz Cloud Signing لمؤسستك."
+      }
     }
   },
   "aiChat": {

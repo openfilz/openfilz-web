@@ -446,7 +446,11 @@
         "pitch": "Avec OpenFilz Cloud Signing, les enveloppes sont scellées avec le certificat AATL d'OpenFilz, approuvé par Adobe — les signatures apparaissent comme valides dans Acrobat, pour 1 € par utilisateur et par mois. Seule une empreinte (hash) du document quitte votre déploiement.",
         "byoc": "Vous préférez votre propre identité ? Apportez votre certificat AATL (fichier PKCS#12 ou HSM Azure Key Vault) — le Pack d'accompagnement AATL vous guide de l'achat au premier PDF scellé.",
         "learnMore": "Découvrir Cloud Signing",
-        "aatlPack": "Pack d'accompagnement AATL"
+        "aatlPack": "Pack d'accompagnement AATL",
+        "ee": {
+          "pitch": "En tant que client Enterprise, OpenFilz Cloud Signing est disponible en option sur votre abonnement (+1 € par utilisateur et par mois) : les enveloppes sont scellées avec le certificat AATL d'OpenFilz, approuvé par Adobe, et les signatures apparaissent comme valides dans Acrobat. Seule une empreinte (hash) du document quitte votre déploiement.",
+          "enable": "Activer depuis votre portail de licence"
+        }
       }
     },
     "appearance": "Apparence",
@@ -990,7 +994,11 @@
       "message": "Les signatures sont ici scellées avec un certificat de démonstration — Adobe Acrobat les signalera comme non approuvées.",
       "cloud": "Obtenez des signatures reconnues par Adobe avec OpenFilz Cloud Signing",
       "or": "ou",
-      "byoc": "apportez votre propre certificat AATL — notre Pack d'accompagnement AATL peut vous aider"
+      "byoc": "apportez votre propre certificat AATL — notre Pack d'accompagnement AATL peut vous aider",
+      "ee": {
+        "enable": "Activez OpenFilz Cloud Signing pour votre organisation (+1 €/utilisateur/mois sur votre abonnement)",
+        "askAdmin": "Demandez à votre administrateur d'activer OpenFilz Cloud Signing pour votre organisation."
+      }
     }
   },
   "aiChat": {
