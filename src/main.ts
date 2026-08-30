@@ -11,6 +11,8 @@ import { environment } from "./environments/environment";
 import { provideRouter, RouterOutlet } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideAuth, LogLevel, authInterceptor, OidcSecurityService } from 'angular-auth-oidc-client';
+import { firstValueFrom } from 'rxjs';
+import { holdForRedirect, installSessionResumeRefresh, withDeadline } from './app/auth/auth-bootstrap';
 import { MockAuthService } from './app/services/mock-auth.service';
 import { RoleService } from './app/services/role.service';
 import { SettingsService } from './app/services/settings.service';
@@ -80,13 +82,11 @@ bootstrapApplication(App, {
           return null;
         }
 
-        let result;
-        try {
-          result = await oidcSecurityService.checkAuth().toPromise();
-        } catch (error) {
-          console.error('OIDC checkAuth failed:', error);
-          result = null;
-        }
+        // Every await below is bounded: a stalled request must not strand the app on the
+        // index.html "Loading..." placeholder. See auth-bootstrap.ts for why.
+        const result = await withDeadline(
+          firstValueFrom(oidcSecurityService.checkAuth(), { defaultValue: null }),
+          'OIDC checkAuth', null);
 
         // If authentication failed but OIDC callback params are present in the URL
         // (e.g. after a KeyCloak password change redirect), clean up the URL
@@ -95,7 +95,7 @@ bootstrapApplication(App, {
           const currentUrl = new URL(window.location.href);
           if (currentUrl.searchParams.has('code') || currentUrl.searchParams.has('state')) {
             window.location.replace(window.location.origin);
-            return new Promise(() => {}); // Wait for redirect
+            return holdForRedirect('callback-param cleanup');
           }
 
             // If login_hint is present in the URL (e.g. from sharing invitation email),
@@ -112,17 +112,26 @@ bootstrapApplication(App, {
                         window.location.href = url + separator + 'login_hint=' + encodeURIComponent(loginHint);
                     }
                 });
-                return new Promise(() => {}); // Wait for redirect
+                return holdForRedirect('login_hint authorize');
             }
         }
 
         if (result?.isAuthenticated) {
-          const hasValidRoles = await roleService.initializeRoles();
+          // A missing/late answer here must not block the app: treating it as "no roles" would
+          // sign the user out over a slow network, so an undecided check boots as-is instead.
+          const hasValidRoles = await withDeadline(
+            roleService.initializeRoles(), 'role initialisation', true);
           if (!hasValidRoles) {
             roleService.handleNoRoles();
           }
           // Load application settings after successful authentication
-          await settingsService.loadSettings().toPromise();
+          await withDeadline(
+            firstValueFrom(settingsService.loadSettings(), { defaultValue: null }),
+            'settings load', null);
+
+          // Timers do not run in a frozen tab, so silentRenew misses its slot while the user is
+          // in another app. Resuming re-triggers the renewal it could not perform.
+          installSessionResumeRefresh(oidcSecurityService);
         }
 
         return result;
