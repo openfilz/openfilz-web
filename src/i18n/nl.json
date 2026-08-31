@@ -503,6 +503,38 @@
       "saveError": "Kan AI-instellingen niet opslaan.",
       "loadError": "Kan AI-instellingen niet laden."
     },
+    "mcp": {
+      "title": "MCP-server",
+      "description": "Verbind een externe AI-agent — Claude, Cursor, n8n — met uw documenten. De agent ziet precies wat u mag zien, en niets meer.",
+      "serverUrl": "Serveradres",
+      "clientId": "OAuth-client-ID",
+      "clientIdHint": "Nodig voor tools die zichzelf niet kunnen registreren, zoals Claude Desktop: kies \"Use your own OAuth client\" en voer dit ID in, zonder secret.",
+      "mode": "Rechten voor agents",
+      "modes": {
+        "READ_ONLY": "Alleen lezen",
+        "READ_WRITE": "Lezen en schrijven"
+      },
+      "modeReadOnlyHint": "Agents kunnen uw documenten doorzoeken en lezen. Aanmaken, verplaatsen en hernoemen zijn uitgeschakeld op deze installatie.",
+      "modeReadWriteHint": "Agents kunnen ook documenten aanmaken, verplaatsen en hernoemen — altijd binnen uw eigen rechten.",
+      "configureClient": "Mijn AI-tool instellen",
+      "unavailable": "De MCP-server staat aan, maar deze installatie publiceert geen openbaar adres. Vraag uw beheerder de publieke API-URL in te stellen.",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd naar klembord",
+      "copyFailed": "Kopiëren mislukt",
+      "dialogTitle": "Verbind uw AI-tool",
+      "dialogSubtitle": "Fragmenten die al zijn ingevuld met de instellingen van deze installatie — kopiëren, plakken, klaar.",
+      "clients": {
+        "token": "Get a token",
+        "claudeCode": "Claude Code",
+        "claudeDesktop": "Claude Desktop / claude.ai",
+        "cursor": "Cursor",
+        "vscode": "VS Code / Copilot",
+        "geminiCli": "Gemini CLI",
+        "n8n": "n8n"
+      },
+      "oauthNote": "Keycloak staat niet toe dat AI-tools zichzelf registreren. Kies in Claude Desktop en claude.ai \"Use your own OAuth client\" en voer client-ID {{clientId}} in; laat het secret leeg.",
+      "fullDoc": "Volledige documentatie"
+    },
     "discoverEe": {
       "title": "Ontdek OpenFilz Enterprise",
       "pitch": "U gebruikt de open source Community Edition. OpenFilz Enterprise voegt privéruimtes per gebruiker toe, documenten delen met rechten, reacties en vermeldingen, teams, analyses, webhooks en integraties, scannen met OCR, antivirus, back-ups en PDF/A-archivering met vertrouwde e-handtekeningen.",

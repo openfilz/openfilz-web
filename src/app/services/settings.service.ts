@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { McpConnection } from '../models/mcp-settings.models';
 
 export interface Settings {
   emptyBinInterval: number | null;
@@ -25,6 +26,16 @@ export interface Settings {
   demoMode?: boolean;
   /** Effective e-Sign seal provider id (null/absent when e-Sign is off) — 'self-signed-dev' triggers the untrusted-seal notice. */
   sealProvider?: string | null;
+  /** openfilz.mcp.active on the API — the only switch for the "connect your AI tool" panel. */
+  mcpActive?: boolean;
+  /** Endpoint an MCP host connects to (null/absent when MCP is off). */
+  mcpUrl?: string | null;
+  /** READ_ONLY or READ_WRITE — which tools an external agent actually gets. */
+  mcpMode?: string | null;
+  /** Keycloak realm URL an MCP host authenticates against. */
+  mcpAuthorizationServerUrl?: string | null;
+  /** Keycloak client id for hosts that cannot self-register (Claude Desktop / claude.ai). */
+  mcpClientId?: string | null;
 }
 
 @Injectable({
@@ -119,5 +130,31 @@ export class SettingsService {
    */
   get isDevSeal(): boolean {
     return this.isSignatureActive && this.settingsSubject.value?.sealProvider === 'self-signed-dev';
+  }
+
+  /**
+   * Driven by openfilz.mcp.active on the API. Deliberately independent of the AI flags: a
+   * deployment can expose MCP to external agents without running the in-app chat assistant,
+   * so gating this on the AI settings would hide the panel on a perfectly valid setup.
+   */
+  get isMcpActive(): boolean {
+    return this.settingsSubject.value?.mcpActive === true;
+  }
+
+  /**
+   * Connection details for an external MCP host, or null when the deployment does not
+   * advertise a complete set (MCP off, or a public API base URL that was never configured).
+   */
+  get mcpConnection(): McpConnection | null {
+    const settings = this.settingsSubject.value;
+    if (!settings?.mcpActive || !settings.mcpUrl || !settings.mcpAuthorizationServerUrl) {
+      return null;
+    }
+    return {
+      url: settings.mcpUrl,
+      mode: settings.mcpMode ?? 'READ_ONLY',
+      authorizationServerUrl: settings.mcpAuthorizationServerUrl,
+      clientId: settings.mcpClientId ?? 'openfilz-mcp',
+    };
   }
 }

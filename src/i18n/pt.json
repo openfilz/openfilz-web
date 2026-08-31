@@ -503,6 +503,38 @@
       "saveError": "Não foi possível guardar as definições de IA.",
       "loadError": "Não foi possível carregar as definições de IA."
     },
+    "mcp": {
+      "title": "Servidor MCP",
+      "description": "Ligue um agente de IA externo — Claude, Cursor, n8n — aos seus documentos. O agente vê exatamente o que lhe é permitido ver, e nada mais.",
+      "serverUrl": "Endereço do servidor",
+      "clientId": "ID de cliente OAuth",
+      "clientIdHint": "Necessário para as ferramentas que não se conseguem registar sozinhas, como o Claude Desktop: escolha «Use your own OAuth client» e introduza este ID, sem segredo.",
+      "mode": "Permissões concedidas aos agentes",
+      "modes": {
+        "READ_ONLY": "Apenas leitura",
+        "READ_WRITE": "Leitura e escrita"
+      },
+      "modeReadOnlyHint": "Os agentes podem pesquisar e ler os seus documentos. Criar, mover e mudar o nome estão desativados nesta instalação.",
+      "modeReadWriteHint": "Os agentes podem ainda criar, mover e mudar o nome de documentos — sempre dentro das suas próprias permissões.",
+      "configureClient": "Configurar a minha ferramenta de IA",
+      "unavailable": "O servidor MCP está ativo mas esta instalação não publica qualquer endereço público. Peça ao administrador para definir o URL público da API.",
+      "copy": "Copiar",
+      "copied": "Copiado para a área de transferência",
+      "copyFailed": "Falha ao copiar",
+      "dialogTitle": "Ligar a sua ferramenta de IA",
+      "dialogSubtitle": "Excertos já preenchidos com as definições desta instalação — copie, cole, pronto.",
+      "clients": {
+        "token": "Get a token",
+        "claudeCode": "Claude Code",
+        "claudeDesktop": "Claude Desktop / claude.ai",
+        "cursor": "Cursor",
+        "vscode": "VS Code / Copilot",
+        "geminiCli": "Gemini CLI",
+        "n8n": "n8n"
+      },
+      "oauthNote": "O Keycloak não permite que as ferramentas de IA se registem sozinhas. No Claude Desktop e no claude.ai, escolha «Use your own OAuth client» e introduza o ID de cliente {{clientId}}, deixando o segredo vazio.",
+      "fullDoc": "Documentação completa"
+    },
     "discoverEe": {
       "title": "Descubra o OpenFilz Enterprise",
       "pitch": "Está a usar a edição Community de código aberto. O OpenFilz Enterprise acrescenta espaços privados por utilizador, partilha de documentos com permissões, comentários e menções, equipas, análises, webhooks e integrações, digitalização com OCR, antivírus, cópias de segurança e arquivo PDF/A com assinaturas eletrónicas fidedignas.",

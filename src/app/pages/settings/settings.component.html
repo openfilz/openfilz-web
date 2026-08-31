@@ -177,6 +177,21 @@
     </div>
   }
 
+  <!-- Its own section, gated on openfilz.mcp.active alone: MCP exposes the tools to EXTERNAL
+       agents and is independent of the in-app chat, so nesting it under the AI section would
+       hide it on a deployment that runs MCP without the assistant. -->
+  @if (showMcpSettings) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>hub</mat-icon>
+        {{ 'settings.mcp.title' | translate }}
+      </div>
+      <div class="section-content">
+        <app-mcp-settings></app-mcp-settings>
+      </div>
+    </div>
+  }
+
   <div class="settings-section">
     <div class="section-title">
       <mat-icon>palette</mat-icon>

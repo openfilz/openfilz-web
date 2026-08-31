@@ -503,6 +503,38 @@
       "saveError": "تعذّر حفظ إعدادات الذكاء الاصطناعي.",
       "loadError": "تعذّر تحميل إعدادات الذكاء الاصطناعي."
     },
+    "mcp": {
+      "title": "خادم MCP",
+      "description": "اربط وكيل ذكاء اصطناعي خارجي — Claude أو Cursor أو n8n — بمستنداتك. يرى الوكيل بالضبط ما يُسمح لك برؤيته، ولا شيء أكثر.",
+      "serverUrl": "عنوان الخادم",
+      "clientId": "معرّف عميل OAuth",
+      "clientIdHint": "مطلوب للأدوات التي لا تستطيع تسجيل نفسها، مثل Claude Desktop: اختر «Use your own OAuth client» وأدخل هذا المعرّف بدون سر.",
+      "mode": "الصلاحيات الممنوحة للوكلاء",
+      "modes": {
+        "READ_ONLY": "قراءة فقط",
+        "READ_WRITE": "قراءة وكتابة"
+      },
+      "modeReadOnlyHint": "يمكن للوكلاء البحث في مستنداتك وقراءتها. أما الإنشاء والنقل وإعادة التسمية فمعطّلة في هذا التثبيت.",
+      "modeReadWriteHint": "يمكن للوكلاء أيضًا إنشاء المستندات ونقلها وإعادة تسميتها — دائمًا ضمن حدود صلاحياتك.",
+      "configureClient": "إعداد أداة الذكاء الاصطناعي",
+      "unavailable": "خادم MCP مفعّل لكن هذا التثبيت لا ينشر أي عنوان عام. اطلب من المسؤول ضبط عنوان API العام.",
+      "copy": "نسخ",
+      "copied": "تم النسخ إلى الحافظة",
+      "copyFailed": "فشل النسخ",
+      "dialogTitle": "اربط أداة الذكاء الاصطناعي",
+      "dialogSubtitle": "مقتطفات معبّأة مسبقًا بإعدادات هذا التثبيت — انسخ والصق وانتهى الأمر.",
+      "clients": {
+        "token": "Get a token",
+        "claudeCode": "Claude Code",
+        "claudeDesktop": "Claude Desktop / claude.ai",
+        "cursor": "Cursor",
+        "vscode": "VS Code / Copilot",
+        "geminiCli": "Gemini CLI",
+        "n8n": "n8n"
+      },
+      "oauthNote": "لا يسمح Keycloak لأدوات الذكاء الاصطناعي بتسجيل نفسها. في Claude Desktop و claude.ai اختر «Use your own OAuth client» وأدخل معرّف العميل {{clientId}} مع ترك السر فارغًا.",
+      "fullDoc": "الوثائق الكاملة"
+    },
     "discoverEe": {
       "title": "اكتشف OpenFilz Enterprise",
       "pitch": "أنت تستخدم إصدار المجتمع مفتوح المصدر. يضيف OpenFilz Enterprise مساحات خاصة لكل مستخدم، ومشاركة المستندات مع الصلاحيات، والتعليقات والإشارات، والفرق، والتحليلات، وWebhooks والتكاملات، والمسح الضوئي مع OCR، ومكافحة الفيروسات، والنسخ الاحتياطي، وأرشفة PDF/A بتوقيعات إلكترونية موثوقة.",
