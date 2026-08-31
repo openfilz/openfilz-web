@@ -1,0 +1,57 @@
+<div class="mcp-settings">
+  @if (connection; as mcp) {
+    <p class="setting-description">{{ 'settings.mcp.description' | translate }}</p>
+
+    <!-- Endpoint -->
+    <div class="mcp-field">
+      <label class="setting-label" for="mcp-url">{{ 'settings.mcp.serverUrl' | translate }}</label>
+      <div class="mcp-value-row">
+        <input id="mcp-url" class="mcp-input" type="text" [value]="mcp.url" readonly
+               (focus)="$any($event.target).select()" />
+        <button type="button" class="mcp-icon-btn" (click)="copy(mcp.url)"
+                [matTooltip]="'settings.mcp.copy' | translate"
+                [attr.aria-label]="'settings.mcp.copy' | translate">
+          <mat-icon aria-hidden="true">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- OAuth client id -->
+    <div class="mcp-field">
+      <label class="setting-label" for="mcp-client-id">{{ 'settings.mcp.clientId' | translate }}</label>
+      <div class="mcp-value-row">
+        <input id="mcp-client-id" class="mcp-input" type="text" [value]="mcp.clientId" readonly
+               (focus)="$any($event.target).select()" />
+        <button type="button" class="mcp-icon-btn" (click)="copy(mcp.clientId)"
+                [matTooltip]="'settings.mcp.copy' | translate"
+                [attr.aria-label]="'settings.mcp.copy' | translate">
+          <mat-icon aria-hidden="true">content_copy</mat-icon>
+        </button>
+      </div>
+      <span class="mcp-hint">{{ 'settings.mcp.clientIdHint' | translate }}</span>
+    </div>
+
+    <!-- Posture. An agent that cannot write is a deliberate default, not a missing feature. -->
+    <div class="mcp-field">
+      <span class="setting-label">{{ 'settings.mcp.mode' | translate }}</span>
+      <span class="mcp-badge" [class.read-only]="isReadOnly">
+        <mat-icon aria-hidden="true">{{ isReadOnly ? 'lock' : 'edit' }}</mat-icon>
+        {{ 'settings.mcp.modes.' + mcp.mode | translate }}
+      </span>
+      <span class="mcp-hint">
+        {{ (isReadOnly ? 'settings.mcp.modeReadOnlyHint' : 'settings.mcp.modeReadWriteHint') | translate }}
+      </span>
+    </div>
+
+    <div class="mcp-actions">
+      <button type="button" class="mcp-btn primary" (click)="openSetupGuide()">
+        <mat-icon aria-hidden="true">hub</mat-icon>
+        {{ 'settings.mcp.configureClient' | translate }}
+      </button>
+    </div>
+  } @else {
+    <!-- mcpActive is true but the deployment advertises no usable endpoint (public API base
+         URL never configured). Say so rather than showing a half-filled panel. -->
+    <p class="setting-description">{{ 'settings.mcp.unavailable' | translate }}</p>
+  }
+</div>

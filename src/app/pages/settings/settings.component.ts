@@ -10,12 +10,13 @@ import { CloudSignatureSubscription } from '../../models/signature.models';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
+import { McpSettingsComponent } from '../../components/mcp-settings/mcp-settings.component';
 import { IS_ENTERPRISE } from '../../edition';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -67,6 +68,14 @@ export class SettingsComponent implements OnInit {
 
   get showAiSettings(): boolean {
     return this.settingsService.isAiUserSettingsEnabled;
+  }
+
+  /**
+   * Follows openfilz.mcp.active only. Not `showAiSettings`: MCP serves external agents and a
+   * deployment can run it with the in-app assistant (or per-user BYOK) switched off.
+   */
+  get showMcpSettings(): boolean {
+    return this.settingsService.isMcpActive;
   }
 
   get hasQuotaInfo(): boolean {

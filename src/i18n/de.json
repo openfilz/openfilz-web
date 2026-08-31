@@ -503,6 +503,38 @@
       "saveError": "KI-Einstellungen konnten nicht gespeichert werden.",
       "loadError": "KI-Einstellungen konnten nicht geladen werden."
     },
+    "mcp": {
+      "title": "MCP-Server",
+      "description": "Verbinden Sie einen externen KI-Agenten — Claude, Cursor, n8n — mit Ihren Dokumenten. Der Agent sieht genau das, was Sie sehen dürfen, und nicht mehr.",
+      "serverUrl": "Server-Adresse",
+      "clientId": "OAuth-Client-ID",
+      "clientIdHint": "Erforderlich für Tools, die sich nicht selbst registrieren können, etwa Claude Desktop: Wählen Sie „Use your own OAuth client“ und geben Sie diese ID ohne Secret ein.",
+      "mode": "Rechte für Agenten",
+      "modes": {
+        "READ_ONLY": "Nur lesen",
+        "READ_WRITE": "Lesen und schreiben"
+      },
+      "modeReadOnlyHint": "Agenten können Ihre Dokumente durchsuchen und lesen. Anlegen, Verschieben und Umbenennen sind in dieser Installation deaktiviert.",
+      "modeReadWriteHint": "Agenten können außerdem Dokumente anlegen, verschieben und umbenennen — immer im Rahmen Ihrer eigenen Rechte.",
+      "configureClient": "Mein KI-Tool einrichten",
+      "unavailable": "Der MCP-Server ist aktiviert, diese Installation veröffentlicht jedoch keine öffentliche Adresse. Bitten Sie Ihre Administration, die öffentliche API-URL zu hinterlegen.",
+      "copy": "Kopieren",
+      "copied": "In die Zwischenablage kopiert",
+      "copyFailed": "Kopieren fehlgeschlagen",
+      "dialogTitle": "KI-Tool verbinden",
+      "dialogSubtitle": "Vorlagen, bereits mit den Werten dieser Installation ausgefüllt — kopieren, einfügen, fertig.",
+      "clients": {
+        "token": "Get a token",
+        "claudeCode": "Claude Code",
+        "claudeDesktop": "Claude Desktop / claude.ai",
+        "cursor": "Cursor",
+        "vscode": "VS Code / Copilot",
+        "geminiCli": "Gemini CLI",
+        "n8n": "n8n"
+      },
+      "oauthNote": "Keycloak lässt keine Selbstregistrierung von KI-Tools zu. Wählen Sie in Claude Desktop und claude.ai „Use your own OAuth client“ und geben Sie die Client-ID {{clientId}} ein; das Secret bleibt leer.",
+      "fullDoc": "Vollständige Dokumentation"
+    },
     "discoverEe": {
       "title": "Entdecken Sie OpenFilz Enterprise",
       "pitch": "Sie nutzen die Open-Source Community Edition. OpenFilz Enterprise ergänzt private Benutzerbereiche, Dokumentfreigabe mit Berechtigungen, Kommentare und Erwähnungen, Teams, Auswertungen, Webhooks und Integrationen, Scannen mit OCR, Virenschutz, Backups sowie PDF/A-Archivierung mit vertrauenswürdigen E-Signaturen.",

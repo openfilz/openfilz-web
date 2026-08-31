@@ -503,6 +503,38 @@
       "saveError": "Could not save AI settings.",
       "loadError": "Could not load AI settings."
     },
+    "mcp": {
+      "title": "MCP server",
+      "description": "Connect an external AI agent — Claude, Cursor, n8n — to your documents. The agent sees exactly what you are allowed to see, and nothing more.",
+      "serverUrl": "Server URL",
+      "clientId": "OAuth client ID",
+      "clientIdHint": "Needed by hosts that cannot register themselves, such as Claude Desktop: choose \"Use your own OAuth client\" and enter this id, with no secret.",
+      "mode": "Permissions granted to agents",
+      "modes": {
+        "READ_ONLY": "Read only",
+        "READ_WRITE": "Read and write"
+      },
+      "modeReadOnlyHint": "Agents can search and read your documents. Creating, moving and renaming are disabled on this deployment.",
+      "modeReadWriteHint": "Agents can also create, move and rename documents — always within your own permissions.",
+      "configureClient": "Set up my AI tool",
+      "unavailable": "The MCP server is enabled but this deployment advertises no public address. Ask your administrator to set the public API URL.",
+      "copy": "Copy",
+      "copied": "Copied to clipboard",
+      "copyFailed": "Copy failed",
+      "dialogTitle": "Connect your AI tool",
+      "dialogSubtitle": "Snippets already filled in with this deployment's settings — copy, paste, done.",
+      "clients": {
+        "token": "Get a token",
+        "claudeCode": "Claude Code",
+        "claudeDesktop": "Claude Desktop / claude.ai",
+        "cursor": "Cursor",
+        "vscode": "VS Code / Copilot",
+        "geminiCli": "Gemini CLI",
+        "n8n": "n8n"
+      },
+      "oauthNote": "Keycloak does not allow AI tools to register themselves. In Claude Desktop and claude.ai, pick \"Use your own OAuth client\" and enter the client ID {{clientId}}, leaving the secret empty.",
+      "fullDoc": "Full documentation"
+    },
     "discoverEe": {
       "title": "Discover OpenFilz Enterprise",
       "pitch": "You are running the open-source Community Edition. OpenFilz Enterprise adds private per-user spaces, document sharing & permissions, comments & mentions, teams, analytics, webhooks & integrations, document scanning with OCR, antivirus, backups and PDF/A archiving with trusted e-signatures.",

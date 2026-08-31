@@ -1,0 +1,61 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper">
+      <mat-icon aria-hidden="true">hub</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title" id="mcp-dialog-title">{{ 'settings.mcp.dialogTitle' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'settings.mcp.dialogSubtitle' | translate }}</p>
+    </div>
+  </div>
+  <button mat-icon-button
+          class="close-btn"
+          (click)="onClose()"
+          [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <div class="mcp-tabs" role="tablist" [attr.aria-label]="'settings.mcp.dialogTitle' | translate">
+    @for (snippet of snippets; track snippet.id; let i = $index) {
+      <button type="button"
+              role="tab"
+              class="mcp-tab"
+              [class.active]="i === activeIndex"
+              [attr.aria-selected]="i === activeIndex"
+              (click)="select(i)">
+        {{ 'settings.mcp.clients.' + snippet.id | translate }}
+      </button>
+    }
+  </div>
+
+  <div class="mcp-code-block">
+    <div class="mcp-code-toolbar">
+      <span class="mcp-code-language">{{ activeSnippet.language }}</span>
+      <button type="button" class="mcp-copy-btn" (click)="copyActive()">
+        <mat-icon aria-hidden="true">content_copy</mat-icon>
+        {{ 'settings.mcp.copy' | translate }}
+      </button>
+    </div>
+    <pre class="mcp-code"><code>{{ activeSnippet.code }}</code></pre>
+  </div>
+
+  <!-- The single most common failure: Keycloak has dynamic client registration off, so a host
+       that tries to register itself is refused and the user is left with an opaque OAuth error. -->
+  <div class="mcp-note">
+    <mat-icon aria-hidden="true">info</mat-icon>
+    <span>{{ 'settings.mcp.oauthNote' | translate: { clientId: connection.clientId } }}</span>
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <a class="mcp-doc-link"
+     href="https://openfilz.com/developers#mcp"
+     target="_blank"
+     rel="noopener noreferrer">
+    <mat-icon aria-hidden="true">open_in_new</mat-icon>
+    {{ 'settings.mcp.fullDoc' | translate }}
+  </a>
+  <button mat-button (click)="onClose()">{{ 'common.close' | translate }}</button>
+</div>
