@@ -328,9 +328,45 @@
 .upsell-actions a {
   border-radius: 10px;
   text-decoration: none;
+  font-weight: 600;
+  /* These labels are full phrases (and longer again in French) — let them wrap inside
+     the button instead of forcing MDC's fixed 40px box */
+  height: auto;
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 1.3;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Material paints filled buttons from its own tokens with `:not(:disabled)` — a plain
+   `background` here loses that cascade — and those tokens resolve to mat.theme()'s fixed
+   indigo palette rather than the app's runtime theme. Drive the tokens instead (same
+   approach as sign.component.css). Note `color="primary"` is inert on M3 buttons: it used
+   to make these look filled, which is why the two CTAs had become near-identical. */
+.upsell-actions a[mat-flat-button] {
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-state-layer-color: #fff;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
 .upsell-actions a[mat-stroked-button] {
-  border: 2px solid var(--border-color);
-  color: var(--text-primary);
+  --mat-button-outlined-label-text-color: var(--text-primary);
+  --mat-button-outlined-outline-color: var(--border-color);
+  --mat-button-outlined-outline-width: 2px;
+}
+
+/* Phones: stack them full width. Side by side they shrink to two different widths and
+   wrap mid-phrase, which is what made the pair look mismatched. */
+@media (max-width: 600px) {
+  .upsell-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .upsell-actions a {
+    width: 100%;
+  }
 }
