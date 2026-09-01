@@ -115,7 +115,7 @@
             <p class="upsell-text">{{ 'settings.cloudSigning.upsell.ee.pitch' | translate }}</p>
             <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
             <div class="upsell-actions">
-              <a mat-raised-button color="primary" [href]="licenseUpgradeUrl" target="_blank" rel="noopener">
+              <a mat-flat-button [href]="licenseUpgradeUrl" target="_blank" rel="noopener">
                 <mat-icon aria-hidden="true">cloud_done</mat-icon>
                 {{ 'settings.cloudSigning.upsell.ee.enable' | translate }}
               </a>
@@ -127,7 +127,7 @@
             <p class="upsell-text">{{ 'settings.cloudSigning.upsell.pitch' | translate }}</p>
             <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
             <div class="upsell-actions">
-              <a mat-raised-button color="primary" [href]="cloudSigningUrl" target="_blank" rel="noopener">
+              <a mat-flat-button [href]="cloudSigningUrl" target="_blank" rel="noopener">
                 <mat-icon aria-hidden="true">cloud_done</mat-icon>
                 {{ 'settings.cloudSigning.upsell.learnMore' | translate }}
               </a>
@@ -152,7 +152,7 @@
         <div class="upsell-card">
           <p class="upsell-text">{{ 'settings.discoverEe.pitch' | translate }}</p>
           <div class="upsell-actions">
-            <a mat-raised-button color="primary" [href]="enterpriseUrl" target="_blank" rel="noopener">
+            <a mat-flat-button [href]="enterpriseUrl" target="_blank" rel="noopener">
               <mat-icon aria-hidden="true">open_in_new</mat-icon>
               {{ 'settings.discoverEe.learnMore' | translate }}
             </a>
