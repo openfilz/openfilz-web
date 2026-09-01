@@ -1052,15 +1052,19 @@
   },
   "notice": {
     "dismiss": "Dismiss",
+    "expand": "Show details",
+    "collapse": "Show less",
     "demo": {
       "ce": {
         "message": "Public demo — every visitor can see all files. Do not upload confidential documents.",
+        "messageShort": "Public demo — everyone sees all files.",
         "tryEe": "Need privacy? Try the Enterprise demo",
         "openSource": "OpenFilz is open source",
         "uploadWarning": "This is a public shared demo: anyone can see the files you upload. Do not upload confidential documents."
       },
       "ee": {
         "message": "You are exploring the OpenFilz Enterprise demo — data may be reset at any time.",
+        "messageShort": "Enterprise demo — data may be reset.",
         "startTrial": "Start a free trial",
         "pricing": "Pricing"
       }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,10 @@ import { IS_ENTERPRISE } from '../../edition';
  * Demo-deployment notice bar shown under the header (backend demoMode flag).
  * CE demo: shared-visibility privacy warning + links to the EE demo and the open-source repo.
  * EE demo: demo note + "start a free trial" CTA, dismissible for the session.
+ *
+ * On small screens (<= 768px) the bar collapses to a single compact line (a shortened
+ * message + a chevron); expanding overlays the full text and links on top of the content,
+ * so the layout offset stays constant whatever the state and the translation length.
  */
 @Component({
   selector: 'app-notice-banner',
@@ -26,6 +30,13 @@ export class NoticeBannerComponent {
   readonly openSourceUrl = 'https://openfilz.org';
   readonly startTrialUrl = 'https://www.openfilz.com/portal/start-trial';
   readonly pricingUrl = 'https://www.openfilz.com/pricing';
+
+  /** Mobile-only expand state; transient on purpose (no persistence). */
+  readonly expanded = signal(false);
+
+  toggleExpanded(): void {
+    this.expanded.update(v => !v);
+  }
 
   dismiss(): void {
     this.noticeBannerService.dismiss();

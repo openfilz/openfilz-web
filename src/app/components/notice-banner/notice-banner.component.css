@@ -1,3 +1,9 @@
+/* Compact single-line variant + expand chevron: mobile only (see the <=768px block) */
+.notice-message-compact,
+.notice-expand {
+  display: none;
+}
+
 /* Demo notice bar — same layout mechanics as the EE agent-update-banner (fixed under the
    64px header, 57px tall on desktop; the shell's .has-notice-banner offsets assume that). */
 .notice-banner {
@@ -105,11 +111,15 @@
   }
 }
 
-/* Mobile: header is 60px, text wraps — the shell budgets ~80px for the banner */
+/* Mobile: the full message + links cost ~80px of an already short viewport, so the bar
+   collapses to a single 44px line (shortened message + chevron). Expanding it keeps the bar
+   fixed and simply grows it *over* the content, so .has-notice-banner only ever has to budget
+   the collapsed height — no layout math that depends on how long a translation wraps. */
 @media (max-width: 768px) {
   .notice-banner {
-    height: 80px;
-    padding: 8px 12px;
+    height: 44px;
+    padding: 0 4px 0 12px;
+    gap: 8px;
     top: 60px;
     left: 0;
     right: 0;
@@ -117,10 +127,82 @@
 
   :host-context([dir="rtl"]) .notice-banner {
     right: 0;
+    padding: 0 12px 0 4px;
   }
 
   .notice-text {
     font-size: 12px;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .notice-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Collapsed: one line, ellipsised — never a wall of text */
+  .notice-message-compact {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .notice-message,
+  .notice-links {
+    display: none;
+  }
+
+  .notice-expand {
+    display: inline-flex;
+  }
+
+  .notice-expand,
+  .notice-dismiss {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* Expanded: full message + links, overlaying the content below */
+  .notice-banner.expanded {
+    height: auto;
+    min-height: 44px;
+    align-items: flex-start;
+    padding: 10px 4px 12px 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  }
+
+  .expanded .notice-message-compact {
+    display: none;
+  }
+
+  .expanded .notice-message,
+  .expanded .notice-links {
+    display: block;
+  }
+
+  .expanded .notice-text {
+    flex-wrap: wrap;
+    align-items: baseline;
+    white-space: normal;
+  }
+
+  /* Links must wrap here — nowrap clips the CTA off the right edge on narrow phones */
+  .expanded .notice-links {
+    white-space: normal;
+  }
+
+  .expanded .notice-icon,
+  .expanded .notice-expand,
+  .expanded .notice-dismiss {
+    margin-top: -2px;
   }
 }
 

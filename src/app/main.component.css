@@ -182,12 +182,13 @@
     height: calc(100dvh - 60px);
   }
 
-  /* Notice banner on mobile is taller (80px, text wraps) */
+  /* Notice banner on mobile collapses to a single 44px line (60px header + 44px banner);
+     expanding it overlays the content instead of pushing it, so this stays constant */
   .has-notice-banner .main-content,
   .has-notice-banner .main-content:not(.dashboard-content) {
-    margin-top: 140px;
-    height: calc(100vh - 140px);
-    height: calc(100dvh - 140px);
+    margin-top: 104px;
+    height: calc(100vh - 104px);
+    height: calc(100dvh - 104px);
   }
 
   /* Mobile overlay for sidebar */
@@ -215,9 +216,9 @@
 
   .has-notice-banner .main-content,
   .has-notice-banner .main-content:not(.dashboard-content) {
-    margin-top: 136px;
-    height: calc(100vh - 136px);
-    height: calc(100dvh - 136px);
+    margin-top: 100px; /* 56px header + 44px collapsed banner */
+    height: calc(100vh - 100px);
+    height: calc(100dvh - 100px);
   }
 
   .empty-state {

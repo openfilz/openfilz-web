@@ -1052,15 +1052,19 @@
   },
   "notice": {
     "dismiss": "Schließen",
+    "expand": "Details anzeigen",
+    "collapse": "Weniger anzeigen",
     "demo": {
       "ce": {
         "message": "Öffentliche Demo — alle Besucher sehen alle Dateien. Laden Sie keine vertraulichen Dokumente hoch.",
+        "messageShort": "Öffentliche Demo — alle Dateien sind sichtbar.",
         "tryEe": "Mehr Privatsphäre? Testen Sie die Enterprise-Demo",
         "openSource": "OpenFilz ist Open Source",
         "uploadWarning": "Dies ist eine öffentliche, geteilte Demo: Jeder kann die von Ihnen hochgeladenen Dateien sehen. Laden Sie keine vertraulichen Dokumente hoch."
       },
       "ee": {
         "message": "Sie erkunden die OpenFilz-Enterprise-Demo — Daten können jederzeit zurückgesetzt werden.",
+        "messageShort": "Enterprise-Demo — Daten können zurückgesetzt werden.",
         "startTrial": "Kostenlose Testphase starten",
         "pricing": "Preise"
       }
