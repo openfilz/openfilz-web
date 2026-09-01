@@ -1052,15 +1052,19 @@
   },
   "notice": {
     "dismiss": "Sluiten",
+    "expand": "Details tonen",
+    "collapse": "Minder tonen",
     "demo": {
       "ce": {
         "message": "Openbare demo — alle bezoekers zien alle bestanden. Upload geen vertrouwelijke documenten.",
+        "messageShort": "Openbare demo — iedereen ziet alle bestanden.",
         "tryEe": "Privacy nodig? Probeer de Enterprise-demo",
         "openSource": "OpenFilz is open source",
         "uploadWarning": "Dit is een openbare gedeelde demo: iedereen kan de bestanden zien die u uploadt. Upload geen vertrouwelijke documenten."
       },
       "ee": {
         "message": "U verkent de OpenFilz Enterprise-demo — gegevens kunnen op elk moment worden gewist.",
+        "messageShort": "Enterprise-demo — gegevens kunnen worden gewist.",
         "startTrial": "Start een gratis proefperiode",
         "pricing": "Prijzen"
       }
