@@ -39,10 +39,13 @@ export function buildMcpSnippets(connection: McpConnection): McpSnippet[] {
     {
       id: 'token',
       language: 'bash',
-      code: `# $OPENFILZ_TOKEN = a Keycloak access token — mint one with a service-account client
+      code: `# Only for tools that paste a token (Claude Code, Cursor, Gemini CLI, n8n).
+# VS Code / Copilot and Claude Desktop sign in with OAuth instead — skip this tab.
+# <agent-client> = a service-account client an admin creates in Keycloak first
+# (Clients → Create client: confidential, service accounts on, grant it the agent's roles)
 export OPENFILZ_TOKEN=$(curl -s -X POST \\
   ${tokenUrl} \\
-  -d grant_type=client_credentials -d client_id=my-agent -d client_secret=<secret> \\
+  -d grant_type=client_credentials -d client_id=<agent-client> -d client_secret=<secret> \\
   | jq -r .access_token)`,
     },
     {
@@ -78,17 +81,13 @@ claude mcp add --transport http openfilz \\
     },
     {
       id: 'vscode',
-      language: 'json',
-      code: `// .vscode/mcp.json
-{
-  "servers": {
-    "openfilz": {
-      "type": "http",
-      "url": "${url}",
-      "headers": { "Authorization": "Bearer <your-token>" }
-    }
-  }
-}`,
+      language: 'text',
+      code: `# No token to paste — VS Code signs in with your OpenFilz account (OAuth)
+# 1. Command Palette → "MCP: Add Server…" → HTTP
+#    URL: ${url} — name: openfilz
+# 2. Self-registration is off, so VS Code asks for an OAuth client:
+#    Client ID: ${clientId} — client secret: leave empty
+# 3. Your browser opens the OpenFilz sign-in — sign in, done`,
     },
     {
       id: 'geminiCli',
