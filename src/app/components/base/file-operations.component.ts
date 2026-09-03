@@ -14,6 +14,7 @@ import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
 import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { PdfToolsService } from '../../services/pdf-tools.service';
 import { PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -65,6 +66,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected settingsService = inject(SettingsService);
   protected signatureAccess = inject(SignatureAccessService);
   protected pdfToolsAccess = inject(PdfToolsAccessService);
+  protected pdfTools = inject(PdfToolsService);
   protected translate = inject(TranslateService);
 
   constructor() {
@@ -95,6 +97,10 @@ export abstract class FileOperationsComponent implements OnInit {
         this.reloadData();
       }
     });
+
+    // A PDF tool run from inside the file viewer creates/replaces documents without this
+    // listing ever seeing a dialog result — refresh on its notification instead.
+    this.pdfTools.documentsChanged$.subscribe(() => this.reloadData());
   }
 
   @HostListener('document:keydown', ['$event'])

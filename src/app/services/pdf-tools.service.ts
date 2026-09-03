@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import {
@@ -17,6 +17,13 @@ export class PdfToolsService {
   private readonly baseUrl = `${environment.apiURL}/pdf`;
   private readonly http = inject(HttpClient);
   private readonly translate = inject(TranslateService);
+
+  /**
+   * Emits after a PDF tool created or replaced documents. Listings subscribe to it so a tool run
+   * from inside the file viewer (which the listing cannot observe through its dialog result)
+   * still refreshes the folder.
+   */
+  readonly documentsChanged$ = new Subject<void>();
 
   /** Page count, geometry, bookmarks, encrypted / signed flags of a stored PDF. */
   info(documentId: string): Observable<PdfInfo> {

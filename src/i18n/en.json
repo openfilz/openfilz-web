@@ -1084,6 +1084,8 @@
       "loading": "Loading the PDF…",
       "loadError": "This PDF could not be loaded.",
       "signedWarning": "This PDF is digitally signed. Changing its pages invalidates the signature — save the result as a new document, or accept the loss.",
+      "activeEnvelopeWarning": "This PDF is part of an e-Sign envelope that is still running: the result can only be saved as a new document.",
+      "activeEnvelopeDisabled": "Unavailable while an e-Sign envelope is running on this PDF.",
       "signedTag": "Signed",
       "encryptedError": "This PDF is password-protected and cannot be transformed. Remove the password first.",
       "encryptedErrorNamed": "\"{{name}}\" is password-protected and cannot be transformed.",

@@ -1084,6 +1084,8 @@
       "loading": "PDF wird geladen…",
       "loadError": "Dieses PDF konnte nicht geladen werden.",
       "signedWarning": "Dieses PDF ist digital signiert. Änderungen an den Seiten machen die Signatur ungültig – speichern Sie das Ergebnis als neues Dokument oder akzeptieren Sie den Verlust.",
+      "activeEnvelopeWarning": "Dieses PDF gehört zu einem laufenden e-Sign-Umschlag: Das Ergebnis kann nur als neues Dokument gespeichert werden.",
+      "activeEnvelopeDisabled": "Nicht verfügbar, solange für dieses PDF ein e-Sign-Umschlag läuft.",
       "signedTag": "Signiert",
       "encryptedError": "Dieses PDF ist passwortgeschützt und kann nicht umgewandelt werden. Entfernen Sie zuerst das Passwort.",
       "encryptedErrorNamed": "„{{name}}“ ist passwortgeschützt und kann nicht umgewandelt werden.",

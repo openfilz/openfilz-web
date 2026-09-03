@@ -1084,6 +1084,8 @@
       "loading": "PDF wordt geladen…",
       "loadError": "Deze PDF kon niet worden geladen.",
       "signedWarning": "Deze PDF is digitaal ondertekend. Het wijzigen van de pagina's maakt de handtekening ongeldig: sla het resultaat op als nieuw document of accepteer het verlies.",
+      "activeEnvelopeWarning": "Deze PDF maakt deel uit van een lopende e-Sign-envelop: het resultaat kan alleen als nieuw document worden opgeslagen.",
+      "activeEnvelopeDisabled": "Niet beschikbaar zolang er een e-Sign-envelop loopt voor deze PDF.",
       "signedTag": "Ondertekend",
       "encryptedError": "Deze PDF is met een wachtwoord beveiligd en kan niet worden bewerkt. Verwijder eerst het wachtwoord.",
       "encryptedErrorNamed": "\"{{name}}\" is met een wachtwoord beveiligd en kan niet worden bewerkt.",

@@ -19,6 +19,9 @@
   @for (err of loadErrors; track $index) {
   <div class="hint err"><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ err }}</span></div>
   }
+  @if (anyActiveEnvelope) {
+  <div class="hint warn"><mat-icon aria-hidden="true">draw</mat-icon><span>{{ 'pdfTools.common.activeEnvelopeWarning' | translate }}</span></div>
+  }
   @if (anySigned) {
   <div class="hint warn"><mat-icon aria-hidden="true">verified_user</mat-icon><span>{{ 'pdfTools.common.signedWarning' | translate }}</span></div>
   }
@@ -60,11 +63,11 @@
   <div class="section">
     <div class="section-title">{{ 'pdfTools.common.destination' | translate }}</div>
     <div class="segmented" role="radiogroup">
-      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="saveMode = 'NEW_VERSION'"
-        role="radio" [attr.aria-checked]="saveMode === 'NEW_VERSION'">
+      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="setSaveMode('NEW_VERSION')"
+        [disabled]="anyActiveEnvelope" role="radio" [attr.aria-checked]="saveMode === 'NEW_VERSION'">
         <mat-icon aria-hidden="true">history</mat-icon><span>{{ 'pdfTools.common.saveAsNewVersion' | translate }}</span>
       </button>
-      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="saveMode = 'NEW_DOCUMENT'"
+      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="setSaveMode('NEW_DOCUMENT')"
         role="radio" [attr.aria-checked]="saveMode === 'NEW_DOCUMENT'">
         <mat-icon aria-hidden="true">note_add</mat-icon><span>{{ 'pdfTools.common.saveAsNewDocument' | translate }}</span>
       </button>
@@ -80,6 +83,11 @@
 </div>
 
 <div mat-dialog-actions class="dialog-actions">
+  @if (saveError) {
+  <div class="hint err action-error" role="alert">
+    <mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ saveError }}</span>
+  </div>
+  }
   <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [attr.aria-label]="'common.cancel' | translate">
     <mat-icon aria-hidden="true">close</mat-icon>
     <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>

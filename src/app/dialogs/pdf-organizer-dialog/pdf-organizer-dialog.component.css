@@ -221,6 +221,13 @@
   background: var(--bg-primary);
 }
 
+/* Refusals from the API sit on their own row above the buttons — a snackbar would be
+   hidden behind this full-height dialog. */
+.action-error {
+  flex: 1 0 100%;
+  margin-bottom: 4px;
+}
+
 .spacer {
   flex: 1;
 }
@@ -274,6 +281,11 @@
   padding-top: 10px;
   padding-bottom: 10px;
   min-height: 44px;
+}
+
+.mode-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .ack {

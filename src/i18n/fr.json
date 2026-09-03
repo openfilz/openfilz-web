@@ -1084,6 +1084,8 @@
       "loading": "Chargement du PDF…",
       "loadError": "Impossible de charger ce PDF.",
       "signedWarning": "Ce PDF est signé numériquement. Modifier ses pages invalide la signature : enregistrez le résultat comme nouveau document, ou acceptez la perte.",
+      "activeEnvelopeWarning": "Ce PDF fait partie d'une enveloppe e-Sign en cours : le résultat ne peut être enregistré que comme nouveau document.",
+      "activeEnvelopeDisabled": "Indisponible tant qu'une enveloppe e-Sign est en cours sur ce PDF.",
       "signedTag": "Signé",
       "encryptedError": "Ce PDF est protégé par mot de passe et ne peut pas être transformé. Retirez d'abord le mot de passe.",
       "encryptedErrorNamed": "« {{name}} » est protégé par mot de passe et ne peut pas être transformé.",

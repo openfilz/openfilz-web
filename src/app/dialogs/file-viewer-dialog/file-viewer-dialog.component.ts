@@ -12,6 +12,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DocumentApiService } from '../../services/document-api.service';
 import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { PdfToolsService } from '../../services/pdf-tools.service';
 import { PdfToolResult } from '../../models/pdf-tools.models';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
@@ -81,6 +82,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   viewerMode: ViewerMode = 'unsupported';
   private readonly pdfToolsAccess = inject(PdfToolsAccessService);
+  private readonly pdfTools = inject(PdfToolsService);
   private readonly pdfToolsDialog = inject(MatDialog);
 
   // Common properties
@@ -173,14 +175,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.onClose();
     });
 
-    this.determineViewerMode();
-
-    // Monaco performance: flag large text files (5-10 MB)
-    if (this.viewerMode === 'text' && this.data.fileSize && this.data.fileSize > MAX_MONACO_COMFORTABLE_SIZE) {
-      this.isLargeTextFile = true;
-    }
-
-    this.loadDocument();
+    this.resolveViewerMode();
   }
 
   ngAfterViewInit() {
@@ -194,13 +189,34 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  private determineViewerMode() {
+  private resolveViewerMode() {
     // OnlyOffice edits the live document — never use it for an immutable historical
     // version; office formats then fall back to the in-app mammoth/xlsx renderers.
-    const allowOnlyOffice = !this.data.versionId &&
+    const onlyOfficeCandidate = !this.data.versionId &&
       this.onlyOfficeService.isOnlyOfficeEnabled() &&
       this.onlyOfficeService.isSupportedExtension(this.data.fileName?.toLowerCase() || '');
+
+    if (!onlyOfficeCandidate) {
+      this.applyViewerMode(false);
+      return;
+    }
+
+    // The build-time flag only says the deployment *may* have OnlyOffice. Confirm with
+    // the API (cached for the session) so a disabled or unreachable DocumentServer opens
+    // in the in-app pdf.js / mammoth / xlsx viewer instead of failing.
+    this.loading = true;
+    this.onlyOfficeService.isAvailable().subscribe(available => this.applyViewerMode(available));
+  }
+
+  /** Set the viewer mode for the current file and start loading it. */
+  private applyViewerMode(allowOnlyOffice: boolean) {
     this.viewerMode = determineViewerMode(this.data.fileName, this.data.contentType, allowOnlyOffice);
+
+    // Monaco performance: flag large text files (5-10 MB)
+    this.isLargeTextFile = this.viewerMode === 'text' && !!this.data.fileSize
+      && this.data.fileSize > MAX_MONACO_COMFORTABLE_SIZE;
+
+    this.loadDocument();
   }
 
   /** PDF tools: the current (not a historical version) PDF may be reorganised in place. */
@@ -218,11 +234,41 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
         data: { documentId: this.data.documentId, documentName: this.data.fileName }
       });
       ref.afterClosed().subscribe((result: PdfToolResult | undefined) => {
-        if (result?.success && result.mode === 'NEW_VERSION') {
+        if (!result?.success) return;
+        if (result.mode === 'NEW_VERSION') {
           this.loadDocument();
+        } else {
+          // Saved as a new document: keep showing the result the user just produced rather
+          // than the untouched source they started from.
+          const output = result.response?.outputs?.[0];
+          if (output) {
+            this.showDocument(output.documentId, output.name, output.size);
+          }
         }
+        // The listing that opened this viewer cannot see the organizer's result, so a new
+        // document (or a new version) would stay invisible until a manual refresh.
+        this.pdfTools.documentsChanged$.next();
       });
     });
+  }
+
+  /** Point the viewer at another document (a PDF tool's output) and reload it in place. */
+  private showDocument(documentId: string, fileName: string, fileSize?: number): void {
+    if (this.fileUrl) {
+      URL.revokeObjectURL(this.fileUrl);
+      this.fileUrl = undefined;
+    }
+    this.data.documentId = documentId;
+    this.data.fileName = fileName;
+    this.data.contentType = 'application/pdf';
+    this.data.fileSize = fileSize;
+    this.data.versionId = undefined;
+    this.data.versionLabel = undefined;
+    this.pdfDocument = undefined;
+    this.currentPage = 1;
+    this.totalPages = 0;
+    this.pdfRotation = 0;
+    this.resolveViewerMode();
   }
 
   private loadDocument() {
@@ -281,9 +327,18 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onEditorError(error: string) {
-    console.error('OnlyOffice editor error:', error);
-    this.error = error;
-    this.snackBar.open(error, this.translate.instant('common.close'), { duration: 5000 });
+    // OnlyOffice could not be reached (config call refused, api.js unreachable, ...).
+    // Retreat to the in-app viewer rather than leaving the user on an error screen.
+    console.warn('OnlyOffice editor unavailable, falling back to the in-app viewer:', error);
+    this.onlyOfficeService.markUnavailable();
+
+    if (determineViewerMode(this.data.fileName, this.data.contentType, false) === 'unsupported') {
+      this.error = error;
+      this.snackBar.open(error, this.translate.instant('common.close'), { duration: 5000 });
+      return;
+    }
+
+    this.applyViewerMode(false);
   }
 
   // ========== PDF Viewer ==========
@@ -310,7 +365,10 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
     try {
       const page = await this.pdfDocument.getPage(this.currentPage);
-      const viewport = page.getViewport({ scale: this.pdfZoom, rotation: this.pdfRotation });
+      // pdf.js treats `rotation` as absolute: passing the toolbar's rotation alone would render
+      // every page upright and hide the page's own /Rotate (e.g. pages rotated by the PDF tools).
+      // The toolbar rotates *on top of* what the document says.
+      const viewport = page.getViewport({ scale: this.pdfZoom, rotation: page.rotate + this.pdfRotation });
 
       const canvas = this.pdfCanvas.nativeElement;
       const context = canvas.getContext('2d');

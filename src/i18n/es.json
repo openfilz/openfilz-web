@@ -1084,6 +1084,8 @@
       "loading": "Cargando el PDF…",
       "loadError": "No se pudo cargar este PDF.",
       "signedWarning": "Este PDF está firmado digitalmente. Cambiar sus páginas invalida la firma: guarde el resultado como un documento nuevo o acepte la pérdida.",
+      "activeEnvelopeWarning": "Este PDF forma parte de un sobre e-Sign en curso: el resultado solo puede guardarse como un documento nuevo.",
+      "activeEnvelopeDisabled": "No disponible mientras haya un sobre e-Sign en curso sobre este PDF.",
       "signedTag": "Firmado",
       "encryptedError": "Este PDF está protegido con contraseña y no se puede transformar. Elimine primero la contraseña.",
       "encryptedErrorNamed": "«{{name}}» está protegido con contraseña y no se puede transformar.",

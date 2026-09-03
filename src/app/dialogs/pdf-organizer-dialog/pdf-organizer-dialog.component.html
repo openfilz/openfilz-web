@@ -85,6 +85,12 @@
     <p>{{ error }}</p>
   </div>
   } @else {
+  @if (activeEnvelope) {
+  <div class="hint warn">
+    <mat-icon aria-hidden="true">draw</mat-icon>
+    <span>{{ 'pdfTools.common.activeEnvelopeWarning' | translate }}</span>
+  </div>
+  }
   @if (signed) {
   <div class="hint warn">
     <mat-icon aria-hidden="true">verified_user</mat-icon>
@@ -105,13 +111,19 @@
 </div>
 
 <div mat-dialog-actions class="dialog-actions">
+  @if (saveError) {
+  <div class="hint err action-error" role="alert">
+    <mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ saveError }}</span>
+  </div>
+  }
   @if (!loading && !error) {
   <div class="save-mode" role="radiogroup" [attr.aria-label]="'pdfTools.common.destination' | translate">
-    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="saveMode = 'NEW_VERSION'"
+    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="setSaveMode('NEW_VERSION')"
+      [disabled]="activeEnvelope" [matTooltip]="activeEnvelope ? ('pdfTools.common.activeEnvelopeDisabled' | translate) : ''"
       role="radio" [attr.aria-checked]="saveMode === 'NEW_VERSION'">
       <mat-icon aria-hidden="true">history</mat-icon><span>{{ 'pdfTools.common.saveAsNewVersion' | translate }}</span>
     </button>
-    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="saveMode = 'NEW_DOCUMENT'"
+    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="setSaveMode('NEW_DOCUMENT')"
       role="radio" [attr.aria-checked]="saveMode === 'NEW_DOCUMENT'">
       <mat-icon aria-hidden="true">note_add</mat-icon><span>{{ 'pdfTools.common.saveAsNewDocument' | translate }}</span>
     </button>

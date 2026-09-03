@@ -46,6 +46,8 @@ export interface PdfInfo {
   encrypted: boolean;
   /** Digitally signed — any page change invalidates the signature */
   signed: boolean;
+  /** A non-terminal e-Sign envelope references this PDF — in-place saves are refused */
+  activeSignatureEnvelope: boolean;
   outline: PdfOutlineEntry[];
 }
 
