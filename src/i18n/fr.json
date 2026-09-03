@@ -1069,5 +1069,131 @@
         "pricing": "Tarifs"
       }
     }
+  },
+  "pdfTools": {
+    "actions": {
+      "organize": "Organiser les pages",
+      "merge": "Fusionner les PDF",
+      "split": "Diviser le PDF",
+      "rotate": "Pivoter les pages",
+      "editPages": "Modifier les pages"
+    },
+    "minItems": "{{count}} éléments min.",
+    "common": {
+      "pageCount": "{{count}} pages",
+      "loading": "Chargement du PDF…",
+      "loadError": "Impossible de charger ce PDF.",
+      "signedWarning": "Ce PDF est signé numériquement. Modifier ses pages invalide la signature : enregistrez le résultat comme nouveau document, ou acceptez la perte.",
+      "signedTag": "Signé",
+      "encryptedError": "Ce PDF est protégé par mot de passe et ne peut pas être transformé. Retirez d'abord le mot de passe.",
+      "encryptedErrorNamed": "« {{name}} » est protégé par mot de passe et ne peut pas être transformé.",
+      "pagesPlaceholder": "ex. 1-3, 7, 10-",
+      "allPages": "Toutes les pages",
+      "oddPages": "Pages impaires",
+      "evenPages": "Pages paires",
+      "customPages": "Pages personnalisées",
+      "invalidRange": "Sélection de pages invalide : {{detail}}",
+      "saveAsNewVersion": "Enregistrer comme nouvelle version",
+      "saveAsNewDocument": "Enregistrer comme nouveau document",
+      "newDocumentName": "Nom du nouveau document",
+      "destination": "Destination",
+      "sameFolder": "Même dossier que la source",
+      "chooseFolder": "Choisir un dossier…",
+      "folderChosen": "Dossier sélectionné",
+      "rootFolder": "Dossier racine"
+    },
+    "organizer": {
+      "title": "Organiser les pages",
+      "gridLabel": "Pages",
+      "pageLabel": "Page {{page}}",
+      "selectMenu": "Sélectionner des pages",
+      "selectAll": "Tout sélectionner",
+      "selectNone": "Tout désélectionner",
+      "invertSelection": "Inverser la sélection",
+      "selectRange": "Pages à sélectionner",
+      "selectedCount": "{{count}} sélectionnée(s)",
+      "rotateLeft": "Pivoter à gauche",
+      "rotateRight": "Pivoter à droite",
+      "duplicate": "Dupliquer",
+      "deletePage": "Supprimer la page",
+      "deleteSelected": "Supprimer les pages sélectionnées",
+      "extractSelected": "Extraire les pages sélectionnées dans un nouveau document",
+      "undo": "Annuler",
+      "redo": "Rétablir",
+      "zoom": "Taille des vignettes",
+      "emptyError": "Un PDF doit contenir au moins une page.",
+      "acknowledgeSignature": "Je comprends que la signature existante sera invalidée"
+    },
+    "merge": {
+      "title": "Fusionner les PDF",
+      "subtitle": "{{count}} fichiers · {{pages}} pages",
+      "order": "Glissez les fichiers pour définir l'ordre du document fusionné.",
+      "pagesField": "Pages (optionnel)",
+      "addBookmarks": "Ajouter un signet par fichier",
+      "removeFile": "Retirer de la liste",
+      "moveUp": "Monter",
+      "moveDown": "Descendre",
+      "outputName": "Nom du document fusionné",
+      "merge": "Fusionner"
+    },
+    "split": {
+      "title": "Diviser le PDF",
+      "modes": {
+        "everyN": "Toutes les N pages",
+        "atPages": "Aux pages choisies",
+        "ranges": "Plages personnalisées",
+        "everyPage": "Un document par page",
+        "bookmarks": "Aux signets"
+      },
+      "pagesPerPart": "Pages par document",
+      "cutHint": "Cliquez sur les ciseaux entre deux pages pour y commencer un nouveau document.",
+      "clearCuts": "Effacer les coupures",
+      "rangesField": "Plages (une par document)",
+      "rangesPlaceholder": "ex. 1-3; 4-10; 11-",
+      "rangesHint": "Séparez les documents par ;",
+      "everyPageHint": "{{count}} documents, un par page.",
+      "bookmarkLevel": "Niveau de signet",
+      "noBookmarks": "Ce PDF n'a pas de signets.",
+      "namePattern": "Modèle de nom",
+      "namePatternHint": "{name}, {index}, {first}, {last}, {title}",
+      "createSubfolder": "Placer les documents dans un sous-dossier au nom du PDF",
+      "preview": "Résultat : {{count}} documents",
+      "more": "{{count}} de plus",
+      "noPreview": "Ajustez les réglages pour voir les documents produits.",
+      "split": "Diviser"
+    },
+    "rotate": {
+      "title": "Pivoter les pages",
+      "subtitle": "{{count}} fichiers",
+      "angle": "Rotation",
+      "cw": "90° horaire",
+      "half": "180°",
+      "ccw": "90° antihoraire",
+      "pages": "Pages",
+      "customHint": "S'applique à chaque PDF sélectionné",
+      "rotate": "Pivoter"
+    },
+    "done": {
+      "merge": "Fusionné dans « {{name}} »",
+      "split": "Divisé en {{count}} documents",
+      "organize": "Pages enregistrées comme nouvelle version",
+      "organizeNew": "Enregistré sous « {{name}} »",
+      "rotate": "{{count}} PDF pivoté(s)"
+    },
+    "errors": {
+      "generic": "L'opération PDF a échoué : {{detail}}",
+      "tooLarge": "Les PDF sélectionnés dépassent la taille limite des opérations PDF.",
+      "forbidden": "Vous n'êtes pas autorisé à modifier des documents.",
+      "NOT_A_PDF": "Ce document n'est pas un PDF.",
+      "PDF_ENCRYPTED": "Ce PDF est protégé par mot de passe et ne peut pas être transformé.",
+      "PDF_INVALID": "Ce PDF n'a pas pu être lu.",
+      "PDF_TOO_MANY_PAGES": "Trop de pages pour une seule opération.",
+      "PDF_NO_OUTLINE": "Ce PDF n'a pas de signets à ce niveau.",
+      "TOO_MANY_OUTPUTS": "Cette division produirait trop de documents.",
+      "PDF_SIGNED": "Ce PDF est signé numériquement : enregistrez le résultat comme nouveau document, ou acceptez la perte de la signature.",
+      "ACTIVE_SIGNATURE_ENVELOPE": "Ce PDF est en cours de signature (enveloppe e-Sign active) : enregistrez le résultat comme nouveau document.",
+      "WORM_MODE": "Ce déploiement est en lecture seule (WORM) : enregistrez le résultat comme nouveau document.",
+      "BUSY": "Les outils PDF sont occupés, réessayez dans un instant."
+    }
   }
 }

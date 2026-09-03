@@ -1,0 +1,131 @@
+<div class="dialog-header">
+  <div class="header-icon"><mat-icon aria-hidden="true">call_split</mat-icon></div>
+  <div class="header-text">
+    <h2>{{ 'pdfTools.split.title' | translate }}</h2>
+    <p class="subtitle">{{ data.documentName }}@if (info) { · {{ 'pdfTools.common.pageCount' | translate:{ count: pageCount } }} }</p>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="onCancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content" [class.centered]="loading || !!error">
+  @if (loading) {
+  <div class="state"><mat-spinner diameter="40"></mat-spinner><p>{{ 'pdfTools.common.loading' | translate }}</p></div>
+  } @else if (error) {
+  <div class="state error"><mat-icon aria-hidden="true">error_outline</mat-icon><p>{{ error }}</p></div>
+  } @else {
+
+  <div class="modes" role="radiogroup" [attr.aria-label]="'pdfTools.split.title' | translate">
+    @for (m of modes; track m.id) {
+    <button type="button" class="mode-btn" [class.active]="mode === m.id" (click)="selectMode(m.id)"
+      role="radio" [attr.aria-checked]="mode === m.id" [disabled]="m.id === 'BY_OUTLINE_LEVEL' && !hasOutline"
+      [matTooltip]="m.id === 'BY_OUTLINE_LEVEL' && !hasOutline ? ('pdfTools.split.noBookmarks' | translate) : ''">
+      <mat-icon aria-hidden="true">{{ m.icon }}</mat-icon>
+      <span>{{ 'pdfTools.split.modes.' + m.key | translate }}</span>
+    </button>
+    }
+  </div>
+
+  <div class="mode-settings">
+    @switch (mode) {
+    @case ('EVERY_N_PAGES') {
+    <mat-form-field appearance="outline" class="ff small" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.split.pagesPerPart' | translate }}</mat-label>
+      <input matInput type="number" min="1" [max]="pageCount" [(ngModel)]="n" autocomplete="off">
+    </mat-form-field>
+    }
+    @case ('AT_PAGES') {
+    <p class="help">
+      <mat-icon aria-hidden="true">info</mat-icon>
+      <span>{{ 'pdfTools.split.cutHint' | translate }}</span>
+      @if (cuts.size > 0) {
+      <button mat-button (click)="clearCuts()">{{ 'pdfTools.split.clearCuts' | translate }}</button>
+      }
+    </p>
+    <app-pdf-page-grid class="cut-grid" [pages]="pages" [docs]="docs" [thumbWidth]="104" [dragEnabled]="false"
+      [showActions]="false" [selectable]="false" [cutMode]="true" [cuts]="cuts" (cutToggle)="toggleCut($event)">
+    </app-pdf-page-grid>
+    }
+    @case ('PAGE_RANGES') {
+    <mat-form-field appearance="outline" class="ff wide" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.split.rangesField' | translate }}</mat-label>
+      <input matInput [(ngModel)]="rangesText" (blur)="validateRanges()" (ngModelChange)="rangesError = ''"
+        [placeholder]="'pdfTools.split.rangesPlaceholder' | translate" autocomplete="off">
+      <mat-hint>{{ 'pdfTools.split.rangesHint' | translate }}</mat-hint>
+      @if (rangesError) { <mat-error>{{ rangesError }}</mat-error> }
+    </mat-form-field>
+    }
+    @case ('EVERY_PAGE') {
+    <p class="help"><mat-icon aria-hidden="true">info</mat-icon><span>{{ 'pdfTools.split.everyPageHint' | translate:{ count: pageCount } }}</span></p>
+    }
+    @case ('BY_OUTLINE_LEVEL') {
+    <div class="inline">
+      <span class="label">{{ 'pdfTools.split.bookmarkLevel' | translate }}</span>
+      <div class="level-buttons" role="radiogroup">
+        @for (level of outlineLevels; track level) {
+        <button type="button" class="level-btn" [class.active]="outlineLevel === level" (click)="outlineLevel = level"
+          role="radio" [attr.aria-checked]="outlineLevel === level">{{ level }}</button>
+        }
+      </div>
+    </div>
+    }
+    }
+  </div>
+
+  <div class="output">
+    <mat-form-field appearance="outline" class="ff pattern" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.split.namePattern' | translate }}</mat-label>
+      <input matInput [(ngModel)]="namePattern" autocomplete="off">
+      <mat-hint>{{ 'pdfTools.split.namePatternHint' | translate }}</mat-hint>
+    </mat-form-field>
+
+    <div class="destination">
+      <mat-icon aria-hidden="true">folder</mat-icon>
+      <span>{{ (folderChosen ? (folderId === null ? 'pdfTools.common.rootFolder' : 'pdfTools.common.folderChosen') : 'pdfTools.common.sameFolder') | translate }}</span>
+      <button mat-button (click)="chooseFolder()">{{ 'pdfTools.common.chooseFolder' | translate }}</button>
+      @if (folderChosen) {
+      <button mat-icon-button (click)="resetFolder()" [attr.aria-label]="'pdfTools.common.sameFolder' | translate">
+        <mat-icon aria-hidden="true">undo</mat-icon>
+      </button>
+      }
+    </div>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="createSubfolder">
+      <span>{{ 'pdfTools.split.createSubfolder' | translate }}</span>
+    </label>
+  </div>
+
+  <div class="preview" aria-live="polite">
+    @if (previewParts.length > 0) {
+    <div class="preview-title">{{ 'pdfTools.split.preview' | translate:{ count: previewParts.length } }}</div>
+    <ul>
+      @for (part of previewParts.slice(0, 8); track $index) {
+      <li>
+        <mat-icon aria-hidden="true">picture_as_pdf</mat-icon>
+        <span class="preview-name">{{ partName(part, $index + 1, previewParts.length) }}</span>
+        <span class="preview-pages">p. {{ part.pages[0] }}@if (part.pages.length > 1) {–{{ part.pages[part.pages.length - 1] }}}</span>
+      </li>
+      }
+      @if (previewParts.length > 8) {
+      <li class="more">… {{ 'pdfTools.split.more' | translate:{ count: previewParts.length - 8 } }}</li>
+      }
+    </ul>
+    } @else {
+    <div class="preview-title muted">{{ 'pdfTools.split.noPreview' | translate }}</div>
+    }
+  </div>
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [attr.aria-label]="'common.cancel' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+    <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="primary-btn" [disabled]="!canSplit" (click)="split()">
+    @if (saving) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon aria-hidden="true">call_split</mat-icon> }
+    <span>&nbsp;&nbsp;{{ 'pdfTools.split.split' | translate }}</span>
+  </button>
+</div>

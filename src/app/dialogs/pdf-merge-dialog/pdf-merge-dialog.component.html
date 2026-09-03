@@ -1,0 +1,92 @@
+<div class="dialog-header">
+  <div class="header-icon"><mat-icon aria-hidden="true">merge</mat-icon></div>
+  <div class="header-text">
+    <h2>{{ 'pdfTools.merge.title' | translate }}</h2>
+    <p class="subtitle">{{ 'pdfTools.merge.subtitle' | translate:{ count: rows.length, pages: totalPages } }}</p>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="onCancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <p class="help">{{ 'pdfTools.merge.order' | translate }}</p>
+
+  <div class="rows" cdkDropList (cdkDropListDropped)="drop($event)" role="list">
+    @for (row of rows; track row.id; let i = $index) {
+    <div class="row" cdkDrag [cdkDragDisabled]="saving" role="listitem">
+      <mat-icon class="drag-handle" cdkDragHandle aria-hidden="true">drag_indicator</mat-icon>
+      <span class="index">{{ i + 1 }}</span>
+      <mat-icon class="file-icon" aria-hidden="true">picture_as_pdf</mat-icon>
+      <div class="row-main">
+        <div class="row-name" [title]="row.name">{{ row.name }}</div>
+        <div class="row-meta">
+          @if (row.loading) {
+          <mat-spinner diameter="14"></mat-spinner>
+          } @else if (row.error) {
+          <span class="row-error">{{ row.error }}</span>
+          } @else if (row.info) {
+          <span>{{ 'pdfTools.common.pageCount' | translate:{ count: row.info.pageCount } }}</span>
+          @if (row.size != null) { <span>· {{ size(row.size) }}</span> }
+          @if (row.info.signed) { <span class="tag">{{ 'pdfTools.common.signedTag' | translate }}</span> }
+          }
+        </div>
+      </div>
+      <mat-form-field appearance="outline" class="ff pages-field" subscriptSizing="dynamic">
+        <mat-label>{{ 'pdfTools.merge.pagesField' | translate }}</mat-label>
+        <input matInput [(ngModel)]="row.pages" (blur)="validatePages(row)" (ngModelChange)="row.pagesError = undefined"
+          [placeholder]="'pdfTools.common.pagesPlaceholder' | translate" autocomplete="off" [disabled]="!row.info">
+        @if (row.pagesError) { <mat-error>{{ row.pagesError }}</mat-error> }
+      </mat-form-field>
+      <div class="row-actions">
+        <button mat-icon-button (click)="move(i, -1)" [disabled]="i === 0" [attr.aria-label]="'pdfTools.merge.moveUp' | translate">
+          <mat-icon aria-hidden="true">arrow_upward</mat-icon>
+        </button>
+        <button mat-icon-button (click)="move(i, 1)" [disabled]="i === rows.length - 1" [attr.aria-label]="'pdfTools.merge.moveDown' | translate">
+          <mat-icon aria-hidden="true">arrow_downward</mat-icon>
+        </button>
+        <button mat-icon-button class="danger" (click)="remove(i)" [disabled]="rows.length <= 2"
+          [matTooltip]="'pdfTools.merge.removeFile' | translate" [attr.aria-label]="'pdfTools.merge.removeFile' | translate">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="options">
+    <mat-form-field appearance="outline" class="ff name-field" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.merge.outputName' | translate }}</mat-label>
+      <input matInput [(ngModel)]="outputName" autocomplete="off" (keyup.enter)="merge()">
+    </mat-form-field>
+
+    <div class="destination">
+      <mat-icon aria-hidden="true">folder</mat-icon>
+      <span class="destination-label">
+        {{ (folderChosen ? (folderId === null ? 'pdfTools.common.rootFolder' : 'pdfTools.common.folderChosen') : 'pdfTools.common.sameFolder') | translate }}
+      </span>
+      <button mat-button (click)="chooseFolder()">{{ 'pdfTools.common.chooseFolder' | translate }}</button>
+      @if (folderChosen) {
+      <button mat-icon-button (click)="resetFolder()" [attr.aria-label]="'pdfTools.common.sameFolder' | translate">
+        <mat-icon aria-hidden="true">undo</mat-icon>
+      </button>
+      }
+    </div>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="addOutline">
+      <span>{{ 'pdfTools.merge.addBookmarks' | translate }}</span>
+    </label>
+  </div>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [attr.aria-label]="'common.cancel' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+    <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="primary-btn" [disabled]="!canMerge" (click)="merge()">
+    @if (saving) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon aria-hidden="true">merge</mat-icon> }
+    <span>&nbsp;&nbsp;{{ 'pdfTools.merge.merge' | translate }}</span>
+  </button>
+</div>

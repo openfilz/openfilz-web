@@ -76,7 +76,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-toolbar
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
-        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection"
+        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [totalItems]="totalItems"
@@ -91,7 +91,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
-        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()"
+        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
@@ -171,7 +171,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -192,7 +192,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"

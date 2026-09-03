@@ -1069,5 +1069,131 @@
         "pricing": "الأسعار"
       }
     }
+  },
+  "pdfTools": {
+    "actions": {
+      "organize": "تنظيم الصفحات",
+      "merge": "دمج ملفات PDF",
+      "split": "تقسيم PDF",
+      "rotate": "تدوير الصفحات",
+      "editPages": "تعديل الصفحات"
+    },
+    "minItems": "{{count}} عناصر على الأقل",
+    "common": {
+      "pageCount": "{{count}} صفحة",
+      "loading": "جارٍ تحميل ملف PDF…",
+      "loadError": "تعذّر تحميل ملف PDF هذا.",
+      "signedWarning": "هذا الملف موقّع رقمياً. تغيير صفحاته يُبطل التوقيع: احفظ النتيجة كمستند جديد أو اقبل فقدان التوقيع.",
+      "signedTag": "موقّع",
+      "encryptedError": "هذا الملف محمي بكلمة مرور ولا يمكن تحويله. أزل كلمة المرور أولاً.",
+      "encryptedErrorNamed": "«{{name}}» محمي بكلمة مرور ولا يمكن تحويله.",
+      "pagesPlaceholder": "مثال: 1-3, 7, 10-",
+      "allPages": "كل الصفحات",
+      "oddPages": "الصفحات الفردية",
+      "evenPages": "الصفحات الزوجية",
+      "customPages": "صفحات مخصصة",
+      "invalidRange": "تحديد صفحات غير صالح: {{detail}}",
+      "saveAsNewVersion": "حفظ كإصدار جديد",
+      "saveAsNewDocument": "حفظ كمستند جديد",
+      "newDocumentName": "اسم المستند الجديد",
+      "destination": "الوجهة",
+      "sameFolder": "نفس مجلد المصدر",
+      "chooseFolder": "اختر مجلداً…",
+      "folderChosen": "المجلد المحدد",
+      "rootFolder": "المجلد الجذر"
+    },
+    "organizer": {
+      "title": "تنظيم الصفحات",
+      "gridLabel": "الصفحات",
+      "pageLabel": "الصفحة {{page}}",
+      "selectMenu": "تحديد الصفحات",
+      "selectAll": "تحديد الكل",
+      "selectNone": "إلغاء التحديد",
+      "invertSelection": "عكس التحديد",
+      "selectRange": "الصفحات المراد تحديدها",
+      "selectedCount": "{{count}} محددة",
+      "rotateLeft": "تدوير لليسار",
+      "rotateRight": "تدوير لليمين",
+      "duplicate": "تكرار",
+      "deletePage": "حذف الصفحة",
+      "deleteSelected": "حذف الصفحات المحددة",
+      "extractSelected": "استخراج الصفحات المحددة إلى مستند جديد",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "zoom": "حجم المصغّرات",
+      "emptyError": "يحتاج ملف PDF إلى صفحة واحدة على الأقل.",
+      "acknowledgeSignature": "أفهم أن التوقيع الحالي سيصبح غير صالح"
+    },
+    "merge": {
+      "title": "دمج ملفات PDF",
+      "subtitle": "{{count}} ملفات · {{pages}} صفحة",
+      "order": "اسحب الملفات لتحديد ترتيب المستند المدمج.",
+      "pagesField": "الصفحات (اختياري)",
+      "addBookmarks": "إضافة إشارة مرجعية لكل ملف",
+      "removeFile": "إزالة من القائمة",
+      "moveUp": "نقل لأعلى",
+      "moveDown": "نقل لأسفل",
+      "outputName": "اسم المستند المدمج",
+      "merge": "دمج"
+    },
+    "split": {
+      "title": "تقسيم PDF",
+      "modes": {
+        "everyN": "كل N صفحة",
+        "atPages": "عند الصفحات المختارة",
+        "ranges": "نطاقات مخصصة",
+        "everyPage": "مستند لكل صفحة",
+        "bookmarks": "عند الإشارات المرجعية"
+      },
+      "pagesPerPart": "عدد الصفحات لكل مستند",
+      "cutHint": "انقر على المقص بين صفحتين لبدء مستند جديد هناك.",
+      "clearCuts": "مسح القطع",
+      "rangesField": "النطاقات (نطاق لكل مستند)",
+      "rangesPlaceholder": "مثال: 1-3; 4-10; 11-",
+      "rangesHint": "افصل المستندات بـ ;",
+      "everyPageHint": "{{count}} مستنداً، مستند لكل صفحة.",
+      "bookmarkLevel": "مستوى الإشارة المرجعية",
+      "noBookmarks": "لا يحتوي هذا الملف على إشارات مرجعية.",
+      "namePattern": "نمط الاسم",
+      "namePatternHint": "{name}, {index}, {first}, {last}, {title}",
+      "createSubfolder": "وضع المستندات في مجلد فرعي باسم ملف PDF",
+      "preview": "النتيجة: {{count}} مستندات",
+      "more": "{{count}} أخرى",
+      "noPreview": "عدّل الإعدادات لعرض المستندات الناتجة.",
+      "split": "تقسيم"
+    },
+    "rotate": {
+      "title": "تدوير الصفحات",
+      "subtitle": "{{count}} ملفات",
+      "angle": "التدوير",
+      "cw": "90° باتجاه عقارب الساعة",
+      "half": "180°",
+      "ccw": "90° عكس عقارب الساعة",
+      "pages": "الصفحات",
+      "customHint": "يُطبّق على كل ملف PDF محدد",
+      "rotate": "تدوير"
+    },
+    "done": {
+      "merge": "تم الدمج في «{{name}}»",
+      "split": "تم التقسيم إلى {{count}} مستندات",
+      "organize": "تم حفظ الصفحات كإصدار جديد",
+      "organizeNew": "تم الحفظ باسم «{{name}}»",
+      "rotate": "تم تدوير {{count}} ملف PDF"
+    },
+    "errors": {
+      "generic": "فشلت عملية PDF: {{detail}}",
+      "tooLarge": "ملفات PDF المحددة تتجاوز حد الحجم لعمليات PDF.",
+      "forbidden": "غير مسموح لك بتعديل المستندات.",
+      "NOT_A_PDF": "هذا المستند ليس ملف PDF.",
+      "PDF_ENCRYPTED": "هذا الملف محمي بكلمة مرور ولا يمكن تحويله.",
+      "PDF_INVALID": "تعذّرت قراءة ملف PDF هذا.",
+      "PDF_TOO_MANY_PAGES": "عدد الصفحات كبير جداً لعملية واحدة.",
+      "PDF_NO_OUTLINE": "لا يحتوي هذا الملف على إشارات مرجعية عند هذا المستوى.",
+      "TOO_MANY_OUTPUTS": "سينتج عن هذا التقسيم عدد كبير جداً من المستندات.",
+      "PDF_SIGNED": "هذا الملف موقّع رقمياً: احفظ النتيجة كمستند جديد أو اقبل فقدان التوقيع.",
+      "ACTIVE_SIGNATURE_ENVELOPE": "هذا الملف قيد التوقيع (مغلّف e-Sign نشط): احفظ النتيجة كمستند جديد.",
+      "WORM_MODE": "هذا النشر للقراءة فقط (WORM): احفظ النتيجة كمستند جديد.",
+      "BUSY": "أدوات PDF مشغولة، حاول مرة أخرى بعد قليل."
+    }
   }
 }
