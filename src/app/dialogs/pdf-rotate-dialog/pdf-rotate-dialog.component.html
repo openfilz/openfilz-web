@@ -1,0 +1,91 @@
+<div class="dialog-header">
+  <div class="header-icon"><mat-icon aria-hidden="true">rotate_90_degrees_cw</mat-icon></div>
+  <div class="header-text">
+    <h2>{{ 'pdfTools.rotate.title' | translate }}</h2>
+    <p class="subtitle">
+      @if (single) { {{ data.items[0].name }}@if (pageCount) { · {{ 'pdfTools.common.pageCount' | translate:{ count: pageCount } }} } }
+      @else { {{ 'pdfTools.rotate.subtitle' | translate:{ count: data.items.length } }} }
+    </p>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="onCancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  @if (loading) {
+  <div class="state"><mat-spinner diameter="32"></mat-spinner></div>
+  } @else {
+  @for (err of loadErrors; track $index) {
+  <div class="hint err"><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ err }}</span></div>
+  }
+  @if (anySigned) {
+  <div class="hint warn"><mat-icon aria-hidden="true">verified_user</mat-icon><span>{{ 'pdfTools.common.signedWarning' | translate }}</span></div>
+  }
+
+  <div class="section">
+    <div class="section-title">{{ 'pdfTools.rotate.angle' | translate }}</div>
+    <div class="segmented" role="radiogroup">
+      @for (a of angles; track a.value) {
+      <button type="button" class="seg-btn" [class.active]="angle === a.value" (click)="angle = a.value"
+        role="radio" [attr.aria-checked]="angle === a.value">
+        <mat-icon aria-hidden="true">{{ a.icon }}</mat-icon>
+        <span>{{ 'pdfTools.rotate.' + a.key | translate }}</span>
+      </button>
+      }
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">{{ 'pdfTools.rotate.pages' | translate }}</div>
+    <div class="segmented" role="radiogroup">
+      @for (m of pageModes; track m) {
+      <button type="button" class="seg-btn" [class.active]="pagesMode === m" (click)="pagesMode = m; validateCustom()"
+        role="radio" [attr.aria-checked]="pagesMode === m">
+        <span>{{ ('pdfTools.common.' + (m === 'all' ? 'allPages' : m === 'odd' ? 'oddPages' : m === 'even' ? 'evenPages' : 'customPages')) | translate }}</span>
+      </button>
+      }
+    </div>
+    @if (pagesMode === 'custom') {
+    <mat-form-field appearance="outline" class="ff custom-field" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.common.customPages' | translate }}</mat-label>
+      <input matInput [(ngModel)]="custom" (blur)="validateCustom()" (ngModelChange)="customError = ''"
+        [placeholder]="'pdfTools.common.pagesPlaceholder' | translate" autocomplete="off">
+      @if (!single) { <mat-hint>{{ 'pdfTools.rotate.customHint' | translate }}</mat-hint> }
+      @if (customError) { <mat-error>{{ customError }}</mat-error> }
+    </mat-form-field>
+    }
+  </div>
+
+  <div class="section">
+    <div class="section-title">{{ 'pdfTools.common.destination' | translate }}</div>
+    <div class="segmented" role="radiogroup">
+      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="saveMode = 'NEW_VERSION'"
+        role="radio" [attr.aria-checked]="saveMode === 'NEW_VERSION'">
+        <mat-icon aria-hidden="true">history</mat-icon><span>{{ 'pdfTools.common.saveAsNewVersion' | translate }}</span>
+      </button>
+      <button type="button" class="seg-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="saveMode = 'NEW_DOCUMENT'"
+        role="radio" [attr.aria-checked]="saveMode === 'NEW_DOCUMENT'">
+        <mat-icon aria-hidden="true">note_add</mat-icon><span>{{ 'pdfTools.common.saveAsNewDocument' | translate }}</span>
+      </button>
+    </div>
+    @if (saveMode === 'NEW_VERSION' && anySigned) {
+    <label class="ack">
+      <input type="checkbox" [(ngModel)]="acknowledgeSignature">
+      <span>{{ 'pdfTools.organizer.acknowledgeSignature' | translate }}</span>
+    </label>
+    }
+  </div>
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [attr.aria-label]="'common.cancel' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+    <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="primary-btn" [disabled]="!canRotate" (click)="rotate()">
+    @if (saving) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon aria-hidden="true">rotate_90_degrees_cw</mat-icon> }
+    <span>&nbsp;&nbsp;{{ 'pdfTools.rotate.rotate' | translate }}</span>
+  </button>
+</div>

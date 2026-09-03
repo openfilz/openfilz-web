@@ -6,7 +6,8 @@
  * Downstream forks (openfilz-web-ee) extend the UI by contributing extra
  * descriptors instead of forking the templates.
  */
-export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature';
+export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature'
+  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf';
 
 export type FileActionCategory = 'organize' | 'transfer' | 'danger';
 
@@ -22,6 +23,8 @@ export interface FileActionDescriptor {
   placement: 'primary' | 'overflow';
   /** Action only applies to a single selected item */
   singleOnly?: boolean;
+  /** Action needs at least this many selected items (e.g. merge) */
+  minSelection?: number;
   danger?: boolean;
 }
 
@@ -50,6 +53,27 @@ export function isPdfItem(item: { name?: string; contentType?: string; type?: st
   return item.contentType === 'application/pdf' || /\.pdf$/i.test(item.name ?? '');
 }
 
+/**
+ * PDF tools (merge / split / rotate / organize pages). Offered only when every selected item is a
+ * PDF and the API reports `pdfToolsActive` (plus the CONTRIBUTOR role) — see
+ * `PdfToolsAccessService` and `canUsePdfToolsForSelection()` in FileOperationsComponent.
+ */
+export const PDF_TOOLS_SELECTION_ACTIONS: FileActionDescriptor[] = [
+  { id: 'organizePdf', icon: 'dashboard_customize', labelKey: 'pdfTools.actions.organize', ariaKey: 'pdfTools.actions.organize', category: 'organize', placement: 'primary', singleOnly: true },
+  { id: 'mergePdf', icon: 'merge', labelKey: 'pdfTools.actions.merge', ariaKey: 'pdfTools.actions.merge', category: 'organize', placement: 'primary', minSelection: 2 },
+  { id: 'splitPdf', icon: 'call_split', labelKey: 'pdfTools.actions.split', ariaKey: 'pdfTools.actions.split', category: 'organize', placement: 'overflow', singleOnly: true },
+  { id: 'rotatePdf', icon: 'rotate_90_degrees_cw', labelKey: 'pdfTools.actions.rotate', ariaKey: 'pdfTools.actions.rotate', category: 'organize', placement: 'overflow' },
+];
+
+/** The single-item PDF tools shown in the per-item kebab / context menu (merge needs several items). */
+export const PDF_TOOLS_ITEM_ACTIONS: FileActionDescriptor[] = PDF_TOOLS_SELECTION_ACTIONS
+  .filter(a => a.id !== 'mergePdf')
+  .map(a => ({ ...a, placement: 'primary' as const }));
+
+export function isPdfToolsAction(id: FileActionId): boolean {
+  return id === 'organizePdf' || id === 'mergePdf' || id === 'splitPdf' || id === 'rotatePdf';
+}
+
 /** Per-item kebab / right-click context menu actions (order = menu order) */
 export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'open', icon: 'visibility', labelKey: 'common.open', ariaKey: 'toolbar.openSelected', category: 'organize', placement: 'primary' },
@@ -58,6 +82,7 @@ export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'move', icon: 'drive_file_move', labelKey: 'toolbar.move', ariaKey: 'toolbar.moveSelected', category: 'organize', placement: 'primary' },
   { id: 'copy', icon: 'content_copy', labelKey: 'toolbar.copy', ariaKey: 'toolbar.copySelected', category: 'organize', placement: 'primary' },
   REQUEST_SIGNATURE_ACTION,
+  ...PDF_TOOLS_ITEM_ACTIONS,
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'primary' },
   { id: 'delete', icon: 'delete', labelKey: 'common.delete', ariaKey: 'toolbar.deleteSelected', category: 'danger', placement: 'primary', danger: true },
 ];

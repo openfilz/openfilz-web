@@ -16,6 +16,8 @@ export interface Settings {
   signatureActive?: boolean;
   /** True when initiating signature requests also requires the SIGN_REQUESTER role (openfilz.signature.require-requester-role). */
   signatureRequesterRoleRequired?: boolean;
+  /** openfilz.pdf-tools.active on the API — the only switch for the PDF tools (merge / split / rotate / organize) UI. */
+  pdfToolsActive?: boolean;
   /** Recipient authentication methods this deployment can actually deliver (NONE + available OTP channels). */
   signatureAuthMethods?: string[];
   /** False when the backend records a reminder cadence but has nothing to act on it. */
@@ -111,6 +113,11 @@ export class SettingsService {
 
   get isSignatureActive(): boolean {
     return this.settingsSubject.value?.signatureActive ?? false;
+  }
+
+  /** PDF tools (merge / split / rotate / organize pages) follow the backend flag — no frontend toggle of their own. */
+  get isPdfToolsActive(): boolean {
+    return this.settingsSubject.value?.pdfToolsActive === true;
   }
 
   /** When true, only users holding the SIGN_REQUESTER role may initiate signature requests. */

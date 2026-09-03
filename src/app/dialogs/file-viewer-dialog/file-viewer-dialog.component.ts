@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -11,6 +11,8 @@ import { DomSanitizer, SafeResourceUrl, SafeHtml } from '@angular/platform-brows
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DocumentApiService } from '../../services/document-api.service';
+import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { PdfToolResult } from '../../models/pdf-tools.models';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { RoleService } from '../../services/role.service';
@@ -78,6 +80,8 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   isLargeTextFile: boolean = false;
 
   viewerMode: ViewerMode = 'unsupported';
+  private readonly pdfToolsAccess = inject(PdfToolsAccessService);
+  private readonly pdfToolsDialog = inject(MatDialog);
 
   // Common properties
   fileBlob?: Blob;
@@ -197,6 +201,28 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.onlyOfficeService.isOnlyOfficeEnabled() &&
       this.onlyOfficeService.isSupportedExtension(this.data.fileName?.toLowerCase() || '');
     this.viewerMode = determineViewerMode(this.data.fileName, this.data.contentType, allowOnlyOffice);
+  }
+
+  /** PDF tools: the current (not a historical version) PDF may be reorganised in place. */
+  get canEditPages(): boolean {
+    return !this.data.versionId && this.pdfToolsAccess.enabled;
+  }
+
+  /** Open the page organizer for this PDF; reload the preview when it was saved as a new version. */
+  editPages(): void {
+    if (!this.canEditPages) return;
+    import('../pdf-organizer-dialog/pdf-organizer-dialog.component').then(m => {
+      const ref = this.pdfToolsDialog.open(m.PdfOrganizerDialogComponent, {
+        width: '1200px', maxWidth: '98vw', height: '94dvh', maxHeight: '94dvh',
+        panelClass: 'pdf-tools-dialog-panel', autoFocus: false,
+        data: { documentId: this.data.documentId, documentName: this.data.fileName }
+      });
+      ref.afterClosed().subscribe((result: PdfToolResult | undefined) => {
+        if (result?.success && result.mode === 'NEW_VERSION') {
+          this.loadDocument();
+        }
+      });
+    });
   }
 
   private loadDocument() {

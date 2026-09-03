@@ -4,7 +4,7 @@
     [totalItems]="totalItems"
     [isSearchResultsPage]="true"
     [hasSelection]="hasSelectedItems"
-    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection"
+    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
     [sortBy]="sortBy"
     [sortOrder]="sortOrder"
     (viewModeChange)="onViewModeChange($event)"
@@ -14,7 +14,7 @@
     (moveSelected)="onMoveSelected()"
     (copySelected)="onCopySelected()"
     (deleteSelected)="onDeleteSelected()"
-    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()"
+    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
     (clearSelection)="onSelectAll(false)"
   >
   </app-toolbar>
@@ -75,7 +75,7 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
+          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
         >
         </app-file-grid>
       }
@@ -96,7 +96,7 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)"
+          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
         >
         </app-file-list>
       }

@@ -1,0 +1,67 @@
+<div class="page-grid" cdkDropList cdkDropListOrientation="mixed" [cdkDropListData]="pages"
+  [cdkDropListDisabled]="!dragEnabled" (cdkDropListDropped)="onDrop($event)" role="list"
+  [attr.aria-label]="'pdfTools.organizer.gridLabel' | translate">
+  @for (p of pages; track p.key; let i = $index) {
+  @if (cutMode && i > 0) {
+  <button type="button" class="cut-gutter" [class.cut-active]="cuts.has(i)" (click)="onCut(i, $event)"
+    [matTooltip]="'pdfTools.split.cutHint' | translate"
+    [attr.aria-pressed]="cuts.has(i)" [attr.aria-label]="'pdfTools.split.cutHint' | translate">
+    <mat-icon aria-hidden="true">content_cut</mat-icon>
+  </button>
+  }
+  <div #tile class="tile" cdkDrag [cdkDragDisabled]="!dragEnabled" [attr.data-key]="p.key"
+    [class.selected]="p.selected" [class.cut-start]="cutMode && cuts.has(i)"
+    [style.width.px]="thumbWidth" role="listitem" tabindex="0"
+    [attr.aria-selected]="p.selected" [attr.aria-label]="('pdfTools.organizer.pageLabel' | translate:{ page: i + 1 })"
+    (click)="onTileClick(i, $event)" (keydown)="onTileKeydown(i, $event)">
+    <div class="thumb" [style.height.px]="tileHeight(p)">
+      @if (thumbFor(p); as src) {
+      <img [src]="src" alt="" draggable="false">
+      } @else {
+      <div class="thumb-placeholder" aria-hidden="true">
+        <mat-icon>description</mat-icon>
+      </div>
+      }
+      <span class="page-badge">{{ i + 1 }}</span>
+      @if (p.rotation !== 0) {
+      <span class="rotation-badge" aria-hidden="true">{{ p.rotation > 0 ? p.rotation : 360 + p.rotation }}°</span>
+      }
+      @if (cutMode) {
+      <span class="part-badge">{{ partOf(i) }}</span>
+      }
+      @if (selectable) {
+      <span class="select-mark" aria-hidden="true">
+        <mat-icon>{{ p.selected ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+      </span>
+      }
+    </div>
+    @if (showActions) {
+    <div class="tile-actions" (click)="$event.stopPropagation()">
+      <button mat-icon-button type="button" (click)="onRotate(p, -90, $event)"
+        [matTooltip]="'pdfTools.organizer.rotateLeft' | translate" [attr.aria-label]="'pdfTools.organizer.rotateLeft' | translate">
+        <mat-icon aria-hidden="true">rotate_left</mat-icon>
+      </button>
+      <button mat-icon-button type="button" (click)="onRotate(p, 90, $event)"
+        [matTooltip]="'pdfTools.organizer.rotateRight' | translate" [attr.aria-label]="'pdfTools.organizer.rotateRight' | translate">
+        <mat-icon aria-hidden="true">rotate_right</mat-icon>
+      </button>
+      <button mat-icon-button type="button" (click)="onDuplicate(p, $event)"
+        [matTooltip]="'pdfTools.organizer.duplicate' | translate" [attr.aria-label]="'pdfTools.organizer.duplicate' | translate">
+        <mat-icon aria-hidden="true">content_copy</mat-icon>
+      </button>
+      <button mat-icon-button type="button" class="danger" (click)="onRemove(p, $event)"
+        [matTooltip]="'pdfTools.organizer.deletePage' | translate" [attr.aria-label]="'pdfTools.organizer.deletePage' | translate">
+        <mat-icon aria-hidden="true">delete</mat-icon>
+      </button>
+    </div>
+    }
+    <div class="drag-preview" *cdkDragPreview [style.width.px]="thumbWidth">
+      @if (thumbFor(p); as src) {
+      <img [src]="src" alt="" [style.width.px]="thumbWidth">
+      } @else {
+      <div class="thumb-placeholder" [style.height.px]="tileHeight(p)"><mat-icon>description</mat-icon></div>
+      }
+    </div>
+  </div>
+  }
+</div>

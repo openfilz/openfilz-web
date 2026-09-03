@@ -9,9 +9,11 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { FileItem } from '../../models/document.models';
-import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS, isPdfItem } from '../../models/file-actions';
+import { FileActionDescriptor, FileActionId, STANDARD_ITEM_ACTIONS, isPdfItem, isPdfToolsAction } from '../../models/file-actions';
 import { SettingsService } from '../../services/settings.service';
 import { SignatureAccessService } from '../../services/signature-access.service';
+import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { PdfToolActionId } from '../../models/pdf-tools.models';
 import { FileIconService } from '../../services/file-icon.service';
 import { TouchDetectionService } from '../../services/touch-detection.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -63,6 +65,7 @@ export class FileListComponent {
   @Output() toggleFavorite = new EventEmitter<FileItem>();
   @Output() viewProperties = new EventEmitter<FileItem>();
   @Output() requestSignature = new EventEmitter<FileItem>();
+  @Output() pdfTool = new EventEmitter<{ item: FileItem; action: PdfToolActionId }>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
   @Output() itemsDroppedOnFolder = new EventEmitter<DropEvent>();
 
@@ -90,6 +93,7 @@ export class FileListComponent {
   private fileIconService = inject(FileIconService);
   private settingsService = inject(SettingsService);
   private signatureAccess = inject(SignatureAccessService);
+  private pdfToolsAccess = inject(PdfToolsAccessService);
   private touchDetectionService = inject(TouchDetectionService
   );
 
@@ -147,7 +151,9 @@ export class FileListComponent {
   get visibleItemActions(): FileActionDescriptor[] {
     const item = this.menuItem;
     const signAllowed = this.signatureAccess.canRequestSignature && !!item && isPdfItem(item);
-    return this.itemActions.filter(a => a.id !== 'requestSignature' || signAllowed);
+    const pdfToolsAllowed = this.pdfToolsAccess.enabled && !!item && isPdfItem(item);
+    return this.itemActions.filter(a => (a.id !== 'requestSignature' || signAllowed)
+      && (!isPdfToolsAction(a.id) || pdfToolsAllowed));
   }
   contextMenuPosition = { x: 0, y: 0 };
   /** Item the shared actions menu currently targets (set by kebab click or right-click) */
@@ -191,6 +197,12 @@ export class FileListComponent {
         break;
       case 'requestSignature':
         this.requestSignature.emit(item);
+        break;
+      case 'organizePdf':
+      case 'splitPdf':
+      case 'rotatePdf':
+      case 'mergePdf':
+        this.pdfTool.emit({ item, action: actionId });
         break;
       case 'delete':
         this.delete.emit(item);

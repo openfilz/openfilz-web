@@ -1,0 +1,145 @@
+<div class="dialog-header">
+  <div class="header-icon"><mat-icon aria-hidden="true">dashboard_customize</mat-icon></div>
+  <div class="header-text">
+    <h2 id="pdf-organizer-title">{{ 'pdfTools.organizer.title' | translate }}</h2>
+    <p class="subtitle">{{ data.documentName }}@if (info) { · {{ 'pdfTools.common.pageCount' | translate:{ count: pages.length } }} }</p>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="onCancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+@if (!loading && !error) {
+<div class="toolbar" role="toolbar" [attr.aria-label]="'pdfTools.organizer.title' | translate">
+  <div class="toolbar-group">
+    <button mat-icon-button [matMenuTriggerFor]="selectMenu" [matTooltip]="'pdfTools.organizer.selectMenu' | translate"
+      [attr.aria-label]="'pdfTools.organizer.selectMenu' | translate">
+      <mat-icon aria-hidden="true">checklist</mat-icon>
+    </button>
+    <mat-menu #selectMenu="matMenu">
+      <button mat-menu-item (click)="selectAll(true)"><mat-icon>select_all</mat-icon><span>{{ 'pdfTools.organizer.selectAll' | translate }}</span></button>
+      <button mat-menu-item (click)="selectAll(false)"><mat-icon>deselect</mat-icon><span>{{ 'pdfTools.organizer.selectNone' | translate }}</span></button>
+      <button mat-menu-item (click)="invertSelection()"><mat-icon>flip</mat-icon><span>{{ 'pdfTools.organizer.invertSelection' | translate }}</span></button>
+      <button mat-menu-item (click)="selectParity(true)"><mat-icon>looks_one</mat-icon><span>{{ 'pdfTools.common.oddPages' | translate }}</span></button>
+      <button mat-menu-item (click)="selectParity(false)"><mat-icon>looks_two</mat-icon><span>{{ 'pdfTools.common.evenPages' | translate }}</span></button>
+    </mat-menu>
+    <mat-form-field appearance="outline" class="ff range-field" subscriptSizing="dynamic">
+      <mat-label>{{ 'pdfTools.organizer.selectRange' | translate }}</mat-label>
+      <input matInput [(ngModel)]="rangeText" (keyup.enter)="applyRange()" (blur)="applyRange()"
+        [placeholder]="'pdfTools.common.pagesPlaceholder' | translate" autocomplete="off">
+    </mat-form-field>
+    <span class="selected-count" aria-live="polite">{{ 'pdfTools.organizer.selectedCount' | translate:{ count: selectedCount } }}</span>
+  </div>
+
+  <div class="toolbar-group">
+    <button mat-icon-button (click)="rotateSelected(-90)" [disabled]="selectedCount === 0"
+      [matTooltip]="'pdfTools.organizer.rotateLeft' | translate" [attr.aria-label]="'pdfTools.organizer.rotateLeft' | translate">
+      <mat-icon aria-hidden="true">rotate_left</mat-icon>
+    </button>
+    <button mat-icon-button (click)="rotateSelected(90)" [disabled]="selectedCount === 0"
+      [matTooltip]="'pdfTools.organizer.rotateRight' | translate" [attr.aria-label]="'pdfTools.organizer.rotateRight' | translate">
+      <mat-icon aria-hidden="true">rotate_right</mat-icon>
+    </button>
+    <button mat-icon-button (click)="duplicateSelected()" [disabled]="selectedCount === 0"
+      [matTooltip]="'pdfTools.organizer.duplicate' | translate" [attr.aria-label]="'pdfTools.organizer.duplicate' | translate">
+      <mat-icon aria-hidden="true">content_copy</mat-icon>
+    </button>
+    <button mat-icon-button class="danger" (click)="deleteSelected()" [disabled]="selectedCount === 0 || selectedCount === pages.length"
+      [matTooltip]="'pdfTools.organizer.deleteSelected' | translate" [attr.aria-label]="'pdfTools.organizer.deleteSelected' | translate">
+      <mat-icon aria-hidden="true">delete</mat-icon>
+    </button>
+    <button mat-icon-button (click)="extractSelected()" [disabled]="selectedCount === 0 || saving"
+      [matTooltip]="'pdfTools.organizer.extractSelected' | translate" [attr.aria-label]="'pdfTools.organizer.extractSelected' | translate">
+      <mat-icon aria-hidden="true">file_copy</mat-icon>
+    </button>
+  </div>
+
+  <div class="toolbar-group">
+    <button mat-icon-button (click)="undo()" [disabled]="!canUndo"
+      [matTooltip]="'pdfTools.organizer.undo' | translate" [attr.aria-label]="'pdfTools.organizer.undo' | translate">
+      <mat-icon aria-hidden="true">undo</mat-icon>
+    </button>
+    <button mat-icon-button (click)="redo()" [disabled]="!canRedo"
+      [matTooltip]="'pdfTools.organizer.redo' | translate" [attr.aria-label]="'pdfTools.organizer.redo' | translate">
+      <mat-icon aria-hidden="true">redo</mat-icon>
+    </button>
+    <label class="zoom" [matTooltip]="'pdfTools.organizer.zoom' | translate">
+      <mat-icon aria-hidden="true">zoom_out</mat-icon>
+      <input type="range" [min]="minThumb" [max]="maxThumb" step="10" [value]="thumbWidth"
+        (input)="onThumbSize($any($event.target).value)" [attr.aria-label]="'pdfTools.organizer.zoom' | translate">
+      <mat-icon aria-hidden="true">zoom_in</mat-icon>
+    </label>
+  </div>
+</div>
+}
+
+<div mat-dialog-content class="dialog-content" [class.centered]="loading || !!error">
+  @if (loading) {
+  <div class="state">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>{{ 'pdfTools.common.loading' | translate }}</p>
+  </div>
+  } @else if (error) {
+  <div class="state error">
+    <mat-icon aria-hidden="true">error_outline</mat-icon>
+    <p>{{ error }}</p>
+  </div>
+  } @else {
+  @if (signed) {
+  <div class="hint warn">
+    <mat-icon aria-hidden="true">verified_user</mat-icon>
+    <span>{{ 'pdfTools.common.signedWarning' | translate }}</span>
+  </div>
+  }
+  @if (rangeError) {
+  <div class="hint err"><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ rangeError }}</span></div>
+  }
+  <app-pdf-page-grid [pages]="pages" [docs]="docs" [thumbWidth]="thumbWidth"
+    (reorder)="onReorder($event)" (rotatePage)="onRotatePage($event)" (removePage)="onRemovePage($event)"
+    (duplicatePage)="onDuplicatePage($event)" (selectionChange)="onSelectionChange()">
+  </app-pdf-page-grid>
+  @if (pages.length === 0) {
+  <p class="empty">{{ 'pdfTools.organizer.emptyError' | translate }}</p>
+  }
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  @if (!loading && !error) {
+  <div class="save-mode" role="radiogroup" [attr.aria-label]="'pdfTools.common.destination' | translate">
+    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_VERSION'" (click)="saveMode = 'NEW_VERSION'"
+      role="radio" [attr.aria-checked]="saveMode === 'NEW_VERSION'">
+      <mat-icon aria-hidden="true">history</mat-icon><span>{{ 'pdfTools.common.saveAsNewVersion' | translate }}</span>
+    </button>
+    <button type="button" class="mode-btn" [class.active]="saveMode === 'NEW_DOCUMENT'" (click)="saveMode = 'NEW_DOCUMENT'"
+      role="radio" [attr.aria-checked]="saveMode === 'NEW_DOCUMENT'">
+      <mat-icon aria-hidden="true">note_add</mat-icon><span>{{ 'pdfTools.common.saveAsNewDocument' | translate }}</span>
+    </button>
+  </div>
+  @if (saveMode === 'NEW_DOCUMENT') {
+  <mat-form-field appearance="outline" class="ff name-field" subscriptSizing="dynamic">
+    <mat-label>{{ 'pdfTools.common.newDocumentName' | translate }}</mat-label>
+    <input matInput [(ngModel)]="newName" (keyup.enter)="save()" autocomplete="off">
+  </mat-form-field>
+  } @else if (signed) {
+  <label class="ack">
+    <input type="checkbox" [(ngModel)]="acknowledgeSignature">
+    <span>{{ 'pdfTools.organizer.acknowledgeSignature' | translate }}</span>
+  </label>
+  }
+  }
+  <span class="spacer"></span>
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [attr.aria-label]="'common.cancel' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+    <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="primary-btn" [disabled]="!canSave" (click)="save()"
+    [attr.aria-label]="'common.save' | translate">
+    @if (saving) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <mat-icon aria-hidden="true">check</mat-icon>
+    }
+    <span>&nbsp;&nbsp;{{ 'common.save' | translate }}</span>
+  </button>
+</div>

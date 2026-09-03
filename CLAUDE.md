@@ -187,3 +187,27 @@ ng build                   # Production build
 **Output:** `dist/openfilz-ui/`
 
 **Pagination config:** Default 25 items, options [25, 50, 70, 100]
+
+## PDF tools (merge / split / rotate / organize pages)
+
+Core feature gated by the API flag `Settings.pdfToolsActive` (`openfilz.pdf-tools.active`) plus the
+CONTRIBUTOR role — `services/pdf-tools-access.service.ts` is the single seam (same shape as
+`signature-access.service.ts`). No `NG_APP_*` toggle. Everything lives in dedicated files so the
+openfilz-web-ee fork only mirrors four descriptor entries:
+
+- `models/pdf-tools.models.ts` (API contract of `/api/v1/pdf/**`), `services/pdf-tools.service.ts`
+  (HttpClient client + `errorMessage()` mapping the API's `CODE: message` refusals to `pdfTools.errors.*`),
+  `utils/pdf-page-ranges.ts` (client-side mirror of the page-selection grammar `1-3,7,10-`, odd/even/all).
+- `components/pdf-page-grid/` — lazy, drag-sortable (CDK drag-drop, `mixed` orientation) page-thumbnail grid
+  rendered with pdf.js; thumbnails render on intersection, two at a time, newest first, cached per
+  (source, page, rotation, size). Owns selection (click / Shift / keyboard: Space, Delete, R, arrows); every
+  structural change is emitted to the owning dialog. `cutMode` turns it into the split "scissors" strip.
+- Dialogs (all lazy-imported from `FileOperationsComponent.openPdfTool()`, panelClass `pdf-tools-dialog-panel`,
+  header / scrolling body / pinned footer, `dvh`-capped): `pdf-organizer-dialog` (undo/redo model, save as new
+  version or new document, extract selection, signed-PDF acknowledgement), `pdf-merge-dialog`,
+  `pdf-split-dialog` (five modes, live name preview), `pdf-rotate-dialog`.
+- Surfaces: `PDF_TOOLS_SELECTION_ACTIONS` / `PDF_TOOLS_ITEM_ACTIONS` in `models/file-actions.ts`
+  (`pdfOnly`-style gating via `pdfToolsAvailable` on the toolbar, `minSelection: 2` for merge), one
+  `case` in toolbar / file-list / file-grid, `(pdfToolSelected)` + `(pdfTool)` bindings on file-explorer,
+  favorites and search-results, and an "Edit pages" button in the PDF viewer.
+- i18n block `pdfTools.*` in all 8 locales. Design doc: `openfilz-core/docs/pdf-tools.md`.

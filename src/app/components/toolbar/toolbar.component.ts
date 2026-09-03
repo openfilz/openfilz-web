@@ -1,3 +1,4 @@
+import { PdfToolActionId } from '../../models/pdf-tools.models';
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -10,7 +11,7 @@ import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
-import { FileActionCategory, FileActionDescriptor, FileActionId, REQUEST_SIGNATURE_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS } from '../../models/file-actions';
+import { FileActionCategory, FileActionDescriptor, FileActionId, REQUEST_SIGNATURE_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS , PDF_TOOLS_SELECTION_ACTIONS, isPdfToolsAction } from '../../models/file-actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -44,6 +45,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() showStandardSelectionActions = true; // Show rename, download, move, copy, delete buttons
   /** e-Sign: offer "Request signature" for the current selection (single PDF + feature on). */
   @Input() canRequestSignature = false;
+  /** PDF tools apply to the selection (feature on, CONTRIBUTOR, every selected item is a PDF) */
+  @Input() pdfToolsAvailable = false;
 
   // Pagination inputs
   @Input() pageIndex = 0;
@@ -62,6 +65,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Output() deleteSelected = new EventEmitter<void>();
   @Output() detailsSelected = new EventEmitter<void>();
   @Output() requestSignatureSelected = new EventEmitter<void>();
+  @Output() pdfToolSelected = new EventEmitter<PdfToolActionId>();
   @Output() clearSelection = new EventEmitter<void>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
   @Output() createDocument = new EventEmitter<DocumentTemplateType>();
@@ -262,9 +266,10 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   // Selection actions are descriptor-driven so downstream forks can extend
   // the array instead of forking the templates.
   get selectionActionDefs(): FileActionDescriptor[] {
-    return this.canRequestSignature
+    const defs = this.canRequestSignature
         ? [...STANDARD_SELECTION_ACTIONS, REQUEST_SIGNATURE_ACTION]
-        : STANDARD_SELECTION_ACTIONS;
+        : [...STANDARD_SELECTION_ACTIONS];
+    return this.pdfToolsAvailable ? [...defs, ...PDF_TOOLS_SELECTION_ACTIONS] : defs;
   }
   readonly sheetCategories = SHEET_CATEGORIES;
 
@@ -278,7 +283,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
    * item's own Details menu entry).
    */
   private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
-    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'delete'];
+    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'organizePdf', 'mergePdf', 'splitPdf', 'rotatePdf', 'delete'];
 
   /**
    * How many action icons fit inline in the toolbar; the rest spill into the
@@ -294,7 +299,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
 
   isActionEnabled(action: FileActionDescriptor): boolean {
-    return !action.singleOnly || this.selectionCount === 1;
+    return (!action.singleOnly || this.selectionCount === 1)
+      && (!action.minSelection || this.selectionCount >= action.minSelection);
   }
 
   /** All enabled desktop selection actions, in display order. */
@@ -325,7 +331,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Selection count changes the number of available actions (1 vs many).
-    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature']) {
+    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature'] || changes['pdfToolsAvailable']) {
       this.scheduleMeasure();
     }
   }
@@ -415,6 +421,11 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
         break;
       case 'delete':
         this.onDeleteSelected();
+        break;
+      default:
+        if (isPdfToolsAction(action)) {
+          this.pdfToolSelected.emit(action as PdfToolActionId);
+        }
         break;
     }
 

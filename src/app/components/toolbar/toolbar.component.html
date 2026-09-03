@@ -346,7 +346,7 @@
         <mat-icon class="action-item-icon" aria-hidden="true">{{ action.icon }}</mat-icon>
         <span class="action-item-label">{{ (action.sheetLabelKey || action.labelKey) | translate }}</span>
         @if(!isActionEnabled(action)) {
-        <span class="action-item-meta">{{ 'bottomSheet.oneItemOnly' | translate }}</span>
+        <span class="action-item-meta">{{ action.minSelection ? ('pdfTools.minItems' | translate:{count: action.minSelection}) : ('bottomSheet.oneItemOnly' | translate) }}</span>
         }
         @if(action.id === 'delete') {
         <span class="action-item-meta">{{ selectionCount === 1 ? ('bottomSheet.item' | translate:{count: 1}) :
