@@ -1049,7 +1049,34 @@
     "back": "Back to conversations",
     "close": "Close chat",
     "errorStreaming": "An error occurred while generating a response",
-    "activeModel": "Model answering this chat"
+    "activeModel": "Model answering this chat",
+    "reorg": {
+      "title": "Reorganisation proposal",
+      "loading": "Loading the proposal…",
+      "loadError": "This proposal could not be loaded.",
+      "summary": "{{applicable}} move(s) ready · {{blocked}} blocked",
+      "foldersToCreate": "New folders:",
+      "newFolder": "new",
+      "selectAll": "Select all",
+      "selectNone": "Clear",
+      "from": "from",
+      "apply": "Apply {{count}} move(s)",
+      "applying": "Applying…",
+      "discard": "Discard",
+      "applied": "{{moved}} moved, {{failed}} failed",
+      "status": {
+        "PROPOSED": "Awaiting your approval",
+        "APPLIED": "Applied",
+        "PARTIALLY_APPLIED": "Partially applied",
+        "FAILED": "Failed",
+        "DISCARDED": "Discarded"
+      },
+      "outcome": {
+        "MOVED": "Moved",
+        "SKIPPED": "Skipped",
+        "FAILED": "Failed"
+      }
+    }
   },
   "notice": {
     "dismiss": "Dismiss",

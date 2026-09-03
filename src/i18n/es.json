@@ -1049,7 +1049,34 @@
     "back": "Volver a conversaciones",
     "close": "Cerrar chat",
     "errorStreaming": "Se produjo un error al generar la respuesta",
-    "activeModel": "Modelo que responde a este chat"
+    "activeModel": "Modelo que responde a este chat",
+    "reorg": {
+      "title": "Propuesta de reorganización",
+      "loading": "Cargando la propuesta…",
+      "loadError": "No se pudo cargar esta propuesta.",
+      "summary": "{{applicable}} movimiento(s) listo(s) · {{blocked}} bloqueado(s)",
+      "foldersToCreate": "Carpetas nuevas:",
+      "newFolder": "nueva",
+      "selectAll": "Seleccionar todo",
+      "selectNone": "Quitar selección",
+      "from": "desde",
+      "apply": "Aplicar {{count}} movimiento(s)",
+      "applying": "Aplicando…",
+      "discard": "Descartar",
+      "applied": "{{moved}} movido(s), {{failed}} con error",
+      "status": {
+        "PROPOSED": "Pendiente de su aprobación",
+        "APPLIED": "Aplicada",
+        "PARTIALLY_APPLIED": "Aplicada parcialmente",
+        "FAILED": "Fallida",
+        "DISCARDED": "Descartada"
+      },
+      "outcome": {
+        "MOVED": "Movido",
+        "SKIPPED": "Omitido",
+        "FAILED": "Error"
+      }
+    }
   },
   "notice": {
     "dismiss": "Cerrar",

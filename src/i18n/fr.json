@@ -1049,7 +1049,34 @@
     "back": "Retour aux conversations",
     "close": "Fermer le chat",
     "errorStreaming": "Une erreur est survenue lors de la generation de la reponse",
-    "activeModel": "Modèle qui répond à cette conversation"
+    "activeModel": "Modèle qui répond à cette conversation",
+    "reorg": {
+      "title": "Proposition de réorganisation",
+      "loading": "Chargement de la proposition…",
+      "loadError": "Cette proposition n’a pas pu être chargée.",
+      "summary": "{{applicable}} déplacement(s) prêt(s) · {{blocked}} bloqué(s)",
+      "foldersToCreate": "Nouveaux dossiers :",
+      "newFolder": "nouveau",
+      "selectAll": "Tout sélectionner",
+      "selectNone": "Tout désélectionner",
+      "from": "depuis",
+      "apply": "Appliquer {{count}} déplacement(s)",
+      "applying": "Application…",
+      "discard": "Ignorer",
+      "applied": "{{moved}} déplacé(s), {{failed}} en échec",
+      "status": {
+        "PROPOSED": "En attente de votre validation",
+        "APPLIED": "Appliquée",
+        "PARTIALLY_APPLIED": "Partiellement appliquée",
+        "FAILED": "Échec",
+        "DISCARDED": "Ignorée"
+      },
+      "outcome": {
+        "MOVED": "Déplacé",
+        "SKIPPED": "Ignoré",
+        "FAILED": "Échec"
+      }
+    }
   },
   "notice": {
     "dismiss": "Fermer",

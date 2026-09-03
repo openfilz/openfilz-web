@@ -9,7 +9,9 @@ import {
   AiConversation,
   AiMessage,
   AiChatStreamEvent,
-  AiChatPanelView
+  AiChatPanelView,
+  ReorganizationApplyResult,
+  ReorganizationPlan
 } from '../models/ai-chat.models';
 
 @Injectable({ providedIn: 'root' })
@@ -224,6 +226,27 @@ export class AiChatService {
       this.currentMessages$.next(msgs);
       this.isStreaming$.next(false);
     }
+  }
+
+  // ── Reorganisation proposals (the [[reorg-plan:id]] cards) ──────────────
+
+  getReorganizationPlan(planId: string): Observable<ReorganizationPlan> {
+    return this.http.get<ReorganizationPlan>(`${this.baseUrl}/ai/reorganization/${planId}`);
+  }
+
+  /** Apply the selected items (all applicable ones when empty); the file explorer refreshes the touched folders. */
+  applyReorganizationPlan(planId: string, itemIds: string[]): Observable<ReorganizationApplyResult> {
+    return this.http.post<ReorganizationApplyResult>(`${this.baseUrl}/ai/reorganization/${planId}/apply`, { itemIds }).pipe(
+      tap(result => {
+        if (result.modifiedFolderIds?.length) {
+          this.folderContentChanged$.next(result.modifiedFolderIds);
+        }
+      })
+    );
+  }
+
+  discardReorganizationPlan(planId: string): Observable<ReorganizationPlan> {
+    return this.http.post<ReorganizationPlan>(`${this.baseUrl}/ai/reorganization/${planId}/discard`, {});
   }
 
   destroy(): void {

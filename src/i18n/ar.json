@@ -1049,7 +1049,34 @@
     "back": "العودة إلى المحادثات",
     "close": "إغلاق الدردشة",
     "errorStreaming": "حدث خطأ أثناء إنشاء الاستجابة",
-    "activeModel": "النموذج الذي يجيب على هذه المحادثة"
+    "activeModel": "النموذج الذي يجيب على هذه المحادثة",
+    "reorg": {
+      "title": "اقتراح إعادة التنظيم",
+      "loading": "جارٍ تحميل الاقتراح…",
+      "loadError": "تعذّر تحميل هذا الاقتراح.",
+      "summary": "{{applicable}} نقل جاهز · {{blocked}} محظور",
+      "foldersToCreate": "مجلدات جديدة:",
+      "newFolder": "جديد",
+      "selectAll": "تحديد الكل",
+      "selectNone": "إلغاء التحديد",
+      "from": "من",
+      "apply": "تطبيق {{count}} نقل",
+      "applying": "جارٍ التطبيق…",
+      "discard": "تجاهل",
+      "applied": "تم نقل {{moved}}، فشل {{failed}}",
+      "status": {
+        "PROPOSED": "بانتظار موافقتك",
+        "APPLIED": "تم التطبيق",
+        "PARTIALLY_APPLIED": "طُبّق جزئيًا",
+        "FAILED": "فشل",
+        "DISCARDED": "تم التجاهل"
+      },
+      "outcome": {
+        "MOVED": "تم النقل",
+        "SKIPPED": "تم التخطي",
+        "FAILED": "فشل"
+      }
+    }
   },
   "notice": {
     "dismiss": "إغلاق",
