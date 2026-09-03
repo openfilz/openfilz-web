@@ -19,6 +19,7 @@ import { PdfToolsService } from '../../services/pdf-tools.service';
 import { OrganizeRequest, OutputMode, PdfInfo, PdfToolResult } from '../../models/pdf-tools.models';
 import { PdfGridPage, PdfPageGridComponent } from '../../components/pdf-page-grid/pdf-page-grid.component';
 import { formatPageRanges, parsePageRanges } from '../../utils/pdf-page-ranges';
+import { UserPreferencesService } from '../../services/user-preferences.service';
 
 export interface PdfOrganizerDialogData {
   documentId: string;
@@ -48,6 +49,7 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
   private readonly documentApi = inject(DocumentApiService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly userPreferences = inject(UserPreferencesService);
 
   loading = true;
   error = '';
@@ -67,6 +69,10 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
   saveMode: OutputMode = 'NEW_VERSION';
   newName = '';
   acknowledgeSignature = false;
+  /** Last refusal from the API, shown in the footer (a snackbar is hidden behind this dialog). */
+  saveError = '';
+  /** Open the produced document when saving as a new document (sticky preference). */
+  openResult = this.userPreferences.getPreferences().openPdfToolResult;
 
   private keySeq = 0;
 
@@ -87,7 +93,7 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
           this.loading = false;
           return;
         }
-        if (info.signed) {
+        if (info.signed || info.activeSignatureEnvelope) {
           this.saveMode = 'NEW_DOCUMENT';
         }
         try {
@@ -147,11 +153,31 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
     return this.info?.signed === true;
   }
 
+  /**
+   * An e-Sign envelope is still running on this PDF: the API refuses to replace its content
+   * (ACTIVE_SIGNATURE_ENVELOPE), so "save as new version" is off the table until it ends.
+   */
+  get activeEnvelope(): boolean {
+    return this.info?.activeSignatureEnvelope === true;
+  }
+
   get canSave(): boolean {
     if (this.saving || this.pages.length === 0 || !!this.error) return false;
     if (this.saveMode === 'NEW_DOCUMENT') return this.newName.trim().length > 0;
+    if (this.activeEnvelope) return false;
     if (this.signed && !this.acknowledgeSignature) return false;
     return this.dirty;
+  }
+
+  onOpenResultChange(): void {
+    this.userPreferences.setOpenPdfToolResult(this.openResult);
+  }
+
+  /** Switch destination; the previous refusal no longer applies. */
+  setSaveMode(mode: OutputMode): void {
+    if (mode === 'NEW_VERSION' && this.activeEnvelope) return;
+    this.saveMode = mode;
+    this.saveError = '';
   }
 
   private snapshot(): string {
@@ -309,6 +335,7 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
 
   private run(request: OrganizeRequest, mode: OutputMode): void {
     this.saving = true;
+    this.saveError = '';
     this.pdfTools.organize(request).subscribe({
       next: (response) => {
         this.saving = false;
@@ -317,11 +344,16 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
           ? this.translate.instant('pdfTools.done.organize')
           : this.translate.instant('pdfTools.done.organizeNew', { name: output?.name ?? '' });
         this.snackBar.open(message, this.translate.instant('common.close'), { duration: 3000 });
-        this.dialogRef.close({ success: true, response, mode });
+        this.dialogRef.close({
+          success: true, response, mode,
+          openResult: mode === 'NEW_DOCUMENT' ? this.openResult : undefined
+        });
       },
       error: (err) => {
         this.saving = false;
-        this.snackBar.open(this.pdfTools.errorMessage(err), this.translate.instant('common.close'), { duration: 5000 });
+        // Shown in the footer, not only as a snackbar: the snackbar renders behind this
+        // full-height dialog and the user never sees why the save was refused.
+        this.saveError = this.pdfTools.errorMessage(err);
       }
     });
   }

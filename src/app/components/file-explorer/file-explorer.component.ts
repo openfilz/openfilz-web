@@ -477,6 +477,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   override ngOnInit() {
     super.ngOnInit();
 
+    // Confirm OnlyOffice really is reachable (cached for the session), so the
+    // "Create document" action and the preview thresholds match the backend even
+    // when the build-time NG_APP_ONLYOFFICE_ENABLED flag says otherwise.
+    this.onlyOfficeService.isAvailable().subscribe();
+
     // Subscribe to query params for browser back/forward navigation
     this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       const folderId = params['folderId'];

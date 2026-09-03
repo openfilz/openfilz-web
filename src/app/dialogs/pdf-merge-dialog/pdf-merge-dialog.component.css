@@ -177,6 +177,7 @@
   cursor: pointer;
 }
 .check input { accent-color: var(--primary); width: 18px; height: 18px; }
+.check .hint-icon { font-size: 16px; width: 16px; height: 16px; color: var(--text-secondary); }
 
 /* ── Form fields ─────────────────────────────────────────────────────── */
 .ff ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }

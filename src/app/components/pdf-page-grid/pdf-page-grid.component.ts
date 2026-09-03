@@ -72,6 +72,10 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
   /** cache key → data URL */
   private readonly thumbs = new Map<string, string>();
   private readonly pending = new Set<string>();
+  /** Tile keys the observer has already shown: they may re-render in place (e.g. after a rotation). */
+  private readonly seen = new Set<string>();
+  /** Cache keys whose render threw: never queue them again (the tile keeps its placeholder). */
+  private readonly failed = new Set<string>();
   private observer?: IntersectionObserver;
   private lastClicked = -1;
   private destroyed = false;
@@ -89,7 +93,10 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
             if (entry.isIntersecting) {
               const key = (entry.target as HTMLElement).dataset['key'];
               const page = key ? this.pages.find(p => p.key === key) : undefined;
-              if (page) this.render(page);
+              if (page) {
+                this.seen.add(page.key);
+                this.render(page);
+              }
             }
           }
         }, { rootMargin: '300px' });
@@ -98,7 +105,10 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
       this.tileRefs.changes.subscribe(() => this.zone.runOutsideAngular(() => this.observeTiles()));
     } else {
       // No observer support: render everything.
-      this.pages.forEach(p => this.render(p));
+      this.pages.forEach(p => {
+        this.seen.add(p.key);
+        this.render(p);
+      });
     }
   }
 
@@ -113,6 +123,8 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
     this.destroyed = true;
     this.observer?.disconnect();
     this.thumbs.clear();
+    this.seen.clear();
+    this.failed.clear();
   }
 
   private observeTiles(): void {
@@ -138,7 +150,14 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
   }
 
   thumbFor(p: PdfGridPage): string | undefined {
-    return this.thumbs.get(this.cacheKey(p));
+    const thumb = this.thumbs.get(this.cacheKey(p));
+    if (thumb === undefined && this.seen.has(p.key)) {
+      // Rotating a page changes its cache key without touching the tile element, so the
+      // IntersectionObserver never fires again: re-queue the render here, or the tile would
+      // fall back to its placeholder for the rest of the session.
+      this.render(p);
+    }
+    return thumb;
   }
 
   private bucket(): number {
@@ -157,7 +176,7 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
    */
   private render(p: PdfGridPage): void {
     const key = this.cacheKey(p);
-    if (this.thumbs.has(key) || this.pending.has(key)) return;
+    if (this.thumbs.has(key) || this.pending.has(key) || this.failed.has(key)) return;
     if (!this.docs?.get(p.sourceId)) return;
     this.pending.add(key);
     this.queue.unshift({ page: p, key });
@@ -206,7 +225,10 @@ export class PdfPageGridComponent implements AfterViewInit, OnChanges, OnDestroy
       canvas.width = canvas.height = 0;
       this.zone.run(() => this.cdr.markForCheck());
     } catch {
-      // cancelled or unreadable page: the tile keeps its placeholder
+      // cancelled or unreadable page: the tile keeps its placeholder, and is not retried
+      // (thumbFor() asks again on every change detection cycle). A render interrupted by
+      // teardown is not a failure — the whole grid is going away anyway.
+      if (!this.destroyed) this.failed.add(key);
     }
   }
 

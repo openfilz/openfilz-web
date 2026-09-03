@@ -13,6 +13,7 @@ import { catchError } from 'rxjs/operators';
 import { PdfToolsService } from '../../services/pdf-tools.service';
 import { OutputMode, PdfInfo, PdfToolResult, RotateRequest } from '../../models/pdf-tools.models';
 import { parsePageRanges } from '../../utils/pdf-page-ranges';
+import { UserPreferencesService } from '../../services/user-preferences.service';
 
 export interface PdfRotateDialogData {
   items: { id: string; name: string }[];
@@ -40,6 +41,7 @@ export class PdfRotateDialogComponent implements OnInit {
   private readonly pdfTools = inject(PdfToolsService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly userPreferences = inject(UserPreferencesService);
 
   readonly angles: { value: number; icon: string; key: string }[] = [
     { value: 90, icon: 'rotate_right', key: 'cw' },
@@ -58,6 +60,10 @@ export class PdfRotateDialogComponent implements OnInit {
   infos: PdfInfo[] = [];
   loadErrors: string[] = [];
   saving = false;
+  /** Last refusal from the API, shown in the footer (a snackbar is hidden behind this dialog). */
+  saveError = '';
+  /** Open the produced document — only offered when a single new document comes out. */
+  openResult = this.userPreferences.getPreferences().openPdfToolResult;
 
   ngOnInit(): void {
     forkJoin(this.data.items.map(item => this.pdfTools.info(item.id).pipe(
@@ -68,7 +74,7 @@ export class PdfRotateDialogComponent implements OnInit {
         else if (result.encrypted) this.loadErrors.push(this.translate.instant('pdfTools.common.encryptedErrorNamed', { name: result.name }));
         else this.infos.push(result);
       }
-      if (this.anySigned) this.saveMode = 'NEW_DOCUMENT';
+      if (this.anySigned || this.anyActiveEnvelope) this.saveMode = 'NEW_DOCUMENT';
       this.loading = false;
     });
   }
@@ -81,6 +87,30 @@ export class PdfRotateDialogComponent implements OnInit {
     return this.infos.some(i => i.signed);
   }
 
+  /**
+   * At least one selected PDF is in a running e-Sign envelope: the API refuses to replace its
+   * content (ACTIVE_SIGNATURE_ENVELOPE), so "save as new version" is off the table.
+   */
+  get anyActiveEnvelope(): boolean {
+    return this.infos.some(i => i.activeSignatureEnvelope);
+  }
+
+  onOpenResultChange(): void {
+    this.userPreferences.setOpenPdfToolResult(this.openResult);
+  }
+
+  /** A single PDF rotated into a new document is the only case with one output to open. */
+  get producesSingleNewDocument(): boolean {
+    return this.single && this.saveMode === 'NEW_DOCUMENT';
+  }
+
+  /** Switch destination; the previous refusal no longer applies. */
+  setSaveMode(mode: OutputMode): void {
+    if (mode === 'NEW_VERSION' && this.anyActiveEnvelope) return;
+    this.saveMode = mode;
+    this.saveError = '';
+  }
+
   get pageCount(): number {
     return this.single ? (this.infos[0]?.pageCount ?? 0) : 0;
   }
@@ -88,6 +118,7 @@ export class PdfRotateDialogComponent implements OnInit {
   get canRotate(): boolean {
     if (this.saving || this.loading || this.loadErrors.length > 0 || this.infos.length === 0) return false;
     if (this.pagesMode === 'custom' && (!this.custom.trim() || this.customError)) return false;
+    if (this.saveMode === 'NEW_VERSION' && this.anyActiveEnvelope) return false;
     if (this.saveMode === 'NEW_VERSION' && this.anySigned && !this.acknowledgeSignature) return false;
     return true;
   }
@@ -117,16 +148,22 @@ export class PdfRotateDialogComponent implements OnInit {
         : { mode: 'NEW_DOCUMENT', allowDuplicateFileNames: true }
     };
     this.saving = true;
+    this.saveError = '';
     this.pdfTools.rotate(request).subscribe({
       next: (response) => {
         this.saving = false;
         this.snackBar.open(this.translate.instant('pdfTools.done.rotate', { count: response.outputs.length }),
           this.translate.instant('common.close'), { duration: 3000 });
-        this.dialogRef.close({ success: true, response, mode: this.saveMode });
+        this.dialogRef.close({
+          success: true, response, mode: this.saveMode,
+          openResult: this.producesSingleNewDocument ? this.openResult : undefined
+        });
       },
       error: (err) => {
         this.saving = false;
-        this.snackBar.open(this.pdfTools.errorMessage(err), this.translate.instant('common.close'), { duration: 5000 });
+        // Shown in the footer, not only as a snackbar: the snackbar renders behind the
+        // dialog and the user never sees why the operation was refused.
+        this.saveError = this.pdfTools.errorMessage(err);
       }
     });
   }

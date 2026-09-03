@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from, of, throwError } from 'rxjs';
-import { map, tap, catchError, switchMap } from 'rxjs/operators';
+import { map, tap, catchError, switchMap, shareReplay } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 /**
@@ -78,6 +78,10 @@ export class OnlyOfficeService {
     private scriptLoaded = false;
     private scriptLoading = false;
     private scriptLoadPromise: Promise<boolean> | null = null;
+    /** Resolved server-side availability (undefined until /onlyoffice/status answered once). */
+    private serverAvailable?: boolean;
+    /** In-flight availability probe, shared by concurrent callers. */
+    private availability$?: Observable<boolean>;
 
     /**
      * Supported file extensions for OnlyOffice editing.
@@ -169,10 +173,62 @@ export class OnlyOfficeService {
 
     /**
      * Check if OnlyOffice integration is enabled in the environment.
+     * Once {@link isAvailable} has probed the server, a DocumentServer that is
+     * disabled/unreachable also turns this off, so callers keep the in-app
+     * (pdf.js / mammoth / xlsx) viewers instead of an OnlyOffice error.
      * @returns true if OnlyOffice is enabled
      */
     isOnlyOfficeEnabled(): boolean {
+        return this.isEnabledInEnvironment() && this.serverAvailable !== false;
+    }
+
+    /**
+     * Build-time flag only: whether this deployment was configured with OnlyOffice.
+     */
+    private isEnabledInEnvironment(): boolean {
         return (environment as any).onlyOffice?.enabled ?? false;
+    }
+
+    /**
+     * Resolve whether OnlyOffice can actually be used, asking the API once and
+     * caching the answer for the rest of the session.
+     *
+     * The build-time flag can disagree with the backend (e.g. a local dev API started
+     * with `onlyoffice.enabled=false`, whose /onlyoffice/** endpoints then answer
+     * 403/404). Any failure — or an explicit `enabled: false` — is treated as
+     * "not available" so the caller falls back to the in-app viewers.
+     */
+    isAvailable(): Observable<boolean> {
+        if (!this.isEnabledInEnvironment()) {
+            return of(false);
+        }
+        if (this.serverAvailable !== undefined) {
+            return of(this.serverAvailable);
+        }
+        if (!this.availability$) {
+            this.availability$ = this.getStatus().pipe(
+                map(status => status?.enabled === true),
+                catchError(err => {
+                    console.warn('OnlyOffice status check failed, falling back to the in-app viewers:', err?.status ?? err);
+                    return of(false);
+                }),
+                tap(available => {
+                    this.serverAvailable = available;
+                    this.availability$ = undefined;
+                }),
+                shareReplay(1)
+            );
+        }
+        return this.availability$;
+    }
+
+    /**
+     * Mark OnlyOffice as unusable for the rest of the session (e.g. the editor config
+     * call or the api.js script failed), so later previews go straight to the fallback.
+     */
+    markUnavailable(): void {
+        this.serverAvailable = false;
+        this.availability$ = undefined;
     }
 
 

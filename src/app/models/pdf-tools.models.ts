@@ -46,6 +46,8 @@ export interface PdfInfo {
   encrypted: boolean;
   /** Digitally signed — any page change invalidates the signature */
   signed: boolean;
+  /** A non-terminal e-Sign envelope references this PDF — in-place saves are refused */
+  activeSignatureEnvelope: boolean;
   outline: PdfOutlineEntry[];
 }
 
@@ -126,4 +128,9 @@ export interface PdfToolResult {
   response?: PdfOperationResponse;
   /** Where the (single) output went — lets callers refresh in place vs. navigate. */
   mode?: OutputMode;
+  /**
+   * The user asked for the produced document to be opened. Only set by dialogs that produce a
+   * single new document; the caller still checks that there is exactly one output.
+   */
+  openResult?: boolean;
 }

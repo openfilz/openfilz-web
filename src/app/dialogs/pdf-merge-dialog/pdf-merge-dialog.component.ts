@@ -15,6 +15,7 @@ import { MergeRequest, PdfInfo, PdfToolResult } from '../../models/pdf-tools.mod
 import { parsePageRanges } from '../../utils/pdf-page-ranges';
 import { FolderTreeDialogComponent } from '../folder-tree-dialog/folder-tree-dialog.component';
 import { formatFileSize } from '../../utils/file-size.util';
+import { UserPreferencesService } from '../../services/user-preferences.service';
 
 export interface PdfMergeDialogData {
   items: { id: string; name: string; size?: number }[];
@@ -53,6 +54,14 @@ export class PdfMergeDialogComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly userPreferences = inject(UserPreferencesService);
+
+  /** Open the merged document when it is created (sticky, remembered across dialogs). */
+  openResult = this.userPreferences.getPreferences().openPdfToolResult;
+
+  onOpenResultChange(): void {
+    this.userPreferences.setOpenPdfToolResult(this.openResult);
+  }
 
   rows: MergeRow[] = [];
   addOutline = false;
@@ -170,7 +179,7 @@ export class PdfMergeDialogComponent implements OnInit {
         const output = response.outputs[0];
         this.snackBar.open(this.translate.instant('pdfTools.done.merge', { name: output?.name ?? '' }),
           this.translate.instant('common.close'), { duration: 3000 });
-        this.dialogRef.close({ success: true, response, mode: 'NEW_DOCUMENT' });
+        this.dialogRef.close({ success: true, response, mode: 'NEW_DOCUMENT', openResult: this.openResult });
       },
       error: (err) => {
         this.saving = false;

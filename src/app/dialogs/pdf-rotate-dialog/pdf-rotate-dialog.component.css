@@ -104,11 +104,16 @@
 
 .dialog-actions {
   flex: 0 0 auto;
-  display: flex; justify-content: flex-end; gap: 12px;
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px;
   padding: 12px 24px calc(12px + env(safe-area-inset-bottom)) !important;
   border-top: 1px solid var(--border-light);
   background: var(--bg-primary);
 }
+/* Refusals from the API sit on their own row above the buttons — a snackbar would be
+   hidden behind the dialog. */
+.action-error { flex: 1 0 100%; margin-bottom: 0; }
+.seg-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
 .cancel-btn, .primary-btn {
   display: flex; align-items: center; font-weight: 600; text-transform: none;
   border-radius: 10px; padding: 0 20px; height: 44px; font-size: 14px;

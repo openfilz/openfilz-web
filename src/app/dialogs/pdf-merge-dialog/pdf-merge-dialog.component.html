@@ -73,9 +73,15 @@
       }
     </div>
 
-    <label class="check">
+    <label class="check" [matTooltip]="'pdfTools.merge.addBookmarksHint' | translate" matTooltipPosition="above">
       <input type="checkbox" [(ngModel)]="addOutline">
       <span>{{ 'pdfTools.merge.addBookmarks' | translate }}</span>
+      <mat-icon class="hint-icon" aria-hidden="true">help_outline</mat-icon>
+    </label>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="openResult" (ngModelChange)="onOpenResultChange()">
+      <span>{{ 'pdfTools.common.openResult' | translate }}</span>
     </label>
   </div>
 </div>
