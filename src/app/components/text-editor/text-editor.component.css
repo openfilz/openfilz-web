@@ -2,9 +2,65 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 ngx-monaco-editor {
   height: 100%;
   width: 100%;
+}
+
+/*
+ * On touch devices the long-press gesture (MonacoTouchSelection) drives the selection. Safari
+ * leaves `user-select` enabled on the editor, which would race our gesture with the OS text
+ * callout, so switch it off while the custom gesture is in charge.
+ */
+.editor-container.touch-selection ::ng-deep .monaco-editor,
+.editor-container.touch-selection ::ng-deep .monaco-editor .lines-content,
+.editor-container.touch-selection ::ng-deep .monaco-editor .view-lines,
+.editor-container.touch-selection ::ng-deep .monaco-editor .view-line {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.touch-selection-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 24px;
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.28);
+  max-width: calc(100% - 24px);
+}
+
+.touch-selection-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.touch-selection-bar button:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.touch-selection-bar mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
 }

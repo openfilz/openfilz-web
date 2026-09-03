@@ -695,6 +695,16 @@
     "viewPreview": "عرض المعاينة",
     "viewCode": "عرض الكود المصدري"
   },
+  "textEditor": {
+    "selectionActions": "إجراءات التحديد",
+    "copy": "نسخ",
+    "cut": "قص",
+    "paste": "لصق",
+    "selectAll": "تحديد الكل",
+    "clearSelection": "إلغاء التحديد",
+    "copied": "تم النسخ إلى الحافظة",
+    "clipboardUnavailable": "الحافظة غير متاحة في هذا المتصفح"
+  },
   "upload": {
     "title": "الرفع",
     "uploading": "جاري الرفع",

@@ -695,6 +695,16 @@
     "viewPreview": "Ver pré-visualização",
     "viewCode": "Ver código-fonte"
   },
+  "textEditor": {
+    "selectionActions": "Ações de seleção",
+    "copy": "Copiar",
+    "cut": "Cortar",
+    "paste": "Colar",
+    "selectAll": "Selecionar tudo",
+    "clearSelection": "Limpar a seleção",
+    "copied": "Copiado para a área de transferência",
+    "clipboardUnavailable": "A área de transferência não está disponível neste navegador"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Enviando",

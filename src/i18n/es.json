@@ -695,6 +695,16 @@
     "viewPreview": "Ver vista previa",
     "viewCode": "Ver código fuente"
   },
+  "textEditor": {
+    "selectionActions": "Acciones de selección",
+    "copy": "Copiar",
+    "cut": "Cortar",
+    "paste": "Pegar",
+    "selectAll": "Seleccionar todo",
+    "clearSelection": "Borrar la selección",
+    "copied": "Copiado al portapapeles",
+    "clipboardUnavailable": "El portapapeles no está disponible en este navegador"
+  },
   "upload": {
     "title": "Subidas",
     "uploading": "Subiendo",

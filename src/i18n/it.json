@@ -695,6 +695,16 @@
     "viewPreview": "Visualizza anteprima",
     "viewCode": "Visualizza codice sorgente"
   },
+  "textEditor": {
+    "selectionActions": "Azioni sulla selezione",
+    "copy": "Copia",
+    "cut": "Taglia",
+    "paste": "Incolla",
+    "selectAll": "Seleziona tutto",
+    "clearSelection": "Annulla la selezione",
+    "copied": "Copiato negli appunti",
+    "clipboardUnavailable": "Gli appunti non sono disponibili in questo browser"
+  },
   "upload": {
     "title": "Caricamenti",
     "uploading": "Caricamento in corso",

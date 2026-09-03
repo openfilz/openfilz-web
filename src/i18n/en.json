@@ -695,6 +695,16 @@
     "viewPreview": "View preview",
     "viewCode": "View source code"
   },
+  "textEditor": {
+    "selectionActions": "Selection actions",
+    "copy": "Copy",
+    "cut": "Cut",
+    "paste": "Paste",
+    "selectAll": "Select all",
+    "clearSelection": "Clear selection",
+    "copied": "Copied to clipboard",
+    "clipboardUnavailable": "The clipboard is not available in this browser"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Uploading",

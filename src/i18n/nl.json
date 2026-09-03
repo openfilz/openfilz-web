@@ -695,6 +695,16 @@
     "viewPreview": "Voorbeeld bekijken",
     "viewCode": "Broncode bekijken"
   },
+  "textEditor": {
+    "selectionActions": "Selectieacties",
+    "copy": "Kopiëren",
+    "cut": "Knippen",
+    "paste": "Plakken",
+    "selectAll": "Alles selecteren",
+    "clearSelection": "Selectie wissen",
+    "copied": "Gekopieerd naar het klembord",
+    "clipboardUnavailable": "Het klembord is niet beschikbaar in deze browser"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Uploaden",

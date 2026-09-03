@@ -695,6 +695,16 @@
     "viewPreview": "Voir l'aperçu",
     "viewCode": "Voir le code source"
   },
+  "textEditor": {
+    "selectionActions": "Actions sur la sélection",
+    "copy": "Copier",
+    "cut": "Couper",
+    "paste": "Coller",
+    "selectAll": "Tout sélectionner",
+    "clearSelection": "Effacer la sélection",
+    "copied": "Copié dans le presse-papiers",
+    "clipboardUnavailable": "Le presse-papiers n'est pas disponible dans ce navigateur"
+  },
   "upload": {
     "title": "Téléversements",
     "uploading": "Téléversement en cours",

@@ -1,8 +1,36 @@
-<div class="editor-container">
+<div class="editor-container" [class.touch-selection]="touchDevice">
   <ngx-monaco-editor
     [options]="editorOptions"
     [(ngModel)]="content"
     (onInit)="onInit($event)"
     (ngModelChange)="onContentChange($event)">
   </ngx-monaco-editor>
+
+  <!-- Touch devices have no keyboard shortcuts: surface copy/cut/paste on the selection. -->
+  @if (touchDevice && hasSelection) {
+    <div class="touch-selection-bar" role="toolbar" [attr.aria-label]="'textEditor.selectionActions' | translate">
+      <button type="button" (click)="copySelection()"
+              [matTooltip]="'textEditor.copy' | translate" [attr.aria-label]="'textEditor.copy' | translate">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+      @if (!readOnly) {
+        <button type="button" (click)="cutSelection()"
+                [matTooltip]="'textEditor.cut' | translate" [attr.aria-label]="'textEditor.cut' | translate">
+          <mat-icon>content_cut</mat-icon>
+        </button>
+        <button type="button" (click)="pasteAtSelection()"
+                [matTooltip]="'textEditor.paste' | translate" [attr.aria-label]="'textEditor.paste' | translate">
+          <mat-icon>content_paste</mat-icon>
+        </button>
+      }
+      <button type="button" (click)="selectAll()"
+              [matTooltip]="'textEditor.selectAll' | translate" [attr.aria-label]="'textEditor.selectAll' | translate">
+        <mat-icon>select_all</mat-icon>
+      </button>
+      <button type="button" (click)="clearSelection()"
+              [matTooltip]="'textEditor.clearSelection' | translate" [attr.aria-label]="'textEditor.clearSelection' | translate">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
 </div>

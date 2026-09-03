@@ -695,6 +695,16 @@
     "viewPreview": "Vorschau anzeigen",
     "viewCode": "Quellcode anzeigen"
   },
+  "textEditor": {
+    "selectionActions": "Aktionen für die Auswahl",
+    "copy": "Kopieren",
+    "cut": "Ausschneiden",
+    "paste": "Einfügen",
+    "selectAll": "Alles auswählen",
+    "clearSelection": "Auswahl aufheben",
+    "copied": "In die Zwischenablage kopiert",
+    "clipboardUnavailable": "Die Zwischenablage ist in diesem Browser nicht verfügbar"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Hochladen",
