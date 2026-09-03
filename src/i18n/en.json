@@ -1069,5 +1069,131 @@
         "pricing": "Pricing"
       }
     }
+  },
+  "pdfTools": {
+    "actions": {
+      "organize": "Organize pages",
+      "merge": "Merge PDFs",
+      "split": "Split PDF",
+      "rotate": "Rotate pages",
+      "editPages": "Edit pages"
+    },
+    "minItems": "{{count}} items min.",
+    "common": {
+      "pageCount": "{{count}} pages",
+      "loading": "Loading the PDF…",
+      "loadError": "This PDF could not be loaded.",
+      "signedWarning": "This PDF is digitally signed. Changing its pages invalidates the signature — save the result as a new document, or accept the loss.",
+      "signedTag": "Signed",
+      "encryptedError": "This PDF is password-protected and cannot be transformed. Remove the password first.",
+      "encryptedErrorNamed": "\"{{name}}\" is password-protected and cannot be transformed.",
+      "pagesPlaceholder": "e.g. 1-3, 7, 10-",
+      "allPages": "All pages",
+      "oddPages": "Odd pages",
+      "evenPages": "Even pages",
+      "customPages": "Custom pages",
+      "invalidRange": "Invalid page selection: {{detail}}",
+      "saveAsNewVersion": "Save as new version",
+      "saveAsNewDocument": "Save as new document",
+      "newDocumentName": "New document name",
+      "destination": "Destination",
+      "sameFolder": "Same folder as the source",
+      "chooseFolder": "Choose a folder…",
+      "folderChosen": "Selected folder",
+      "rootFolder": "Root folder"
+    },
+    "organizer": {
+      "title": "Organize pages",
+      "gridLabel": "Pages",
+      "pageLabel": "Page {{page}}",
+      "selectMenu": "Select pages",
+      "selectAll": "Select all",
+      "selectNone": "Select none",
+      "invertSelection": "Invert selection",
+      "selectRange": "Pages to select",
+      "selectedCount": "{{count}} selected",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "duplicate": "Duplicate",
+      "deletePage": "Delete page",
+      "deleteSelected": "Delete selected pages",
+      "extractSelected": "Extract selected pages to a new document",
+      "undo": "Undo",
+      "redo": "Redo",
+      "zoom": "Thumbnail size",
+      "emptyError": "A PDF needs at least one page.",
+      "acknowledgeSignature": "I understand the existing signature will be invalidated"
+    },
+    "merge": {
+      "title": "Merge PDFs",
+      "subtitle": "{{count}} files · {{pages}} pages",
+      "order": "Drag the files to set the order of the merged document.",
+      "pagesField": "Pages (optional)",
+      "addBookmarks": "Add a bookmark per file",
+      "removeFile": "Remove from the list",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "outputName": "Merged document name",
+      "merge": "Merge"
+    },
+    "split": {
+      "title": "Split PDF",
+      "modes": {
+        "everyN": "Every N pages",
+        "atPages": "At chosen pages",
+        "ranges": "Custom ranges",
+        "everyPage": "One document per page",
+        "bookmarks": "At bookmarks"
+      },
+      "pagesPerPart": "Pages per document",
+      "cutHint": "Click the scissors between two pages to start a new document there.",
+      "clearCuts": "Clear cuts",
+      "rangesField": "Ranges (one per document)",
+      "rangesPlaceholder": "e.g. 1-3; 4-10; 11-",
+      "rangesHint": "Separate the documents with ;",
+      "everyPageHint": "{{count}} documents, one per page.",
+      "bookmarkLevel": "Bookmark level",
+      "noBookmarks": "This PDF has no bookmarks.",
+      "namePattern": "Name pattern",
+      "namePatternHint": "{name}, {index}, {first}, {last}, {title}",
+      "createSubfolder": "Put the documents in a sub-folder named after the PDF",
+      "preview": "Result: {{count}} documents",
+      "more": "{{count}} more",
+      "noPreview": "Adjust the settings to see the resulting documents.",
+      "split": "Split"
+    },
+    "rotate": {
+      "title": "Rotate pages",
+      "subtitle": "{{count}} files",
+      "angle": "Rotation",
+      "cw": "90° clockwise",
+      "half": "180°",
+      "ccw": "90° counter-clockwise",
+      "pages": "Pages",
+      "customHint": "Applies to each selected PDF",
+      "rotate": "Rotate"
+    },
+    "done": {
+      "merge": "Merged into \"{{name}}\"",
+      "split": "Split into {{count}} documents",
+      "organize": "Pages saved as a new version",
+      "organizeNew": "Saved as \"{{name}}\"",
+      "rotate": "{{count}} PDF(s) rotated"
+    },
+    "errors": {
+      "generic": "The PDF operation failed: {{detail}}",
+      "tooLarge": "The selected PDFs exceed the size limit for PDF operations.",
+      "forbidden": "You are not allowed to modify documents.",
+      "NOT_A_PDF": "This document is not a PDF.",
+      "PDF_ENCRYPTED": "This PDF is password-protected and cannot be transformed.",
+      "PDF_INVALID": "This PDF could not be read.",
+      "PDF_TOO_MANY_PAGES": "Too many pages for one operation.",
+      "PDF_NO_OUTLINE": "This PDF has no bookmarks at that level.",
+      "TOO_MANY_OUTPUTS": "This split would produce too many documents.",
+      "PDF_SIGNED": "This PDF is digitally signed: save the result as a new document, or accept the signature loss.",
+      "ACTIVE_SIGNATURE_ENVELOPE": "This PDF is being signed (active e-Sign envelope): save the result as a new document.",
+      "WORM_MODE": "This deployment is read-only (WORM): save the result as a new document.",
+      "BUSY": "The PDF tools are busy, please retry in a moment."
+    }
   }
 }

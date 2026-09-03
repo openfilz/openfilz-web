@@ -1,0 +1,222 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 94dvh;
+}
+
+::ng-deep .pdf-tools-dialog-panel .mat-mdc-dialog-container {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: 16px !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+}
+
+::ng-deep .pdf-tools-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.dialog-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 5%, transparent) 0%, color-mix(in srgb, var(--primary) 2%, transparent) 100%);
+}
+
+.header-icon {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.header-text { flex: 1; min-width: 0; }
+.header-text h2 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.header-text .subtitle { margin: 2px 0 0; font-size: 13px; color: var(--text-secondary); }
+.close-btn { color: var(--text-secondary); }
+
+.dialog-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  max-height: none !important;
+  padding: 16px 24px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.help {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ── Rows ────────────────────────────────────────────────────────────── */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.row.cdk-drag-preview {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.row.cdk-drag-placeholder { opacity: 0.3; }
+
+.rows.cdk-drop-list-dragging .row:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-secondary);
+}
+
+.index {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-icon { color: #ef4444; }
+
+.row-main { flex: 1; min-width: 0; }
+.row-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+.row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.row-error { color: #ef4444; }
+.tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  font-weight: 600;
+}
+
+.pages-field { width: 170px; }
+.pages-field ::ng-deep .mat-mdc-text-field-wrapper { height: 40px; }
+.pages-field ::ng-deep .mat-mdc-form-field-infix { padding-top: 8px; padding-bottom: 8px; min-height: 40px; }
+
+.row-actions { display: flex; }
+.row-actions button { color: var(--text-secondary); width: 34px; height: 34px; min-width: 34px; padding: 0; }
+.row-actions button.danger:not([disabled]):hover { color: #ef4444; }
+
+/* ── Options ─────────────────────────────────────────────────────────── */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.name-field { width: 100%; max-width: 420px; }
+
+.destination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.destination mat-icon { color: var(--primary); }
+.destination button { color: var(--primary); font-weight: 600; }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.check input { accent-color: var(--primary); width: 18px; height: 18px; }
+
+/* ── Form fields ─────────────────────────────────────────────────────── */
+.ff ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
+.ff ::ng-deep input { color: var(--text-primary); }
+.ff ::ng-deep .mat-mdc-form-field-label { color: var(--text-secondary); }
+.ff ::ng-deep .mdc-notched-outline__leading,
+.ff ::ng-deep .mdc-notched-outline__trailing,
+.ff ::ng-deep .mdc-notched-outline__notch { border-color: var(--border-color) !important; }
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing,
+.ff ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch {
+  border-color: var(--primary) !important; border-width: 2px !important;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────── */
+.dialog-actions {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 12px 24px calc(12px + env(safe-area-inset-bottom)) !important;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-primary);
+}
+
+.cancel-btn, .primary-btn {
+  display: flex; align-items: center; font-weight: 600; text-transform: none;
+  border-radius: 10px; padding: 0 20px; height: 44px; font-size: 14px;
+}
+.cancel-btn { border: 2px solid var(--border-color) !important; color: var(--text-primary); background-color: var(--bg-primary); }
+.primary-btn { background: var(--primary) !important; color: white !important; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent); }
+.primary-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.primary-btn mat-spinner { --mdc-circular-progress-active-indicator-color: #fff; }
+
+@media (max-width: 700px) {
+  .dialog-content { padding: 12px; }
+  .row { flex-wrap: wrap; }
+  .row-main { flex-basis: calc(100% - 110px); }
+  .pages-field { width: 100%; }
+  .row-actions { margin-left: auto; }
+  .dialog-actions { flex-direction: column-reverse; }
+  .cancel-btn, .primary-btn { width: 100%; justify-content: center; }
+}

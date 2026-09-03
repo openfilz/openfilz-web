@@ -46,6 +46,14 @@
       </button>
       }
 
+      <!-- PDF tools: reorganise the pages of this PDF -->
+      @if (viewerMode === 'pdf' && canEditPages) {
+      <button mat-icon-button (click)="editPages()" [matTooltip]="'pdfTools.actions.editPages' | translate"
+        [attr.aria-label]="'pdfTools.actions.editPages' | translate">
+        <mat-icon>dashboard_customize</mat-icon>
+      </button>
+      }
+
       <!-- Preview Toggle (HTML/Markdown) -->
       @if (canTogglePreview) {
       <button mat-icon-button (click)="togglePreviewMode()"

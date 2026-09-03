@@ -13,6 +13,8 @@ import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
+import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
 import { TranslateService } from '@ngx-translate/core';
 import { isPdfItem } from '../../models/file-actions';
@@ -62,6 +64,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected userPreferencesService = inject(UserPreferencesService);
   protected settingsService = inject(SettingsService);
   protected signatureAccess = inject(SignatureAccessService);
+  protected pdfToolsAccess = inject(PdfToolsAccessService);
   protected translate = inject(TranslateService);
 
   constructor() {
@@ -312,6 +315,82 @@ export abstract class FileOperationsComponent implements OnInit {
         }
       });
     });
+  }
+
+  // ===== PDF tools (merge / split / rotate / organize pages) =====
+
+  /**
+   * The PDF tools apply to the current selection: feature on (API `pdfToolsActive`), CONTRIBUTOR,
+   * and every selected item is a PDF. Which tools are enabled for 1 vs. many items is decided by
+   * the descriptors (`singleOnly` / `minSelection`).
+   */
+  get canUsePdfToolsForSelection(): boolean {
+    const selected = this.selectedItems;
+    return this.pdfToolsAccess.enabled && selected.length > 0 && selected.every(isPdfItem);
+  }
+
+  /** From the contextual selection toolbar / mobile sheet. */
+  onPdfToolSelected(action: PdfToolActionId): void {
+    this.openPdfTool(action, this.selectedItems);
+  }
+
+  /** From a per-item kebab / context menu. */
+  onPdfToolItem(event: { item: FileItem; action: PdfToolActionId }): void {
+    this.openPdfTool(event.action, [event.item]);
+  }
+
+  /**
+   * Open the PDF tool dialog for `items`. The dialogs are lazy-loaded (they pull in pdf.js) and
+   * live in dedicated files, so this base class only routes and refreshes on success.
+   */
+  protected openPdfTool(action: PdfToolActionId, items: FileItem[]): void {
+    const pdfs = items.filter(isPdfItem);
+    if (!this.pdfToolsAccess.enabled || pdfs.length === 0) {
+      return;
+    }
+    const panel = { maxWidth: '98vw', maxHeight: '94dvh', panelClass: 'pdf-tools-dialog-panel', autoFocus: false };
+    switch (action) {
+      case 'mergePdf':
+        if (pdfs.length < 2) return;
+        import('../../dialogs/pdf-merge-dialog/pdf-merge-dialog.component').then(m => {
+          const ref = this.dialog.open(m.PdfMergeDialogComponent, {
+            ...panel, width: '820px', data: { items: pdfs.map(i => ({ id: i.id, name: i.name, size: i.size })) }
+          });
+          ref.afterClosed().subscribe(result => this.onPdfToolDone(result));
+        });
+        break;
+      case 'splitPdf':
+        import('../../dialogs/pdf-split-dialog/pdf-split-dialog.component').then(m => {
+          const ref = this.dialog.open(m.PdfSplitDialogComponent, {
+            ...panel, width: '900px', data: { documentId: pdfs[0].id, documentName: pdfs[0].name }
+          });
+          ref.afterClosed().subscribe(result => this.onPdfToolDone(result));
+        });
+        break;
+      case 'organizePdf':
+        import('../../dialogs/pdf-organizer-dialog/pdf-organizer-dialog.component').then(m => {
+          const ref = this.dialog.open(m.PdfOrganizerDialogComponent, {
+            ...panel, width: '1200px', height: '94dvh', data: { documentId: pdfs[0].id, documentName: pdfs[0].name }
+          });
+          ref.afterClosed().subscribe(result => this.onPdfToolDone(result));
+        });
+        break;
+      case 'rotatePdf':
+        import('../../dialogs/pdf-rotate-dialog/pdf-rotate-dialog.component').then(m => {
+          const ref = this.dialog.open(m.PdfRotateDialogComponent, {
+            ...panel, width: '560px', data: { items: pdfs.map(i => ({ id: i.id, name: i.name })) }
+          });
+          ref.afterClosed().subscribe(result => this.onPdfToolDone(result));
+        });
+        break;
+    }
+  }
+
+  /** A PDF tool produced or replaced documents: refresh the listing (the dialog already toasted). */
+  protected onPdfToolDone(result: PdfToolResult | undefined): void {
+    if (result?.success) {
+      this.reloadData();
+    }
   }
 
   /**

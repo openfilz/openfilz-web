@@ -1069,5 +1069,131 @@
         "pricing": "Prijzen"
       }
     }
+  },
+  "pdfTools": {
+    "actions": {
+      "organize": "Pagina's ordenen",
+      "merge": "PDF's samenvoegen",
+      "split": "PDF splitsen",
+      "rotate": "Pagina's draaien",
+      "editPages": "Pagina's bewerken"
+    },
+    "minItems": "min. {{count}} items",
+    "common": {
+      "pageCount": "{{count}} pagina's",
+      "loading": "PDF wordt geladen…",
+      "loadError": "Deze PDF kon niet worden geladen.",
+      "signedWarning": "Deze PDF is digitaal ondertekend. Het wijzigen van de pagina's maakt de handtekening ongeldig: sla het resultaat op als nieuw document of accepteer het verlies.",
+      "signedTag": "Ondertekend",
+      "encryptedError": "Deze PDF is met een wachtwoord beveiligd en kan niet worden bewerkt. Verwijder eerst het wachtwoord.",
+      "encryptedErrorNamed": "\"{{name}}\" is met een wachtwoord beveiligd en kan niet worden bewerkt.",
+      "pagesPlaceholder": "bv. 1-3, 7, 10-",
+      "allPages": "Alle pagina's",
+      "oddPages": "Oneven pagina's",
+      "evenPages": "Even pagina's",
+      "customPages": "Eigen selectie",
+      "invalidRange": "Ongeldige paginaselectie: {{detail}}",
+      "saveAsNewVersion": "Opslaan als nieuwe versie",
+      "saveAsNewDocument": "Opslaan als nieuw document",
+      "newDocumentName": "Naam van het nieuwe document",
+      "destination": "Bestemming",
+      "sameFolder": "Dezelfde map als de bron",
+      "chooseFolder": "Map kiezen…",
+      "folderChosen": "Gekozen map",
+      "rootFolder": "Hoofdmap"
+    },
+    "organizer": {
+      "title": "Pagina's ordenen",
+      "gridLabel": "Pagina's",
+      "pageLabel": "Pagina {{page}}",
+      "selectMenu": "Pagina's selecteren",
+      "selectAll": "Alles selecteren",
+      "selectNone": "Niets selecteren",
+      "invertSelection": "Selectie omkeren",
+      "selectRange": "Te selecteren pagina's",
+      "selectedCount": "{{count}} geselecteerd",
+      "rotateLeft": "Linksom draaien",
+      "rotateRight": "Rechtsom draaien",
+      "duplicate": "Dupliceren",
+      "deletePage": "Pagina verwijderen",
+      "deleteSelected": "Geselecteerde pagina's verwijderen",
+      "extractSelected": "Geselecteerde pagina's naar een nieuw document",
+      "undo": "Ongedaan maken",
+      "redo": "Opnieuw",
+      "zoom": "Grootte van miniaturen",
+      "emptyError": "Een PDF heeft minstens één pagina nodig.",
+      "acknowledgeSignature": "Ik begrijp dat de bestaande handtekening ongeldig wordt"
+    },
+    "merge": {
+      "title": "PDF's samenvoegen",
+      "subtitle": "{{count}} bestanden · {{pages}} pagina's",
+      "order": "Sleep de bestanden om de volgorde van het samengevoegde document te bepalen.",
+      "pagesField": "Pagina's (optioneel)",
+      "addBookmarks": "Een bladwijzer per bestand toevoegen",
+      "removeFile": "Uit de lijst verwijderen",
+      "moveUp": "Omhoog",
+      "moveDown": "Omlaag",
+      "outputName": "Naam van het samengevoegde document",
+      "merge": "Samenvoegen"
+    },
+    "split": {
+      "title": "PDF splitsen",
+      "modes": {
+        "everyN": "Elke N pagina's",
+        "atPages": "Bij gekozen pagina's",
+        "ranges": "Eigen bereiken",
+        "everyPage": "Eén document per pagina",
+        "bookmarks": "Bij bladwijzers"
+      },
+      "pagesPerPart": "Pagina's per document",
+      "cutHint": "Klik op de schaar tussen twee pagina's om daar een nieuw document te beginnen.",
+      "clearCuts": "Knippen wissen",
+      "rangesField": "Bereiken (één per document)",
+      "rangesPlaceholder": "bv. 1-3; 4-10; 11-",
+      "rangesHint": "Scheid de documenten met ;",
+      "everyPageHint": "{{count}} documenten, één per pagina.",
+      "bookmarkLevel": "Bladwijzerniveau",
+      "noBookmarks": "Deze PDF heeft geen bladwijzers.",
+      "namePattern": "Naampatroon",
+      "namePatternHint": "{name}, {index}, {first}, {last}, {title}",
+      "createSubfolder": "Documenten in een submap met de naam van de PDF plaatsen",
+      "preview": "Resultaat: {{count}} documenten",
+      "more": "nog {{count}}",
+      "noPreview": "Pas de instellingen aan om de resulterende documenten te zien.",
+      "split": "Splitsen"
+    },
+    "rotate": {
+      "title": "Pagina's draaien",
+      "subtitle": "{{count}} bestanden",
+      "angle": "Rotatie",
+      "cw": "90° met de klok mee",
+      "half": "180°",
+      "ccw": "90° tegen de klok in",
+      "pages": "Pagina's",
+      "customHint": "Geldt voor elke geselecteerde PDF",
+      "rotate": "Draaien"
+    },
+    "done": {
+      "merge": "Samengevoegd in \"{{name}}\"",
+      "split": "Gesplitst in {{count}} documenten",
+      "organize": "Pagina's opgeslagen als nieuwe versie",
+      "organizeNew": "Opgeslagen als \"{{name}}\"",
+      "rotate": "{{count}} PDF('s) gedraaid"
+    },
+    "errors": {
+      "generic": "De PDF-bewerking is mislukt: {{detail}}",
+      "tooLarge": "De geselecteerde PDF's overschrijden de groottelimiet voor PDF-bewerkingen.",
+      "forbidden": "U mag geen documenten wijzigen.",
+      "NOT_A_PDF": "Dit document is geen PDF.",
+      "PDF_ENCRYPTED": "Deze PDF is met een wachtwoord beveiligd en kan niet worden bewerkt.",
+      "PDF_INVALID": "Deze PDF kon niet worden gelezen.",
+      "PDF_TOO_MANY_PAGES": "Te veel pagina's voor één bewerking.",
+      "PDF_NO_OUTLINE": "Deze PDF heeft geen bladwijzers op dat niveau.",
+      "TOO_MANY_OUTPUTS": "Deze splitsing zou te veel documenten opleveren.",
+      "PDF_SIGNED": "Deze PDF is digitaal ondertekend: sla het resultaat op als nieuw document of accepteer het verlies van de handtekening.",
+      "ACTIVE_SIGNATURE_ENVELOPE": "Deze PDF wordt ondertekend (actieve e-Sign-envelop): sla het resultaat op als nieuw document.",
+      "WORM_MODE": "Deze installatie is alleen-lezen (WORM): sla het resultaat op als nieuw document.",
+      "BUSY": "De PDF-tools zijn bezet, probeer het zo opnieuw."
+    }
   }
 }

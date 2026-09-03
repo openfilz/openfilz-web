@@ -1,0 +1,229 @@
+:host {
+  display: block;
+}
+
+.page-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 4px;
+}
+
+/* ── Tile ─────────────────────────────────────────────────────────────── */
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.tile:hover {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border-color));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.tile:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.tile.selected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg-secondary));
+}
+
+.tile.cut-start {
+  box-shadow: -6px 0 0 -2px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+.thumb {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background: var(--bg-tertiary);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.thumb-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 60px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
+
+.thumb-placeholder mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+/* ── Badges ───────────────────────────────────────────────────────────── */
+.page-badge,
+.rotation-badge,
+.part-badge {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.page-badge {
+  left: 6px;
+  bottom: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+}
+
+.rotation-badge {
+  right: 6px;
+  bottom: 6px;
+  background: color-mix(in srgb, var(--primary) 85%, black);
+  color: #fff;
+}
+
+.part-badge {
+  left: 6px;
+  top: 6px;
+  background: var(--primary);
+  color: #fff;
+}
+
+.select-mark {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+  border-radius: 50%;
+  display: flex;
+  opacity: 0.85;
+}
+
+.tile.selected .select-mark {
+  color: var(--primary);
+  opacity: 1;
+}
+
+/* ── Hover actions ────────────────────────────────────────────────────── */
+.tile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 2px 0;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  border-radius: 0 0 8px 8px;
+}
+
+.tile-actions button {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  color: var(--text-secondary);
+}
+
+.tile-actions button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.tile-actions button:hover {
+  color: var(--primary);
+}
+
+.tile-actions button.danger:hover {
+  color: #ef4444;
+}
+
+/* ── Split cut gutter ─────────────────────────────────────────────────── */
+.cut-gutter {
+  align-self: stretch;
+  width: 26px;
+  margin: 0 -6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  opacity: 0.45;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 150ms ease, background 150ms ease;
+}
+
+.cut-gutter:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.cut-gutter.cut-active {
+  opacity: 1;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.cut-gutter mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Drag & drop ──────────────────────────────────────────────────────── */
+.cdk-drag-placeholder {
+  opacity: 0.25;
+}
+
+.cdk-drop-list-dragging .tile:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-preview {
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.drag-preview img {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .page-grid {
+    gap: 10px;
+  }
+
+  .tile-actions button {
+    width: 30px;
+    min-width: 30px;
+  }
+}
