@@ -695,6 +695,16 @@
     "viewPreview": "Voorbeeld bekijken",
     "viewCode": "Broncode bekijken"
   },
+  "textEditor": {
+    "selectionActions": "Selectieacties",
+    "copy": "Kopiëren",
+    "cut": "Knippen",
+    "paste": "Plakken",
+    "selectAll": "Alles selecteren",
+    "clearSelection": "Selectie wissen",
+    "copied": "Gekopieerd naar het klembord",
+    "clipboardUnavailable": "Het klembord is niet beschikbaar in deze browser"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Uploaden",
@@ -1049,7 +1059,34 @@
     "back": "Terug naar gesprekken",
     "close": "Chat sluiten",
     "errorStreaming": "Er is een fout opgetreden bij het genereren van het antwoord",
-    "activeModel": "Model dat deze chat beantwoordt"
+    "activeModel": "Model dat deze chat beantwoordt",
+    "reorg": {
+      "title": "Voorstel voor herindeling",
+      "loading": "Voorstel wordt geladen…",
+      "loadError": "Dit voorstel kon niet worden geladen.",
+      "summary": "{{applicable}} verplaatsing(en) gereed · {{blocked}} geblokkeerd",
+      "foldersToCreate": "Nieuwe mappen:",
+      "newFolder": "nieuw",
+      "selectAll": "Alles selecteren",
+      "selectNone": "Selectie wissen",
+      "from": "uit",
+      "apply": "{{count}} verplaatsing(en) toepassen",
+      "applying": "Bezig met toepassen…",
+      "discard": "Verwerpen",
+      "applied": "{{moved}} verplaatst, {{failed}} mislukt",
+      "status": {
+        "PROPOSED": "Wacht op uw goedkeuring",
+        "APPLIED": "Toegepast",
+        "PARTIALLY_APPLIED": "Gedeeltelijk toegepast",
+        "FAILED": "Mislukt",
+        "DISCARDED": "Verworpen"
+      },
+      "outcome": {
+        "MOVED": "Verplaatst",
+        "SKIPPED": "Overgeslagen",
+        "FAILED": "Mislukt"
+      }
+    }
   },
   "notice": {
     "dismiss": "Sluiten",

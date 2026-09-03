@@ -695,6 +695,16 @@
     "viewPreview": "Vorschau anzeigen",
     "viewCode": "Quellcode anzeigen"
   },
+  "textEditor": {
+    "selectionActions": "Aktionen für die Auswahl",
+    "copy": "Kopieren",
+    "cut": "Ausschneiden",
+    "paste": "Einfügen",
+    "selectAll": "Alles auswählen",
+    "clearSelection": "Auswahl aufheben",
+    "copied": "In die Zwischenablage kopiert",
+    "clipboardUnavailable": "Die Zwischenablage ist in diesem Browser nicht verfügbar"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Hochladen",
@@ -1049,7 +1059,34 @@
     "back": "Zuruck zu Unterhaltungen",
     "close": "Chat schliessen",
     "errorStreaming": "Beim Generieren der Antwort ist ein Fehler aufgetreten",
-    "activeModel": "Modell, das diesen Chat beantwortet"
+    "activeModel": "Modell, das diesen Chat beantwortet",
+    "reorg": {
+      "title": "Vorschlag zur Neuordnung",
+      "loading": "Vorschlag wird geladen…",
+      "loadError": "Dieser Vorschlag konnte nicht geladen werden.",
+      "summary": "{{applicable}} Verschiebung(en) bereit · {{blocked}} blockiert",
+      "foldersToCreate": "Neue Ordner:",
+      "newFolder": "neu",
+      "selectAll": "Alle auswählen",
+      "selectNone": "Auswahl aufheben",
+      "from": "aus",
+      "apply": "{{count}} Verschiebung(en) anwenden",
+      "applying": "Wird angewendet…",
+      "discard": "Verwerfen",
+      "applied": "{{moved}} verschoben, {{failed}} fehlgeschlagen",
+      "status": {
+        "PROPOSED": "Wartet auf Ihre Freigabe",
+        "APPLIED": "Angewendet",
+        "PARTIALLY_APPLIED": "Teilweise angewendet",
+        "FAILED": "Fehlgeschlagen",
+        "DISCARDED": "Verworfen"
+      },
+      "outcome": {
+        "MOVED": "Verschoben",
+        "SKIPPED": "Übersprungen",
+        "FAILED": "Fehlgeschlagen"
+      }
+    }
   },
   "notice": {
     "dismiss": "Schließen",

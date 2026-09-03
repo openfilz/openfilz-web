@@ -695,6 +695,16 @@
     "viewPreview": "Ver pré-visualização",
     "viewCode": "Ver código-fonte"
   },
+  "textEditor": {
+    "selectionActions": "Ações de seleção",
+    "copy": "Copiar",
+    "cut": "Cortar",
+    "paste": "Colar",
+    "selectAll": "Selecionar tudo",
+    "clearSelection": "Limpar a seleção",
+    "copied": "Copiado para a área de transferência",
+    "clipboardUnavailable": "A área de transferência não está disponível neste navegador"
+  },
   "upload": {
     "title": "Uploads",
     "uploading": "Enviando",
@@ -1049,7 +1059,34 @@
     "back": "Voltar para conversas",
     "close": "Fechar chat",
     "errorStreaming": "Ocorreu um erro ao gerar a resposta",
-    "activeModel": "Modelo que responde a esta conversa"
+    "activeModel": "Modelo que responde a esta conversa",
+    "reorg": {
+      "title": "Proposta de reorganização",
+      "loading": "A carregar a proposta…",
+      "loadError": "Não foi possível carregar esta proposta.",
+      "summary": "{{applicable}} movimento(s) pronto(s) · {{blocked}} bloqueado(s)",
+      "foldersToCreate": "Novas pastas:",
+      "newFolder": "nova",
+      "selectAll": "Selecionar tudo",
+      "selectNone": "Limpar seleção",
+      "from": "de",
+      "apply": "Aplicar {{count}} movimento(s)",
+      "applying": "A aplicar…",
+      "discard": "Descartar",
+      "applied": "{{moved}} movido(s), {{failed}} com falha",
+      "status": {
+        "PROPOSED": "Aguarda a sua aprovação",
+        "APPLIED": "Aplicada",
+        "PARTIALLY_APPLIED": "Parcialmente aplicada",
+        "FAILED": "Falhou",
+        "DISCARDED": "Descartada"
+      },
+      "outcome": {
+        "MOVED": "Movido",
+        "SKIPPED": "Ignorado",
+        "FAILED": "Falha"
+      }
+    }
   },
   "notice": {
     "dismiss": "Fechar",

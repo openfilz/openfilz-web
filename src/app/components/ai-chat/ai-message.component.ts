@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AiMessage } from '../../models/ai-chat.models';
 import { AiMarkdownService } from '../../services/ai-markdown.service';
 import { MatIconModule } from '@angular/material/icon';
+import { AiReorganizationCardComponent } from './ai-reorganization-card.component';
 
 /**
  * Regex to match document reference markers: [[doc:id:parentId:type:name]]
@@ -24,10 +25,16 @@ const BROKEN_DOC_REF_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):([^\][<]+)\]\]/g;
  */
 const BROKEN_DOC_SHELL_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):(<a[\s\S]*?<\/a>)\]\]/g;
 
+/**
+ * Reorganisation proposal markers: [[reorg-plan:id]] — appended by the backend when the
+ * assistant proposed a plan during the turn. Rendered as an interactive card below the bubble.
+ */
+const REORG_PLAN_REGEX = /\[\[reorg-plan:([0-9a-fA-F-]{36})\]\]/g;
+
 @Component({
   selector: 'app-ai-message',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, AiReorganizationCardComponent],
   template: `
     <div class="message" [class.user]="message.role === 'user'" [class.assistant]="message.role === 'assistant'" [class.error]="message.type === 'ERROR'">
       @if (message.role === 'assistant') {
@@ -35,14 +42,19 @@ const BROKEN_DOC_SHELL_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):(<a[\s\S]*?<\/a
           <mat-icon>smart_toy</mat-icon>
         </div>
       }
-      <div class="bubble" [class.user-bubble]="message.role === 'user'" [class.assistant-bubble]="message.role === 'assistant'" [class.error-bubble]="message.type === 'ERROR'">
-        @if (message.type === 'ERROR') {
-          <mat-icon class="error-icon">warning</mat-icon>
-        }
-        @if (message.role === 'user') {
-          <span class="user-text">{{ message.content }}</span>
-        } @else {
-          <div class="markdown-content" #contentEl [innerHTML]="renderedContent"></div>
+      <div class="message-body">
+        <div class="bubble" [class.user-bubble]="message.role === 'user'" [class.assistant-bubble]="message.role === 'assistant'" [class.error-bubble]="message.type === 'ERROR'">
+          @if (message.type === 'ERROR') {
+            <mat-icon class="error-icon">warning</mat-icon>
+          }
+          @if (message.role === 'user') {
+            <span class="user-text">{{ message.content }}</span>
+          } @else {
+            <div class="markdown-content" #contentEl [innerHTML]="renderedContent"></div>
+          }
+        </div>
+        @for (planId of planIds; track planId) {
+          <app-ai-reorganization-card [planId]="planId"></app-ai-reorganization-card>
         }
       </div>
     </div>
@@ -56,6 +68,15 @@ const BROKEN_DOC_SHELL_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):(<a[\s\S]*?<\/a
     }
     .message.user {
       flex-direction: row-reverse;
+    }
+    .message-body {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+      min-width: 0;
+    }
+    .message.user .message-body {
+      align-items: flex-end;
     }
     .avatar {
       width: 28px;
@@ -77,7 +98,7 @@ const BROKEN_DOC_SHELL_REGEX = /\[\[doc:[^\][<]*:(?:FILE|FOLDER):(<a[\s\S]*?<\/a
       height: 16px;
     }
     .bubble {
-      max-width: 85%;
+      max-width: 100%;
       padding: 10px 14px;
       border-radius: 16px;
       line-height: 1.5;
@@ -197,10 +218,30 @@ export class AiMessageComponent implements AfterViewInit {
   private router = inject(Router);
   private elRef = inject(ElementRef);
 
+  private planIdsSource = '';
+  private planIdsCache: string[] = [];
+
+  /** Reorganisation plans proposed in this message, in order of appearance (assistant only). */
+  get planIds(): string[] {
+    const content = this.message?.role === 'assistant' ? this.message.content ?? '' : '';
+    if (content !== this.planIdsSource) {
+      this.planIdsSource = content;
+      const ids: string[] = [];
+      for (const match of content.matchAll(REORG_PLAN_REGEX)) {
+        const id = match[1].toLowerCase();
+        if (!ids.includes(id)) ids.push(id);
+      }
+      this.planIdsCache = ids;
+    }
+    return this.planIdsCache;
+  }
+
   get renderedContent(): SafeHtml {
     if (!this.message?.content) return '';
+    // 0. Plan markers become cards below the bubble, not text
+    const content = this.message.content.replace(REORG_PLAN_REGEX, '').trimEnd();
     // 1. Render markdown first (markers pass through as plain text)
-    let html = this.markdownService.render(this.message.content);
+    let html = this.markdownService.render(content);
     // 2. Then replace [[doc:...]] markers in the rendered HTML with clickable links
     html = html.replace(DOC_REF_REGEX, (_match, id, parentId, type, name) => {
       const icon = type === 'FOLDER' ? 'folder' : 'description';

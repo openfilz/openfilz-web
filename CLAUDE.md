@@ -211,3 +211,17 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   `case` in toolbar / file-list / file-grid, `(pdfToolSelected)` + `(pdfTool)` bindings on file-explorer,
   favorites and search-results, and an "Edit pages" button in the PDF viewer.
 - i18n block `pdfTools.*` in all 8 locales. Design doc: `openfilz-core/docs/pdf-tools.md`.
+
+## Text editor on touch devices
+
+Monaco has no drag-to-select with a finger: `PointerEventHandler._onMouseDown` bails out when
+`pointerType === 'touch'` and its gesture recognizer turns a finger drag into a scroll, so the only
+selection a phone can make natively is a double-tap on a single word.
+`components/text-editor/monaco-touch-selection.ts` (no Angular dependency, so `openfilz-web-ee` can
+take it as-is) adds **long press → select word → drag to extend** on top of the editor DOM node,
+with auto-scroll near the top/bottom edges. Monaco's recognizer listens on `document` in the bubble
+phase, so capture-phase listeners on the editor node + `stopPropagation()` keep it from scrolling
+mid-selection; a plain drag is left alone so scrolling still works. `TextEditorComponent` wires it
+up only when `TouchDetectionService.isTouchDevice()`, outside the Angular zone, and shows a floating
+copy / cut / paste / select-all bar (`textEditor.*` i18n block) whenever the selection is non-empty —
+a phone has no Ctrl+C.

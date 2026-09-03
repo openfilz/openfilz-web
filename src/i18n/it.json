@@ -695,6 +695,16 @@
     "viewPreview": "Visualizza anteprima",
     "viewCode": "Visualizza codice sorgente"
   },
+  "textEditor": {
+    "selectionActions": "Azioni sulla selezione",
+    "copy": "Copia",
+    "cut": "Taglia",
+    "paste": "Incolla",
+    "selectAll": "Seleziona tutto",
+    "clearSelection": "Annulla la selezione",
+    "copied": "Copiato negli appunti",
+    "clipboardUnavailable": "Gli appunti non sono disponibili in questo browser"
+  },
   "upload": {
     "title": "Caricamenti",
     "uploading": "Caricamento in corso",
@@ -1049,7 +1059,34 @@
     "back": "Torna alle conversazioni",
     "close": "Chiudi chat",
     "errorStreaming": "Si e verificato un errore durante la generazione della risposta",
-    "activeModel": "Modello che risponde a questa chat"
+    "activeModel": "Modello che risponde a questa chat",
+    "reorg": {
+      "title": "Proposta di riorganizzazione",
+      "loading": "Caricamento della proposta…",
+      "loadError": "Impossibile caricare questa proposta.",
+      "summary": "{{applicable}} spostamento/i pronto/i · {{blocked}} bloccato/i",
+      "foldersToCreate": "Nuove cartelle:",
+      "newFolder": "nuova",
+      "selectAll": "Seleziona tutto",
+      "selectNone": "Deseleziona",
+      "from": "da",
+      "apply": "Applica {{count}} spostamento/i",
+      "applying": "Applicazione in corso…",
+      "discard": "Scarta",
+      "applied": "{{moved}} spostato/i, {{failed}} non riuscito/i",
+      "status": {
+        "PROPOSED": "In attesa della tua approvazione",
+        "APPLIED": "Applicata",
+        "PARTIALLY_APPLIED": "Applicata parzialmente",
+        "FAILED": "Non riuscita",
+        "DISCARDED": "Scartata"
+      },
+      "outcome": {
+        "MOVED": "Spostato",
+        "SKIPPED": "Saltato",
+        "FAILED": "Errore"
+      }
+    }
   },
   "notice": {
     "dismiss": "Chiudi",
