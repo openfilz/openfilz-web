@@ -8,12 +8,23 @@
       }
       <!-- Page Navigation (PDF only) -->
       @if (showPageNavigation) {
-      <div class="page-navigation">
+      <div class="page-navigation" role="group"
+        [attr.aria-label]="'fileViewer.pageInfo' | translate:{current: currentPage, total: totalPages}">
         <button mat-icon-button (click)="previousPage()" [disabled]="currentPage === 1"
           [matTooltip]="'fileViewer.previousPage' | translate">
           <mat-icon>chevron_left</mat-icon>
         </button>
-        <span class="page-info">{{ 'fileViewer.pageInfo' | translate:{current: currentPage, total: totalPages} }}</span>
+        <span class="page-info">
+          <input #pageInput class="page-input" type="text" inputmode="numeric" autocomplete="off"
+            [value]="currentPage" [style.width.ch]="pageInputWidth"
+            [matTooltip]="'fileViewer.goToPage' | translate"
+            [attr.aria-label]="'fileViewer.goToPage' | translate"
+            (focus)="$any($event.target).select()"
+            (keydown.enter)="goToPage($any($event.target).value)"
+            (keydown.escape)="syncPageInput()"
+            (blur)="goToPage($any($event.target).value)">
+          <span class="page-total">/ {{ totalPages }}</span>
+        </span>
         <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages"
           [matTooltip]="'fileViewer.nextPage' | translate">
           <mat-icon>chevron_right</mat-icon>
@@ -100,7 +111,7 @@
   </mat-toolbar>
 
   <!-- Content Area -->
-  <div class="viewer-content" [class.loading]="loading">
+  <div class="viewer-content" [class.loading]="loading" tabindex="-1" cdkFocusInitial>
     <!-- Loading Spinner -->
     @if (loading) {
     <div class="loading-container">

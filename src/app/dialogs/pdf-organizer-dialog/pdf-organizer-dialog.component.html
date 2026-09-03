@@ -133,6 +133,10 @@
     <mat-label>{{ 'pdfTools.common.newDocumentName' | translate }}</mat-label>
     <input matInput [(ngModel)]="newName" (keyup.enter)="save()" autocomplete="off">
   </mat-form-field>
+  <label class="ack">
+    <input type="checkbox" [(ngModel)]="openResult" (ngModelChange)="onOpenResultChange()">
+    <span>{{ 'pdfTools.common.openResult' | translate }}</span>
+  </label>
   } @else if (signed) {
   <label class="ack">
     <input type="checkbox" [(ngModel)]="acknowledgeSignature">

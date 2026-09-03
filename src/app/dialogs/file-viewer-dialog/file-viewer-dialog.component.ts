@@ -74,6 +74,7 @@ const MAX_MONACO_COMFORTABLE_SIZE = 5 * 1024 * 1024; // 5 MB
 export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('pdfCanvas', { static: false }) pdfCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('imageContainer', { static: false }) imageContainer?: ElementRef<HTMLDivElement>;
+  @ViewChild('pageInput', { static: false }) private pageInput?: ElementRef<HTMLInputElement>;
 
   loading: boolean = true;
   error?: string;
@@ -237,9 +238,9 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
         if (!result?.success) return;
         if (result.mode === 'NEW_VERSION') {
           this.loadDocument();
-        } else {
-          // Saved as a new document: keep showing the result the user just produced rather
-          // than the untouched source they started from.
+        } else if (result.openResult) {
+          // Saved as a new document and the user asked to see it: show the result rather than
+          // the untouched source they started from.
           const output = result.response?.outputs?.[0];
           if (output) {
             this.showDocument(output.documentId, output.name, output.size);
@@ -385,6 +386,33 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       await page.render(renderContext).promise;
     } catch (err) {
       console.error('Error rendering PDF page:', err);
+    }
+  }
+
+  /**
+   * Jump to the page typed in the toolbar. Anything that is not a page number (empty, text, out
+   * of range) leaves the document where it is and puts the current page back in the box — the
+   * input keeps whatever was typed otherwise, since [value] only re-writes it when the page
+   * actually changes.
+   */
+  goToPage(value: string): void {
+    const page = Math.trunc(Number(value));
+    if (Number.isFinite(page) && page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.currentPage = page;
+      this.renderPdfPage();
+    }
+    this.syncPageInput();
+  }
+
+  /** Width of the page box, in characters: just enough for the highest page number. */
+  get pageInputWidth(): number {
+    return String(this.totalPages || 1).length + 2.5;
+  }
+
+  /** Put the current page number back in the toolbar box. */
+  syncPageInput(): void {
+    if (this.pageInput) {
+      this.pageInput.nativeElement.value = String(this.currentPage);
     }
   }
 

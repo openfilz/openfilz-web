@@ -19,6 +19,7 @@ import { PdfToolsService } from '../../services/pdf-tools.service';
 import { OrganizeRequest, OutputMode, PdfInfo, PdfToolResult } from '../../models/pdf-tools.models';
 import { PdfGridPage, PdfPageGridComponent } from '../../components/pdf-page-grid/pdf-page-grid.component';
 import { formatPageRanges, parsePageRanges } from '../../utils/pdf-page-ranges';
+import { UserPreferencesService } from '../../services/user-preferences.service';
 
 export interface PdfOrganizerDialogData {
   documentId: string;
@@ -48,6 +49,7 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
   private readonly documentApi = inject(DocumentApiService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
+  private readonly userPreferences = inject(UserPreferencesService);
 
   loading = true;
   error = '';
@@ -69,6 +71,8 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
   acknowledgeSignature = false;
   /** Last refusal from the API, shown in the footer (a snackbar is hidden behind this dialog). */
   saveError = '';
+  /** Open the produced document when saving as a new document (sticky preference). */
+  openResult = this.userPreferences.getPreferences().openPdfToolResult;
 
   private keySeq = 0;
 
@@ -163,6 +167,10 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
     if (this.activeEnvelope) return false;
     if (this.signed && !this.acknowledgeSignature) return false;
     return this.dirty;
+  }
+
+  onOpenResultChange(): void {
+    this.userPreferences.setOpenPdfToolResult(this.openResult);
   }
 
   /** Switch destination; the previous refusal no longer applies. */
@@ -336,7 +344,10 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
           ? this.translate.instant('pdfTools.done.organize')
           : this.translate.instant('pdfTools.done.organizeNew', { name: output?.name ?? '' });
         this.snackBar.open(message, this.translate.instant('common.close'), { duration: 3000 });
-        this.dialogRef.close({ success: true, response, mode });
+        this.dialogRef.close({
+          success: true, response, mode,
+          openResult: mode === 'NEW_DOCUMENT' ? this.openResult : undefined
+        });
       },
       error: (err) => {
         this.saving = false;

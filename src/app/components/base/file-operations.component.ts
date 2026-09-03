@@ -15,7 +15,7 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
 import { SettingsService } from '../../services/settings.service';
 import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
 import { PdfToolsService } from '../../services/pdf-tools.service';
-import { PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
+import { PdfOutputInfo, PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
 import { TranslateService } from '@ngx-translate/core';
 import { isPdfItem } from '../../models/file-actions';
@@ -394,9 +394,36 @@ export abstract class FileOperationsComponent implements OnInit {
 
   /** A PDF tool produced or replaced documents: refresh the listing (the dialog already toasted). */
   protected onPdfToolDone(result: PdfToolResult | undefined): void {
-    if (result?.success) {
-      this.reloadData();
+    if (!result?.success) {
+      return;
     }
+    this.reloadData();
+
+    // The tool made exactly one new document and the user asked to see it: a split's parts or a
+    // new version of a listed document are left to the refreshed listing.
+    const outputs = result.response?.outputs ?? [];
+    if (result.openResult && result.mode === 'NEW_DOCUMENT' && outputs.length === 1) {
+      this.openPdfToolResult(outputs[0]);
+    }
+  }
+
+  /** Open the file viewer on a document a PDF tool just created. */
+  private openPdfToolResult(output: PdfOutputInfo): void {
+    import('../../dialogs/file-viewer-dialog/file-viewer-dialog.component').then(m => {
+      this.dialog.open(m.FileViewerDialogComponent, {
+        width: '95vw',
+        height: '95vh',
+        maxWidth: '1400px',
+        maxHeight: '900px',
+        panelClass: 'file-viewer-dialog-container',
+        data: {
+          documentId: output.documentId,
+          fileName: output.name,
+          contentType: 'application/pdf',
+          fileSize: output.size
+        }
+      });
+    });
   }
 
   /**

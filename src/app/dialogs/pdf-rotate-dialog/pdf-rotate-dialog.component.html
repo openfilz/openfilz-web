@@ -78,6 +78,12 @@
       <span>{{ 'pdfTools.organizer.acknowledgeSignature' | translate }}</span>
     </label>
     }
+    @if (producesSingleNewDocument) {
+    <label class="ack">
+      <input type="checkbox" [(ngModel)]="openResult" (ngModelChange)="onOpenResultChange()">
+      <span>{{ 'pdfTools.common.openResult' | translate }}</span>
+    </label>
+    }
   </div>
   }
 </div>

@@ -54,9 +54,51 @@
 }
 
 .page-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
-  min-width: 120px;
   text-align: center;
+}
+
+/* Type a page number instead of clicking through with the arrows. Sized by binding to the
+   number of digits in the page count, so it stays snug on a 4-page file and still fits 999. */
+.page-input {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 2px;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.15));
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: center;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-input:hover {
+  border-color: var(--border-color, rgba(0, 0, 0, 0.3));
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+
+.page-input:focus {
+  outline: none;
+  border-color: var(--primary, #3f51b5);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #3f51b5) 18%, transparent);
+}
+
+/* Chrome/Safari draw spinners for numeric input modes on some platforms. */
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.page-total {
+  white-space: nowrap;
+  opacity: 0.6;
+  font-size: 13px;
 }
 
 .zoom-controls {
@@ -528,6 +570,16 @@
 
   .zoom-level,
   .page-info {
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .page-input {
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .page-total {
     font-size: 11px;
   }
 
