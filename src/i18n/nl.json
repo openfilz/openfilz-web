@@ -235,10 +235,6 @@
       "all": "Alle bestanden"
     }
   },
-  "uploadZone": {
-    "orClick": "of klik om bestanden te selecteren",
-    "chooseFiles": "Kies Bestanden"
-  },
   "metadataPanel": {
     "title": "Eigenschappen",
     "description": "Documenteigenschappen paneel",
@@ -1101,8 +1097,7 @@
         "message": "Openbare demo — alle bezoekers zien alle bestanden. Upload geen vertrouwelijke documenten.",
         "messageShort": "Openbare demo — iedereen ziet alle bestanden.",
         "tryEe": "Privacy nodig? Probeer de Enterprise-demo",
-        "openSource": "OpenFilz is open source",
-        "uploadWarning": "Dit is een openbare gedeelde demo: iedereen kan de bestanden zien die u uploadt. Upload geen vertrouwelijke documenten."
+        "openSource": "OpenFilz is open source"
       },
       "ee": {
         "message": "U verkent de OpenFilz Enterprise-demo — gegevens kunnen op elk moment worden gewist.",

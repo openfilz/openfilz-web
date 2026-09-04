@@ -235,10 +235,6 @@
       "all": "Todos los archivos"
     }
   },
-  "uploadZone": {
-    "orClick": "o haga clic para seleccionar archivos",
-    "chooseFiles": "Elegir archivos"
-  },
   "metadataPanel": {
     "title": "Propiedades",
     "description": "Panel de propiedades del documento",
@@ -1101,8 +1097,7 @@
         "message": "Demo pública — todos los visitantes ven todos los archivos. No suba documentos confidenciales.",
         "messageShort": "Demo pública — todos ven todos los archivos.",
         "tryEe": "¿Necesita privacidad? Pruebe la demo Enterprise",
-        "openSource": "OpenFilz es open source",
-        "uploadWarning": "Esta es una demo pública compartida: cualquiera puede ver los archivos que suba. No suba documentos confidenciales."
+        "openSource": "OpenFilz es open source"
       },
       "ee": {
         "message": "Está explorando la demo de OpenFilz Enterprise — los datos pueden restablecerse en cualquier momento.",

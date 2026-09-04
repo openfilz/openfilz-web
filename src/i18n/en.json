@@ -235,10 +235,6 @@
       "all": "All files"
     }
   },
-  "uploadZone": {
-    "orClick": "or click to select files",
-    "chooseFiles": "Choose Files"
-  },
   "metadataPanel": {
     "title": "Properties",
     "description": "Document properties panel",
@@ -1101,8 +1097,7 @@
         "message": "Public demo — every visitor can see all files. Do not upload confidential documents.",
         "messageShort": "Public demo — everyone sees all files.",
         "tryEe": "Need privacy? Try the Enterprise demo",
-        "openSource": "OpenFilz is open source",
-        "uploadWarning": "This is a public shared demo: anyone can see the files you upload. Do not upload confidential documents."
+        "openSource": "OpenFilz is open source"
       },
       "ee": {
         "message": "You are exploring the OpenFilz Enterprise demo — data may be reset at any time.",
