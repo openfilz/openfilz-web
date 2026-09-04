@@ -510,7 +510,11 @@ export class DocumentApiService {
     });
   }
 
-  uploadDocument(file: File, parentFolderId?: string, metadata?: string, allowDuplicateFileNames?: boolean): Observable<UploadResponse> {
+  /**
+   * `autoFile` (smart filing): true/false = let OpenFilz choose the folder or not; undefined =
+   * not sent, the user's saved preference decides server-side.
+   */
+  uploadDocument(file: File, parentFolderId?: string, metadata?: string, allowDuplicateFileNames?: boolean, autoFile?: boolean): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append('file', file);
     if (parentFolderId) formData.append('parentFolderId', parentFolderId);
@@ -520,13 +524,16 @@ export class DocumentApiService {
     if (allowDuplicateFileNames !== undefined) {
       params = params.set('allowDuplicateFileNames', allowDuplicateFileNames.toString());
     }
+    if (autoFile !== undefined) {
+      params = params.set('autoFile', autoFile.toString());
+    }
 
     return this.http.post<UploadResponse>(`${this.baseUrl}/documents/upload`, formData, {
       params
     });
   }
 
-  uploadMultipleDocuments(files: File[], parentFolderId?: string, allowDuplicateFileNames?: boolean, metadata?: { [key: string]: any }): Observable<HttpResponse<UploadResponse[]>> {
+  uploadMultipleDocuments(files: File[], parentFolderId?: string, allowDuplicateFileNames?: boolean, metadata?: { [key: string]: any }, autoFile?: boolean): Observable<HttpResponse<UploadResponse[]>> {
     const formData = new FormData();
     const parametersByFilename: MultipleUploadFileParameter[] = [];
     files.forEach(file => {
@@ -547,6 +554,9 @@ export class DocumentApiService {
     let params = new HttpParams();
     if (allowDuplicateFileNames !== undefined) {
       params = params.set('allowDuplicateFileNames', allowDuplicateFileNames.toString());
+    }
+    if (autoFile !== undefined) {
+      params = params.set('autoFile', autoFile.toString());
     }
 
     return this.http.post<UploadResponse[]>(`${this.baseUrl}/documents/upload-multiple`, formData, {

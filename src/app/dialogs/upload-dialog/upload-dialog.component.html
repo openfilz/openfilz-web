@@ -47,6 +47,8 @@
       <mat-checkbox [(ngModel)]="allowDuplicates">
         Allow duplicate file names
       </mat-checkbox>
+      <!-- Smart filing: "Let OpenFilz choose the folder" (hidden when the feature is off) -->
+      <app-smart-filing-toggle></app-smart-filing-toggle>
     </div>
 
     <div class="info-note">

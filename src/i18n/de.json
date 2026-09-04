@@ -1086,6 +1086,10 @@
         "SKIPPED": "Übersprungen",
         "FAILED": "Fehlgeschlagen"
       }
+    },
+    "organize": {
+      "action": "Mit KI ordnen",
+      "currentFolder": "Diesen Ordner mit KI ordnen"
     }
   },
   "notice": {
@@ -1237,5 +1241,37 @@
       "WORM_MODE": "Diese Installation ist schreibgeschützt (WORM): Speichern Sie das Ergebnis als neues Dokument.",
       "BUSY": "Die PDF-Werkzeuge sind ausgelastet, bitte versuchen Sie es gleich noch einmal."
     }
+  },
+  "smartFiling": {
+    "title": "Intelligente Ablage",
+    "description": "Auf Wunsch legt OpenFilz hochgeladene Dokumente in dem Ordner ab, der am besten passt. Sie können ein Dokument jederzeit zurückverschieben.",
+    "letOpenfilzChoose": "OpenFilz den Ordner wählen lassen",
+    "letOpenfilzChooseHint": "Hochgeladene Dokumente werden in dem Ordner abgelegt, der am besten passt. Sie können sie jederzeit zurückverschieben.",
+    "mayCreateFolders": "Darf neue Ordner anlegen",
+    "mayCreateFoldersHint": "Wenn kein vorhandener Ordner passt, darf OpenFilz einen anlegen.",
+    "saveError": "Ihre Ablage-Einstellung konnte nicht gespeichert werden.",
+    "filedByOpenfilz": "Von OpenFilz abgelegt",
+    "moveBack": "Zurückverschieben",
+    "movedFrom": "Verschoben aus {{path}}",
+    "toast": {
+      "filing": "{{count}} Dokument(e) werden abgelegt…",
+      "done": "{{filed}} abgelegt · {{left}} unverändert",
+      "undo": "Rückgängig",
+      "show": "Anzeigen",
+      "movedBack": "Zurückverschoben",
+      "undoFailed": "Die Dokumente konnten nicht zurückverschoben werden."
+    }
+  },
+  "insights": {
+    "title": "Einblicke",
+    "analysing": "Wird analysiert…",
+    "failed": "Analyse fehlgeschlagen",
+    "keywords": "Schlagwörter",
+    "language": "Sprache",
+    "pages": "Seiten",
+    "fileTitle": "Titel",
+    "fileAuthor": "Autor",
+    "fileCreatedAt": "Erstellt",
+    "fileModifiedAt": "Geändert"
   }
 }

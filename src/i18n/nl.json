@@ -1086,6 +1086,10 @@
         "SKIPPED": "Overgeslagen",
         "FAILED": "Mislukt"
       }
+    },
+    "organize": {
+      "action": "Ordenen met AI",
+      "currentFolder": "Deze map ordenen met AI"
     }
   },
   "notice": {
@@ -1237,5 +1241,37 @@
       "WORM_MODE": "Deze installatie is alleen-lezen (WORM): sla het resultaat op als nieuw document.",
       "BUSY": "De PDF-tools zijn bezet, probeer het zo opnieuw."
     }
+  },
+  "smartFiling": {
+    "title": "Slim archiveren",
+    "description": "Als u erom vraagt, zet OpenFilz de documenten die u uploadt in de map die het beste past. U kunt een document altijd terugzetten.",
+    "letOpenfilzChoose": "OpenFilz de map laten kiezen",
+    "letOpenfilzChooseHint": "Geüploade documenten worden in de best passende map gezet. U kunt ze op elk moment terugzetten.",
+    "mayCreateFolders": "Mag nieuwe mappen aanmaken",
+    "mayCreateFoldersHint": "Als geen bestaande map past, mag OpenFilz er een aanmaken.",
+    "saveError": "Uw archiveervoorkeur kon niet worden opgeslagen.",
+    "filedByOpenfilz": "Gearchiveerd door OpenFilz",
+    "moveBack": "Terugzetten",
+    "movedFrom": "Verplaatst vanuit {{path}}",
+    "toast": {
+      "filing": "{{count}} document(en) worden gearchiveerd…",
+      "done": "{{filed}} gearchiveerd · {{left}} op hun plaats gelaten",
+      "undo": "Ongedaan maken",
+      "show": "Tonen",
+      "movedBack": "Teruggezet",
+      "undoFailed": "De documenten konden niet worden teruggezet."
+    }
+  },
+  "insights": {
+    "title": "Inzichten",
+    "analysing": "Bezig met analyseren…",
+    "failed": "Analyse mislukt",
+    "keywords": "Trefwoorden",
+    "language": "Taal",
+    "pages": "Pagina’s",
+    "fileTitle": "Titel",
+    "fileAuthor": "Auteur",
+    "fileCreatedAt": "Aangemaakt",
+    "fileModifiedAt": "Gewijzigd"
   }
 }

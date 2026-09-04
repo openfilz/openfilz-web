@@ -68,3 +68,10 @@
     padding: 16px;
   }
 }
+
+/* Smart filing switch under the drop zone */
+.upload-zone-filing {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}

@@ -1,0 +1,95 @@
+:host {
+  display: block;
+}
+
+.smart-filing {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Compact row next to the upload controls: both switches side by side, wrapping on narrow screens */
+.smart-filing.inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 2px;
+  padding: 6px 0;
+}
+
+.smart-filing.inline .filing-row {
+  display: flex;
+  align-items: center;
+}
+
+.filing-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.filing-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+.smart-filing.inline .secondary-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Smaller secondary switch */
+.filing-switch.secondary {
+  --mat-slide-toggle-track-height: 24px;
+  --mat-slide-toggle-track-width: 44px;
+  --mat-slide-toggle-selected-handle-size: 18px;
+  --mat-slide-toggle-unselected-handle-size: 14px;
+  --mat-slide-toggle-pressed-handle-size: 22px;
+  --mat-slide-toggle-with-icon-handle-size: 22px;
+}
+
+/* Settings page: labelled rows with a hint below each switch */
+.smart-filing.settings {
+  gap: 16px;
+}
+
+.smart-filing.settings .filing-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.smart-filing.settings .filing-label {
+  font-size: 14px;
+  white-space: normal;
+}
+
+.smart-filing.settings .secondary-row {
+  padding-left: 20px;
+  border-left: 2px solid var(--border-light, var(--border-color));
+}
+
+.filing-hint {
+  margin: 0;
+  padding-left: 52px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .smart-filing.inline {
+    column-gap: 10px;
+    padding: 4px 0;
+  }
+
+  .smart-filing.inline .filing-label {
+    font-size: 12px;
+  }
+}

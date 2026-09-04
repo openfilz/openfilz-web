@@ -1086,6 +1086,10 @@
         "SKIPPED": "Ignoré",
         "FAILED": "Échec"
       }
+    },
+    "organize": {
+      "action": "Organiser avec l’IA",
+      "currentFolder": "Organiser ce dossier avec l’IA"
     }
   },
   "notice": {
@@ -1237,5 +1241,37 @@
       "WORM_MODE": "Ce déploiement est en lecture seule (WORM) : enregistrez le résultat comme nouveau document.",
       "BUSY": "Les outils PDF sont occupés, réessayez dans un instant."
     }
+  },
+  "smartFiling": {
+    "title": "Classement intelligent",
+    "description": "À votre demande, OpenFilz range les documents que vous déposez dans le dossier qui leur convient le mieux. Vous pouvez toujours remettre un document à sa place.",
+    "letOpenfilzChoose": "Laisser OpenFilz choisir le dossier",
+    "letOpenfilzChooseHint": "Les documents déposés sont rangés dans le dossier qui leur convient le mieux. Vous pouvez les remettre à leur place à tout moment.",
+    "mayCreateFolders": "Peut créer de nouveaux dossiers",
+    "mayCreateFoldersHint": "Quand aucun dossier existant ne convient, OpenFilz peut en créer un.",
+    "saveError": "Votre préférence de classement n’a pas pu être enregistrée.",
+    "filedByOpenfilz": "Rangé par OpenFilz",
+    "moveBack": "Remettre à sa place",
+    "movedFrom": "Déplacé depuis {{path}}",
+    "toast": {
+      "filing": "Classement de {{count}} document(s)…",
+      "done": "{{filed}} rangé(s) · {{left}} laissé(s) sur place",
+      "undo": "Annuler",
+      "show": "Afficher",
+      "movedBack": "Remis à sa place",
+      "undoFailed": "Les documents n’ont pas pu être remis à leur place."
+    }
+  },
+  "insights": {
+    "title": "Aperçu",
+    "analysing": "Analyse en cours…",
+    "failed": "L’analyse a échoué",
+    "keywords": "Mots-clés",
+    "language": "Langue",
+    "pages": "Pages",
+    "fileTitle": "Titre",
+    "fileAuthor": "Auteur",
+    "fileCreatedAt": "Créé le",
+    "fileModifiedAt": "Modifié le"
   }
 }

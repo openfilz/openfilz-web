@@ -1,0 +1,100 @@
+@if (hasContent) {
+  <section class="insights" [attr.aria-label]="'insights.title' | translate">
+    <div class="insights-header">
+      <h3>
+        <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+        {{ 'insights.title' | translate }}
+      </h3>
+    </div>
+
+    <!-- Filed by OpenFilz -->
+    @if (filing) {
+      <div class="filed-row">
+        <span class="filed-chip" [matTooltip]="filing.reason || ''">
+          <mat-icon aria-hidden="true">drive_file_move</mat-icon>
+          {{ 'smartFiling.filedByOpenfilz' | translate }}
+        </span>
+        <button mat-stroked-button class="move-back-btn" (click)="moveBack()" [disabled]="undoing"
+          [attr.aria-label]="'smartFiling.moveBack' | translate">
+          @if (undoing) {
+            <mat-spinner diameter="16" aria-hidden="true"></mat-spinner>
+          } @else {
+            <mat-icon aria-hidden="true">undo</mat-icon>
+          }
+          <span>{{ 'smartFiling.moveBack' | translate }}</span>
+        </button>
+      </div>
+      @if (filing.reason) {
+        <p class="filed-reason">{{ filing.reason }}</p>
+      }
+      @if (filing.fromPath) {
+        <p class="filed-from">{{ 'smartFiling.movedFrom' | translate:{ path: filing.fromPath } }}</p>
+      }
+    }
+
+    @if (insights) {
+      @switch (insights.status) {
+        @case ('PENDING') {
+          <p class="insights-muted">
+            <mat-spinner diameter="14" aria-hidden="true"></mat-spinner>
+            {{ 'insights.analysing' | translate }}
+          </p>
+        }
+        @case ('FAILED') {
+          <p class="insights-muted">
+            <span>{{ 'insights.failed' | translate }}</span>
+            @if (insights.error) {
+              <span class="insights-error">{{ insights.error }}</span>
+            }
+          </p>
+        }
+        @default {
+          @if (insights.category) {
+            <span class="category-chip">{{ insights.category }}</span>
+          }
+
+          @if (insights.summary) {
+            <p class="insights-summary">{{ insights.summary }}</p>
+          }
+
+          @if (keywords.length > 0) {
+            <div class="keyword-chips" role="list" [attr.aria-label]="'insights.keywords' | translate">
+              @for (keyword of keywords; track keyword) {
+                <span class="keyword-chip" role="listitem">{{ keyword }}</span>
+              }
+            </div>
+          }
+
+          @if (hasFacts) {
+            <dl class="insights-facts">
+              @if (insights.language) {
+                <dt>{{ 'insights.language' | translate }}</dt>
+                <dd>{{ languageLabel(insights.language) }}</dd>
+              }
+              @if (insights.pageCount) {
+                <dt>{{ 'insights.pages' | translate }}</dt>
+                <dd>{{ insights.pageCount }}</dd>
+              }
+              @if (insights.fileTitle) {
+                <dt>{{ 'insights.fileTitle' | translate }}</dt>
+                <dd>{{ insights.fileTitle }}</dd>
+              }
+              @if (insights.fileAuthor) {
+                <dt>{{ 'insights.fileAuthor' | translate }}</dt>
+                <dd>{{ insights.fileAuthor }}</dd>
+              }
+              @if (insights.fileCreatedAt) {
+                <dt>{{ 'insights.fileCreatedAt' | translate }}</dt>
+                <dd>{{ insights.fileCreatedAt | date:'medium' }}</dd>
+              }
+              @if (insights.fileModifiedAt) {
+                <dt>{{ 'insights.fileModifiedAt' | translate }}</dt>
+                <dd>{{ insights.fileModifiedAt | date:'medium' }}</dd>
+              }
+            </dl>
+          }
+        }
+      }
+    }
+  </section>
+}

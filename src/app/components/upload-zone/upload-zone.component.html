@@ -14,5 +14,7 @@
 
         <input #fileInput type="file" multiple style="display: none" (change)="onFileSelected($event)">
     </mat-card>
+    <!-- Smart filing: "Let OpenFilz choose the folder" (hidden when the feature is off) -->
+    <app-smart-filing-toggle class="upload-zone-filing" (click)="$event.stopPropagation()"></app-smart-filing-toggle>
 </div>
 }

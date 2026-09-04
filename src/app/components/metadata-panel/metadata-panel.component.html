@@ -83,6 +83,10 @@
                 </div>
               }
 
+              <!-- Insights derived at upload (AI) + "Filed by OpenFilz"; hidden when there is nothing to show -->
+              <app-document-insights [documentId]="documentId" [documentType]="documentInfo.type"
+                (movedBack)="onMovedBack()"></app-document-insights>
+
               <!-- Metadata: always visible, per-field inline editing -->
               <div class="metadata-section-header">
                 <h3>{{ 'common.metadata' | translate }}</h3>

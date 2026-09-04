@@ -11,12 +11,13 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
 import { McpSettingsComponent } from '../../components/mcp-settings/mcp-settings.component';
+import { SmartFilingToggleComponent } from '../../components/smart-filing-toggle/smart-filing-toggle.component';
 import { IS_ENTERPRISE } from '../../edition';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -68,6 +69,11 @@ export class SettingsComponent implements OnInit {
 
   get showAiSettings(): boolean {
     return this.settingsService.isAiUserSettingsEnabled;
+  }
+
+  /** Smart filing switches follow openfilz.ai.auto-file.active alone (independent of BYOK). */
+  get showSmartFiling(): boolean {
+    return this.settingsService.isAiAutoFileActive;
   }
 
   /**

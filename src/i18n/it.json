@@ -1086,6 +1086,10 @@
         "SKIPPED": "Saltato",
         "FAILED": "Errore"
       }
+    },
+    "organize": {
+      "action": "Organizza con l’IA",
+      "currentFolder": "Organizza questa cartella con l’IA"
     }
   },
   "notice": {
@@ -1237,5 +1241,37 @@
       "WORM_MODE": "Questa installazione è in sola lettura (WORM): salva il risultato come nuovo documento.",
       "BUSY": "Gli strumenti PDF sono occupati, riprova tra un istante."
     }
+  },
+  "smartFiling": {
+    "title": "Archiviazione intelligente",
+    "description": "Su richiesta, OpenFilz archivia i documenti caricati nella cartella più adatta. Puoi sempre riportare un documento al suo posto.",
+    "letOpenfilzChoose": "Lascia che OpenFilz scelga la cartella",
+    "letOpenfilzChooseHint": "I documenti caricati vengono archiviati nella cartella più adatta. Puoi riportarli al loro posto in qualsiasi momento.",
+    "mayCreateFolders": "Può creare nuove cartelle",
+    "mayCreateFoldersHint": "Quando nessuna cartella esistente è adatta, OpenFilz può crearne una.",
+    "saveError": "Impossibile salvare la preferenza di archiviazione.",
+    "filedByOpenfilz": "Archiviato da OpenFilz",
+    "moveBack": "Riporta al suo posto",
+    "movedFrom": "Spostato da {{path}}",
+    "toast": {
+      "filing": "Archiviazione di {{count}} documento/i…",
+      "done": "{{filed}} archiviato/i · {{left}} lasciato/i al loro posto",
+      "undo": "Annulla",
+      "show": "Mostra",
+      "movedBack": "Riportato al suo posto",
+      "undoFailed": "Impossibile riportare i documenti al loro posto."
+    }
+  },
+  "insights": {
+    "title": "Informazioni",
+    "analysing": "Analisi in corso…",
+    "failed": "Analisi non riuscita",
+    "keywords": "Parole chiave",
+    "language": "Lingua",
+    "pages": "Pagine",
+    "fileTitle": "Titolo",
+    "fileAuthor": "Autore",
+    "fileCreatedAt": "Creato",
+    "fileModifiedAt": "Modificato"
   }
 }

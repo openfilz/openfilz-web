@@ -1086,6 +1086,10 @@
         "SKIPPED": "Skipped",
         "FAILED": "Failed"
       }
+    },
+    "organize": {
+      "action": "Organise with AI",
+      "currentFolder": "Organise this folder with AI"
     }
   },
   "notice": {
@@ -1237,5 +1241,37 @@
       "WORM_MODE": "This deployment is read-only (WORM): save the result as a new document.",
       "BUSY": "The PDF tools are busy, please retry in a moment."
     }
+  },
+  "smartFiling": {
+    "title": "Smart filing",
+    "description": "When you ask for it, OpenFilz files the documents you upload into the folder that fits them best. You can always move a document back.",
+    "letOpenfilzChoose": "Let OpenFilz choose the folder",
+    "letOpenfilzChooseHint": "Uploaded documents are filed into the folder that fits them best. You can move them back at any time.",
+    "mayCreateFolders": "May create new folders",
+    "mayCreateFoldersHint": "When no existing folder fits, OpenFilz may create one.",
+    "saveError": "Your filing preference could not be saved.",
+    "filedByOpenfilz": "Filed by OpenFilz",
+    "moveBack": "Move back",
+    "movedFrom": "Moved from {{path}}",
+    "toast": {
+      "filing": "Filing {{count}} document(s)…",
+      "done": "{{filed}} filed · {{left}} left in place",
+      "undo": "Undo",
+      "show": "Show",
+      "movedBack": "Moved back",
+      "undoFailed": "The documents could not be moved back."
+    }
+  },
+  "insights": {
+    "title": "Insights",
+    "analysing": "Analysing…",
+    "failed": "Analysis failed",
+    "keywords": "Keywords",
+    "language": "Language",
+    "pages": "Pages",
+    "fileTitle": "Title",
+    "fileAuthor": "Author",
+    "fileCreatedAt": "Created",
+    "fileModifiedAt": "Modified"
   }
 }

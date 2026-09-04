@@ -4,13 +4,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '@ngx-translate/core';
+import { SmartFilingToggleComponent } from '../smart-filing-toggle/smart-filing-toggle.component';
 
 @Component({
   selector: 'app-upload-zone',
   standalone: true,
   templateUrl: './upload-zone.component.html',
   styleUrls: ['./upload-zone.component.css'],
-  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, TranslatePipe],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, TranslatePipe, SmartFilingToggleComponent],
 })
 export class UploadZoneComponent {
   @Output() filesSelected = new EventEmitter<FileList>();

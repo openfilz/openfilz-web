@@ -1,4 +1,5 @@
-import { Directive, HostListener, OnInit, ViewChild, inject } from '@angular/core';
+import { DestroyRef, Directive, HostListener, OnInit, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CopyRequest, DocumentType, FileItem, MoveRequest, RenameRequest } from '../../models/document.models';
@@ -18,7 +19,10 @@ import { PdfToolsService } from '../../services/pdf-tools.service';
 import { PdfOutputInfo, PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
 import { TranslateService } from '@ngx-translate/core';
-import { isPdfItem } from '../../models/file-actions';
+import { isFolderItem, isPdfItem } from '../../models/file-actions';
+import { AiChatService } from '../../services/ai-chat.service';
+import { AiOrganizeAccessService } from '../../services/ai-organize-access.service';
+import { SmartFilingService } from '../../services/smart-filing.service';
 import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
 import { isCompactViewport } from '../../utils/layout.util';
 
@@ -68,12 +72,32 @@ export abstract class FileOperationsComponent implements OnInit {
   protected pdfToolsAccess = inject(PdfToolsAccessService);
   protected pdfTools = inject(PdfToolsService);
   protected translate = inject(TranslateService);
+  protected aiChat = inject(AiChatService);
+  protected aiOrganizeAccess = inject(AiOrganizeAccessService);
+  protected smartFiling = inject(SmartFilingService);
+  private destroyRef = inject(DestroyRef);
 
   constructor() {
     const prefs = this.userPreferencesService.getPreferences();
     this.pageSize = prefs.pageSize;
     this.sortBy = prefs.sortBy;
     this.sortOrder = prefs.sortOrder;
+
+    // Smart filing (subscribed here, not in ngOnInit: not every page calls super.ngOnInit()).
+    // A finished / undone filing job moved documents between folders → refresh the listing;
+    // "Show" on its toast opens the details of the single document that was filed.
+    this.smartFiling.foldersChanged$.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(folderIds => this.onSmartFilingFoldersChanged(folderIds));
+    this.smartFiling.showDocument$.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(documentId => this.switchMetadataPanel(documentId));
+  }
+
+  /**
+   * Smart filing changed the content of `folderIds` (null = root level). Listings without a
+   * current folder (favorites, search) just reload; the file explorer narrows this down.
+   */
+  protected onSmartFilingFoldersChanged(folderIds: (string | null)[]): void {
+    this.reloadData();
   }
 
   abstract reloadData(): void;
@@ -321,6 +345,49 @@ export abstract class FileOperationsComponent implements OnInit {
         }
       });
     });
+  }
+
+  // ===== "Organise with AI" (reorganisation proposal in the chat) =====
+
+  /**
+   * Ask the assistant for a reorganisation proposal of a folder (undefined = the root level).
+   * Gated like the per-item action: chat on + CONTRIBUTOR. The chat panel opens on a new
+   * conversation with the request already sent; the proposal comes back as a card the user
+   * reviews and applies from the chat.
+   */
+  organizeFolderWithAi(folder?: { id?: string; name?: string } | null): void {
+    if (!this.aiOrganizeAccess.enabled) {
+      return;
+    }
+    const prompt = folder?.name
+      ? `Propose a reorganisation of the folder "${folder.name}"`
+      : 'Propose a reorganisation of my documents';
+    this.aiChat.openWithPrompt(prompt);
+  }
+
+  /** From a per-item kebab / context menu: folders only. */
+  onOrganizeWithAi(item: FileItem): void {
+    if (isFolderItem(item)) {
+      this.organizeFolderWithAi(item);
+    }
+  }
+
+  /** Whether the toolbar offers "Organise with AI" for the current folder (no selection). */
+  get canOrganizeWithAi(): boolean {
+    return this.aiOrganizeAccess.enabled;
+  }
+
+  /** Same action from the contextual selection toolbar: exactly one folder selected. */
+  get canOrganizeSelectionWithAi(): boolean {
+    const selected = this.selectedItems;
+    return this.aiOrganizeAccess.enabled && selected.length === 1 && isFolderItem(selected[0]);
+  }
+
+  onOrganizeWithAiSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onOrganizeWithAi(selected[0]);
+    }
   }
 
   // ===== PDF tools (merge / split / rotate / organize pages) =====

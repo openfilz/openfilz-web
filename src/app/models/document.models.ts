@@ -1,3 +1,4 @@
+import { AutoFileInfo } from './smart-filing.models';
 export enum DocumentType {FILE = "FILE", FOLDER = "FOLDER"}
 
 export type DocumentTemplateType = 'WORD' | 'EXCEL' | 'POWERPOINT' | 'TEXT';
@@ -83,6 +84,8 @@ export interface UploadResponse {
   size: number | null;
   errorType?: string | null;
   errorMessage?: string | null;
+  /** Present when smart filing was scheduled for the upload batch (one job per batch). */
+  autoFile?: AutoFileInfo | null;
 }
 
 export interface UploadErrorGroup {

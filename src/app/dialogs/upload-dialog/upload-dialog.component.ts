@@ -11,6 +11,7 @@ import { FileIconService } from '../../services/file-icon.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SettingsService } from '../../services/settings.service';
 import { IS_ENTERPRISE } from '../../edition';
+import { SmartFilingToggleComponent } from '../../components/smart-filing-toggle/smart-filing-toggle.component';
 
 export interface UploadDialogData {
   files: File[];
@@ -36,7 +37,8 @@ export interface UploadDialogResult {
     MatListModule,
     MatCheckboxModule,
     FormsModule,
-    TranslatePipe
+    TranslatePipe,
+    SmartFilingToggleComponent
   ],
 })
 export class UploadDialogComponent {

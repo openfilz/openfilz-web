@@ -7,7 +7,7 @@
  * descriptors instead of forking the templates.
  */
 export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature'
-  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf';
+  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf' | 'organizeWithAi';
 
 export type FileActionCategory = 'organize' | 'transfer' | 'danger';
 
@@ -47,6 +47,20 @@ export const REQUEST_SIGNATURE_ACTION: FileActionDescriptor = {
   id: 'requestSignature', icon: 'draw', labelKey: 'toolbar.requestSignature', ariaKey: 'toolbar.requestSignature', category: 'transfer', placement: 'primary', singleOnly: true
 };
 
+/**
+ * "Organise with AI" on a folder: opens the assistant with a reorganisation request for that
+ * folder. Folder-only, and only when the chat is on + the user is a CONTRIBUTOR — see
+ * `AiOrganizeAccessService` and `visibleItemActions()` in file-list/file-grid.
+ */
+export const ORGANIZE_WITH_AI_ACTION: FileActionDescriptor = {
+  id: 'organizeWithAi', icon: 'auto_awesome', labelKey: 'aiChat.organize.action', ariaKey: 'aiChat.organize.action', category: 'organize', placement: 'primary', singleOnly: true
+};
+
+/** True for folders. */
+export function isFolderItem(item: { type?: string }): boolean {
+  return item.type === 'FOLDER';
+}
+
 /** True for PDF documents (by content type, falling back to the extension). */
 export function isPdfItem(item: { name?: string; contentType?: string; type?: string }): boolean {
   if (item.type === 'FOLDER') return false;
@@ -83,6 +97,7 @@ export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'copy', icon: 'content_copy', labelKey: 'toolbar.copy', ariaKey: 'toolbar.copySelected', category: 'organize', placement: 'primary' },
   REQUEST_SIGNATURE_ACTION,
   ...PDF_TOOLS_ITEM_ACTIONS,
+  ORGANIZE_WITH_AI_ACTION,
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'primary' },
   { id: 'delete', icon: 'delete', labelKey: 'common.delete', ariaKey: 'toolbar.deleteSelected', category: 'danger', placement: 'primary', danger: true },
 ];
