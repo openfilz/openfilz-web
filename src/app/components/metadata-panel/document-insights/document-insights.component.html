@@ -47,11 +47,10 @@
               <span class="insights-error">{{ insights.error }}</span>
             }
           </p>
+          <ng-container *ngTemplateOutlet="categoryEditor"></ng-container>
         }
         @default {
-          @if (insights.category) {
-            <span class="category-chip">{{ insights.category }}</span>
-          }
+          <ng-container *ngTemplateOutlet="categoryEditor"></ng-container>
 
           @if (insights.summary) {
             <p class="insights-summary">{{ insights.summary }}</p>
@@ -98,3 +97,41 @@
     }
   </section>
 }
+
+<!-- The kind of the document: a chip that opens a select of the deployment's categories; the correction is the user's -->
+<ng-template #categoryEditor>
+  @if (insights) {
+    <div class="category-row">
+      @if (editingCategory) {
+        <select class="category-select" [attr.aria-label]="'insights.editCategory' | translate"
+          [disabled]="savingCategory" #categorySelect
+          (change)="saveCategory(categorySelect.value)" (keydown.escape)="cancelEditCategory()" (blur)="cancelEditCategory()">
+          @for (category of categories; track category) {
+            <option [value]="category" [selected]="category === insights.category">{{ categoryLabel(category) }}</option>
+          }
+        </select>
+        @if (savingCategory) {
+          <mat-spinner diameter="14" aria-hidden="true"></mat-spinner>
+        }
+      } @else if (insights.category) {
+        <button type="button" class="category-chip" [class.category-chip-editable]="canEditCategory"
+          [disabled]="!canEditCategory" (click)="startEditCategory()"
+          [matTooltip]="canEditCategory ? ('insights.editCategory' | translate) : ''">
+          <span>{{ categoryLabel(insights.category) }}</span>
+          @if (canEditCategory) {
+            <mat-icon aria-hidden="true" class="category-edit-icon">edit</mat-icon>
+          }
+        </button>
+        @if (categorySetByUser) {
+          <mat-icon class="category-user-icon" [matTooltip]="'insights.categorySetByUser' | translate"
+            [attr.aria-label]="'insights.categorySetByUser' | translate">person</mat-icon>
+        }
+      } @else if (canEditCategory) {
+        <button type="button" class="category-set-btn" (click)="startEditCategory()">
+          <mat-icon aria-hidden="true">label</mat-icon>
+          <span>{{ 'insights.setCategory' | translate }}</span>
+        </button>
+      }
+    </div>
+  }
+</ng-template>

@@ -1267,6 +1267,28 @@
     "fileTitle": "العنوان",
     "fileAuthor": "المؤلف",
     "fileCreatedAt": "تاريخ الإنشاء",
-    "fileModifiedAt": "تاريخ التعديل"
+    "fileModifiedAt": "تاريخ التعديل",
+    "setCategory": "تحديد النوع",
+    "editCategory": "تغيير النوع",
+    "categorySetByUser": "النوع محدد من قبل مستخدم",
+    "categoryUpdated": "تم تحديث النوع",
+    "categoryUpdateFailed": "تعذر تغيير النوع",
+    "categories": {
+      "invoice": "فاتورة",
+      "quote": "عرض سعر",
+      "contract": "عقد",
+      "report": "تقرير",
+      "letter": "رسالة",
+      "cv": "سيرة ذاتية",
+      "presentation": "عرض تقديمي",
+      "spreadsheet": "جدول بيانات",
+      "form": "نموذج",
+      "id-document": "وثيقة هوية",
+      "receipt": "إيصال",
+      "minutes": "محضر",
+      "specification": "مواصفات",
+      "manual": "دليل",
+      "other": "أخرى"
+    }
   }
 }
