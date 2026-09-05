@@ -32,6 +32,8 @@ export class AiChatService {
   conversationsLoading$ = new BehaviorSubject<boolean>(false);
   /** Emits after a chat turn whose tool calls modified folder contents (folder ids, 'root' for root level). */
   folderContentChanged$ = new Subject<string[]>();
+  /** Asks the chat FAB to show the panel (see {@link openWithPrompt}). */
+  openRequested$ = new Subject<void>();
 
   private abortController: AbortController | null = null;
 
@@ -95,6 +97,22 @@ export class AiChatService {
   goBackToList(): void {
     this.panelView$.next('conversations');
     this.loadConversations().subscribe();
+  }
+
+  /**
+   * Open the chat panel on a fresh conversation and send `prompt` right away — the entry
+   * point of actions such as "Organise with AI" on a folder. The FAB listens to
+   * {@link openRequested$} and shows the panel; the chat view renders the streamed answer
+   * from {@link currentMessages$} whether or not it existed when the request was sent.
+   */
+  openWithPrompt(prompt: string): void {
+    if (!this.isEnabled || !prompt.trim()) {
+      return;
+    }
+    this.cancelStreaming();
+    this.startNewConversation();
+    this.openRequested$.next();
+    void this.sendMessage(prompt.trim());
   }
 
   cancelStreaming(): void {

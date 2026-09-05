@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
+import { DocumentInsightsComponent } from './document-insights/document-insights.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
@@ -46,6 +47,7 @@ interface MetadataEntry {
     MatTabsModule,
     SwipeTabsDirective,
     AuditVersionActionsComponent,
+    DocumentInsightsComponent,
     TranslatePipe
 ]
 })
@@ -457,6 +459,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   onClose() {
     this.closePanel.emit();
+  }
+
+  /** Smart filing "Move back": the document changed folder, let the parent refresh its listing. */
+  onMovedBack() {
+    this.metadataSaved.emit();
   }
 
   /**

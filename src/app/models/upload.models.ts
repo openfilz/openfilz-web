@@ -41,6 +41,8 @@ export interface UploadProgress {
   documentId?: string;
   /** True for regular (non-TUS) multipart uploads — no pause/resume, indeterminate progress */
   regularUpload?: boolean;
+  /** Smart filing job scheduled for this upload (set on finalize when the server filed it) */
+  autoFileJobId?: string;
 }
 
 /**
@@ -55,6 +57,8 @@ export interface TusUploadOptions {
   metadata?: { [key: string]: any };
   /** Allow duplicate filenames in target folder */
   allowDuplicateFileNames?: boolean;
+  /** Smart filing: let OpenFilz choose the folder (absent = the user's saved preference decides) */
+  autoFile?: boolean;
   /** Callback for progress updates */
   onProgress?: (progress: UploadProgress) => void;
   /** Callback when upload completes successfully */
@@ -93,6 +97,8 @@ export interface TusFinalizeRequest {
   parentFolderId?: string;
   metadata?: { [key: string]: any };
   allowDuplicateFileNames?: boolean;
+  /** Smart filing: let OpenFilz choose the folder (absent = the user's saved preference decides) */
+  autoFile?: boolean;
 }
 
 /**
@@ -103,6 +109,8 @@ export interface TusFinalizeResponse {
   name: string;
   contentType: string;
   size: number;
+  /** Present when smart filing was scheduled for this upload */
+  autoFile?: { jobId: string; status: string } | null;
 }
 
 /**

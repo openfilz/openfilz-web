@@ -1,0 +1,32 @@
+@if (visible && prefs) {
+  <div class="smart-filing" [class.settings]="variant === 'settings'" [class.inline]="variant === 'inline'">
+    <div class="filing-row main-row">
+      <mat-slide-toggle class="filing-switch" [checked]="prefs.autoFile" [disabled]="saving"
+        (change)="onAutoFileChange($event.checked)"
+        [matTooltip]="variant === 'inline' ? ('smartFiling.letOpenfilzChooseHint' | translate) : ''">
+        <span class="filing-label">
+          @if (variant === 'inline') {
+            <mat-icon class="filing-icon" aria-hidden="true">auto_awesome</mat-icon>
+          }
+          {{ 'smartFiling.letOpenfilzChoose' | translate }}
+        </span>
+      </mat-slide-toggle>
+      @if (variant === 'settings') {
+        <p class="filing-hint">{{ 'smartFiling.letOpenfilzChooseHint' | translate }}</p>
+      }
+    </div>
+
+    @if (prefs.autoFile) {
+      <div class="filing-row secondary-row">
+        <mat-slide-toggle class="filing-switch secondary" [checked]="prefs.autoFileNewFolders" [disabled]="saving"
+          (change)="onNewFoldersChange($event.checked)"
+          [matTooltip]="variant === 'inline' ? ('smartFiling.mayCreateFoldersHint' | translate) : ''">
+          <span class="filing-label secondary-label">{{ 'smartFiling.mayCreateFolders' | translate }}</span>
+        </mat-slide-toggle>
+        @if (variant === 'settings') {
+          <p class="filing-hint">{{ 'smartFiling.mayCreateFoldersHint' | translate }}</p>
+        }
+      </div>
+    }
+  </div>
+}

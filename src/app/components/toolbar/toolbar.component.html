@@ -54,6 +54,14 @@
         <mat-icon aria-hidden="true">note_add</mat-icon>
       </button>
       }
+
+      @if(showOrganizeWithAi) {
+      <button mat-icon-button class="create-action-btn organize-ai-btn" (click)="onOrganizeWithAi()"
+        [matTooltip]="'aiChat.organize.currentFolder' | translate"
+        [attr.aria-label]="'aiChat.organize.currentFolder' | translate">
+        <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+      </button>
+      }
     </div>
 
     <!-- Sort + filter triggers for mobile (toolbar-right is hidden there) -->
@@ -264,7 +272,7 @@
 </div>
 
 <!-- Floating Action Button (Mobile Only) -->
-@if(!hasSelection && !isSearchResultsPage && (showUploadButton || showCreateFolderButton || (showCreateDocumentButton && onlyOfficeEnabled))) {
+@if(!hasSelection && !isSearchResultsPage && (showUploadButton || showCreateFolderButton || showOrganizeWithAi || (showCreateDocumentButton && onlyOfficeEnabled))) {
 <div class="fab-container" [class.fab-open]="fabOpen">
   <!-- Main FAB -->
   <button mat-fab color="primary" class="main-fab" (click)="toggleFab()"
@@ -305,6 +313,16 @@
         <mat-icon aria-hidden="true">note_add</mat-icon>
       </button>
       <span class="speed-dial-label document-label">{{ 'toolbar.newDocument' | translate }}</span>
+    </div>
+    }
+
+    @if(showOrganizeWithAi) {
+    <div class="speed-dial-item" (click)="onOrganizeWithAiFromFab()">
+      <button mat-mini-fab class="speed-dial-btn organize-ai-dial-btn"
+        [attr.aria-label]="'aiChat.organize.currentFolder' | translate" role="menuitem">
+        <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+      </button>
+      <span class="speed-dial-label organize-ai-label">{{ 'aiChat.organize.action' | translate }}</span>
     </div>
     }
   </div>

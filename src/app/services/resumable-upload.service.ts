@@ -460,7 +460,8 @@ export class ResumableUploadService {
       filename: progress.filename,
       parentFolderId: options.parentFolderId,
       metadata: options.metadata,
-      allowDuplicateFileNames: options.allowDuplicateFileNames
+      allowDuplicateFileNames: options.allowDuplicateFileNames,
+      autoFile: options.autoFile
     };
 
     return this.http.post<TusFinalizeResponse>(
@@ -469,6 +470,7 @@ export class ResumableUploadService {
     ).pipe(
       map(response => {
         progress.documentId = response.id;
+        progress.autoFileJobId = response.autoFile?.jobId || undefined;
         progress.status = 'completed';
         this.updateUploadProgress(progress);
         this.removeUpload(progress.uploadId);

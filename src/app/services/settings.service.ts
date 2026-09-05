@@ -12,6 +12,10 @@ export interface Settings {
   thumbnailsActive: boolean;
   aiActive: boolean;
   aiUserSettingsEnabled: boolean;
+  /** openfilz.ai.insights.active on the API — document insights (summary, keywords…) shown in the details panel. */
+  aiInsightsActive?: boolean;
+  /** openfilz.ai.auto-file.active on the API — the only switch for the smart filing UI. */
+  aiAutoFileActive?: boolean;
   /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
   signatureActive?: boolean;
   /** True when initiating signature requests also requires the SIGN_REQUESTER role (openfilz.signature.require-requester-role). */
@@ -61,8 +65,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
       })
     );
   }
@@ -94,6 +98,19 @@ export class SettingsService {
   get isAiUserSettingsEnabled(): boolean {
     return (this.settingsSubject.value?.aiActive ?? false)
       && (this.settingsSubject.value?.aiUserSettingsEnabled ?? false);
+  }
+
+  /** Document insights (title, summary, keywords…) in the details panel follow the backend flag. */
+  get isAiInsightsActive(): boolean {
+    return this.settingsSubject.value?.aiInsightsActive === true;
+  }
+
+  /**
+   * Smart filing ("Let OpenFilz choose the folder") follows the backend flag: every
+   * /ai/auto-file endpoint answers 404 when it is off, so the switch and the toasts hide with it.
+   */
+  get isAiAutoFileActive(): boolean {
+    return this.settingsSubject.value?.aiAutoFileActive === true;
   }
 
   // Driven by openfilz.signature.active on the API: the e-Sign endpoints only exist when

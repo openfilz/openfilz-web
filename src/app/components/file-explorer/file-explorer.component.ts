@@ -37,6 +37,7 @@ import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { ResumableUploadService } from '../../services/resumable-upload.service';
 import { FolderUploadService } from '../../services/folder-upload.service';
 import { AiChatService } from '../../services/ai-chat.service';
+import { SmartFilingToggleComponent } from '../smart-filing-toggle/smart-filing-toggle.component';
 
 import {
   AncestorInfo,
@@ -77,6 +78,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
         [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+        [organizeWithAiAvailable]="canOrganizeSelectionWithAi" [showOrganizeWithAi]="canOrganizeWithAi"
+        (organizeWithAiSelected)="onOrganizeWithAiSelected()" (organizeWithAi)="organizeFolderWithAi(currentFolder)"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [totalItems]="totalItems"
@@ -135,6 +138,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
           (itemsDropped)="onDragDropMove($event)"
           (clearFilters)="onClearFilters()">
         </app-breadcrumb>
+        <!-- Smart filing: "Let OpenFilz choose the folder" for the uploads made from here -->
+        <app-smart-filing-toggle class="breadcrumb-bar-filing"></app-smart-filing-toggle>
       </div>
 
       <div class="file-explorer-content" appDragDrop
@@ -171,7 +176,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -192,7 +197,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"
@@ -237,7 +242,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
     DragDropDirective,
     DownloadProgressComponent,
     TranslatePipe,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    SmartFilingToggleComponent
 ],
 })
 export class FileExplorerComponent extends FileOperationsComponent implements OnInit, OnDestroy {
@@ -564,6 +570,13 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
   reloadData(): void {
     this.loadFolder(this.currentFolder);
+  }
+
+  /** Smart filing moved documents: refresh only when the displayed folder is a source or destination. */
+  protected override onSmartFilingFoldersChanged(folderIds: (string | null)[]): void {
+    if (folderIds.includes(this.currentFolder?.id ?? null)) {
+      this.reloadData();
+    }
   }
 
   private loadFolderById(folderId: string) {
@@ -1780,16 +1793,22 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     let completedCount = 0;
     let successCount = 0;
     const uploadedIds: string[] = [];
+    const filingJobIds: string[] = [];
+    const autoFile = this.smartFiling.autoFileForUpload;
 
-    const onFileUploadDone = (documentId?: string) => {
+    const onFileUploadDone = (documentId?: string, filingJobId?: string) => {
       if (documentId) {
         uploadedIds.push(documentId);
         successCount++;
+      }
+      if (filingJobId) {
+        filingJobIds.push(filingJobId);
       }
       completedCount++;
       if (completedCount < totalFiles) return;
 
       uploadedIds.forEach(id => this.uploadedDocumentIds.add(id));
+      this.smartFiling.trackUploadBatch(filingJobIds, successCount);
       this.loadFolder(this.currentFolder);
       this.snackBar.open(
         this.translate.instant('fileExplorer.uploadMultipleSuccess', { count: successCount }),
@@ -1821,7 +1840,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
           file,
           parentFolderId: parentId,
           allowDuplicateFileNames: false,
-          onSuccess: (progress) => onFileUploadDone(progress.documentId),
+          autoFile,
+          onSuccess: (progress) => onFileUploadDone(progress.documentId, progress.autoFileJobId),
           onError: (_progress, error) => {
             console.error('TUS folder upload failed:', error);
             onFileUploadDone();
@@ -1833,10 +1853,10 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       const progress = this.resumableUploadService.startRegularUploadTracking(
         file.name, file.size, parentId
       );
-      const subscription = this.documentApi.uploadDocument(file, parentId, undefined, false).subscribe({
+      const subscription = this.documentApi.uploadDocument(file, parentId, undefined, false, autoFile).subscribe({
         next: (response) => {
           this.resumableUploadService.completeRegularUpload(progress.uploadId, response.id || undefined);
-          onFileUploadDone(response.id || undefined);
+          onFileUploadDone(response.id || undefined, response.autoFile?.jobId);
         },
         error: (error) => {
           if (error.status === 409) {
@@ -1957,17 +1977,25 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     let lastDocumentId: string | undefined;
 
     const uploadedIds: string[] = [];
-    const onFileUploadDone = (documentId?: string) => {
+    // Smart filing: the switch state travels with every request of the batch; the responses
+    // carry the filing job id(s), followed by one non-blocking toast once the batch is done.
+    const filingJobIds: string[] = [];
+    const autoFile = this.smartFiling.autoFileForUpload;
+    const onFileUploadDone = (documentId?: string, filingJobId?: string) => {
       if (documentId) {
         lastDocumentId = documentId;
         uploadedIds.push(documentId);
         successCount++;
+      }
+      if (filingJobId) {
+        filingJobIds.push(filingJobId);
       }
       completedCount++;
       if (completedCount < totalFiles) return;
 
       // Store uploaded IDs for thumbnail polling after folder reload
       uploadedIds.forEach(id => this.uploadedDocumentIds.add(id));
+      this.smartFiling.trackUploadBatch(filingJobIds, successCount);
 
       if (lastDocumentId) {
         if (totalFiles === 1) {
@@ -1993,12 +2021,12 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
     // Handle large files with TUS resumable uploads
     if (largeFiles.length > 0) {
-      this.handleTusUpload(largeFiles, onFileUploadDone);
+      this.handleTusUpload(largeFiles, onFileUploadDone, autoFile);
     }
 
     // Handle small files with regular multipart upload
     if (smallFiles.length > 0) {
-      this.handleRegularUpload(smallFiles, totalFiles, onFileUploadDone);
+      this.handleRegularUpload(smallFiles, totalFiles, onFileUploadDone, autoFile);
     }
 
     // Replace the content of existing documents the user chose to overwrite
@@ -2042,7 +2070,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
    * Handle large files using TUS resumable uploads.
    * Shows progress in the UploadProgressComponent panel.
    */
-  private handleTusUpload(files: File[], onFileUploadDone: (documentId?: string) => void) {
+  private handleTusUpload(files: File[], onFileUploadDone: (documentId?: string, filingJobId?: string) => void, autoFile?: boolean) {
     const parentFolderId = this.currentFolder?.id;
 
     files.forEach(file => {
@@ -2050,8 +2078,9 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         file,
         parentFolderId,
         allowDuplicateFileNames: false,
+        autoFile,
         onSuccess: (progress) => {
-          onFileUploadDone(progress.documentId);
+          onFileUploadDone(progress.documentId, progress.autoFileJobId);
         },
         onError: (progress, error) => {
           console.error('TUS upload failed:', error);
@@ -2072,7 +2101,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
    * Each file is uploaded individually and tracked in the upload-progress panel
    * with an indeterminate progress bar.
    */
-  private handleRegularUpload(files: File[], totalBatchFiles: number, onFileUploadDone: (documentId?: string) => void) {
+  private handleRegularUpload(files: File[], totalBatchFiles: number, onFileUploadDone: (documentId?: string, filingJobId?: string) => void, autoFile?: boolean) {
     const parentFolderId = this.currentFolder?.id;
 
     files.forEach(file => {
@@ -2081,11 +2110,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       );
 
       const subscription = this.documentApi.uploadDocument(
-        file, parentFolderId, undefined, false
+        file, parentFolderId, undefined, false, autoFile
       ).subscribe({
         next: (response) => {
           this.resumableUploadService.completeRegularUpload(progress.uploadId, response.id || undefined);
-          onFileUploadDone(response.id || undefined);
+          onFileUploadDone(response.id || undefined, response.autoFile?.jobId);
         },
         error: (error) => {
           // Single-file 409 — hand off to the existing replace dialog
@@ -2199,12 +2228,16 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       this.documentApi.uploadMultipleDocuments(
         [file],
         this.currentFolder?.id,
-        true // allowDuplicateFileNames = true to bypass conflict with deleted file
+        true, // allowDuplicateFileNames = true to bypass conflict with deleted file
+        undefined,
+        this.smartFiling.autoFileForUpload
       ).subscribe({
         next: (httpResponse) => {
           this.snackBar.dismiss();
           const response = httpResponse.body || [];
           this.snackBar.open(this.translate.instant('fileExplorer.uploadSuccess', { name: fileName }), this.translate.instant('common.close'), { duration: 3000 });
+          const filingJobIds = response.map(r => r.autoFile?.jobId).filter((id): id is string => !!id);
+          this.smartFiling.trackUploadBatch(filingJobIds, response.filter(r => !!r.id).length);
           // Navigate to the uploaded file with focus and metadata panel
           if (response.length > 0 && response[response.length - 1].id) {
             this.navigateToUploadedFile(response[response.length - 1].id!, true);

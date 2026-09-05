@@ -177,6 +177,19 @@
     </div>
   }
 
+  @if (showSmartFiling) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>auto_awesome</mat-icon>
+        {{ 'smartFiling.title' | translate }}
+      </div>
+      <div class="section-content">
+        <p class="setting-description">{{ 'smartFiling.description' | translate }}</p>
+        <app-smart-filing-toggle variant="settings"></app-smart-filing-toggle>
+      </div>
+    </div>
+  }
+
   <!-- Its own section, gated on openfilz.mcp.active alone: MCP exposes the tools to EXTERNAL
        agents and is independent of the in-app chat, so nesting it under the AI section would
        hide it on a deployment that runs MCP without the assistant. -->

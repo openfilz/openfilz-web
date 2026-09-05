@@ -235,10 +235,6 @@
       "all": "Todos los archivos"
     }
   },
-  "uploadZone": {
-    "orClick": "o haga clic para seleccionar archivos",
-    "chooseFiles": "Elegir archivos"
-  },
   "metadataPanel": {
     "title": "Propiedades",
     "description": "Panel de propiedades del documento",
@@ -1086,6 +1082,10 @@
         "SKIPPED": "Omitido",
         "FAILED": "Error"
       }
+    },
+    "organize": {
+      "action": "Organizar con IA",
+      "currentFolder": "Organizar esta carpeta con IA"
     }
   },
   "notice": {
@@ -1097,8 +1097,7 @@
         "message": "Demo pública — todos los visitantes ven todos los archivos. No suba documentos confidenciales.",
         "messageShort": "Demo pública — todos ven todos los archivos.",
         "tryEe": "¿Necesita privacidad? Pruebe la demo Enterprise",
-        "openSource": "OpenFilz es open source",
-        "uploadWarning": "Esta es una demo pública compartida: cualquiera puede ver los archivos que suba. No suba documentos confidenciales."
+        "openSource": "OpenFilz es open source"
       },
       "ee": {
         "message": "Está explorando la demo de OpenFilz Enterprise — los datos pueden restablecerse en cualquier momento.",
@@ -1237,5 +1236,37 @@
       "WORM_MODE": "Esta instalación es de solo lectura (WORM): guarde el resultado como documento nuevo.",
       "BUSY": "Las herramientas PDF están ocupadas, inténtelo de nuevo en un momento."
     }
+  },
+  "smartFiling": {
+    "title": "Archivado inteligente",
+    "description": "Cuando usted lo pide, OpenFilz guarda los documentos que sube en la carpeta que mejor les corresponde. Siempre puede devolver un documento a su sitio.",
+    "letOpenfilzChoose": "Dejar que OpenFilz elija la carpeta",
+    "letOpenfilzChooseHint": "Los documentos subidos se guardan en la carpeta que mejor les corresponde. Puede devolverlos a su sitio en cualquier momento.",
+    "mayCreateFolders": "Puede crear carpetas nuevas",
+    "mayCreateFoldersHint": "Cuando ninguna carpeta existente encaja, OpenFilz puede crear una.",
+    "saveError": "No se pudo guardar su preferencia de archivado.",
+    "filedByOpenfilz": "Archivado por OpenFilz",
+    "moveBack": "Devolver a su sitio",
+    "movedFrom": "Movido desde {{path}}",
+    "toast": {
+      "filing": "Archivando {{count}} documento(s)…",
+      "done": "{{filed}} archivado(s) · {{left}} sin mover",
+      "undo": "Deshacer",
+      "show": "Mostrar",
+      "movedBack": "Devuelto a su sitio",
+      "undoFailed": "No se pudieron devolver los documentos a su sitio."
+    }
+  },
+  "insights": {
+    "title": "Información",
+    "analysing": "Analizando…",
+    "failed": "El análisis falló",
+    "keywords": "Palabras clave",
+    "language": "Idioma",
+    "pages": "Páginas",
+    "fileTitle": "Título",
+    "fileAuthor": "Autor",
+    "fileCreatedAt": "Creado",
+    "fileModifiedAt": "Modificado"
   }
 }

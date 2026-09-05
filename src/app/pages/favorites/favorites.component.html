@@ -1,6 +1,6 @@
 <div class="favorites-container">
   <!-- Toolbar with integrated pagination (no upload/create folder buttons) -->
-  <app-toolbar [viewMode]="viewMode" [hasSelection]="hasSelectedItems" [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+  <app-toolbar [viewMode]="viewMode" [hasSelection]="hasSelectedItems" [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [organizeWithAiAvailable]="canOrganizeSelectionWithAi" (organizeWithAiSelected)="onOrganizeWithAiSelected()"
     [pageIndex]="pageIndex" [pageSize]="pageSize" [totalItems]="totalItems" [showUploadButton]="false"
     [showCreateFolderButton]="false" (viewModeChange)="onViewModeChange($event)" (renameSelected)="onRenameSelected()"
     (downloadSelected)="onDownloadSelected()" (moveSelected)="onMoveSelected()" (copySelected)="onCopySelected()"
@@ -38,7 +38,7 @@
     <app-file-grid [items]="items" [selectionCount]="selectedItems.length" (itemClick)="onItemClick($event)" (itemDoubleClick)="onItemDoubleClick($event)"
       (selectionChange)="onSelectionChange($event)" (toggleFavorite)="onToggleFavorite($event)"
       (rename)="onRenameItem($event)" (download)="onDownloadItem($event)" (move)="onMoveItem($event)"
-      (copy)="onCopyItem($event)" (delete)="onDeleteItem($event)" (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)">
+      (copy)="onCopyItem($event)" (delete)="onDeleteItem($event)" (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)">
     </app-file-grid>
     }
 
@@ -47,7 +47,7 @@
       (selectionChange)="onSelectionChange($event)" (selectAll)="onSelectAll($event)"
       (toggleFavorite)="onToggleFavorite($event)" (rename)="onRenameItem($event)" (download)="onDownloadItem($event)"
       (move)="onMoveItem($event)" (copy)="onCopyItem($event)" (delete)="onDeleteItem($event)"
-      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" [sortBy]="sortBy" [sortOrder]="sortOrder"
+      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)" [sortBy]="sortBy" [sortOrder]="sortOrder"
       (sortChange)="onSortChange($event)">
     </app-file-list>
     }

@@ -194,10 +194,23 @@
 
 /* Breadcrumb bar for drag-drop navigation */
 .breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 0 24px;
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
+}
+
+.breadcrumb-bar > app-breadcrumb {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Smart filing switch, right end of the breadcrumb row (hidden when the feature is off) */
+.breadcrumb-bar-filing {
+  flex: 0 0 auto;
 }
 
 @media (max-width: 768px) {
