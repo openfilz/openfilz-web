@@ -164,13 +164,20 @@
   transform: scale(0.9);
 }
 
+/* Give the empty box an opaque backdrop so it stays readable over a thumbnail.
+   Scoped to the unchecked state only: once checked, the box must fall through
+   to the themed --mat-checkbox-* tokens in global_styles.css (primary fill +
+   white checkmark), which this rule would otherwise beat on specificity. */
 .select-overlay mat-checkbox ::ng-deep .mdc-checkbox__background {
-  border-color: var(--text-secondary);
   border-width: 2px;
+}
+
+.select-overlay mat-checkbox ::ng-deep .mdc-checkbox__native-control:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
+  border-color: var(--text-secondary);
   background-color: var(--bg-secondary);
 }
 
-.select-overlay:hover mat-checkbox ::ng-deep .mdc-checkbox__background {
+.select-overlay:hover mat-checkbox ::ng-deep .mdc-checkbox__native-control:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
   border-color: var(--primary);
 }
 
