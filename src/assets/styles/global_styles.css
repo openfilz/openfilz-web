@@ -515,6 +515,93 @@ html {
   overflow: hidden;
 }
 
+
+/* Slide-toggle (mat-slide-toggle) colours.
+   `mat.theme()` in custom-theme.scss is fed legacy palette maps, so Material 3's
+   --mat-sys-* system colours are emitted empty. Every slide-toggle colour falls
+   back to one of those tokens, which leaves the track, its outline and the
+   handle transparent — on the dark themes the switch all but disappears and
+   only the checkmark shows. Paint the component's own tokens from the app theme
+   variables so the switch stays legible in all ten themes. */
+.mat-mdc-slide-toggle {
+  /* Off state: filled track with a visible outline */
+  --mat-slide-toggle-unselected-track-color: var(--bg-tertiary);
+  --mat-slide-toggle-unselected-hover-track-color: var(--bg-tertiary);
+  --mat-slide-toggle-unselected-focus-track-color: var(--bg-tertiary);
+  --mat-slide-toggle-unselected-pressed-track-color: var(--bg-tertiary);
+  --mat-slide-toggle-track-outline-color: var(--text-tertiary);
+  --mat-slide-toggle-unselected-handle-color: var(--text-secondary);
+  --mat-slide-toggle-unselected-hover-handle-color: var(--text-primary);
+  --mat-slide-toggle-unselected-focus-handle-color: var(--text-primary);
+  --mat-slide-toggle-unselected-pressed-handle-color: var(--text-primary);
+  --mat-slide-toggle-unselected-icon-color: var(--bg-tertiary);
+
+  /* On state: primary-filled track with a white handle carrying the checkmark */
+  --mat-slide-toggle-selected-track-color: var(--primary);
+  --mat-slide-toggle-selected-hover-track-color: var(--primary-dark);
+  --mat-slide-toggle-selected-focus-track-color: var(--primary-dark);
+  --mat-slide-toggle-selected-pressed-track-color: var(--primary-dark);
+  --mat-slide-toggle-selected-track-outline-color: transparent;
+  --mat-slide-toggle-selected-handle-color: #ffffff;
+  --mat-slide-toggle-selected-hover-handle-color: #ffffff;
+  --mat-slide-toggle-selected-focus-handle-color: #ffffff;
+  --mat-slide-toggle-selected-pressed-handle-color: #ffffff;
+  --mat-slide-toggle-selected-icon-color: var(--primary);
+  --mat-slide-toggle-handle-surface-color: var(--bg-primary);
+
+  /* Ripple / state layer */
+  --mat-slide-toggle-selected-hover-state-layer-color: var(--primary);
+  --mat-slide-toggle-selected-focus-state-layer-color: var(--primary);
+  --mat-slide-toggle-selected-pressed-state-layer-color: var(--primary);
+  --mat-slide-toggle-unselected-hover-state-layer-color: var(--text-secondary);
+  --mat-slide-toggle-unselected-focus-state-layer-color: var(--text-secondary);
+  --mat-slide-toggle-unselected-pressed-state-layer-color: var(--text-secondary);
+
+  /* Labels and disabled state */
+  --mat-slide-toggle-label-text-color: var(--text-primary);
+  --mat-slide-toggle-disabled-label-text-color: var(--text-tertiary);
+  --mat-slide-toggle-disabled-selected-track-color: var(--text-tertiary);
+  --mat-slide-toggle-disabled-unselected-track-color: var(--text-tertiary);
+  --mat-slide-toggle-disabled-unselected-track-outline-color: var(--text-tertiary);
+  --mat-slide-toggle-disabled-selected-handle-color: var(--bg-primary);
+  --mat-slide-toggle-disabled-unselected-handle-color: var(--bg-primary);
+  --mat-slide-toggle-disabled-selected-icon-color: var(--text-tertiary);
+  --mat-slide-toggle-disabled-unselected-icon-color: var(--text-tertiary);
+}
+
+/* Checkbox (mat-checkbox) colours — same cause as the slide-toggle above.
+   Less severe here: with --mat-sys-* empty, `border-color` and the checkmark
+   `stroke` are invalid and fall back to currentColor, so the box stays visible
+   but takes the colour of whatever text sits next to it. The checked fill
+   (background-color) has no such fallback and resolves to transparent, so
+   checked and unchecked look nearly identical and the primary colour is lost.
+   Paint the component's own tokens from the app theme variables. */
+.mat-mdc-checkbox {
+  /* Unchecked: outlined box */
+  --mat-checkbox-unselected-icon-color: var(--text-secondary);
+  --mat-checkbox-unselected-hover-icon-color: var(--primary);
+  --mat-checkbox-unselected-focus-icon-color: var(--primary);
+  --mat-checkbox-unselected-hover-state-layer-color: var(--text-secondary);
+  --mat-checkbox-unselected-focus-state-layer-color: var(--text-secondary);
+  --mat-checkbox-unselected-pressed-state-layer-color: var(--primary);
+
+  /* Checked / indeterminate: primary-filled box with a light checkmark */
+  --mat-checkbox-selected-icon-color: var(--primary);
+  --mat-checkbox-selected-hover-icon-color: var(--primary-dark);
+  --mat-checkbox-selected-focus-icon-color: var(--primary-dark);
+  --mat-checkbox-selected-checkmark-color: #ffffff;
+  --mat-checkbox-selected-hover-state-layer-color: var(--primary);
+  --mat-checkbox-selected-focus-state-layer-color: var(--primary);
+  --mat-checkbox-selected-pressed-state-layer-color: var(--primary);
+
+  /* Labels and disabled state */
+  --mat-checkbox-label-text-color: var(--text-primary);
+  --mat-checkbox-disabled-label-color: var(--text-tertiary);
+  --mat-checkbox-disabled-selected-icon-color: var(--text-tertiary);
+  --mat-checkbox-disabled-unselected-icon-color: var(--text-tertiary);
+  --mat-checkbox-disabled-selected-checkmark-color: var(--bg-primary);
+}
+
 /* Fullscreen Dialog Mode */
 .cdk-overlay-pane.fullscreen-dialog {
   max-width: 100vw !important;
