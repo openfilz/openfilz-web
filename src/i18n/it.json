@@ -1267,6 +1267,28 @@
     "fileTitle": "Titolo",
     "fileAuthor": "Autore",
     "fileCreatedAt": "Creato",
-    "fileModifiedAt": "Modificato"
+    "fileModifiedAt": "Modificato",
+    "setCategory": "Imposta il tipo",
+    "editCategory": "Cambia il tipo",
+    "categorySetByUser": "Tipo impostato da un utente",
+    "categoryUpdated": "Tipo aggiornato",
+    "categoryUpdateFailed": "Impossibile cambiare il tipo",
+    "categories": {
+      "invoice": "Fattura",
+      "quote": "Preventivo",
+      "contract": "Contratto",
+      "report": "Relazione",
+      "letter": "Lettera",
+      "cv": "Curriculum",
+      "presentation": "Presentazione",
+      "spreadsheet": "Foglio di calcolo",
+      "form": "Modulo",
+      "id-document": "Documento d’identità",
+      "receipt": "Ricevuta",
+      "minutes": "Verbale",
+      "specification": "Specifica",
+      "manual": "Manuale",
+      "other": "Altro"
+    }
   }
 }

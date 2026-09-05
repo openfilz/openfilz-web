@@ -1267,6 +1267,28 @@
     "fileTitle": "Title",
     "fileAuthor": "Author",
     "fileCreatedAt": "Created",
-    "fileModifiedAt": "Modified"
+    "fileModifiedAt": "Modified",
+    "setCategory": "Set the kind",
+    "editCategory": "Change the kind",
+    "categorySetByUser": "Kind set by a user",
+    "categoryUpdated": "Kind updated",
+    "categoryUpdateFailed": "The kind could not be changed",
+    "categories": {
+      "invoice": "Invoice",
+      "quote": "Quote",
+      "contract": "Contract",
+      "report": "Report",
+      "letter": "Letter",
+      "cv": "CV",
+      "presentation": "Presentation",
+      "spreadsheet": "Spreadsheet",
+      "form": "Form",
+      "id-document": "ID document",
+      "receipt": "Receipt",
+      "minutes": "Minutes",
+      "specification": "Specification",
+      "manual": "Manual",
+      "other": "Other"
+    }
   }
 }

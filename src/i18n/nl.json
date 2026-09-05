@@ -1267,6 +1267,28 @@
     "fileTitle": "Titel",
     "fileAuthor": "Auteur",
     "fileCreatedAt": "Aangemaakt",
-    "fileModifiedAt": "Gewijzigd"
+    "fileModifiedAt": "Gewijzigd",
+    "setCategory": "Soort instellen",
+    "editCategory": "Soort wijzigen",
+    "categorySetByUser": "Soort ingesteld door een gebruiker",
+    "categoryUpdated": "Soort bijgewerkt",
+    "categoryUpdateFailed": "De soort kon niet worden gewijzigd",
+    "categories": {
+      "invoice": "Factuur",
+      "quote": "Offerte",
+      "contract": "Contract",
+      "report": "Rapport",
+      "letter": "Brief",
+      "cv": "CV",
+      "presentation": "Presentatie",
+      "spreadsheet": "Spreadsheet",
+      "form": "Formulier",
+      "id-document": "Identiteitsdocument",
+      "receipt": "Bonnetje",
+      "minutes": "Notulen",
+      "specification": "Specificatie",
+      "manual": "Handleiding",
+      "other": "Overig"
+    }
   }
 }

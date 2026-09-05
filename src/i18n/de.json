@@ -1267,6 +1267,28 @@
     "fileTitle": "Titel",
     "fileAuthor": "Autor",
     "fileCreatedAt": "Erstellt",
-    "fileModifiedAt": "Geändert"
+    "fileModifiedAt": "Geändert",
+    "setCategory": "Art festlegen",
+    "editCategory": "Art ändern",
+    "categorySetByUser": "Art von einem Benutzer festgelegt",
+    "categoryUpdated": "Art aktualisiert",
+    "categoryUpdateFailed": "Die Art konnte nicht geändert werden",
+    "categories": {
+      "invoice": "Rechnung",
+      "quote": "Angebot",
+      "contract": "Vertrag",
+      "report": "Bericht",
+      "letter": "Brief",
+      "cv": "Lebenslauf",
+      "presentation": "Präsentation",
+      "spreadsheet": "Tabelle",
+      "form": "Formular",
+      "id-document": "Ausweisdokument",
+      "receipt": "Beleg",
+      "minutes": "Protokoll",
+      "specification": "Spezifikation",
+      "manual": "Handbuch",
+      "other": "Sonstiges"
+    }
   }
 }

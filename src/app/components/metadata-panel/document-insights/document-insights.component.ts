@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -11,16 +11,18 @@ import { SmartFilingService } from '../../../services/smart-filing.service';
 import { DocumentInsights, FilingOutcome } from '../../../models/smart-filing.models';
 
 /**
- * "Insights" section of the details panel for FILE documents: the read-only facts OpenFilz
- * derived from the file at upload (category, summary, keywords, language, pages, embedded
- * title / author / dates), plus the "Filed by OpenFilz" chip with its "Move back" button when
- * smart filing placed the document. Hidden entirely when there is nothing to show.
+ * "Insights" section of the details panel for FILE documents: the facts OpenFilz derived from
+ * the file at upload (category, summary, keywords, language, pages, embedded title / author /
+ * dates), plus the "Filed by OpenFilz" chip with its "Move back" button when smart filing placed
+ * the document. The one editable fact is the kind (category): the chip opens a select of the
+ * deployment's categories, and the correction is stored as the user's — it teaches the learned
+ * classifier and drives the by-kind reorganisation. Hidden entirely when there is nothing to show.
  * Dedicated file for the enterprise fork; the panel only hosts the element.
  */
 @Component({
   selector: 'app-document-insights',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
+  imports: [DatePipe, NgTemplateOutlet, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
   templateUrl: './document-insights.component.html',
   styleUrls: ['./document-insights.component.css']
 })
@@ -29,6 +31,8 @@ export class DocumentInsightsComponent implements OnChanges {
   @Input() documentType?: string;
   /** The document was moved back where it was: the listing should refresh. */
   @Output() movedBack = new EventEmitter<void>();
+  /** The user corrected the kind: listings faceted on it may refresh. */
+  @Output() categoryChanged = new EventEmitter<string>();
 
   private insightsService = inject(DocumentInsightsService);
   private smartFiling = inject(SmartFilingService);
@@ -38,6 +42,8 @@ export class DocumentInsightsComponent implements OnChanges {
   insights: DocumentInsights | null = null;
   filing: FilingOutcome | null = null;
   undoing = false;
+  editingCategory = false;
+  savingCategory = false;
   /** Guards against an out-of-order answer overwriting a newer document's data. */
   private requestId = 0;
 
@@ -52,6 +58,8 @@ export class DocumentInsightsComponent implements OnChanges {
     this.insights = null;
     this.filing = null;
     this.undoing = false;
+    this.editingCategory = false;
+    this.savingCategory = false;
     if (!this.documentId || this.documentType !== 'FILE') {
       return;
     }
@@ -95,6 +103,92 @@ export class DocumentInsightsComponent implements OnChanges {
       return code;
     }
   }
+
+  // ── the kind (category) ───────────────────────────────────────────────────
+
+  /** The deployment's categories, the document's own first when it is not in the list (a renamed deployment list). */
+  get categories(): string[] {
+    const list = [...this.insightsService.categories];
+    const current = this.insights?.category;
+    if (current && !list.includes(current)) {
+      list.unshift(current);
+    }
+    if (!list.includes('other')) {
+      list.push('other');
+    }
+    return list;
+  }
+
+  /** The kind may be corrected whenever insights exist and are not being computed. */
+  get canEditCategory(): boolean {
+    return this.insightsService.enabled && !!this.insights && this.insights.status !== 'PENDING' && this.categories.length > 0;
+  }
+
+  /** True when a user, not a model, set the current kind. */
+  get categorySetByUser(): boolean {
+    return this.insights?.model === 'user';
+  }
+
+  /** The translated name of a kind; a category the deployment added keeps its key. */
+  categoryLabel(key: string): string {
+    const translationKey = `insights.categories.${key}`;
+    const label = this.translate.instant(translationKey);
+    return label === translationKey ? key : label;
+  }
+
+  startEditCategory(): void {
+    if (this.canEditCategory) {
+      this.editingCategory = true;
+    }
+  }
+
+  cancelEditCategory(): void {
+    this.editingCategory = false;
+  }
+
+  /** Save the kind chosen in the select; nothing happens when it is the current one. */
+  saveCategory(value: string): void {
+    const id = this.documentId;
+    if (!id || !value || this.savingCategory) {
+      return;
+    }
+    if (value === this.insights?.category) {
+      this.editingCategory = false;
+      return;
+    }
+    const requestId = this.requestId;
+    this.savingCategory = true;
+    this.insightsService.setCategory(id, value).subscribe({
+      next: updated => {
+        if (requestId !== this.requestId) {
+          return;
+        }
+        this.savingCategory = false;
+        this.editingCategory = false;
+        this.insights = updated;
+        this.snackBar.open(
+          this.translate.instant('insights.categoryUpdated'),
+          this.translate.instant('common.close'),
+          { duration: 3000 }
+        );
+        this.categoryChanged.emit(updated.category ?? value);
+      },
+      error: () => {
+        if (requestId !== this.requestId) {
+          return;
+        }
+        this.savingCategory = false;
+        this.editingCategory = false;
+        this.snackBar.open(
+          this.translate.instant('insights.categoryUpdateFailed'),
+          this.translate.instant('common.close'),
+          { duration: 4000 }
+        );
+      }
+    });
+  }
+
+  // ── smart filing ─────────────────────────────────────────────────────────
 
   moveBack(): void {
     const planId = this.filing?.planId;

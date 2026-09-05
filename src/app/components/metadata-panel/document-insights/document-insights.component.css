@@ -166,3 +166,82 @@
   color: var(--text-primary);
   word-break: break-word;
 }
+
+/* The kind: a chip that opens a select; the icon says a user set it */
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.category-row .category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 0;
+  border: none;
+  font-family: inherit;
+  cursor: default;
+}
+
+.category-chip-editable {
+  cursor: pointer;
+}
+
+.category-chip-editable:hover,
+.category-chip-editable:focus-visible {
+  background-color: var(--primary-dark, var(--primary));
+  outline: none;
+}
+
+.category-edit-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  opacity: 0.85;
+}
+
+.category-user-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+}
+
+.category-select {
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  padding: 4px 8px;
+  outline: none;
+  max-width: 100%;
+}
+
+.category-set-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px dashed var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.category-set-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.category-set-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}

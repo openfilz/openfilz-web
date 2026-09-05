@@ -14,6 +14,8 @@ export interface Settings {
   aiUserSettingsEnabled: boolean;
   /** openfilz.ai.insights.active on the API — document insights (summary, keywords…) shown in the details panel. */
   aiInsightsActive?: boolean;
+  /** The closed category list of the insights (openfilz.ai.insights.categories) — offered when a user corrects a document's kind. */
+  aiInsightsCategories?: string[];
   /** openfilz.ai.auto-file.active on the API — the only switch for the smart filing UI. */
   aiAutoFileActive?: boolean;
   /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
@@ -101,6 +103,11 @@ export class SettingsService {
   }
 
   /** Document insights (title, summary, keywords…) in the details panel follow the backend flag. */
+  /** The insight categories, `other` included; empty when insights are off. */
+  get aiInsightsCategories(): string[] {
+    return this.settingsSubject.value?.aiInsightsCategories ?? [];
+  }
+
   get isAiInsightsActive(): boolean {
     return this.settingsSubject.value?.aiInsightsActive === true;
   }
