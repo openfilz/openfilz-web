@@ -221,6 +221,44 @@
   max-width: 100%;
 }
 
+/* The editor's confirm / cancel buttons: icon-only, sized to the select */
+.category-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.category-action mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.category-action-save {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.category-action:hover:not(:disabled),
+.category-action:focus-visible {
+  background-color: var(--bg-secondary);
+  outline: none;
+}
+
+.category-action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .category-set-btn {
   display: inline-flex;
   align-items: center;

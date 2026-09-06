@@ -146,7 +146,7 @@ export class DocumentInsightsComponent implements OnChanges {
     this.editingCategory = false;
   }
 
-  /** Save the kind chosen in the select; nothing happens when it is the current one. */
+  /** Save the kind chosen in the select (the check button or Enter); nothing happens when it is the current one. */
   saveCategory(value: string): void {
     const id = this.documentId;
     if (!id || !value || this.savingCategory) {
