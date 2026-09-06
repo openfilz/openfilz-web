@@ -276,6 +276,7 @@
     "activity": "Atividade",
     "addMetadata": "Adicionar",
     "clickToEdit": "Clique para editar",
+    "lockedByESign": "Bloqueado pelo e-Sign — não pode ser editado ou excluído",
     "keyDeleted": "\"{{key}}\" removido",
     "saveFailed": "Falha ao salvar os metadados"
   },

@@ -395,6 +395,13 @@
   background-color: var(--bg-tertiary);
 }
 
+/* A value locked by e-Sign is read-only: no caret, no hover affordance */
+.metadata-value-locked,
+.metadata-value-locked:hover {
+  cursor: default;
+  background-color: transparent;
+}
+
 .metadata-key-input,
 .metadata-value-input {
   flex: 1;
@@ -444,6 +451,16 @@
   color: var(--primary);
 }
 
+/* The lock is a state indicator, not a button: match the action icons' size */
+.row-action-locked {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+  margin: 0 7px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
 .row-action-btn.danger:hover mat-icon {
   color: #ef4444;
 }
@@ -465,6 +482,11 @@
 
   .metadata-row:hover .metadata-row-actions,
   .metadata-row:focus-within .metadata-row-actions {
+    opacity: 1;
+  }
+
+  /* ... but the lock says the field is locked, so it stays visible */
+  .metadata-row:not(.add-row) .metadata-row-actions:has(.row-action-locked) {
     opacity: 1;
   }
 }

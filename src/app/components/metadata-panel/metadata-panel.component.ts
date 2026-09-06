@@ -94,6 +94,9 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   // System metadata keys that should not be editable
   private readonly SYSTEM_METADATA_KEYS = ['sha256'];
 
+  // e-Sign metadata written by the signing pipeline: shown, but locked against edit/delete
+  private readonly LOCKED_METADATA_KEYS = ['_signed', '_readOnly', '_signedEnvelopeId'];
+
   private readonly METADATA_KEY_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
   // MIME type to translation key mapping
@@ -334,8 +337,12 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   // ===== Inline metadata editing (per-field save, no edit mode) =====
 
+  isLocked(key: string): boolean {
+    return this.LOCKED_METADATA_KEYS.includes(key);
+  }
+
   startEdit(entry: MetadataEntry) {
-    if (this.savingKey) return;
+    if (this.savingKey || this.isLocked(entry.key)) return;
     this.cancelAdd();
     this.editingKey = entry.key;
     this.editValue = entry.value;
@@ -373,7 +380,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   deleteEntry(entry: MetadataEntry) {
-    if (!this.documentId || this.savingKey) return;
+    if (!this.documentId || this.savingKey || this.isLocked(entry.key)) return;
 
     this.savingKey = entry.key;
     this.documentApi.deleteDocumentMetadata(this.documentId, [entry.key]).subscribe({

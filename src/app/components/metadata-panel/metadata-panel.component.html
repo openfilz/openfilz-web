@@ -115,6 +115,8 @@
                         (keydown.enter)="commitEdit(entry)" (keydown.escape)="cancelEdit()"
                         (blur)="commitEdit(entry)" autofocus
                         [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                    } @else if(isLocked(entry.key)) {
+                      <span class="metadata-value metadata-value-locked">{{ entry.value }}</span>
                     } @else {
                       <button class="metadata-value" (click)="startEdit(entry)"
                         [matTooltip]="'metadataPanel.clickToEdit' | translate"
@@ -125,6 +127,9 @@
                     <span class="metadata-row-actions">
                       @if(savingKey === entry.key) {
                         <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                      } @else if(isLocked(entry.key)) {
+                        <mat-icon class="row-action-locked" aria-hidden="true"
+                          [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
                       } @else {
                         <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
                           [matTooltip]="'common.rename' | translate"
