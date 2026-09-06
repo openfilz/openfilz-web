@@ -86,6 +86,9 @@ export class WorkflowEditorComponent implements OnInit {
   triggerFolders: { id: string; name: string }[] = [];
   states: EditableState[] = [];
   selectedIndex = 0;
+  /** False while looking at a definition someone else owns — the API would answer 403 on save. */
+  canEdit = true;
+  owner: string | null = null;
   problems: WorkflowProblem[] = [];
   problemsByState = new Map<number, WorkflowProblem[]>();
   serverProblems: WorkflowProblem[] = [];
@@ -99,6 +102,8 @@ export class WorkflowEditorComponent implements OnInit {
           this.name = def.name;
           this.description = def.description ?? '';
           this.active = def.active;
+          this.canEdit = def.canEdit;
+          this.owner = def.createdBy;
           this.states = def.spec.states.map(s => this.toEditable(s, true));
           this.triggerFolders = def.triggerFolderIds.map(id => ({ id, name: '…' }));
           this.triggerFolders.forEach(f => this.documentApi.getDocumentInfo(f.id).subscribe({ next: i => f.name = i.name, error: () => f.name = f.id }));
@@ -333,7 +338,7 @@ export class WorkflowEditorComponent implements OnInit {
   // ── save ────────────────────────────────────────────────────────────
 
   get canSave(): boolean {
-    return !this.saving && this.name.trim().length > 0 && this.problems.length === 0;
+    return this.canEdit && !this.saving && this.name.trim().length > 0 && this.problems.length === 0;
   }
 
   save(): void {

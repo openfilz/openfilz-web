@@ -14,6 +14,7 @@
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
 }
 .new-btn mat-icon { margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px; }
+.owner { display: inline-flex; align-items: center; gap: 3px; color: var(--text-tertiary); }
 .tpl { display: flex; flex-direction: column; line-height: 1.25; }
 .tpl-name { font-weight: 600; }
 .tpl-hint { font-size: 11.5px; color: var(--text-secondary); }

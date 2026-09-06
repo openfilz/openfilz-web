@@ -8,6 +8,8 @@
 .head h1 { margin: 0; font-size: 20px; }
 .spacer { flex: 1; }
 .unsaved { font-size: 12.5px; color: #f59e0b; font-weight: 600; }
+.read-only { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--text-secondary); font-weight: 600; }
+.read-only mat-icon { font-size: 17px; width: 17px; height: 17px; }
 
 /* Material paints buttons from its own tokens, and those fall back to the empty --mat-sys-*
    colours (see global_styles.css), so drive the tokens rather than `background` / `border` —

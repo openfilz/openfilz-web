@@ -235,6 +235,14 @@
                             <mat-icon aria-hidden="true">person</mat-icon>
                             <span>{{ log.username || ('metadataPanel.unknownUser' | translate) }}</span>
                           </div>
+                          <!-- The person above really did cause it; this says they did it through a
+                               workflow rather than by hand (details.workflow, stamped by the API). -->
+                          @if (log.details?.['workflow']; as workflow) {
+                            <div class="audit-workflow">
+                              <mat-icon aria-hidden="true">account_tree</mat-icon>
+                              <span>{{ 'metadataPanel.viaWorkflow' | translate: { workflow: workflow, state: log.details?.['workflowState'] } }}</span>
+                            </div>
+                          }
                           @if (versioningEnabled && documentId && getVersionIdFor(log); as versionId) {
                             <app-audit-version-actions
                               [documentId]="documentId"

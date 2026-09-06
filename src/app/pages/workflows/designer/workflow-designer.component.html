@@ -53,15 +53,17 @@
                 <span>{{ 'workflow.designer.runningCount' | translate: { count: def.runningCount } }}</span>
                 @if (def.triggerFolderIds.length) { <span><mat-icon class="mini">folder_special</mat-icon>{{ 'workflow.designer.hotFolders' | translate: { count: def.triggerFolderIds.length } }}</span> }
                 <span class="dim">v{{ def.version }} · {{ def.updatedAt | date:'mediumDate' }}</span>
+                @if (!def.canEdit) { <span class="owner"><mat-icon class="mini">person</mat-icon>{{ 'workflow.designer.ownedBy' | translate: { who: def.createdBy } }}</span> }
               </div>
             </div>
             <div class="card-actions">
               @if (busy.has(def.id)) { <mat-spinner diameter="22"></mat-spinner> } @else {
-                <button mat-icon-button (click)="edit(def)" [matTooltip]="'workflow.designer.edit' | translate" class="tint-blue"><mat-icon>edit</mat-icon></button>
-                <button mat-icon-button (click)="toggleActive(def)" [matTooltip]="(def.active ? 'workflow.designer.deactivate' : 'workflow.designer.activate') | translate" class="tint-amber">
+                <button mat-icon-button (click)="edit(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.edit' : 'workflow.designer.readOnly') | translate" class="tint-blue"><mat-icon>{{ def.canEdit ? 'edit' : 'visibility' }}</mat-icon></button>
+                <button mat-icon-button (click)="toggleActive(def)" [disabled]="!def.canEdit"
+                  [matTooltip]="(!def.canEdit ? 'workflow.designer.notYours' : def.active ? 'workflow.designer.deactivate' : 'workflow.designer.activate') | translate" class="tint-amber">
                   <mat-icon>{{ def.active ? 'pause_circle' : 'play_circle' }}</mat-icon>
                 </button>
-                <button mat-icon-button (click)="remove(def)" [matTooltip]="'workflow.designer.delete' | translate" class="tint-red" [disabled]="def.runningCount > 0"><mat-icon>delete</mat-icon></button>
+                <button mat-icon-button (click)="remove(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.delete' : 'workflow.designer.notYours') | translate" class="tint-red" [disabled]="def.runningCount > 0 || !def.canEdit"><mat-icon>delete</mat-icon></button>
               }
             </div>
           </div>

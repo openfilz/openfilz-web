@@ -84,6 +84,12 @@ export interface WorkflowDefinitionDTO {
   createdAt: string;
   updatedAt: string;
   runningCount: number;
+  /**
+   * May the signed-in user change this definition? Everyone who may design sees and starts every
+   * workflow; the enterprise API reserves edit / activate / delete to its author and to admins,
+   * and answers 403 otherwise — so the UI greys those out rather than failing on save.
+   */
+  canEdit: boolean;
 }
 
 export interface StartWorkflowRequest {
