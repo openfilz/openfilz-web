@@ -1528,6 +1528,7 @@
       "UNREACHABLE": "Status \"{{value}}\" can never be reached",
       "DEAD_END": "Status \"{{value}}\" can never reach a final status",
       "NO_FOLDER": "Choose the destination folder",
+      "FOLDER_NOT_WRITABLE": "You cannot write into this folder — choose one you own or that is shared with you in editor mode",
       "NO_ENTRIES": "Name at least one metadata key",
       "TOO_MANY_ENTRIES": "At most {{value}} metadata keys",
       "BAD_ACTION_TYPE": "Action type is required",
@@ -1548,6 +1549,14 @@
         "state": "Empty status",
         "transition": "Empty transition"
       }
+    },
+    "diagram": {
+      "title": "Workflow diagram",
+      "hint": "Ctrl + mouse wheel, or the + / − / 0 keys, to zoom",
+      "enlarge": "Enlarge the diagram",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "resetZoom": "Reset zoom"
     },
     "start": {
       "title": "Start a workflow",

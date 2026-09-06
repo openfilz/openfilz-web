@@ -15,6 +15,12 @@ export interface FolderTreeDialogData {
   actionType: 'move' | 'copy';
   currentFolderId?: string;
   excludeIds?: string[];
+  /**
+   * Only offer folders the user may write into. Set it wherever the picked folder is written to
+   * later (workflow hot folders, MOVE_TO_FOLDER destinations) — offering a read-only shared folder
+   * there just defers the refusal to the moment the workflow runs.
+   */
+  writableOnly?: boolean;
 }
 
 interface FolderItem {
@@ -79,7 +85,7 @@ export class FolderTreeDialogComponent implements OnInit {
       this.pageIndex = 0;
     }
 
-    this.documentApi.listFolderAndCount(folderId, this.pageIndex + 1, this.pageSize).subscribe({
+    this.documentApi.listFolderAndCount(folderId, this.pageIndex + 1, this.pageSize, undefined, undefined, undefined, this.data.writableOnly).subscribe({
       next: (response) => {
         const allItems = response.listFolder;
         this.totalItems = response.count;

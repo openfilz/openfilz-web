@@ -1,29 +1,61 @@
 :host { display: block; height: 100%; }
 .editor { min-height: 100%; background: var(--bg-primary); color: var(--text-primary); padding: 18px 28px 40px; }
 .head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-.head button { color: var(--text-secondary); }
+/* Only the round "back" button is quiet — this used to be `.head button`, which outranked
+   `.primary-btn` and greyed out the save icon on the primary background. */
+.head .back-btn { color: var(--text-secondary); }
 .head-icon { color: var(--primary); }
 .head h1 { margin: 0; font-size: 20px; }
 .spacer { flex: 1; }
 .unsaved { font-size: 12.5px; color: #f59e0b; font-weight: 600; }
-.cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 42px; }
-.primary-btn {
-  --mat-button-filled-container-color: var(--primary);
-  --mat-button-filled-label-text-color: #fff;
-  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
-  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
-  border-radius: 10px; height: 42px; color: #fff;
+
+/* Material paints buttons from its own tokens, and those fall back to the empty --mat-sys-*
+   colours (see global_styles.css), so drive the tokens rather than `background` / `border` —
+   an extra CSS border would sit on top of the outlined button's own one. Mind the family:
+   mat-stroked-button = *outlined*, mat-raised-button = *protected* (NOT *filled*, which is
+   mat-flat-button). Painting the wrong family leaves the container transparent, which is how
+   Save ended up as white-on-white. */
+.head .cancel-btn, .head .primary-btn {
+  height: 42px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0;
 }
-.cancel-btn mat-icon, .primary-btn mat-icon { margin-right: 6px; }
-.primary-btn mat-spinner { display: inline-block; margin-right: 8px; }
+.head .cancel-btn mat-icon, .head .primary-btn mat-icon {
+  margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px;
+}
+.head .cancel-btn {
+  --mat-button-outlined-outline-color: var(--border-color);
+  --mat-button-outlined-outline-width: 2px;
+  --mat-button-outlined-label-text-color: var(--text-primary);
+  --mat-button-outlined-state-layer-color: var(--text-primary);
+  background: var(--bg-primary);
+}
+.head .cancel-btn:hover:not([disabled]) { --mat-button-outlined-outline-color: var(--text-secondary); }
+.head .primary-btn {
+  --mat-button-protected-container-color: var(--primary);
+  --mat-button-protected-label-text-color: #fff;
+  --mat-button-protected-state-layer-color: #fff;
+  --mat-button-protected-disabled-container-color: var(--bg-tertiary);
+  --mat-button-protected-disabled-label-text-color: var(--text-tertiary);
+  color: #fff;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
+}
+.head .primary-btn[disabled] { box-shadow: none; color: var(--text-tertiary); }
+/* The spinner would otherwise be drawn in the theme primary — invisible on a primary button. */
+.head .primary-btn mat-spinner {
+  display: inline-block; margin-inline-end: 8px;
+  --mat-progress-spinner-active-indicator-color: currentColor;
+}
 
 .state { display: flex; justify-content: center; padding: 48px 0; }
 
 .layout { display: flex; gap: 20px; align-items: flex-start; }
 .form { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
 .preview { flex: 0 0 420px; max-width: 42%; position: sticky; top: 12px; background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px 16px; }
-.preview h3 { margin: 0 0 8px; font-size: 14px; }
-.diagram-box { padding: 8px; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; margin-bottom: 8px; }
+.preview-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.preview h3 { margin: 0; font-size: 14px; }
+.enlarge-btn { color: var(--text-secondary); width: 34px; height: 34px; line-height: 34px; }
+.enlarge-btn:hover { color: var(--primary); }
+.enlarge-btn mat-icon { font-size: 20px; width: 20px; height: 20px; }
+.diagram-box { cursor: zoom-in; padding: 8px; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; margin-bottom: 8px; }
 
 .block { background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
 .row { display: flex; align-items: center; gap: 12px; margin: 4px 0 10px; }

@@ -22,6 +22,7 @@ import {
 } from '../../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { FolderTreeDialogComponent } from '../../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
+import { WorkflowDiagramDialogComponent } from '../../../dialogs/workflow-diagram-dialog/workflow-diagram-dialog.component';
 import { WorkflowTemplateId, problemMessage, problemsByState, templateSpec, uniqueKey, validateSpec } from '../../../utils/workflow-spec';
 
 /** Editable copy of a state: e-mails and metadata are edited as text and turned back into the spec on save. */
@@ -177,6 +178,20 @@ export class WorkflowEditorComponent implements OnInit {
     if (i >= 0) this.select(i);
   }
 
+  /** The preview aside is too narrow for a wide workflow: open the picture big and zoomable. */
+  openDiagram(): void {
+    this.dialog.open(WorkflowDiagramDialogComponent, {
+      maxWidth: '96vw',
+      data: {
+        spec: this.spec,
+        title: this.name.trim() || this.translate.instant('workflow.editor.newTitle'),
+        selectedStateKey: this.selected?.key ?? null
+      }
+    }).afterClosed().subscribe(key => {
+      if (key) this.onDiagramClick(key);
+    });
+  }
+
   onLabelChange(s: EditableState): void {
     if (!s.keyLocked) s.key = uniqueKey(s.label, this.states.filter(x => x !== s).map(x => x.key));
     this.touch();
@@ -248,7 +263,8 @@ export class WorkflowEditorComponent implements OnInit {
   pickFolder(a: EditableAction): void {
     this.dialog.open(FolderTreeDialogComponent, {
       width: '560px', maxWidth: '96vw',
-      data: { title: 'workflow.editor.chooseFolder', actionType: 'move', excludeIds: [] }
+      // A MOVE_TO_FOLDER action writes into this folder when the workflow runs.
+      data: { title: 'workflow.editor.chooseFolder', actionType: 'move', excludeIds: [], writableOnly: true }
     }).afterClosed().subscribe(folderId => {
       if (folderId === undefined) return;
       a.folderId = folderId || null;
@@ -270,7 +286,8 @@ export class WorkflowEditorComponent implements OnInit {
   addTriggerFolder(): void {
     this.dialog.open(FolderTreeDialogComponent, {
       width: '560px', maxWidth: '96vw',
-      data: { title: 'workflow.editor.chooseTriggerFolder', actionType: 'move', excludeIds: this.triggerFolders.map(f => f.id) }
+      // A hot folder hands its uploads to the workflow, which then writes to them.
+      data: { title: 'workflow.editor.chooseTriggerFolder', actionType: 'move', excludeIds: this.triggerFolders.map(f => f.id), writableOnly: true }
     }).afterClosed().subscribe(folderId => {
       if (!folderId || this.triggerFolders.some(f => f.id === folderId)) return;
       const entry = { id: folderId as string, name: '…' };

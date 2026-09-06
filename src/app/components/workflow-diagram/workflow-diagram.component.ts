@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { WorkflowSpec } from '../../models/workflow.models';
 import { DiagramEdge, DiagramLayout, DiagramNode, contrastColor, layoutSpec } from '../../utils/workflow-spec';
 
@@ -23,6 +23,12 @@ export class WorkflowDiagramComponent implements OnChanges {
   /** Status key the designer currently edits (dashed outline). */
   @Input() selectedStateKey: string | null = null;
   @Input() compact = false;
+  /**
+   * Fixed rendering scale (1 = the picture's natural size). `null` — the default — keeps the
+   * responsive behaviour: fit the container's width, never upscale. A number renders at exactly
+   * that scale and lets the container scroll, which is what the zoom dialog drives.
+   */
+  @Input() scale: number | null = null;
   @Output() stateClick = new EventEmitter<string>();
 
   layout: DiagramLayout = { nodes: [], edges: [], width: 0, height: 0 };
@@ -35,6 +41,19 @@ export class WorkflowDiagramComponent implements OnChanges {
     if (changes['taken']) {
       this.takenSet = new Set(this.taken ?? []);
     }
+  }
+
+  @HostBinding('class.fixed')
+  get fixedSize(): boolean {
+    return this.scale != null;
+  }
+
+  get renderWidth(): number {
+    return this.layout.width * (this.scale ?? 1);
+  }
+
+  get renderHeight(): number {
+    return this.layout.height * (this.scale ?? 1);
   }
 
   fill(n: DiagramNode): string {

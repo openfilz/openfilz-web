@@ -2,12 +2,18 @@
 .designer { padding: 14px 0; }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
 .hint-text { color: var(--text-secondary); font-size: 13px; }
+/* mat-raised-button is Material's *protected* family, not *filled* — the filled tokens this
+   used to set never applied, leaving the container transparent (dark text on the page background)
+   instead of the primary CTA it is meant to be. Same trap as the editor's Save button. */
 .new-btn {
-  --mat-button-filled-container-color: var(--primary);
-  --mat-button-filled-label-text-color: #fff;
-  border-radius: 10px; height: 42px; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+  --mat-button-protected-container-color: var(--primary);
+  --mat-button-protected-label-text-color: #fff;
+  --mat-button-protected-state-layer-color: #fff;
+  color: #fff;
+  border-radius: 10px; height: 42px; font-weight: 600;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
 }
-.new-btn mat-icon { margin-right: 6px; }
+.new-btn mat-icon { margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px; }
 .tpl { display: flex; flex-direction: column; line-height: 1.25; }
 .tpl-name { font-weight: 600; }
 .tpl-hint { font-size: 11.5px; color: var(--text-secondary); }

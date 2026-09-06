@@ -1,6 +1,6 @@
 <div class="editor">
   <header class="head">
-    <button mat-icon-button (click)="back()" [attr.aria-label]="'common.cancel' | translate"><mat-icon class="rtl-flip">arrow_back</mat-icon></button>
+    <button mat-icon-button class="back-btn" (click)="back()" [attr.aria-label]="'common.cancel' | translate"><mat-icon class="rtl-flip">arrow_back</mat-icon></button>
     <mat-icon class="head-icon">design_services</mat-icon>
     <h1>{{ (id ? 'workflow.editor.title' : 'workflow.editor.newTitle') | translate }}</h1>
     <span class="spacer"></span>
@@ -197,8 +197,14 @@
       </div>
 
       <aside class="preview">
-        <h3>{{ 'workflow.editor.preview' | translate }}</h3>
-        <div class="diagram-box">
+        <div class="preview-head">
+          <h3>{{ 'workflow.editor.preview' | translate }}</h3>
+          <button mat-icon-button class="enlarge-btn" (click)="openDiagram()"
+            [matTooltip]="'workflow.diagram.enlarge' | translate" [attr.aria-label]="'workflow.diagram.enlarge' | translate">
+            <mat-icon>zoom_out_map</mat-icon>
+          </button>
+        </div>
+        <div class="diagram-box" (dblclick)="openDiagram()">
           <app-workflow-diagram [spec]="spec" [selectedStateKey]="selected?.key ?? null" (stateClick)="onDiagramClick($event)"></app-workflow-diagram>
         </div>
         <p class="hint-text">{{ 'workflow.editor.previewHint' | translate }}</p>

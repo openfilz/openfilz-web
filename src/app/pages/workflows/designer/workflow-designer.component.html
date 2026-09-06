@@ -1,20 +1,25 @@
 <div class="designer">
   <div class="bar">
     <span class="hint-text">{{ 'workflow.designer.intro' | translate }}</span>
-    <button mat-raised-button color="primary" class="new-btn" [matMenuTriggerFor]="newMenu">
-      <mat-icon>add</mat-icon><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
-    </button>
-    <mat-menu #newMenu="matMenu" class="template-menu">
-      @for (t of templates; track t.id) {
-        <button mat-menu-item (click)="create(t.id)">
-          <mat-icon>{{ t.icon }}</mat-icon>
-          <span class="tpl">
-            <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
-            <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
-          </span>
-        </button>
-      }
-    </mat-menu>
+    <!-- The empty state below offers these very templates as cards, so the button would just be a
+         second, smaller copy of them. It comes back with the first workflow, where the cards are
+         gone and it is the only way to create one. -->
+    @if (!loading && definitions.length > 0) {
+      <button mat-raised-button color="primary" class="new-btn" [matMenuTriggerFor]="newMenu">
+        <mat-icon>add</mat-icon><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
+      </button>
+      <mat-menu #newMenu="matMenu" class="template-menu">
+        @for (t of templates; track t.id) {
+          <button mat-menu-item (click)="create(t.id)">
+            <mat-icon>{{ t.icon }}</mat-icon>
+            <span class="tpl">
+              <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
+              <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
+            </span>
+          </button>
+        }
+      </mat-menu>
+    }
   </div>
 
   @if (loading) {

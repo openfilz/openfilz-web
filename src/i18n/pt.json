@@ -1528,6 +1528,7 @@
       "UNREACHABLE": "O estado «{{value}}» nunca pode ser alcançado",
       "DEAD_END": "O estado «{{value}}» nunca pode chegar a um estado final",
       "NO_FOLDER": "Escolha a pasta de destino",
+      "FOLDER_NOT_WRITABLE": "Não pode escrever nesta pasta — escolha uma sua ou partilhada consigo em modo de edição",
       "NO_ENTRIES": "Indique pelo menos uma chave de metadados",
       "TOO_MANY_ENTRIES": "No máximo {{value}} chaves de metadados",
       "BAD_ACTION_TYPE": "O tipo de ação é obrigatório",
@@ -1548,6 +1549,14 @@
         "state": "Estado vazio",
         "transition": "Transição vazia"
       }
+    },
+    "diagram": {
+      "title": "Diagrama do fluxo",
+      "hint": "Ctrl + roda do rato, ou as teclas + / − / 0, para aplicar zoom",
+      "enlarge": "Ampliar o diagrama",
+      "zoomIn": "Aumentar zoom",
+      "zoomOut": "Diminuir zoom",
+      "resetZoom": "Redefinir zoom"
     },
     "start": {
       "title": "Iniciar um fluxo",

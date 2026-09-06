@@ -1,6 +1,9 @@
 :host { display: block; max-width: 100%; overflow-x: auto; }
 .diagram { display: block; max-width: 100%; height: auto; font-family: inherit; }
 .diagram.compact { max-height: 160px; }
+/* Zoomed: the picture keeps its requested size and the surrounding box does the scrolling. */
+:host(.fixed) { max-width: none; overflow: visible; }
+.diagram.fixed { max-width: none; }
 
 .edge { fill: none; stroke: var(--text-secondary); stroke-width: 1.6; opacity: .75; }
 .edge.taken { stroke: var(--primary); stroke-width: 2.6; opacity: 1; }

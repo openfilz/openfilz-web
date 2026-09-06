@@ -1528,6 +1528,7 @@
       "UNREACHABLE": "Status ‘{{value}}’ kan nooit worden bereikt",
       "DEAD_END": "Status ‘{{value}}’ kan nooit een eindstatus bereiken",
       "NO_FOLDER": "Kies de doelmap",
+      "FOLDER_NOT_WRITABLE": "U mag niet in deze map schrijven — kies een eigen map of een map die met u is gedeeld als bewerker",
       "NO_ENTRIES": "Geef minstens één metadatasleutel op",
       "TOO_MANY_ENTRIES": "Maximaal {{value}} metadatasleutels",
       "BAD_ACTION_TYPE": "Het actietype is verplicht",
@@ -1548,6 +1549,14 @@
         "state": "Lege status",
         "transition": "Lege overgang"
       }
+    },
+    "diagram": {
+      "title": "Workflowdiagram",
+      "hint": "Ctrl + muiswiel, of de toetsen + / − / 0, om te zoomen",
+      "enlarge": "Diagram vergroten",
+      "zoomIn": "Inzoomen",
+      "zoomOut": "Uitzoomen",
+      "resetZoom": "Zoom herstellen"
     },
     "start": {
       "title": "Een workflow starten",

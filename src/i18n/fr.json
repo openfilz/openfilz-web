@@ -1528,6 +1528,7 @@
       "UNREACHABLE": "Le statut « {{value}} » ne peut jamais être atteint",
       "DEAD_END": "Le statut « {{value}} » ne peut jamais atteindre un statut final",
       "NO_FOLDER": "Choisissez le dossier de destination",
+      "FOLDER_NOT_WRITABLE": "Vous ne pouvez pas écrire dans ce dossier — choisissez-en un qui vous appartient ou qui vous est partagé en mode éditeur",
       "NO_ENTRIES": "Indiquez au moins une clé de métadonnée",
       "TOO_MANY_ENTRIES": "{{value}} clés de métadonnées au maximum",
       "BAD_ACTION_TYPE": "Le type d’action est obligatoire",
@@ -1548,6 +1549,14 @@
         "state": "Statut vide",
         "transition": "Transition vide"
       }
+    },
+    "diagram": {
+      "title": "Diagramme du workflow",
+      "hint": "Ctrl + molette, ou les touches + / − / 0, pour zoomer",
+      "enlarge": "Agrandir le diagramme",
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "resetZoom": "Réinitialiser le zoom"
     },
     "start": {
       "title": "Lancer un workflow",

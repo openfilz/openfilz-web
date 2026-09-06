@@ -1528,6 +1528,7 @@
       "UNREACHABLE": "Status „{{value}}“ kann nie erreicht werden",
       "DEAD_END": "Status „{{value}}“ kann nie einen Endstatus erreichen",
       "NO_FOLDER": "Wählen Sie den Zielordner",
+      "FOLDER_NOT_WRITABLE": "In diesen Ordner dürfen Sie nicht schreiben — wählen Sie einen eigenen oder einen im Bearbeitungsmodus freigegebenen Ordner",
       "NO_ENTRIES": "Geben Sie mindestens einen Metadaten-Schlüssel an",
       "TOO_MANY_ENTRIES": "Höchstens {{value}} Metadaten-Schlüssel",
       "BAD_ACTION_TYPE": "Die Aktionsart ist erforderlich",
@@ -1548,6 +1549,14 @@
         "state": "Leerer Status",
         "transition": "Leerer Übergang"
       }
+    },
+    "diagram": {
+      "title": "Workflow-Diagramm",
+      "hint": "Strg + Mausrad oder die Tasten + / − / 0 zum Zoomen",
+      "enlarge": "Diagramm vergrößern",
+      "zoomIn": "Vergrößern",
+      "zoomOut": "Verkleinern",
+      "resetZoom": "Zoom zurücksetzen"
     },
     "start": {
       "title": "Workflow starten",
