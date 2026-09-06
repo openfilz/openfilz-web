@@ -1,0 +1,20 @@
+:host { display: block; height: 100%; }
+.page { min-height: 100%; background: var(--bg-primary); color: var(--text-primary); padding: 24px 28px; }
+.page-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.page-head mat-icon { color: var(--primary); }
+.page-head h1 { margin: 0; font-size: 22px; }
+
+.tabs ::ng-deep .mat-mdc-tab-labels { border-bottom: 1px solid var(--border-light); }
+.tabs ::ng-deep .mdc-tab__text-label { color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+.tabs ::ng-deep .mdc-tab--active .mdc-tab__text-label { color: var(--primary); }
+.tabs ::ng-deep .mdc-tab-indicator__content--underline { border-color: var(--primary); }
+.tab-icon { font-size: 18px; width: 18px; height: 18px; }
+.tab-badge {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; margin-left: 4px;
+  border-radius: 999px; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700;
+}
+.tab-badge.overdue { background: #ef4444; }
+
+@media (max-width: 640px) {
+  .page { padding: 14px; }
+}

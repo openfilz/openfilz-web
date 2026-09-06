@@ -1,0 +1,79 @@
+<div class="tasks">
+  <div class="bar">
+    <span class="summary">
+      @if (!loading) {
+        {{ 'workflow.tasks.count' | translate: { count: tasks.length } }}
+        @if (overdueCount > 0) { <span class="overdue-pill">{{ 'workflow.tasks.overdueCount' | translate: { count: overdueCount } }}</span> }
+      }
+    </span>
+    <button mat-icon-button (click)="reload()" [matTooltip]="'workflow.tasks.refresh' | translate" [attr.aria-label]="'workflow.tasks.refresh' | translate">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+  } @else if (tasks.length === 0) {
+    <div class="state empty">
+      <mat-icon>task_alt</mat-icon>
+      <p>{{ 'workflow.tasks.empty' | translate }}</p>
+      <p class="sub">{{ 'workflow.tasks.emptyHint' | translate }}</p>
+    </div>
+  } @else {
+    <div class="cards">
+      @for (task of tasks; track trackTask($index, task)) {
+        <article class="card" [id]="'task-' + task.id" [class.highlight]="task.id === highlightTaskId" [class.overdue]="task.overdue"
+          [style.--chip]="task.stateColor || '#94a3b8'">
+          <div class="card-main">
+            <button type="button" class="doc" (click)="openDocument(task)" [matTooltip]="'workflow.tasks.openDocument' | translate">
+              <mat-icon class="doc-icon">{{ icon(task) }}</mat-icon>
+              <span class="doc-name">{{ task.documentName }}</span>
+            </button>
+            <div class="line">
+              <span class="chip">{{ task.stateLabel }}</span>
+              <span class="wf" (click)="openInstance(task)" role="link" tabindex="0" (keydown.enter)="openInstance(task)">{{ task.definitionName }}</span>
+              @if (task.candidateRole || task.candidates.length > 1) {
+                <span class="who" [matTooltip]="waitingFor(task)"><mat-icon>group</mat-icon>{{ task.candidateRole ? ('workflow.monitor.anyoneWith' | translate: { role: task.candidateRole }) : ('workflow.tasks.sharedWith' | translate: { count: task.candidates.length - 1 }) }}</span>
+              }
+            </div>
+            <div class="line meta">
+              <span><mat-icon>schedule</mat-icon>{{ 'workflow.tasks.waitingSince' | translate: { date: (task.createdAt | date:'medium') } }}</span>
+              @if (task.dueAt) {
+                <span class="due" [class.late]="task.overdue"><mat-icon>{{ task.overdue ? 'warning' : 'event' }}</mat-icon>{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</span>
+              }
+              <span><mat-icon>person</mat-icon>{{ 'workflow.tasks.from' | translate: { who: task.previousActor || task.startedBy } }}</span>
+            </div>
+            @if (task.previousComment) {
+              <blockquote class="note">{{ task.previousComment }}</blockquote>
+            }
+          </div>
+          <div class="card-actions">
+            @if (busy.has(task.id)) {
+              <mat-spinner diameter="24"></mat-spinner>
+            } @else {
+              @for (t of task.transitions; track t.key) {
+                <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(task, t)"
+                  [matTooltip]="t.requireComment ? ('workflow.decision.commentRequired' | translate) : ''">
+                  {{ t.label }}
+                </button>
+              }
+              <button mat-icon-button class="more" [matMenuTriggerFor]="menu" [attr.aria-label]="'toolbar.moreActions' | translate">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                @for (t of task.transitions; track t.key) {
+                  <button mat-menu-item (click)="actWithDialog(task, t)">
+                    <mat-icon>rate_review</mat-icon><span>{{ 'workflow.tasks.withNote' | translate: { transition: t.label } }}</span>
+                  </button>
+                }
+                <button mat-menu-item (click)="reassign(task)"><mat-icon>group</mat-icon><span>{{ 'workflow.tasks.reassign' | translate }}</span></button>
+                <button mat-menu-item (click)="openInstance(task)"><mat-icon>monitoring</mat-icon><span>{{ 'workflow.tasks.openInstance' | translate }}</span></button>
+                <button mat-menu-item (click)="openDocument(task)"><mat-icon>folder_open</mat-icon><span>{{ 'workflow.tasks.openDocument' | translate }}</span></button>
+              </mat-menu>
+            }
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

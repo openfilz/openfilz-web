@@ -61,7 +61,8 @@
     "settings": "Configurações",
     "logout": "Sair",
     "collapse": "Recolher",
-    "expandSidebar": "Expandir barra lateral"
+    "expandSidebar": "Expandir barra lateral",
+    "workflows": "Fluxos de trabalho"
   },
   "header": {
     "searchPlaceholder": "Digite algo para pesquisar",
@@ -123,7 +124,8 @@
       "text": "Arquivo de texto"
     },
     "moreActions": "Mais ações",
-    "requestSignature": "Pedir assinatura"
+    "requestSignature": "Pedir assinatura",
+    "startWorkflow": "Iniciar fluxo"
   },
   "sortOptions": {
     "date": "Data",
@@ -260,6 +262,7 @@
     "noAudit": "Nenhum histórico de auditoria disponível",
     "auditLogs": "Entradas do log de auditoria",
     "unknownUser": "Usuário desconhecido",
+    "viaWorkflow": "através do fluxo «{{workflow}}» — {{state}}",
     "editMetadata": "Editar metadatos",
     "cancelEditing": "Cancelar edição",
     "saveMetadata": "Guardar alterações de metadados",
@@ -596,7 +599,16 @@
       "RESTORE_FOLDER": "Pasta Restaurada",
       "PERMANENT_DELETE_FILE": "Arquivo Excluído Permanentemente",
       "PERMANENT_DELETE_FOLDER": "Pasta Excluída Permanentemente",
-      "EMPTY_RECYCLE_BIN": "Lixeira Esvaziada"
+      "EMPTY_RECYCLE_BIN": "Lixeira Esvaziada",
+      "WORKFLOW_STARTED": "Fluxo iniciado",
+      "WORKFLOW_TRANSITIONED": "Etapa do fluxo executada",
+      "WORKFLOW_COMPLETED": "Fluxo concluído",
+      "WORKFLOW_CANCELLED": "Fluxo cancelado",
+      "WORKFLOW_TASK_REASSIGNED": "Tarefa do fluxo reatribuída",
+      "WORKFLOW_ACTION_FAILED": "Ação do fluxo falhou",
+      "WORKFLOW_DEFINITION_CREATED": "Fluxo criado",
+      "WORKFLOW_DEFINITION_UPDATED": "Fluxo modificado",
+      "WORKFLOW_DEFINITION_DELETED": "Fluxo eliminado"
     },
     "time": {
       "justNow": "Agora mesmo",
@@ -1312,6 +1324,293 @@
       "specification": "Especificação",
       "manual": "Manual",
       "other": "Outro"
+    }
+  },
+  "workflow": {
+    "title": "Fluxos de trabalho",
+    "tabs": {
+      "tasks": "As minhas tarefas",
+      "monitor": "Acompanhamento",
+      "designer": "Designer"
+    },
+    "status": {
+      "RUNNING": "Em curso",
+      "COMPLETED": "Concluído",
+      "CANCELLED": "Cancelado"
+    },
+    "kind": {
+      "START": "Início",
+      "STEP": "Etapa",
+      "END": "Final"
+    },
+    "assignees": {
+      "INITIATOR": "A pessoa que iniciou o fluxo",
+      "USERS": "Pessoas específicas",
+      "ROLE": "Qualquer pessoa com um papel",
+      "CHOSEN_AT_START": "Escolhido ao iniciar"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "Mover para uma pasta",
+      "SET_METADATA": "Definir metadados",
+      "NOTIFY": "Notificar pessoas"
+    },
+    "styles": {
+      "PRIMARY": "Predefinido",
+      "SUCCESS": "Positivo (verde)",
+      "DANGER": "Negativo (vermelho)",
+      "NEUTRAL": "Neutro (cinzento)"
+    },
+    "events": {
+      "STARTED": "Iniciado em «{{state}}»",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Ação aplicada: {{action}}",
+      "ACTION_FAILED": "Ação falhou: {{action}} — {{error}}",
+      "REASSIGNED": "Reatribuído a {{emails}}",
+      "REMINDED": "Lembrete enviado",
+      "COMPLETED": "Concluído com «{{state}}»",
+      "CANCELLED": "Cancelado"
+    },
+    "tasks": {
+      "count": "{{count}} tarefa(s) à espera da sua decisão",
+      "overdueCount": "{{count}} atrasada(s)",
+      "refresh": "Atualizar",
+      "empty": "Nada espera a sua decisão.",
+      "emptyHint": "As tarefas atribuídas a si, ou a um papel que possui, aparecem aqui.",
+      "openDocument": "Abrir o documento",
+      "openInstance": "Ver no acompanhamento",
+      "waitingSince": "Desde {{date}}",
+      "due": "Prazo {{date}}",
+      "overdue": "Atrasada desde {{date}}",
+      "overdueShort": "Atrasada",
+      "from": "De {{who}}",
+      "sharedWith": "+{{count}} outro(s) candidato(s)",
+      "withNote": "{{transition}} com uma nota…",
+      "reassign": "Reatribuir",
+      "reassigned": "Tarefa reatribuída.",
+      "done": "Feito — o documento está agora «{{state}}»."
+    },
+    "monitor": {
+      "running": "Em curso",
+      "completed": "Concluídos",
+      "cancelledCount": "Cancelados",
+      "overdue": "Tarefas atrasadas",
+      "workflow": "Fluxo",
+      "status": "Estado",
+      "allDefinitions": "Todos os fluxos",
+      "allStatuses": "Todos os estados",
+      "mine": "Iniciados por mim",
+      "document": "Documento",
+      "state": "Estado atual",
+      "waitingFor": "À espera de",
+      "startedBy": "Iniciado por",
+      "updated": "Atualizado",
+      "ended": "Terminado",
+      "empty": "Nenhum fluxo corresponde a estes filtros.",
+      "timeline": "Histórico",
+      "anyoneWith": "qualquer pessoa com o papel {{role}}",
+      "cancel": "Cancelar fluxo",
+      "cancelConfirm": "Cancelar o fluxo «{{workflow}}» em «{{document}}»? A tarefa pendente será fechada.",
+      "cancelled": "Fluxo cancelado.",
+      "cancelError": "Não foi possível cancelar o fluxo."
+    },
+    "designer": {
+      "intro": "Desenhe os estados dos seus documentos e quem decide em cada etapa.",
+      "newWorkflow": "Novo fluxo",
+      "empty": "Ainda não há fluxos.",
+      "emptyHint": "Comece por um modelo — cada estado pode ser renomeado e os intervenientes alterados.",
+      "templates": {
+        "approval": "Aprovação simples",
+        "review-archive": "Revisão e arquivo",
+        "two-step": "Aprovação em duas etapas",
+        "blank": "Em branco"
+      },
+      "templateHints": {
+        "approval": "Rascunho → Aprovação pendente → Aprovado / Rejeitado",
+        "review-archive": "Rascunho → Em revisão → Aprovado → Arquivado",
+        "two-step": "Dois aprovadores em sequência",
+        "blank": "Começar do zero"
+      },
+      "labels": {
+        "draft": "Rascunho",
+        "submit": "Submeter para aprovação",
+        "pendingApproval": "Aprovação pendente",
+        "approver": "Aprovador",
+        "approve": "Aprovar",
+        "reject": "Rejeitar",
+        "approved": "Aprovado",
+        "rejected": "Rejeitado",
+        "submitForReview": "Submeter para revisão",
+        "inReview": "Em revisão",
+        "reviewer": "Revisor",
+        "requestChanges": "Pedir alterações",
+        "archive": "Arquivar",
+        "archived": "Arquivado",
+        "firstApproval": "Primeira aprovação",
+        "firstApprover": "Primeiro aprovador",
+        "secondApproval": "Segunda aprovação",
+        "secondApprover": "Segundo aprovador",
+        "done": "Feito"
+      },
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "ownedBy": "por {{who}}",
+      "readOnly": "Ver (apenas leitura)",
+      "notYours": "Apenas o seu autor pode alterar este fluxo",
+      "deleteConfirm": "Eliminar o fluxo «{{name}}»? As instâncias concluídas mantêm o histórico.",
+      "deleted": "Fluxo eliminado.",
+      "deleteError": "Não foi possível eliminar o fluxo.",
+      "activate": "Ativar",
+      "deactivate": "Desativar",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "statesCount": "{{count}} estados",
+      "runningCount": "{{count}} em curso",
+      "hotFolders": "{{count}} pasta(s) de ativação"
+    },
+    "editor": {
+      "title": "Editar fluxo",
+      "newTitle": "Novo fluxo",
+      "unsaved": "Alterações por guardar",
+      "readOnly": "Apenas leitura — este fluxo pertence a {{who}}",
+      "name": "Nome",
+      "description": "Descrição",
+      "active": "Disponível em «Iniciar fluxo»",
+      "triggerFolders": "Pastas de ativação",
+      "triggerFoldersHint": "Cada ficheiro carregado nestas pastas inicia este fluxo automaticamente.",
+      "addTriggerFolder": "Adicionar pasta",
+      "chooseTriggerFolder": "Escolher uma pasta de ativação",
+      "statuses": "Estados",
+      "addStatus": "Adicionar estado",
+      "addEnd": "Adicionar estado final",
+      "newStatus": "Novo estado",
+      "newTransition": "Continuar",
+      "label": "Etiqueta",
+      "key": "Chave",
+      "kind": "Tipo",
+      "color": "Cor",
+      "assignees": "Quem age",
+      "dueInDays": "Prazo (dias)",
+      "emails": "Endereços de e-mail",
+      "role": "Papel",
+      "roleHint": "Um papel do realm Keycloak, p. ex. CONTRIBUTOR ou AUDITOR",
+      "question": "Pergunta feita ao iniciar",
+      "questionHint": "p. ex. Quem aprova este documento?",
+      "transitions": "Transições (os botões)",
+      "addTransition": "Adicionar transição",
+      "transitionLabel": "Texto do botão",
+      "target": "Leva a",
+      "style": "Estilo",
+      "requireComment": "Comentário obrigatório",
+      "requireCommentHint": "A pessoa tem de deixar uma nota (típico de uma rejeição)",
+      "onEnter": "Quando um documento chega a este estado",
+      "onEnterHint": "Sem ação — adicione uma para mover o documento, definir metadados ou notificar pessoas.",
+      "addAction": "Adicionar ação",
+      "chooseFolder": "Escolher pasta",
+      "metadataEntries": "Metadados (uma linha chave=valor)",
+      "metadataHint": "estado=aprovado",
+      "notifyEmails": "E-mails a notificar",
+      "moveUp": "Subir",
+      "moveDown": "Descer",
+      "remove": "Remover",
+      "badEmail": "Endereço de e-mail inválido: {{email}}",
+      "preview": "Pré-visualização",
+      "previewHint": "Clique num estado do desenho para o editar.",
+      "valid": "O fluxo é válido.",
+      "problemsCount": "{{count}} problema(s) a corrigir antes de guardar",
+      "saved": "Fluxo «{{name}}» guardado.",
+      "saveError": "Não foi possível guardar o fluxo."
+    },
+    "problem": {
+      "EMPTY": "Um fluxo precisa de pelo menos um estado",
+      "TOO_MANY": "No máximo {{value}} estados",
+      "ONE_START": "Exatamente um estado deve ser o início",
+      "NO_END": "Pelo menos um estado deve ser final",
+      "BAD_KIND": "O tipo de estado deve ser Início, Etapa ou Final",
+      "BAD_COLOR": "A cor deve ser um código #rrggbb",
+      "END_HAS_TRANSITIONS": "Um estado final não tem transições",
+      "END_HAS_ASSIGNEES": "Um estado final não tem responsáveis",
+      "END_HAS_DUE": "Um estado final não tem prazo",
+      "NO_TRANSITION": "O estado «{{value}}» precisa de pelo menos uma transição",
+      "NO_EMAIL": "Indique pelo menos um endereço de e-mail",
+      "BAD_EMAIL": "Endereço de e-mail inválido: {{value}}",
+      "BAD_ROLE": "O nome do papel é obrigatório",
+      "BAD_ASSIGNEE_TYPE": "O tipo de responsável é obrigatório",
+      "BAD_DUE": "O prazo deve estar entre 1 e {{value}} dias",
+      "NO_TARGET": "A transição precisa de um estado de destino",
+      "UNKNOWN_TARGET": "Estado de destino desconhecido: «{{value}}»",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Um fluxo iniciado automaticamente a partir de uma pasta não pode pedir que se escolham os responsáveis ao iniciar",
+      "UNREACHABLE": "O estado «{{value}}» nunca pode ser alcançado",
+      "DEAD_END": "O estado «{{value}}» nunca pode chegar a um estado final",
+      "NO_FOLDER": "Escolha a pasta de destino",
+      "FOLDER_NOT_WRITABLE": "Não pode escrever nesta pasta — escolha uma sua ou partilhada consigo em modo de edição",
+      "NO_ENTRIES": "Indique pelo menos uma chave de metadados",
+      "TOO_MANY_ENTRIES": "No máximo {{value}} chaves de metadados",
+      "BAD_ACTION_TYPE": "O tipo de ação é obrigatório",
+      "BAD_KEY": {
+        "state": "A chave do estado só admite minúsculas, dígitos ou _",
+        "transition": "A chave da transição só admite minúsculas, dígitos ou _",
+        "action": "As chaves de metadados não podem estar vazias nem começar por _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Chave de estado duplicada: «{{value}}»",
+        "transition": "Chave de transição duplicada: «{{value}}»"
+      },
+      "BAD_LABEL": {
+        "state": "A etiqueta do estado é obrigatória",
+        "transition": "A etiqueta da transição é obrigatória"
+      },
+      "NULL": {
+        "state": "Estado vazio",
+        "transition": "Transição vazia"
+      }
+    },
+    "diagram": {
+      "title": "Diagrama do fluxo",
+      "hint": "Ctrl + roda do rato, ou as teclas + / − / 0, para aplicar zoom",
+      "enlarge": "Ampliar o diagrama",
+      "zoomIn": "Aumentar zoom",
+      "zoomOut": "Diminuir zoom",
+      "resetZoom": "Redefinir zoom"
+    },
+    "start": {
+      "title": "Iniciar um fluxo",
+      "chooseWorkflow": "Escolha um fluxo",
+      "noDefinitions": "Nenhum fluxo disponível.",
+      "noDefinitionsHint": "Peça a um designer que crie um em Fluxos → Designer.",
+      "loadError": "Não foi possível carregar os fluxos.",
+      "who": "Quem age em «{{state}}»?",
+      "comment": "Nota para a próxima pessoa (opcional)",
+      "start": "Iniciar",
+      "startHint": "O documento fica em «{{state}}» até continuar.",
+      "startAnd": "Iniciar e {{transition}}",
+      "started": "Fluxo «{{workflow}}» iniciado — o documento está agora «{{state}}».",
+      "startError": "Não foi possível iniciar o fluxo."
+    },
+    "decision": {
+      "commentRequired": "Comentário (obrigatório)",
+      "commentOptional": "Comentário (opcional)",
+      "reassignTitle": "Entregar esta tarefa a outra pessoa",
+      "emails": "Endereços de e-mail",
+      "emailsHint": "Separe vários endereços por vírgulas"
+    },
+    "panel": {
+      "title": "Fluxo de trabalho",
+      "waitingFor": "À espera de",
+      "you": "si",
+      "due": "prazo {{date}}",
+      "overdue": "atrasada desde {{date}}",
+      "since": "Iniciado por {{who}} em {{date}}",
+      "start": "Iniciar um fluxo",
+      "openMonitor": "Abrir no acompanhamento",
+      "noWorkflow": "Nenhum fluxo em curso neste documento."
+    },
+    "errors": {
+      "generic": "Algo correu mal.",
+      "network": "Erro de rede — verifique a sua ligação.",
+      "forbidden": "Não tem permissão para isto.",
+      "notFound": "Não encontrado.",
+      "conflict": "Esta ação já não é possível no estado atual.",
+      "validation": "O pedido foi recusado."
     }
   }
 }

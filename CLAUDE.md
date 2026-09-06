@@ -213,6 +213,37 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   favorites and search-results, and an "Edit pages" button in the PDF viewer.
 - i18n block `pdfTools.*` in all 8 locales. Design doc: `openfilz-core/docs/pdf-tools.md`.
 
+## Workflows (statuses / transitions / tasks)
+
+Core feature gated by the API flag `Settings.workflowsActive` (`openfilz.workflows.active`) —
+`services/workflow-access.service.ts` is the single seam (`enabled` = flag; `canStart` = + CONTRIBUTOR;
+`canDesign` = + `WORKFLOW_DESIGNER` when `Settings.workflowDesignerRoleRequired`). Same file discipline
+as e-Sign / PDF tools so the enterprise fork only mirrors the descriptor + route + host bindings:
+
+- `models/workflow.models.ts` (API contract of `/api/v1/workflows/**`), `services/workflow.service.ts`
+  (HttpClient client + `errorKey()`/`serverMessage()` + the `myTasksCount$` badge counter refreshed after
+  every action and on a 60 s poll from the sidebar), `utils/workflow-spec.ts` (client mirror of the API
+  `WorkflowSpecValidator` — same codes and paths; the starter templates; `layoutSpec()` = layered
+  left-to-right layout of the diagram; `slugify`/`uniqueKey` for status keys), `guards/workflows.guard.ts`.
+- `components/workflow-diagram/` — pure SVG picture of a spec (current status highlighted, taken
+  transitions bold, `stateClick` for the designer).
+- `pages/workflows/` — `workflows.component` (tabs, `?tab=tasks|monitor|designer`, `?task=`, `?instance=`),
+  `my-tasks/` (one card per task, transition buttons on the card, decision dialog when a comment is
+  required), `monitor/` (tiles, filters, table, side drawer with diagram + timeline + reassign / cancel),
+  `designer/workflow-designer.component` (definition cards + template menu) and
+  `designer/workflow-editor.component` (route `/workflows/definitions/new?template=…` and `/:id`; one
+  card per status, live diagram, inline problems; folders picked with `FolderTreeDialogComponent`).
+- Dialogs: `dialogs/start-workflow-dialog` (definition cards + diagram, "chosen at start" people,
+  *Start* / *Start & <first transition>*), `dialogs/workflow-decision-dialog` (comment / reassign prompt).
+- Details panel: `components/metadata-panel/document-workflow/` hosted by one line in the panel
+  (running instance, who it waits for, my transition buttons, or "Start a workflow").
+- Surfaces: `START_WORKFLOW_ACTION` in `models/file-actions.ts` (files only), `onStartWorkflow` /
+  `canStartWorkflowForSelection` in `FileOperationsComponent`, `startWorkflowAvailable` /
+  `(startWorkflowSelected)` on the toolbar, `(startWorkflow)` on file-list / file-grid, the sidebar entry
+  `workflows` with its badge (count, red when overdue).
+- i18n block `workflow.*` + `sidebar.workflows` + `toolbar.startWorkflow` in all 8 locales. Design doc:
+  `openfilz-core/docs/workflows.md`.
+
 ## Text editor on touch devices
 
 Monaco has no drag-to-select with a finger: `PointerEventHandler._onMouseDown` bails out when

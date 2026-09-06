@@ -36,6 +36,10 @@ export interface Settings {
   signatureRemindersActive?: boolean;
   /** True when the openfilz-cloud seal provider is configured — Settings shows the subscription card. */
   signatureCloudActive?: boolean;
+  /** openfilz.workflows.active on the API — the only switch for the Workflows UI (menu, My tasks, start action). */
+  workflowsActive?: boolean;
+  /** True when editing workflow definitions also requires the WORKFLOW_DESIGNER role (openfilz.workflows.require-designer-role). */
+  workflowDesignerRoleRequired?: boolean;
   /** True on shared public demo deployments — shows the demo disclaimers. */
   demoMode?: boolean;
   /** Effective e-Sign seal provider id (null/absent when e-Sign is off) — 'self-signed-dev' triggers the untrusted-seal notice. */
@@ -176,6 +180,16 @@ export class SettingsService {
   /** When true, only users holding the SIGN_REQUESTER role may initiate signature requests. */
   get isSignatureRequesterRoleRequired(): boolean {
     return this.settingsSubject.value?.signatureRequesterRoleRequired === true;
+  }
+
+  /** openfilz.workflows.active on the API — Workflows menu, My tasks, "Start workflow". */
+  get isWorkflowsActive(): boolean {
+    return this.settingsSubject.value?.workflowsActive ?? false;
+  }
+
+  /** True when editing workflow definitions also requires the WORKFLOW_DESIGNER role. */
+  get isWorkflowDesignerRoleRequired(): boolean {
+    return this.settingsSubject.value?.workflowDesignerRoleRequired === true;
   }
 
   /** Shared public demo deployment — the demo disclaimers follow this backend flag. */

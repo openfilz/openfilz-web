@@ -18,6 +18,7 @@ import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
 import { PdfToolsService } from '../../services/pdf-tools.service';
 import { PdfOutputInfo, PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
+import { WorkflowAccessService } from '../../services/workflow-access.service';
 import { TranslateService } from '@ngx-translate/core';
 import { isFolderItem, isPdfItem } from '../../models/file-actions';
 import { AiChatService } from '../../services/ai-chat.service';
@@ -69,6 +70,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected userPreferencesService = inject(UserPreferencesService);
   protected settingsService = inject(SettingsService);
   protected signatureAccess = inject(SignatureAccessService);
+  protected workflowAccess = inject(WorkflowAccessService);
   protected pdfToolsAccess = inject(PdfToolsAccessService);
   protected pdfTools = inject(PdfToolsService);
   protected translate = inject(TranslateService);
@@ -506,6 +508,44 @@ export abstract class FileOperationsComponent implements OnInit {
     const selected = this.selectedItems;
     if (selected.length === 1) {
       this.onRequestSignature(selected[0]);
+    }
+  }
+
+  /**
+   * Workflows: open the "Start workflow" dialog for a single file. Gated by the API's
+   * `workflowsActive` flag + CONTRIBUTOR (same switch as the sidebar entry). Lazy-loaded.
+   */
+  onStartWorkflow(item: FileItem): void {
+    if (!this.workflowAccess.canStart || isFolderItem(item)) {
+      return;
+    }
+    import('../../dialogs/start-workflow-dialog/start-workflow-dialog.component').then(m => {
+      const dialogRef = this.dialog.open(m.StartWorkflowDialogComponent, {
+        width: '720px',
+        maxWidth: '96vw',
+        maxHeight: '92dvh',
+        autoFocus: false,
+        data: { documentId: item.id, documentName: item.name }
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.success) {
+          // An on-enter action may have moved the file: refresh the listing.
+          this.loadItems();
+        }
+      });
+    });
+  }
+
+  /** Same action from the contextual selection toolbar: exactly one file selected. */
+  get canStartWorkflowForSelection(): boolean {
+    const selected = this.selectedItems;
+    return this.workflowAccess.canStart && selected.length === 1 && !isFolderItem(selected[0]);
+  }
+
+  onStartWorkflowSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onStartWorkflow(selected[0]);
     }
   }
 

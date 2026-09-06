@@ -7,7 +7,7 @@
  * descriptors instead of forking the templates.
  */
 export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature'
-  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf' | 'organizeWithAi';
+  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf' | 'organizeWithAi' | 'startWorkflow';
 
 export type FileActionCategory = 'organize' | 'transfer' | 'danger';
 
@@ -45,6 +45,15 @@ export const STANDARD_SELECTION_ACTIONS: FileActionDescriptor[] = [
  */
 export const REQUEST_SIGNATURE_ACTION: FileActionDescriptor = {
   id: 'requestSignature', icon: 'draw', labelKey: 'toolbar.requestSignature', ariaKey: 'toolbar.requestSignature', category: 'transfer', placement: 'primary', singleOnly: true
+};
+
+/**
+ * Workflows "Start workflow" per-item action. Files only, and only when the API reports
+ * `workflowsActive` + the user is a CONTRIBUTOR — see `WorkflowAccessService` and
+ * `visibleItemActions()` in file-list/file-grid.
+ */
+export const START_WORKFLOW_ACTION: FileActionDescriptor = {
+  id: 'startWorkflow', icon: 'account_tree', labelKey: 'toolbar.startWorkflow', ariaKey: 'toolbar.startWorkflow', category: 'transfer', placement: 'primary', singleOnly: true
 };
 
 /**
@@ -96,6 +105,7 @@ export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   { id: 'move', icon: 'drive_file_move', labelKey: 'toolbar.move', ariaKey: 'toolbar.moveSelected', category: 'organize', placement: 'primary' },
   { id: 'copy', icon: 'content_copy', labelKey: 'toolbar.copy', ariaKey: 'toolbar.copySelected', category: 'organize', placement: 'primary' },
   REQUEST_SIGNATURE_ACTION,
+  START_WORKFLOW_ACTION,
   ...PDF_TOOLS_ITEM_ACTIONS,
   ORGANIZE_WITH_AI_ACTION,
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'primary' },

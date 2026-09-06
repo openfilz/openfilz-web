@@ -1,0 +1,58 @@
+:host { display: block; }
+.designer { padding: 14px 0; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.hint-text { color: var(--text-secondary); font-size: 13px; }
+/* mat-raised-button is Material's *protected* family, not *filled* — the filled tokens this
+   used to set never applied, leaving the container transparent (dark text on the page background)
+   instead of the primary CTA it is meant to be. Same trap as the editor's Save button. */
+.new-btn {
+  --mat-button-protected-container-color: var(--primary);
+  --mat-button-protected-label-text-color: #fff;
+  --mat-button-protected-state-layer-color: #fff;
+  color: #fff;
+  border-radius: 10px; height: 42px; font-weight: 600;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
+}
+.new-btn mat-icon { margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px; }
+.owner { display: inline-flex; align-items: center; gap: 3px; color: var(--text-tertiary); }
+.tpl { display: flex; flex-direction: column; line-height: 1.25; }
+.tpl-name { font-weight: 600; }
+.tpl-hint { font-size: 11.5px; color: var(--text-secondary); }
+
+.state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 40px 0; color: var(--text-secondary); }
+.state.empty mat-icon { font-size: 44px; width: 44px; height: 44px; opacity: .5; }
+.state.empty p { margin: 0; font-size: 14px; }
+.state.empty .sub { font-size: 12.5px; }
+.tpl-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 18px; width: 100%; max-width: 860px; }
+.tpl-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 16px; border-radius: 14px; cursor: pointer; text-align: left; font: inherit;
+  background: var(--bg-secondary); border: 2px solid var(--border-light); color: var(--text-primary); transition: border-color .15s ease, transform .15s ease;
+}
+.tpl-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.tpl-card mat-icon { color: var(--primary); font-size: 28px; width: 28px; height: 28px; opacity: 1; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 14px; }
+.card { background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.card.inactive { opacity: .7; }
+.card-head { display: flex; align-items: flex-start; gap: 10px; }
+.card-title { flex: 1; min-width: 0; }
+.card-title h3 { margin: 0 0 2px; font-size: 16px; }
+.desc { margin: 0 0 6px; font-size: 12.5px; color: var(--text-secondary); }
+.facts { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--text-secondary); align-items: center; }
+.facts span { display: inline-flex; align-items: center; gap: 3px; }
+.facts .mini { font-size: 14px; width: 14px; height: 14px; }
+.dim { opacity: .8; }
+.badge { padding: 2px 8px; border-radius: 999px; background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 600; }
+.badge.on { background: color-mix(in srgb, #10b981 18%, transparent); color: #10b981; }
+.card-actions { display: inline-flex; align-items: center; gap: 2px; }
+button[class*="tint-"] { --tint: var(--text-secondary); }
+button[class*="tint-"] mat-icon { color: var(--tint); }
+button[class*="tint-"][disabled] mat-icon { opacity: .35; }
+button.tint-blue { --tint: #3b82f6; }
+button.tint-amber { --tint: #f59e0b; }
+button.tint-red { --tint: #ef4444; }
+.diagram-box { padding: 8px; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; cursor: pointer; }
+
+@media (max-width: 760px) {
+  .cards { grid-template-columns: 1fr; }
+}

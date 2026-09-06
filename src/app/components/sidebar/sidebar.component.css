@@ -167,7 +167,36 @@
   box-shadow: inset 3px 0 0 var(--primary);
 }
 
+/* Workflows: open-tasks badge (count when expanded, dot when collapsed); red when a task is overdue */
+.nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-badge.overdue { background: #ef4444; }
+.nav-badge-dot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--bg-primary);
+}
+.nav-badge-dot.overdue { background: #ef4444; }
+
 .nav-icon {
+  position: relative;
   width: 22px;
   height: 20px;
   display: flex;
