@@ -1,0 +1,53 @@
+@if (enabled) {
+<div class="workflow-section">
+  <div class="section-header">
+    <h3><mat-icon>account_tree</mat-icon>{{ 'workflow.panel.title' | translate }}</h3>
+    @if (instance) {
+      <button mat-icon-button class="monitor-btn" (click)="openMonitor()" [matTooltip]="'workflow.panel.openMonitor' | translate"
+        [attr.aria-label]="'workflow.panel.openMonitor' | translate">
+        <mat-icon>open_in_new</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="loading"><mat-spinner diameter="20"></mat-spinner></div>
+  } @else if (instance) {
+    <div class="card">
+      <div class="row">
+        <span class="chip" [style.--chip]="instance.currentStateColor || '#94a3b8'">{{ instance.currentStateLabel }}</span>
+        <span class="wf-name">{{ instance.definitionName }}</span>
+      </div>
+      @if (instance.currentTask; as task) {
+        <div class="sub">
+          <mat-icon>{{ task.mine ? 'person' : 'hourglass_top' }}</mat-icon>
+          <span>
+            {{ 'workflow.panel.waitingFor' | translate }}
+            <b>{{ task.mine ? ('workflow.panel.you' | translate) : waitingFor }}</b>
+            @if (task.dueAt) {
+              <span class="due" [class.overdue]="task.overdue">· {{ (task.overdue ? 'workflow.panel.overdue' : 'workflow.panel.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</span>
+            }
+          </span>
+        </div>
+        @if (task.previousComment) {
+          <blockquote class="note">{{ task.previousComment }}</blockquote>
+        }
+        @if (task.mine) {
+          <div class="actions">
+            @for (t of task.transitions; track t.key) {
+              <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(t)" [disabled]="busy">{{ t.label }}</button>
+            }
+          </div>
+        }
+      }
+      <div class="meta">{{ 'workflow.panel.since' | translate: { who: instance.startedBy, date: (instance.startedAt | date:'mediumDate') } }}</div>
+    </div>
+  } @else if (canStart) {
+    <button mat-stroked-button class="start-btn" (click)="start()">
+      <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.panel.start' | translate }}</span>
+    </button>
+  } @else {
+    <p class="none">{{ 'workflow.panel.noWorkflow' | translate }}</p>
+  }
+</div>
+}

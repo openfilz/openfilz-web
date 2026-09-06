@@ -87,6 +87,10 @@
               <app-document-insights [documentId]="documentId" [documentType]="documentInfo.type"
                 (movedBack)="onMovedBack()"></app-document-insights>
 
+              <!-- Workflow: the running instance (status, who it waits for, my actions) or "Start workflow"; hidden when off -->
+              <app-document-workflow [documentId]="documentId" [documentType]="documentInfo.type" [documentName]="documentInfo.name"
+                (changed)="onMovedBack()"></app-document-workflow>
+
               <!-- Metadata: always visible, per-field inline editing -->
               <div class="metadata-section-header">
                 <h3>{{ 'common.metadata' | translate }}</h3>

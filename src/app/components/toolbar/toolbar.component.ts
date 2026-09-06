@@ -11,7 +11,7 @@ import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
-import { FileActionCategory, FileActionDescriptor, FileActionId, ORGANIZE_WITH_AI_ACTION, REQUEST_SIGNATURE_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS , PDF_TOOLS_SELECTION_ACTIONS, isPdfToolsAction } from '../../models/file-actions';
+import { FileActionCategory, FileActionDescriptor, FileActionId, ORGANIZE_WITH_AI_ACTION, REQUEST_SIGNATURE_ACTION, START_WORKFLOW_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS , PDF_TOOLS_SELECTION_ACTIONS, isPdfToolsAction } from '../../models/file-actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -45,6 +45,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() showStandardSelectionActions = true; // Show rename, download, move, copy, delete buttons
   /** e-Sign: offer "Request signature" for the current selection (single PDF + feature on). */
   @Input() canRequestSignature = false;
+  /** Workflows: exactly one file selected and the user may start one. */
+  @Input() startWorkflowAvailable = false;
   /** PDF tools apply to the selection (feature on, CONTRIBUTOR, every selected item is a PDF) */
   @Input() pdfToolsAvailable = false;
   /** "Organise with AI" applies to the selection (chat on, CONTRIBUTOR, exactly one folder selected) */
@@ -69,6 +71,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Output() deleteSelected = new EventEmitter<void>();
   @Output() detailsSelected = new EventEmitter<void>();
   @Output() requestSignatureSelected = new EventEmitter<void>();
+  @Output() startWorkflowSelected = new EventEmitter<void>();
   @Output() pdfToolSelected = new EventEmitter<PdfToolActionId>();
   @Output() organizeWithAiSelected = new EventEmitter<void>();
   @Output() organizeWithAi = new EventEmitter<void>();
@@ -284,7 +287,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
     const defs = this.canRequestSignature
         ? [...STANDARD_SELECTION_ACTIONS, REQUEST_SIGNATURE_ACTION]
         : [...STANDARD_SELECTION_ACTIONS];
-    const withPdf = this.pdfToolsAvailable ? [...defs, ...PDF_TOOLS_SELECTION_ACTIONS] : defs;
+    const withWorkflow = this.startWorkflowAvailable ? [...defs, START_WORKFLOW_ACTION] : defs;
+    const withPdf = this.pdfToolsAvailable ? [...withWorkflow, ...PDF_TOOLS_SELECTION_ACTIONS] : withWorkflow;
     return this.organizeWithAiAvailable ? [...withPdf, ORGANIZE_WITH_AI_ACTION] : withPdf;
   }
   readonly sheetCategories = SHEET_CATEGORIES;
@@ -299,7 +303,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
    * item's own Details menu entry).
    */
   private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
-    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'organizePdf', 'mergePdf', 'splitPdf', 'rotatePdf', 'organizeWithAi', 'delete'];
+    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'startWorkflow', 'organizePdf', 'mergePdf', 'splitPdf', 'rotatePdf', 'organizeWithAi', 'delete'];
 
   /**
    * How many action icons fit inline in the toolbar; the rest spill into the
@@ -347,7 +351,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Selection count changes the number of available actions (1 vs many).
-    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature'] || changes['pdfToolsAvailable'] || changes['organizeWithAiAvailable']) {
+    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature'] || changes['startWorkflowAvailable'] || changes['pdfToolsAvailable'] || changes['organizeWithAiAvailable']) {
       this.scheduleMeasure();
     }
   }
@@ -433,6 +437,11 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
       case 'requestSignature':
         if (this.selectionCount === 1) {
           this.requestSignatureSelected.emit();
+        }
+        break;
+      case 'startWorkflow':
+        if (this.selectionCount === 1) {
+          this.startWorkflowSelected.emit();
         }
         break;
       case 'organizeWithAi':

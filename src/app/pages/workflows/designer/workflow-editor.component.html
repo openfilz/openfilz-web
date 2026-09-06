@@ -1,0 +1,213 @@
+<div class="editor">
+  <header class="head">
+    <button mat-icon-button (click)="back()" [attr.aria-label]="'common.cancel' | translate"><mat-icon class="rtl-flip">arrow_back</mat-icon></button>
+    <mat-icon class="head-icon">design_services</mat-icon>
+    <h1>{{ (id ? 'workflow.editor.title' : 'workflow.editor.newTitle') | translate }}</h1>
+    <span class="spacer"></span>
+    @if (dirty) { <span class="unsaved">{{ 'workflow.editor.unsaved' | translate }}</span> }
+    <button mat-stroked-button class="cancel-btn" (click)="back()"><mat-icon>close</mat-icon>{{ 'common.cancel' | translate }}</button>
+    <button mat-raised-button color="primary" class="primary-btn" (click)="save()" [disabled]="!canSave">
+      @if (saving) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>save</mat-icon> }
+      {{ 'common.save' | translate }}
+    </button>
+  </header>
+
+  @if (loading) {
+    <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+  } @else {
+    <div class="layout">
+      <div class="form">
+        <section class="block">
+          <mat-form-field appearance="outline" class="field">
+            <mat-label>{{ 'workflow.editor.name' | translate }}</mat-label>
+            <input matInput [(ngModel)]="name" (ngModelChange)="touch()" maxlength="100" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="field">
+            <mat-label>{{ 'workflow.editor.description' | translate }}</mat-label>
+            <textarea matInput [(ngModel)]="description" (ngModelChange)="touch()" rows="2" maxlength="1000"></textarea>
+          </mat-form-field>
+          <div class="row">
+            <mat-slide-toggle [(ngModel)]="active" (change)="touch()">{{ 'workflow.editor.active' | translate }}</mat-slide-toggle>
+          </div>
+          <div class="triggers">
+            <div class="triggers-head">
+              <span><mat-icon>folder_special</mat-icon>{{ 'workflow.editor.triggerFolders' | translate }}</span>
+              <button mat-stroked-button class="small-btn" (click)="addTriggerFolder()"><mat-icon>add</mat-icon>{{ 'workflow.editor.addTriggerFolder' | translate }}</button>
+            </div>
+            <p class="hint-text">{{ 'workflow.editor.triggerFoldersHint' | translate }}</p>
+            <div class="chips">
+              @for (f of triggerFolders; track f.id; let i = $index) {
+                <span class="chip-folder"><mat-icon>folder</mat-icon>{{ f.name }}<button type="button" class="chip-x" (click)="removeTriggerFolder(i)" [attr.aria-label]="'common.delete' | translate">×</button></span>
+              }
+            </div>
+          </div>
+        </section>
+
+        @if (globalProblems.length) {
+          <div class="hint err">
+            <mat-icon>error_outline</mat-icon>
+            <ul>@for (p of globalProblems; track p.path + p.code) { <li>{{ p.message }}</li> }</ul>
+          </div>
+        }
+
+        <div class="states-head">
+          <h2>{{ 'workflow.editor.statuses' | translate }}</h2>
+          <button mat-stroked-button class="small-btn" (click)="addState('STEP')"><mat-icon>add</mat-icon>{{ 'workflow.editor.addStatus' | translate }}</button>
+          <button mat-stroked-button class="small-btn" (click)="addState('END')"><mat-icon>flag</mat-icon>{{ 'workflow.editor.addEnd' | translate }}</button>
+        </div>
+
+        @for (s of states; track trackIndex($index); let i = $index) {
+          <section class="card" [id]="'state-card-' + i" [class.selected]="i === selectedIndex" [class.has-problems]="problemsFor(i).length > 0"
+            [style.--chip]="s.color" (click)="selectedIndex = i">
+            <div class="card-head">
+              <span class="kind-badge" [class]="'kind-badge k-' + s.kind">{{ 'workflow.kind.' + s.kind | translate }}</span>
+              <mat-form-field appearance="outline" class="field grow">
+                <mat-label>{{ 'workflow.editor.label' | translate }}</mat-label>
+                <input matInput [(ngModel)]="s.label" (ngModelChange)="onLabelChange(s)" maxlength="100">
+                <mat-hint>{{ 'workflow.editor.key' | translate }}: {{ s.key }}</mat-hint>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="field kind">
+                <mat-label>{{ 'workflow.editor.kind' | translate }}</mat-label>
+                <mat-select [(ngModel)]="s.kind" (selectionChange)="onKindChange(s)">
+                  @for (k of kinds; track k) { <mat-option [value]="k">{{ 'workflow.kind.' + k | translate }}</mat-option> }
+                </mat-select>
+              </mat-form-field>
+              <div class="card-tools">
+                <button mat-icon-button (click)="move(i, -1)" [disabled]="i === 0" [matTooltip]="'workflow.editor.moveUp' | translate"><mat-icon>arrow_upward</mat-icon></button>
+                <button mat-icon-button (click)="move(i, 1)" [disabled]="i === states.length - 1" [matTooltip]="'workflow.editor.moveDown' | translate"><mat-icon>arrow_downward</mat-icon></button>
+                <button mat-icon-button class="danger" (click)="removeState(i)" [disabled]="states.length <= 1" [matTooltip]="'workflow.editor.remove' | translate"><mat-icon>delete</mat-icon></button>
+              </div>
+            </div>
+
+            <div class="swatches">
+              <span class="swatch-label">{{ 'workflow.editor.color' | translate }}</span>
+              @for (c of colors; track c) {
+                <button type="button" class="swatch" [class.on]="s.color === c" [style.background]="c" (click)="s.color = c; touch()" [attr.aria-label]="c"></button>
+              }
+            </div>
+
+            @if (s.kind !== 'END') {
+              <div class="grid2">
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>{{ 'workflow.editor.assignees' | translate }}</mat-label>
+                  <mat-select [(ngModel)]="s.assigneeType" (selectionChange)="touch()">
+                    @for (a of assigneeTypes; track a) { <mat-option [value]="a">{{ 'workflow.assignees.' + a | translate }}</mat-option> }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>{{ 'workflow.editor.dueInDays' | translate }}</mat-label>
+                  <input matInput type="number" min="1" max="365" [(ngModel)]="s.dueInDays" (ngModelChange)="touch()">
+                  <mat-icon matSuffix>event</mat-icon>
+                </mat-form-field>
+              </div>
+              @if (s.assigneeType === 'USERS') {
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>{{ 'workflow.editor.emails' | translate }}</mat-label>
+                  <input matInput [(ngModel)]="s.emailsText" (ngModelChange)="touch()" [placeholder]="'workflow.decision.emailsHint' | translate">
+                  <mat-icon matSuffix>group</mat-icon>
+                </mat-form-field>
+              } @else if (s.assigneeType === 'ROLE') {
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>{{ 'workflow.editor.role' | translate }}</mat-label>
+                  <input matInput [(ngModel)]="s.role" (ngModelChange)="touch()">
+                  <mat-hint>{{ 'workflow.editor.roleHint' | translate }}</mat-hint>
+                </mat-form-field>
+              } @else if (s.assigneeType === 'CHOSEN_AT_START') {
+                <mat-form-field appearance="outline" class="field">
+                  <mat-label>{{ 'workflow.editor.question' | translate }}</mat-label>
+                  <input matInput [(ngModel)]="s.question" (ngModelChange)="touch()" maxlength="100" [placeholder]="'workflow.editor.questionHint' | translate">
+                </mat-form-field>
+              }
+
+              <div class="sub-head">
+                <h4><mat-icon>alt_route</mat-icon>{{ 'workflow.editor.transitions' | translate }}</h4>
+                <button mat-stroked-button class="small-btn" (click)="addTransition(s)"><mat-icon>add</mat-icon>{{ 'workflow.editor.addTransition' | translate }}</button>
+              </div>
+              @for (t of s.transitions; track trackIndex($index); let j = $index) {
+                <div class="transition" [class]="'transition style-' + (t.style || 'PRIMARY').toLowerCase()">
+                  <mat-form-field appearance="outline" class="field grow">
+                    <mat-label>{{ 'workflow.editor.transitionLabel' | translate }}</mat-label>
+                    <input matInput [(ngModel)]="t.label" (ngModelChange)="onTransitionLabelChange(s, t)" maxlength="60">
+                  </mat-form-field>
+                  <mat-icon class="arrow rtl-flip">arrow_forward</mat-icon>
+                  <mat-form-field appearance="outline" class="field target">
+                    <mat-label>{{ 'workflow.editor.target' | translate }}</mat-label>
+                    <mat-select [(ngModel)]="t.to" (selectionChange)="touch()">
+                      @for (x of states; track x.key) { <mat-option [value]="x.key"><span class="dot" [style.background]="x.color"></span>{{ x.label }}</mat-option> }
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="field style">
+                    <mat-label>{{ 'workflow.editor.style' | translate }}</mat-label>
+                    <mat-select [(ngModel)]="t.style" (selectionChange)="touch()">
+                      @for (st of styles; track st) { <mat-option [value]="st">{{ 'workflow.styles.' + st | translate }}</mat-option> }
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-checkbox [(ngModel)]="t.requireComment" (change)="touch()" [matTooltip]="'workflow.editor.requireCommentHint' | translate">{{ 'workflow.editor.requireComment' | translate }}</mat-checkbox>
+                  <button mat-icon-button class="danger" (click)="removeTransition(s, j)" [attr.aria-label]="'workflow.editor.remove' | translate"><mat-icon>close</mat-icon></button>
+                </div>
+              }
+            }
+
+            <div class="sub-head">
+              <h4><mat-icon>bolt</mat-icon>{{ 'workflow.editor.onEnter' | translate }}</h4>
+              <button mat-stroked-button class="small-btn" [matMenuTriggerFor]="actionMenu"><mat-icon>add</mat-icon>{{ 'workflow.editor.addAction' | translate }}</button>
+              <mat-menu #actionMenu="matMenu">
+                @for (a of actionTypes; track a) {
+                  <button mat-menu-item (click)="addAction(s, a)">
+                    <mat-icon>{{ a === 'MOVE_TO_FOLDER' ? 'drive_file_move' : a === 'SET_METADATA' ? 'label' : 'mail' }}</mat-icon>
+                    <span>{{ 'workflow.actions.' + a | translate }}</span>
+                  </button>
+                }
+              </mat-menu>
+            </div>
+            @if (!s.onEnter.length) { <p class="hint-text">{{ 'workflow.editor.onEnterHint' | translate }}</p> }
+            @for (a of s.onEnter; track trackIndex($index); let j = $index) {
+              <div class="action">
+                <mat-icon class="action-icon">{{ a.type === 'MOVE_TO_FOLDER' ? 'drive_file_move' : a.type === 'SET_METADATA' ? 'label' : 'mail' }}</mat-icon>
+                <span class="action-name">{{ 'workflow.actions.' + a.type | translate }}</span>
+                @switch (a.type) {
+                  @case ('MOVE_TO_FOLDER') {
+                    <button mat-stroked-button class="small-btn folder-btn" (click)="pickFolder(a)"><mat-icon>folder</mat-icon>{{ folderLabel(a) }}</button>
+                  }
+                  @case ('SET_METADATA') {
+                    <mat-form-field appearance="outline" class="field grow">
+                      <mat-label>{{ 'workflow.editor.metadataEntries' | translate }}</mat-label>
+                      <textarea matInput [(ngModel)]="a.entriesText" (ngModelChange)="touch()" rows="2" [placeholder]="'workflow.editor.metadataHint' | translate"></textarea>
+                    </mat-form-field>
+                  }
+                  @case ('NOTIFY') {
+                    <mat-form-field appearance="outline" class="field grow">
+                      <mat-label>{{ 'workflow.editor.notifyEmails' | translate }}</mat-label>
+                      <input matInput [(ngModel)]="a.emailsText" (ngModelChange)="touch()" [placeholder]="'workflow.decision.emailsHint' | translate">
+                    </mat-form-field>
+                  }
+                }
+                <button mat-icon-button class="danger" (click)="removeAction(s, j)" [attr.aria-label]="'workflow.editor.remove' | translate"><mat-icon>close</mat-icon></button>
+              </div>
+            }
+
+            @if (problemsFor(i).length) {
+              <div class="hint err">
+                <mat-icon>error_outline</mat-icon>
+                <ul>@for (p of problemsFor(i); track p.path + p.code) { <li>{{ p.message }}</li> }</ul>
+              </div>
+            }
+          </section>
+        }
+      </div>
+
+      <aside class="preview">
+        <h3>{{ 'workflow.editor.preview' | translate }}</h3>
+        <div class="diagram-box">
+          <app-workflow-diagram [spec]="spec" [selectedStateKey]="selected?.key ?? null" (stateClick)="onDiagramClick($event)"></app-workflow-diagram>
+        </div>
+        <p class="hint-text">{{ 'workflow.editor.previewHint' | translate }}</p>
+        @if (problems.length === 0 && name.trim()) {
+          <div class="hint ok"><mat-icon>check_circle</mat-icon><span>{{ 'workflow.editor.valid' | translate }}</span></div>
+        } @else {
+          <div class="hint warn"><mat-icon>info</mat-icon><span>{{ 'workflow.editor.problemsCount' | translate: { count: problems.length + (name.trim() ? 0 : 1) } }}</span></div>
+        }
+      </aside>
+    </div>
+  }
+</div>

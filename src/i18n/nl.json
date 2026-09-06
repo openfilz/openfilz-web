@@ -61,7 +61,8 @@
     "settings": "Instellingen",
     "logout": "Uitloggen",
     "collapse": "Inklappen",
-    "expandSidebar": "Zijbalk uitklappen"
+    "expandSidebar": "Zijbalk uitklappen",
+    "workflows": "Workflows"
   },
   "header": {
     "searchPlaceholder": "Typ iets om te zoeken",
@@ -123,7 +124,8 @@
       "text": "Tekstbestand"
     },
     "moreActions": "Meer acties",
-    "requestSignature": "Handtekening aanvragen"
+    "requestSignature": "Handtekening aanvragen",
+    "startWorkflow": "Workflow starten"
   },
   "sortOptions": {
     "date": "Datum",
@@ -1312,6 +1314,237 @@
       "specification": "Specificatie",
       "manual": "Handleiding",
       "other": "Overig"
+    }
+  },
+  "workflow": {
+    "title": "Workflows",
+    "tabs": {
+      "tasks": "Mijn taken",
+      "monitor": "Overzicht",
+      "designer": "Ontwerper"
+    },
+    "status": {
+      "RUNNING": "Lopend",
+      "COMPLETED": "Voltooid",
+      "CANCELLED": "Geannuleerd"
+    },
+    "kind": {
+      "START": "Start",
+      "STEP": "Stap",
+      "END": "Eindstatus"
+    },
+    "assignees": {
+      "INITIATOR": "De persoon die de workflow startte",
+      "USERS": "Specifieke personen",
+      "ROLE": "Iedereen met een rol",
+      "CHOSEN_AT_START": "Gekozen bij het starten"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "Naar een map verplaatsen",
+      "SET_METADATA": "Metadata instellen",
+      "NOTIFY": "Personen op de hoogte brengen"
+    },
+    "styles": {
+      "PRIMARY": "Standaard",
+      "SUCCESS": "Positief (groen)",
+      "DANGER": "Negatief (rood)",
+      "NEUTRAL": "Neutraal (grijs)"
+    },
+    "events": {
+      "STARTED": "Gestart in ‘{{state}}’",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Actie uitgevoerd: {{action}}",
+      "ACTION_FAILED": "Actie mislukt: {{action}} — {{error}}",
+      "REASSIGNED": "Opnieuw toegewezen aan {{emails}}",
+      "REMINDED": "Herinnering verzonden",
+      "COMPLETED": "Voltooid met ‘{{state}}’",
+      "CANCELLED": "Geannuleerd"
+    },
+    "tasks": {
+      "count": "{{count}} taak/taken wachten op u",
+      "overdueCount": "{{count}} te laat",
+      "refresh": "Vernieuwen",
+      "empty": "Niets wacht op uw beslissing.",
+      "emptyHint": "Taken die aan u of aan een van uw rollen zijn toegewezen, verschijnen hier.",
+      "openDocument": "Document openen",
+      "openInstance": "Tonen in het overzicht",
+      "waitingSince": "Sinds {{date}}",
+      "due": "Deadline {{date}}",
+      "overdue": "Te laat sinds {{date}}",
+      "overdueShort": "Te laat",
+      "from": "Van {{who}}",
+      "sharedWith": "+{{count}} andere kandida(a)t(en)",
+      "withNote": "{{transition}} met een notitie…",
+      "reassign": "Opnieuw toewijzen",
+      "reassigned": "Taak opnieuw toegewezen.",
+      "done": "Klaar — het document is nu ‘{{state}}’."
+    },
+    "monitor": {
+      "running": "Lopend",
+      "completed": "Voltooid",
+      "cancelledCount": "Geannuleerd",
+      "overdue": "Taken te laat",
+      "workflow": "Workflow",
+      "status": "Status",
+      "allDefinitions": "Alle workflows",
+      "allStatuses": "Alle statussen",
+      "mine": "Door mij gestart",
+      "document": "Document",
+      "state": "Huidige status",
+      "waitingFor": "Wacht op",
+      "startedBy": "Gestart door",
+      "updated": "Bijgewerkt",
+      "ended": "Beëindigd",
+      "empty": "Geen workflow komt overeen met deze filters.",
+      "timeline": "Tijdlijn",
+      "anyoneWith": "iedereen met de rol {{role}}",
+      "cancel": "Workflow annuleren",
+      "cancelConfirm": "Workflow ‘{{workflow}}’ op ‘{{document}}’ annuleren? De openstaande taak wordt gesloten.",
+      "cancelled": "Workflow geannuleerd.",
+      "cancelError": "De workflow kon niet worden geannuleerd."
+    },
+    "designer": {
+      "intro": "Ontwerp de statussen van uw documenten en wie bij elke stap beslist.",
+      "newWorkflow": "Nieuwe workflow",
+      "empty": "Nog geen workflow.",
+      "emptyHint": "Begin met een sjabloon — elke status kan hernoemd en de actoren gewijzigd worden.",
+      "templates": {
+        "approval": "Eenvoudige goedkeuring",
+        "review-archive": "Beoordelen, dan archiveren",
+        "two-step": "Goedkeuring in twee stappen",
+        "blank": "Leeg"
+      },
+      "templateHints": {
+        "approval": "Concept → Wacht op goedkeuring → Goedgekeurd / Afgewezen",
+        "review-archive": "Concept → In beoordeling → Goedgekeurd → Gearchiveerd",
+        "two-step": "Twee goedkeurders na elkaar",
+        "blank": "Vanaf nul beginnen"
+      },
+      "labels": {
+        "draft": "Concept",
+        "submit": "Indienen ter goedkeuring",
+        "pendingApproval": "Wacht op goedkeuring",
+        "approver": "Goedkeurder",
+        "approve": "Goedkeuren",
+        "reject": "Afwijzen",
+        "approved": "Goedgekeurd",
+        "rejected": "Afgewezen",
+        "submitForReview": "Indienen ter beoordeling",
+        "inReview": "In beoordeling",
+        "reviewer": "Beoordelaar",
+        "requestChanges": "Wijzigingen vragen",
+        "archive": "Archiveren",
+        "archived": "Gearchiveerd",
+        "firstApproval": "Eerste goedkeuring",
+        "firstApprover": "Eerste goedkeurder",
+        "secondApproval": "Tweede goedkeuring",
+        "secondApprover": "Tweede goedkeurder",
+        "done": "Klaar"
+      },
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "deleteConfirm": "Workflow ‘{{name}}’ verwijderen? Voltooide instanties behouden hun geschiedenis.",
+      "deleted": "Workflow verwijderd.",
+      "deleteError": "De workflow kon niet worden verwijderd.",
+      "activate": "Activeren",
+      "deactivate": "Deactiveren",
+      "active": "Actief",
+      "inactive": "Inactief",
+      "statesCount": "{{count}} statussen",
+      "runningCount": "{{count}} lopend",
+      "hotFolders": "{{count}} hot folder(s)"
+    },
+    "editor": {
+      "title": "Workflow bewerken",
+      "newTitle": "Nieuwe workflow",
+      "unsaved": "Niet-opgeslagen wijzigingen",
+      "name": "Naam",
+      "description": "Beschrijving",
+      "active": "Beschikbaar in ‘Workflow starten’",
+      "triggerFolders": "Hot folders",
+      "triggerFoldersHint": "Elk bestand dat in deze mappen wordt geüpload, start deze workflow automatisch.",
+      "addTriggerFolder": "Map toevoegen",
+      "chooseTriggerFolder": "Kies een hot folder",
+      "statuses": "Statussen",
+      "addStatus": "Status toevoegen",
+      "addEnd": "Eindstatus toevoegen",
+      "newStatus": "Nieuwe status",
+      "newTransition": "Doorgaan",
+      "label": "Label",
+      "key": "Sleutel",
+      "kind": "Soort",
+      "color": "Kleur",
+      "assignees": "Wie handelt",
+      "dueInDays": "Deadline (dagen)",
+      "emails": "E-mailadressen",
+      "role": "Rol",
+      "roleHint": "Een Keycloak-realmrol, bv. CONTRIBUTOR of AUDITOR",
+      "question": "Vraag bij het starten",
+      "questionHint": "bv. Wie keurt dit document goed?",
+      "transitions": "Overgangen (de knoppen)",
+      "addTransition": "Overgang toevoegen",
+      "transitionLabel": "Knoptekst",
+      "target": "Leidt naar",
+      "style": "Stijl",
+      "requireComment": "Opmerking verplicht",
+      "requireCommentHint": "De persoon moet een notitie achterlaten (typisch bij afwijzing)",
+      "onEnter": "Wanneer een document deze status bereikt",
+      "onEnterHint": "Geen actie — voeg er een toe om het document te verplaatsen, metadata te zetten of personen te informeren.",
+      "addAction": "Actie toevoegen",
+      "chooseFolder": "Kies een map",
+      "metadataEntries": "Metadata (één regel sleutel=waarde)",
+      "metadataHint": "status=goedgekeurd",
+      "notifyEmails": "Te informeren e-mailadressen",
+      "moveUp": "Omhoog",
+      "moveDown": "Omlaag",
+      "remove": "Verwijderen",
+      "badEmail": "Ongeldig e-mailadres: {{email}}",
+      "preview": "Voorbeeld",
+      "previewHint": "Klik op een status in de tekening om die te bewerken.",
+      "valid": "De workflow is geldig.",
+      "problemsCount": "{{count}} probleem/problemen op te lossen vóór het opslaan",
+      "saved": "Workflow ‘{{name}}’ opgeslagen.",
+      "saveError": "De workflow kon niet worden opgeslagen."
+    },
+    "start": {
+      "title": "Een workflow starten",
+      "chooseWorkflow": "Kies een workflow",
+      "noDefinitions": "Er is geen workflow beschikbaar.",
+      "noDefinitionsHint": "Vraag een ontwerper er een te maken onder Workflows → Ontwerper.",
+      "loadError": "De workflows konden niet worden geladen.",
+      "who": "Wie handelt bij ‘{{state}}’?",
+      "comment": "Notitie voor de volgende persoon (optioneel)",
+      "start": "Starten",
+      "startHint": "Het document blijft in ‘{{state}}’ tot u verdergaat.",
+      "startAnd": "Starten & {{transition}}",
+      "started": "Workflow ‘{{workflow}}’ gestart — het document is nu ‘{{state}}’.",
+      "startError": "De workflow kon niet worden gestart."
+    },
+    "decision": {
+      "commentRequired": "Opmerking (verplicht)",
+      "commentOptional": "Opmerking (optioneel)",
+      "reassignTitle": "Deze taak aan iemand anders geven",
+      "emails": "E-mailadressen",
+      "emailsHint": "Scheid meerdere adressen met komma’s"
+    },
+    "panel": {
+      "title": "Workflow",
+      "waitingFor": "Wacht op",
+      "you": "u",
+      "due": "deadline {{date}}",
+      "overdue": "te laat sinds {{date}}",
+      "since": "Gestart door {{who}} op {{date}}",
+      "start": "Een workflow starten",
+      "openMonitor": "Openen in het overzicht",
+      "noWorkflow": "Geen lopende workflow op dit document."
+    },
+    "errors": {
+      "generic": "Er is iets misgegaan.",
+      "network": "Netwerkfout — controleer uw verbinding.",
+      "forbidden": "U mag dit niet doen.",
+      "notFound": "Niet gevonden.",
+      "conflict": "Deze actie is in de huidige staat niet meer mogelijk.",
+      "validation": "Het verzoek werd geweigerd."
     }
   }
 }

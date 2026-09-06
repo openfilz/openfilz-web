@@ -77,7 +77,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-toolbar
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
-        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
         [organizeWithAiAvailable]="canOrganizeSelectionWithAi" [showOrganizeWithAi]="canOrganizeWithAi"
         (organizeWithAiSelected)="onOrganizeWithAiSelected()" (organizeWithAi)="organizeFolderWithAi(currentFolder)"
         [pageIndex]="pageIndex"
@@ -94,7 +94,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
-        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
+        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
@@ -176,7 +176,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -197,7 +197,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"

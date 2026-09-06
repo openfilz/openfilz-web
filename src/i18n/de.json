@@ -61,7 +61,8 @@
     "settings": "Einstellungen",
     "logout": "Abmelden",
     "collapse": "Einklappen",
-    "expandSidebar": "Seitenleiste ausklappen"
+    "expandSidebar": "Seitenleiste ausklappen",
+    "workflows": "Workflows"
   },
   "header": {
     "searchPlaceholder": "Geben Sie etwas ein, um zu suchen",
@@ -123,7 +124,8 @@
       "text": "Textdatei"
     },
     "moreActions": "Weitere Aktionen",
-    "requestSignature": "Signatur anfordern"
+    "requestSignature": "Signatur anfordern",
+    "startWorkflow": "Workflow starten"
   },
   "sortOptions": {
     "date": "Datum",
@@ -1312,6 +1314,237 @@
       "specification": "Spezifikation",
       "manual": "Handbuch",
       "other": "Sonstiges"
+    }
+  },
+  "workflow": {
+    "title": "Workflows",
+    "tabs": {
+      "tasks": "Meine Aufgaben",
+      "monitor": "Überwachung",
+      "designer": "Designer"
+    },
+    "status": {
+      "RUNNING": "Laufend",
+      "COMPLETED": "Abgeschlossen",
+      "CANCELLED": "Abgebrochen"
+    },
+    "kind": {
+      "START": "Start",
+      "STEP": "Schritt",
+      "END": "Endstatus"
+    },
+    "assignees": {
+      "INITIATOR": "Die Person, die den Workflow gestartet hat",
+      "USERS": "Bestimmte Personen",
+      "ROLE": "Jeder mit einer Rolle",
+      "CHOSEN_AT_START": "Beim Start ausgewählt"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "In einen Ordner verschieben",
+      "SET_METADATA": "Metadaten setzen",
+      "NOTIFY": "Personen benachrichtigen"
+    },
+    "styles": {
+      "PRIMARY": "Standard",
+      "SUCCESS": "Positiv (grün)",
+      "DANGER": "Negativ (rot)",
+      "NEUTRAL": "Neutral (grau)"
+    },
+    "events": {
+      "STARTED": "Gestartet in „{{state}}“",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Aktion ausgeführt: {{action}}",
+      "ACTION_FAILED": "Aktion fehlgeschlagen: {{action}} — {{error}}",
+      "REASSIGNED": "Neu zugewiesen an {{emails}}",
+      "REMINDED": "Erinnerung gesendet",
+      "COMPLETED": "Abgeschlossen mit „{{state}}“",
+      "CANCELLED": "Abgebrochen"
+    },
+    "tasks": {
+      "count": "{{count}} Aufgabe(n) warten auf Sie",
+      "overdueCount": "{{count}} überfällig",
+      "refresh": "Aktualisieren",
+      "empty": "Nichts wartet auf Ihre Entscheidung.",
+      "emptyHint": "Aufgaben, die Ihnen oder einer Ihrer Rollen zugewiesen sind, erscheinen hier.",
+      "openDocument": "Dokument öffnen",
+      "openInstance": "In der Überwachung anzeigen",
+      "waitingSince": "Seit {{date}}",
+      "due": "Fällig am {{date}}",
+      "overdue": "Überfällig seit {{date}}",
+      "overdueShort": "Überfällig",
+      "from": "Von {{who}}",
+      "sharedWith": "+{{count}} weitere(r) Kandidat(en)",
+      "withNote": "{{transition}} mit Notiz…",
+      "reassign": "Neu zuweisen",
+      "reassigned": "Aufgabe neu zugewiesen.",
+      "done": "Erledigt — das Dokument ist jetzt „{{state}}“."
+    },
+    "monitor": {
+      "running": "Laufend",
+      "completed": "Abgeschlossen",
+      "cancelledCount": "Abgebrochen",
+      "overdue": "Überfällige Aufgaben",
+      "workflow": "Workflow",
+      "status": "Status",
+      "allDefinitions": "Alle Workflows",
+      "allStatuses": "Alle Status",
+      "mine": "Von mir gestartet",
+      "document": "Dokument",
+      "state": "Aktueller Status",
+      "waitingFor": "Wartet auf",
+      "startedBy": "Gestartet von",
+      "updated": "Aktualisiert",
+      "ended": "Beendet",
+      "empty": "Kein Workflow entspricht diesen Filtern.",
+      "timeline": "Verlauf",
+      "anyoneWith": "jeder mit der Rolle {{role}}",
+      "cancel": "Workflow abbrechen",
+      "cancelConfirm": "Workflow „{{workflow}}“ für „{{document}}“ abbrechen? Die offene Aufgabe wird geschlossen.",
+      "cancelled": "Workflow abgebrochen.",
+      "cancelError": "Der Workflow konnte nicht abgebrochen werden."
+    },
+    "designer": {
+      "intro": "Legen Sie die Status Ihrer Dokumente fest und wer bei jedem Schritt entscheidet.",
+      "newWorkflow": "Neuer Workflow",
+      "empty": "Noch kein Workflow.",
+      "emptyHint": "Beginnen Sie mit einer Vorlage — jeder Status kann umbenannt und die Akteure geändert werden.",
+      "templates": {
+        "approval": "Einfache Genehmigung",
+        "review-archive": "Prüfung, dann Archivierung",
+        "two-step": "Zweistufige Genehmigung",
+        "blank": "Leer"
+      },
+      "templateHints": {
+        "approval": "Entwurf → Genehmigung ausstehend → Genehmigt / Abgelehnt",
+        "review-archive": "Entwurf → In Prüfung → Genehmigt → Archiviert",
+        "two-step": "Zwei Genehmiger nacheinander",
+        "blank": "Von Grund auf neu"
+      },
+      "labels": {
+        "draft": "Entwurf",
+        "submit": "Zur Genehmigung einreichen",
+        "pendingApproval": "Genehmigung ausstehend",
+        "approver": "Genehmiger",
+        "approve": "Genehmigen",
+        "reject": "Ablehnen",
+        "approved": "Genehmigt",
+        "rejected": "Abgelehnt",
+        "submitForReview": "Zur Prüfung einreichen",
+        "inReview": "In Prüfung",
+        "reviewer": "Prüfer",
+        "requestChanges": "Änderungen anfordern",
+        "archive": "Archivieren",
+        "archived": "Archiviert",
+        "firstApproval": "Erste Genehmigung",
+        "firstApprover": "Erster Genehmiger",
+        "secondApproval": "Zweite Genehmigung",
+        "secondApprover": "Zweiter Genehmiger",
+        "done": "Erledigt"
+      },
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "deleteConfirm": "Workflow „{{name}}“ löschen? Abgeschlossene Instanzen behalten ihren Verlauf.",
+      "deleted": "Workflow gelöscht.",
+      "deleteError": "Der Workflow konnte nicht gelöscht werden.",
+      "activate": "Aktivieren",
+      "deactivate": "Deaktivieren",
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "statesCount": "{{count}} Status",
+      "runningCount": "{{count}} laufend",
+      "hotFolders": "{{count}} Hot Folder"
+    },
+    "editor": {
+      "title": "Workflow bearbeiten",
+      "newTitle": "Neuer Workflow",
+      "unsaved": "Nicht gespeicherte Änderungen",
+      "name": "Name",
+      "description": "Beschreibung",
+      "active": "In „Workflow starten“ verfügbar",
+      "triggerFolders": "Hot Folder",
+      "triggerFoldersHint": "Jede in diese Ordner hochgeladene Datei startet diesen Workflow automatisch.",
+      "addTriggerFolder": "Ordner hinzufügen",
+      "chooseTriggerFolder": "Hot Folder wählen",
+      "statuses": "Status",
+      "addStatus": "Status hinzufügen",
+      "addEnd": "Endstatus hinzufügen",
+      "newStatus": "Neuer Status",
+      "newTransition": "Weiter",
+      "label": "Bezeichnung",
+      "key": "Schlüssel",
+      "kind": "Art",
+      "color": "Farbe",
+      "assignees": "Wer handelt",
+      "dueInDays": "Fällig in (Tagen)",
+      "emails": "E-Mail-Adressen",
+      "role": "Rolle",
+      "roleHint": "Eine Keycloak-Realm-Rolle, z. B. CONTRIBUTOR oder AUDITOR",
+      "question": "Frage beim Start",
+      "questionHint": "z. B. Wer genehmigt dieses Dokument?",
+      "transitions": "Übergänge (die Schaltflächen)",
+      "addTransition": "Übergang hinzufügen",
+      "transitionLabel": "Beschriftung",
+      "target": "Führt zu",
+      "style": "Stil",
+      "requireComment": "Kommentar erforderlich",
+      "requireCommentHint": "Die Person muss eine Notiz hinterlassen (typisch bei Ablehnung)",
+      "onEnter": "Wenn ein Dokument diesen Status erreicht",
+      "onEnterHint": "Keine Aktion — fügen Sie eine hinzu, um das Dokument zu verschieben, Metadaten zu setzen oder Personen zu benachrichtigen.",
+      "addAction": "Aktion hinzufügen",
+      "chooseFolder": "Ordner wählen",
+      "metadataEntries": "Metadaten (eine Zeile Schlüssel=Wert)",
+      "metadataHint": "status=genehmigt",
+      "notifyEmails": "Zu benachrichtigende E-Mail-Adressen",
+      "moveUp": "Nach oben",
+      "moveDown": "Nach unten",
+      "remove": "Entfernen",
+      "badEmail": "Ungültige E-Mail-Adresse: {{email}}",
+      "preview": "Vorschau",
+      "previewHint": "Klicken Sie im Bild auf einen Status, um ihn zu bearbeiten.",
+      "valid": "Der Workflow ist gültig.",
+      "problemsCount": "{{count}} Problem(e) vor dem Speichern beheben",
+      "saved": "Workflow „{{name}}“ gespeichert.",
+      "saveError": "Der Workflow konnte nicht gespeichert werden."
+    },
+    "start": {
+      "title": "Workflow starten",
+      "chooseWorkflow": "Workflow wählen",
+      "noDefinitions": "Kein Workflow verfügbar.",
+      "noDefinitionsHint": "Bitten Sie einen Designer, einen unter Workflows → Designer anzulegen.",
+      "loadError": "Die Workflows konnten nicht geladen werden.",
+      "who": "Wer handelt bei „{{state}}“?",
+      "comment": "Notiz für die nächste Person (optional)",
+      "start": "Starten",
+      "startHint": "Das Dokument bleibt in „{{state}}“, bis Sie fortfahren.",
+      "startAnd": "Starten & {{transition}}",
+      "started": "Workflow „{{workflow}}“ gestartet — das Dokument ist jetzt „{{state}}“.",
+      "startError": "Der Workflow konnte nicht gestartet werden."
+    },
+    "decision": {
+      "commentRequired": "Kommentar (erforderlich)",
+      "commentOptional": "Kommentar (optional)",
+      "reassignTitle": "Diese Aufgabe jemand anderem übergeben",
+      "emails": "E-Mail-Adressen",
+      "emailsHint": "Mehrere Adressen durch Kommas trennen"
+    },
+    "panel": {
+      "title": "Workflow",
+      "waitingFor": "Wartet auf",
+      "you": "Sie",
+      "due": "fällig am {{date}}",
+      "overdue": "überfällig seit {{date}}",
+      "since": "Gestartet von {{who}} am {{date}}",
+      "start": "Workflow starten",
+      "openMonitor": "In der Überwachung öffnen",
+      "noWorkflow": "Kein laufender Workflow für dieses Dokument."
+    },
+    "errors": {
+      "generic": "Etwas ist schiefgelaufen.",
+      "network": "Netzwerkfehler — prüfen Sie Ihre Verbindung.",
+      "forbidden": "Sie dürfen das nicht tun.",
+      "notFound": "Nicht gefunden.",
+      "conflict": "Diese Aktion ist im aktuellen Zustand nicht mehr möglich.",
+      "validation": "Die Anfrage wurde abgelehnt."
     }
   }
 }

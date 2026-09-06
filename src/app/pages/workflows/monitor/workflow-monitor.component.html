@@ -1,0 +1,143 @@
+<div class="monitor" [class.has-detail]="!!detail || detailLoading">
+  <div class="main">
+    @if (summary) {
+      <div class="tiles">
+        <button type="button" class="tile" [class.active]="filterStatus === 'RUNNING'" (click)="filterStatus = 'RUNNING'; onFilterChange()">
+          <span class="n">{{ summary.running }}</span><span class="l">{{ 'workflow.monitor.running' | translate }}</span>
+        </button>
+        <button type="button" class="tile warn" (click)="filterStatus = 'RUNNING'; onFilterChange()">
+          <span class="n">{{ summary.overdue }}</span><span class="l">{{ 'workflow.monitor.overdue' | translate }}</span>
+        </button>
+        <button type="button" class="tile ok" [class.active]="filterStatus === 'COMPLETED'" (click)="filterStatus = 'COMPLETED'; onFilterChange()">
+          <span class="n">{{ summary.completed }}</span><span class="l">{{ 'workflow.monitor.completed' | translate }}</span>
+        </button>
+        <button type="button" class="tile muted" [class.active]="filterStatus === 'CANCELLED'" (click)="filterStatus = 'CANCELLED'; onFilterChange()">
+          <span class="n">{{ summary.cancelled }}</span><span class="l">{{ 'workflow.monitor.cancelledCount' | translate }}</span>
+        </button>
+      </div>
+    }
+
+    <div class="filters">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>{{ 'workflow.monitor.workflow' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filterDefinition" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">{{ 'workflow.monitor.allDefinitions' | translate }}</mat-option>
+          @for (d of definitions; track d.id) { <mat-option [value]="d.id">{{ d.name }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>{{ 'workflow.monitor.status' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filterStatus" (selectionChange)="onFilterChange()">
+          <mat-option [value]="null">{{ 'workflow.monitor.allStatuses' | translate }}</mat-option>
+          <mat-option value="RUNNING">{{ 'workflow.status.RUNNING' | translate }}</mat-option>
+          <mat-option value="COMPLETED">{{ 'workflow.status.COMPLETED' | translate }}</mat-option>
+          <mat-option value="CANCELLED">{{ 'workflow.status.CANCELLED' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle [(ngModel)]="filterMine" (change)="onFilterChange()">{{ 'workflow.monitor.mine' | translate }}</mat-slide-toggle>
+      <span class="spacer"></span>
+      <button mat-icon-button (click)="reload()" [matTooltip]="'workflow.tasks.refresh' | translate"><mat-icon>refresh</mat-icon></button>
+    </div>
+
+    @if (loading) {
+      <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+    } @else if (items.length === 0) {
+      <div class="state empty"><mat-icon>monitoring</mat-icon><p>{{ 'workflow.monitor.empty' | translate }}</p></div>
+    } @else {
+      <div class="table-wrap">
+        <table mat-table [dataSource]="items" class="tbl clickable" [trackBy]="trackItem">
+          <ng-container matColumnDef="document">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.document' | translate }}</th>
+            <td mat-cell *matCellDef="let i" class="title-cell">
+              <mat-icon class="inline-doc">description</mat-icon>{{ i.documentName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="workflow">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.workflow' | translate }}</th>
+            <td mat-cell *matCellDef="let i">{{ i.definitionName }}</td>
+          </ng-container>
+          <ng-container matColumnDef="state">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.state' | translate }}</th>
+            <td mat-cell *matCellDef="let i">
+              <span class="chip" [style.--chip]="i.currentStateColor || '#94a3b8'">{{ i.currentStateLabel }}</span>
+              @if (i.status !== 'RUNNING') { <span class="badge" [class]="'s-' + i.status">{{ 'workflow.status.' + i.status | translate }}</span> }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="waitingFor">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.waitingFor' | translate }}</th>
+            <td mat-cell *matCellDef="let i">
+              @if (i.currentTask) {
+                <span [class.late]="i.currentTask.overdue">{{ waitingFor(i) }}</span>
+                @if (i.currentTask.overdue) { <mat-icon class="late-ico" [matTooltip]="'workflow.tasks.overdueShort' | translate">warning</mat-icon> }
+              } @else { <span class="dim">—</span> }
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="startedBy">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.startedBy' | translate }}</th>
+            <td mat-cell *matCellDef="let i">{{ i.startedBy }}</td>
+          </ng-container>
+          <ng-container matColumnDef="updated">
+            <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.updated' | translate }}</th>
+            <td mat-cell *matCellDef="let i">{{ i.updatedAt | date:'medium' }}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let i; columns: columns" [class.selected]="detail?.instance?.id === i.id" (click)="open(i.id)"></tr>
+        </table>
+      </div>
+      <mat-paginator [length]="total" [pageIndex]="page" [pageSize]="size" [pageSizeOptions]="[25, 50, 100]" (page)="onPage($event)"></mat-paginator>
+    }
+  </div>
+
+  @if (detailLoading && !detail) {
+    <aside class="detail"><div class="state"><mat-spinner diameter="30"></mat-spinner></div></aside>
+  } @else if (detail; as d) {
+    <aside class="detail">
+      <div class="detail-head">
+        <div class="detail-title">
+          <h2>{{ d.instance.documentName }}</h2>
+          <div class="sub">{{ d.instance.definitionName }} · v{{ d.instance.definitionVersion }}</div>
+        </div>
+        <button mat-icon-button (click)="close()" [attr.aria-label]="'common.close' | translate"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <div class="diagram-box">
+        <app-workflow-diagram [spec]="d.spec" [currentStateKey]="d.instance.status === 'RUNNING' ? d.instance.currentStateKey : null" [taken]="taken(d)"></app-workflow-diagram>
+      </div>
+
+      <dl class="meta">
+        <dt>{{ 'workflow.monitor.status' | translate }}</dt>
+        <dd><span class="badge" [class]="'s-' + d.instance.status">{{ 'workflow.status.' + d.instance.status | translate }}</span>
+          <span class="chip" [style.--chip]="d.instance.currentStateColor || '#94a3b8'">{{ d.instance.currentStateLabel }}</span></dd>
+        <dt>{{ 'workflow.monitor.startedBy' | translate }}</dt><dd>{{ d.instance.startedBy }} · {{ d.instance.startedAt | date:'medium' }}</dd>
+        @if (d.instance.completedAt) { <dt>{{ 'workflow.monitor.ended' | translate }}</dt><dd>{{ d.instance.completedAt | date:'medium' }}</dd> }
+        @if (d.instance.currentTask; as task) {
+          <dt>{{ 'workflow.monitor.waitingFor' | translate }}</dt>
+          <dd>
+            <span [class.late]="task.overdue">{{ waitingFor(d.instance) }}</span>
+            @if (task.dueAt) { <div class="sub" [class.late]="task.overdue">{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</div> }
+          </dd>
+        }
+      </dl>
+
+      <div class="detail-actions">
+        <button mat-stroked-button (click)="openDocument(d.instance)"><mat-icon>folder_open</mat-icon>{{ 'workflow.tasks.openDocument' | translate }}</button>
+        @if (d.instance.status === 'RUNNING' && d.canManage) {
+          <button mat-stroked-button (click)="reassign()" [disabled]="busy || !d.instance.currentTask"><mat-icon>group</mat-icon>{{ 'workflow.tasks.reassign' | translate }}</button>
+          <button mat-stroked-button class="danger" (click)="cancel()" [disabled]="busy"><mat-icon>cancel</mat-icon>{{ 'workflow.monitor.cancel' | translate }}</button>
+        }
+      </div>
+
+      <h3>{{ 'workflow.monitor.timeline' | translate }}</h3>
+      <ul class="timeline">
+        @for (e of d.history; track e.id) {
+          <li class="ev" [class]="'ev ev-' + e.type">
+            <span class="ev-dot"><mat-icon>{{ eventIcon(e.type) }}</mat-icon></span>
+            <div class="ev-text">{{ eventText(e, d) }}</div>
+            <div class="ev-meta">{{ e.createdAt | date:'medium' }}@if (e.actor) { · {{ e.actor }} }</div>
+            @if (e.comment) { <blockquote class="note">{{ e.comment }}</blockquote> }
+          </li>
+        }
+      </ul>
+    </aside>
+  }
+</div>

@@ -27,9 +27,17 @@
     @if(item.id !== 'logout') {
     <div class="nav-item" [class.active]="item.active" (click)="onNavigationClick(item.id)"
       [matTooltip]="item.labelKey | translate" [matTooltipPosition]="'right'" [matTooltipDisabled]="!isCollapsed">
-      <div class="nav-icon"><mat-icon>{{ getIconClass(item.id) }}</mat-icon></div>
+      <div class="nav-icon">
+        <mat-icon>{{ getIconClass(item.id) }}</mat-icon>
+        @if(item.id === 'workflows' && myTasksCount > 0 && isCollapsed) {
+        <span class="nav-badge-dot" [class.overdue]="myTasksOverdue > 0"></span>
+        }
+      </div>
       @if(!isCollapsed) {
       <span>{{ item.labelKey | translate }}</span>
+      @if(item.id === 'workflows' && myTasksCount > 0) {
+      <span class="nav-badge" [class.overdue]="myTasksOverdue > 0">{{ myTasksCount }}</span>
+      }
       }
     </div>
     }

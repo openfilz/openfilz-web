@@ -61,7 +61,8 @@
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "collapse": "طي",
-    "expandSidebar": "توسيع الشريط الجانبي"
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "workflows": "سير العمل"
   },
   "header": {
     "searchPlaceholder": "اكتب أي شيء للبحث",
@@ -123,7 +124,8 @@
       "text": "ملف نصي"
     },
     "moreActions": "المزيد من الإجراءات",
-    "requestSignature": "طلب توقيع"
+    "requestSignature": "طلب توقيع",
+    "startWorkflow": "بدء سير عمل"
   },
   "sortOptions": {
     "date": "التاريخ",
@@ -1312,6 +1314,237 @@
       "specification": "مواصفات",
       "manual": "دليل",
       "other": "أخرى"
+    }
+  },
+  "workflow": {
+    "title": "سير العمل",
+    "tabs": {
+      "tasks": "مهامي",
+      "monitor": "المتابعة",
+      "designer": "المصمم"
+    },
+    "status": {
+      "RUNNING": "جارٍ",
+      "COMPLETED": "مكتمل",
+      "CANCELLED": "ملغى"
+    },
+    "kind": {
+      "START": "بداية",
+      "STEP": "خطوة",
+      "END": "نهائي"
+    },
+    "assignees": {
+      "INITIATOR": "الشخص الذي بدأ سير العمل",
+      "USERS": "أشخاص محددون",
+      "ROLE": "أي شخص لديه دور",
+      "CHOSEN_AT_START": "يُختار عند البدء"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "نقل إلى مجلد",
+      "SET_METADATA": "تعيين بيانات وصفية",
+      "NOTIFY": "إشعار أشخاص"
+    },
+    "styles": {
+      "PRIMARY": "افتراضي",
+      "SUCCESS": "إيجابي (أخضر)",
+      "DANGER": "سلبي (أحمر)",
+      "NEUTRAL": "محايد (رمادي)"
+    },
+    "events": {
+      "STARTED": "بدأ في «{{state}}»",
+      "TRANSITIONED": "{{transition}} ← {{state}}",
+      "ACTION_APPLIED": "تم تطبيق الإجراء: {{action}}",
+      "ACTION_FAILED": "فشل الإجراء: {{action}} — {{error}}",
+      "REASSIGNED": "أُعيد إسناده إلى {{emails}}",
+      "REMINDED": "تم إرسال تذكير",
+      "COMPLETED": "اكتمل بالحالة «{{state}}»",
+      "CANCELLED": "ملغى"
+    },
+    "tasks": {
+      "count": "{{count}} مهمة بانتظار قرارك",
+      "overdueCount": "{{count}} متأخرة",
+      "refresh": "تحديث",
+      "empty": "لا شيء بانتظار قرارك.",
+      "emptyHint": "تظهر هنا المهام المسندة إليك أو إلى دور تملكه.",
+      "openDocument": "فتح المستند",
+      "openInstance": "عرض في المتابعة",
+      "waitingSince": "منذ {{date}}",
+      "due": "الموعد {{date}}",
+      "overdue": "متأخرة منذ {{date}}",
+      "overdueShort": "متأخرة",
+      "from": "من {{who}}",
+      "sharedWith": "+{{count}} مرشح آخر",
+      "withNote": "{{transition}} مع ملاحظة…",
+      "reassign": "إعادة إسناد",
+      "reassigned": "أُعيد إسناد المهمة.",
+      "done": "تم — المستند الآن «{{state}}»."
+    },
+    "monitor": {
+      "running": "جارٍ",
+      "completed": "مكتمل",
+      "cancelledCount": "ملغى",
+      "overdue": "مهام متأخرة",
+      "workflow": "سير العمل",
+      "status": "الحالة",
+      "allDefinitions": "كل مسارات العمل",
+      "allStatuses": "كل الحالات",
+      "mine": "بدأتها أنا",
+      "document": "المستند",
+      "state": "الحالة الحالية",
+      "waitingFor": "بانتظار",
+      "startedBy": "بدأه",
+      "updated": "آخر تحديث",
+      "ended": "انتهى",
+      "empty": "لا يوجد سير عمل يطابق هذه المرشحات.",
+      "timeline": "السجل الزمني",
+      "anyoneWith": "أي شخص لديه الدور {{role}}",
+      "cancel": "إلغاء سير العمل",
+      "cancelConfirm": "إلغاء سير العمل «{{workflow}}» على «{{document}}»؟ ستُغلق المهمة المعلقة.",
+      "cancelled": "تم إلغاء سير العمل.",
+      "cancelError": "تعذر إلغاء سير العمل."
+    },
+    "designer": {
+      "intro": "صمّم حالات مستنداتك ومن يقرر في كل خطوة.",
+      "newWorkflow": "سير عمل جديد",
+      "empty": "لا يوجد سير عمل بعد.",
+      "emptyHint": "ابدأ من قالب — يمكنك إعادة تسمية كل حالة وتغيير من يتصرف.",
+      "templates": {
+        "approval": "موافقة بسيطة",
+        "review-archive": "مراجعة ثم أرشفة",
+        "two-step": "موافقة على مرحلتين",
+        "blank": "فارغ"
+      },
+      "templateHints": {
+        "approval": "مسودة ← بانتظار الموافقة ← موافق عليه / مرفوض",
+        "review-archive": "مسودة ← قيد المراجعة ← موافق عليه ← مؤرشف",
+        "two-step": "موافقان متتاليان",
+        "blank": "البدء من الصفر"
+      },
+      "labels": {
+        "draft": "مسودة",
+        "submit": "إرسال للموافقة",
+        "pendingApproval": "بانتظار الموافقة",
+        "approver": "الموافق",
+        "approve": "موافقة",
+        "reject": "رفض",
+        "approved": "موافق عليه",
+        "rejected": "مرفوض",
+        "submitForReview": "إرسال للمراجعة",
+        "inReview": "قيد المراجعة",
+        "reviewer": "المراجع",
+        "requestChanges": "طلب تعديلات",
+        "archive": "أرشفة",
+        "archived": "مؤرشف",
+        "firstApproval": "الموافقة الأولى",
+        "firstApprover": "الموافق الأول",
+        "secondApproval": "الموافقة الثانية",
+        "secondApprover": "الموافق الثاني",
+        "done": "تم"
+      },
+      "edit": "تعديل",
+      "delete": "حذف",
+      "deleteConfirm": "حذف سير العمل «{{name}}»؟ تحتفظ الحالات المكتملة بسجلها.",
+      "deleted": "تم حذف سير العمل.",
+      "deleteError": "تعذر حذف سير العمل.",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل",
+      "active": "مفعّل",
+      "inactive": "معطّل",
+      "statesCount": "{{count}} حالات",
+      "runningCount": "{{count}} جارٍ",
+      "hotFolders": "{{count}} مجلد تشغيل"
+    },
+    "editor": {
+      "title": "تعديل سير العمل",
+      "newTitle": "سير عمل جديد",
+      "unsaved": "تغييرات غير محفوظة",
+      "name": "الاسم",
+      "description": "الوصف",
+      "active": "متاح في «بدء سير عمل»",
+      "triggerFolders": "مجلدات التشغيل",
+      "triggerFoldersHint": "كل ملف يُرفع إلى هذه المجلدات يبدأ سير العمل هذا تلقائيًا.",
+      "addTriggerFolder": "إضافة مجلد",
+      "chooseTriggerFolder": "اختر مجلد تشغيل",
+      "statuses": "الحالات",
+      "addStatus": "إضافة حالة",
+      "addEnd": "إضافة حالة نهائية",
+      "newStatus": "حالة جديدة",
+      "newTransition": "متابعة",
+      "label": "التسمية",
+      "key": "المفتاح",
+      "kind": "النوع",
+      "color": "اللون",
+      "assignees": "من يتصرف",
+      "dueInDays": "المهلة (أيام)",
+      "emails": "عناوين البريد الإلكتروني",
+      "role": "الدور",
+      "roleHint": "دور في realm Keycloak، مثل CONTRIBUTOR أو AUDITOR",
+      "question": "السؤال المطروح عند البدء",
+      "questionHint": "مثال: من يوافق على هذا المستند؟",
+      "transitions": "الانتقالات (الأزرار)",
+      "addTransition": "إضافة انتقال",
+      "transitionLabel": "نص الزر",
+      "target": "يؤدي إلى",
+      "style": "النمط",
+      "requireComment": "التعليق إلزامي",
+      "requireCommentHint": "يجب على الشخص ترك ملاحظة (شائع عند الرفض)",
+      "onEnter": "عندما يصل المستند إلى هذه الحالة",
+      "onEnterHint": "لا يوجد إجراء — أضف واحدًا لنقل المستند أو تعيين بيانات وصفية أو إشعار أشخاص.",
+      "addAction": "إضافة إجراء",
+      "chooseFolder": "اختر مجلدًا",
+      "metadataEntries": "بيانات وصفية (سطر لكل مفتاح=قيمة)",
+      "metadataHint": "status=approved",
+      "notifyEmails": "عناوين البريد المراد إشعارها",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "remove": "إزالة",
+      "badEmail": "عنوان بريد غير صالح: {{email}}",
+      "preview": "معاينة",
+      "previewHint": "انقر على حالة في الرسم لتعديلها.",
+      "valid": "سير العمل صالح.",
+      "problemsCount": "{{count}} مشكلة يجب إصلاحها قبل الحفظ",
+      "saved": "تم حفظ سير العمل «{{name}}».",
+      "saveError": "تعذر حفظ سير العمل."
+    },
+    "start": {
+      "title": "بدء سير عمل",
+      "chooseWorkflow": "اختر سير عمل",
+      "noDefinitions": "لا يوجد سير عمل متاح.",
+      "noDefinitionsHint": "اطلب من مصمم إنشاء واحد في سير العمل ← المصمم.",
+      "loadError": "تعذر تحميل مسارات العمل.",
+      "who": "من يتصرف في «{{state}}»؟",
+      "comment": "ملاحظة للشخص التالي (اختياري)",
+      "start": "بدء",
+      "startHint": "يبقى المستند في «{{state}}» حتى تتابع.",
+      "startAnd": "بدء و{{transition}}",
+      "started": "بدأ سير العمل «{{workflow}}» — المستند الآن «{{state}}».",
+      "startError": "تعذر بدء سير العمل."
+    },
+    "decision": {
+      "commentRequired": "تعليق (إلزامي)",
+      "commentOptional": "تعليق (اختياري)",
+      "reassignTitle": "تسليم هذه المهمة لشخص آخر",
+      "emails": "عناوين البريد الإلكتروني",
+      "emailsHint": "افصل بين العناوين بفواصل"
+    },
+    "panel": {
+      "title": "سير العمل",
+      "waitingFor": "بانتظار",
+      "you": "أنت",
+      "due": "الموعد {{date}}",
+      "overdue": "متأخرة منذ {{date}}",
+      "since": "بدأه {{who}} في {{date}}",
+      "start": "بدء سير عمل",
+      "openMonitor": "فتح في المتابعة",
+      "noWorkflow": "لا يوجد سير عمل جارٍ على هذا المستند."
+    },
+    "errors": {
+      "generic": "حدث خطأ ما.",
+      "network": "خطأ في الشبكة — تحقق من اتصالك.",
+      "forbidden": "غير مسموح لك بهذا.",
+      "notFound": "غير موجود.",
+      "conflict": "لم يعد هذا الإجراء ممكنًا في الحالة الحالية.",
+      "validation": "تم رفض الطلب."
     }
   }
 }

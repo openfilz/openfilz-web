@@ -14,6 +14,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
 import { DocumentInsightsComponent } from './document-insights/document-insights.component';
+import { DocumentWorkflowComponent } from './document-workflow/document-workflow.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
@@ -48,6 +49,7 @@ interface MetadataEntry {
     SwipeTabsDirective,
     AuditVersionActionsComponent,
     DocumentInsightsComponent,
+    DocumentWorkflowComponent,
     TranslatePipe
 ]
 })

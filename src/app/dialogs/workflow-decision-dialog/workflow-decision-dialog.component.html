@@ -1,0 +1,42 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper" [class.danger]="data.danger">
+      <mat-icon>{{ data.confirmIcon || (data.mode === 'emails' ? 'group' : 'rate_review') }}</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ data.title }}</h2>
+      @if (data.subtitle) { <p class="dialog-subtitle">{{ data.subtitle }}</p> }
+    </div>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  @if (data.mode === 'emails') {
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>{{ 'workflow.decision.emails' | translate }}</mat-label>
+      <input matInput [(ngModel)]="emailsText" cdkFocusInitial autocomplete="off">
+      <mat-hint>{{ 'workflow.decision.emailsHint' | translate }}</mat-hint>
+    </mat-form-field>
+    @if (invalidEmail) {
+      <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: invalidEmail } }}</span></div>
+    }
+  }
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>{{ (data.commentRequired ? 'workflow.decision.commentRequired' : 'workflow.decision.commentOptional') | translate }}</mat-label>
+    <textarea matInput rows="4" [(ngModel)]="comment" maxlength="2000" [attr.cdkFocusInitial]="data.mode === 'comment' ? '' : null"
+      (keydown.control.enter)="confirm()" (keydown.meta.enter)="confirm()"></textarea>
+    <mat-hint align="end">{{ comment.length }} / 2000</mat-hint>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="cancel()">
+    <mat-icon>close</mat-icon><span>{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="primary-btn" [class.danger]="data.danger" (click)="confirm()" [disabled]="!canConfirm">
+    <mat-icon>{{ data.confirmIcon || 'check' }}</mat-icon><span>{{ data.confirmLabel }}</span>
+  </button>
+</div>

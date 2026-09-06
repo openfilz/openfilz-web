@@ -61,7 +61,8 @@
     "settings": "Impostazioni",
     "logout": "Disconnetti",
     "collapse": "Comprimi",
-    "expandSidebar": "Espandi barra laterale"
+    "expandSidebar": "Espandi barra laterale",
+    "workflows": "Flussi di lavoro"
   },
   "header": {
     "searchPlaceholder": "Scrivi qualcosa per cercare",
@@ -123,7 +124,8 @@
       "text": "File di testo"
     },
     "moreActions": "Altre azioni",
-    "requestSignature": "Richiedi firma"
+    "requestSignature": "Richiedi firma",
+    "startWorkflow": "Avvia flusso"
   },
   "sortOptions": {
     "date": "Data",
@@ -1312,6 +1314,237 @@
       "specification": "Specifica",
       "manual": "Manuale",
       "other": "Altro"
+    }
+  },
+  "workflow": {
+    "title": "Flussi di lavoro",
+    "tabs": {
+      "tasks": "Le mie attività",
+      "monitor": "Monitoraggio",
+      "designer": "Designer"
+    },
+    "status": {
+      "RUNNING": "In corso",
+      "COMPLETED": "Completato",
+      "CANCELLED": "Annullato"
+    },
+    "kind": {
+      "START": "Inizio",
+      "STEP": "Passo",
+      "END": "Finale"
+    },
+    "assignees": {
+      "INITIATOR": "La persona che ha avviato il flusso",
+      "USERS": "Persone specifiche",
+      "ROLE": "Chiunque abbia un ruolo",
+      "CHOSEN_AT_START": "Scelto all’avvio"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "Sposta in una cartella",
+      "SET_METADATA": "Imposta metadati",
+      "NOTIFY": "Notifica persone"
+    },
+    "styles": {
+      "PRIMARY": "Predefinito",
+      "SUCCESS": "Positivo (verde)",
+      "DANGER": "Negativo (rosso)",
+      "NEUTRAL": "Neutro (grigio)"
+    },
+    "events": {
+      "STARTED": "Avviato in «{{state}}»",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Azione applicata: {{action}}",
+      "ACTION_FAILED": "Azione fallita: {{action}} — {{error}}",
+      "REASSIGNED": "Riassegnato a {{emails}}",
+      "REMINDED": "Promemoria inviato",
+      "COMPLETED": "Completato con «{{state}}»",
+      "CANCELLED": "Annullato"
+    },
+    "tasks": {
+      "count": "{{count}} attività in attesa della tua decisione",
+      "overdueCount": "{{count}} in ritardo",
+      "refresh": "Aggiorna",
+      "empty": "Niente attende la tua decisione.",
+      "emptyHint": "Le attività assegnate a te, o a un ruolo che possiedi, compaiono qui.",
+      "openDocument": "Apri il documento",
+      "openInstance": "Mostra nel monitoraggio",
+      "waitingSince": "Dal {{date}}",
+      "due": "Scadenza {{date}}",
+      "overdue": "In ritardo dal {{date}}",
+      "overdueShort": "In ritardo",
+      "from": "Da {{who}}",
+      "sharedWith": "+{{count}} altri candidati",
+      "withNote": "{{transition}} con una nota…",
+      "reassign": "Riassegna",
+      "reassigned": "Attività riassegnata.",
+      "done": "Fatto — il documento è ora «{{state}}»."
+    },
+    "monitor": {
+      "running": "In corso",
+      "completed": "Completati",
+      "cancelledCount": "Annullati",
+      "overdue": "Attività in ritardo",
+      "workflow": "Flusso",
+      "status": "Stato",
+      "allDefinitions": "Tutti i flussi",
+      "allStatuses": "Tutti gli stati",
+      "mine": "Avviati da me",
+      "document": "Documento",
+      "state": "Stato attuale",
+      "waitingFor": "In attesa di",
+      "startedBy": "Avviato da",
+      "updated": "Aggiornato",
+      "ended": "Terminato",
+      "empty": "Nessun flusso corrisponde a questi filtri.",
+      "timeline": "Cronologia",
+      "anyoneWith": "chiunque abbia il ruolo {{role}}",
+      "cancel": "Annulla flusso",
+      "cancelConfirm": "Annullare il flusso «{{workflow}}» su «{{document}}»? L’attività in sospeso verrà chiusa.",
+      "cancelled": "Flusso annullato.",
+      "cancelError": "Impossibile annullare il flusso."
+    },
+    "designer": {
+      "intro": "Definisci gli stati dei tuoi documenti e chi decide a ogni passo.",
+      "newWorkflow": "Nuovo flusso",
+      "empty": "Nessun flusso per ora.",
+      "emptyHint": "Parti da un modello: ogni stato può essere rinominato e gli attori cambiati.",
+      "templates": {
+        "approval": "Approvazione semplice",
+        "review-archive": "Revisione, poi archiviazione",
+        "two-step": "Approvazione a due livelli",
+        "blank": "Vuoto"
+      },
+      "templateHints": {
+        "approval": "Bozza → In attesa di approvazione → Approvato / Rifiutato",
+        "review-archive": "Bozza → In revisione → Approvato → Archiviato",
+        "two-step": "Due approvatori in sequenza",
+        "blank": "Parti da zero"
+      },
+      "labels": {
+        "draft": "Bozza",
+        "submit": "Invia per approvazione",
+        "pendingApproval": "In attesa di approvazione",
+        "approver": "Approvatore",
+        "approve": "Approva",
+        "reject": "Rifiuta",
+        "approved": "Approvato",
+        "rejected": "Rifiutato",
+        "submitForReview": "Invia in revisione",
+        "inReview": "In revisione",
+        "reviewer": "Revisore",
+        "requestChanges": "Richiedi modifiche",
+        "archive": "Archivia",
+        "archived": "Archiviato",
+        "firstApproval": "Prima approvazione",
+        "firstApprover": "Primo approvatore",
+        "secondApproval": "Seconda approvazione",
+        "secondApprover": "Secondo approvatore",
+        "done": "Fatto"
+      },
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "deleteConfirm": "Eliminare il flusso «{{name}}»? Le istanze completate conservano la cronologia.",
+      "deleted": "Flusso eliminato.",
+      "deleteError": "Impossibile eliminare il flusso.",
+      "activate": "Attiva",
+      "deactivate": "Disattiva",
+      "active": "Attivo",
+      "inactive": "Inattivo",
+      "statesCount": "{{count}} stati",
+      "runningCount": "{{count}} in corso",
+      "hotFolders": "{{count}} cartelle di attivazione"
+    },
+    "editor": {
+      "title": "Modifica flusso",
+      "newTitle": "Nuovo flusso",
+      "unsaved": "Modifiche non salvate",
+      "name": "Nome",
+      "description": "Descrizione",
+      "active": "Disponibile in «Avvia flusso»",
+      "triggerFolders": "Cartelle di attivazione",
+      "triggerFoldersHint": "Ogni file caricato in queste cartelle avvia questo flusso automaticamente.",
+      "addTriggerFolder": "Aggiungi cartella",
+      "chooseTriggerFolder": "Scegli una cartella di attivazione",
+      "statuses": "Stati",
+      "addStatus": "Aggiungi stato",
+      "addEnd": "Aggiungi stato finale",
+      "newStatus": "Nuovo stato",
+      "newTransition": "Continua",
+      "label": "Etichetta",
+      "key": "Chiave",
+      "kind": "Tipo",
+      "color": "Colore",
+      "assignees": "Chi agisce",
+      "dueInDays": "Scadenza (giorni)",
+      "emails": "Indirizzi e-mail",
+      "role": "Ruolo",
+      "roleHint": "Un ruolo del realm Keycloak, es. CONTRIBUTOR o AUDITOR",
+      "question": "Domanda posta all’avvio",
+      "questionHint": "es. Chi approva questo documento?",
+      "transitions": "Transizioni (i pulsanti)",
+      "addTransition": "Aggiungi transizione",
+      "transitionLabel": "Testo del pulsante",
+      "target": "Porta a",
+      "style": "Stile",
+      "requireComment": "Commento obbligatorio",
+      "requireCommentHint": "La persona deve lasciare una nota (tipico di un rifiuto)",
+      "onEnter": "Quando un documento raggiunge questo stato",
+      "onEnterHint": "Nessuna azione: aggiungine una per spostare il documento, impostare metadati o notificare persone.",
+      "addAction": "Aggiungi azione",
+      "chooseFolder": "Scegli cartella",
+      "metadataEntries": "Metadati (una riga chiave=valore)",
+      "metadataHint": "stato=approvato",
+      "notifyEmails": "E-mail da notificare",
+      "moveUp": "Sposta su",
+      "moveDown": "Sposta giù",
+      "remove": "Rimuovi",
+      "badEmail": "Indirizzo e-mail non valido: {{email}}",
+      "preview": "Anteprima",
+      "previewHint": "Fai clic su uno stato nel disegno per modificarlo.",
+      "valid": "Il flusso è valido.",
+      "problemsCount": "{{count}} problemi da correggere prima di salvare",
+      "saved": "Flusso «{{name}}» salvato.",
+      "saveError": "Impossibile salvare il flusso."
+    },
+    "start": {
+      "title": "Avvia un flusso",
+      "chooseWorkflow": "Scegli un flusso",
+      "noDefinitions": "Nessun flusso disponibile.",
+      "noDefinitionsHint": "Chiedi a un designer di crearne uno in Flussi → Designer.",
+      "loadError": "Impossibile caricare i flussi.",
+      "who": "Chi agisce su «{{state}}»?",
+      "comment": "Nota per la persona successiva (facoltativa)",
+      "start": "Avvia",
+      "startHint": "Il documento resta in «{{state}}» finché non continui.",
+      "startAnd": "Avvia e {{transition}}",
+      "started": "Flusso «{{workflow}}» avviato: il documento è ora «{{state}}».",
+      "startError": "Impossibile avviare il flusso."
+    },
+    "decision": {
+      "commentRequired": "Commento (obbligatorio)",
+      "commentOptional": "Commento (facoltativo)",
+      "reassignTitle": "Affida questa attività a qualcun altro",
+      "emails": "Indirizzi e-mail",
+      "emailsHint": "Separa più indirizzi con virgole"
+    },
+    "panel": {
+      "title": "Flusso di lavoro",
+      "waitingFor": "In attesa di",
+      "you": "te",
+      "due": "scadenza {{date}}",
+      "overdue": "in ritardo dal {{date}}",
+      "since": "Avviato da {{who}} il {{date}}",
+      "start": "Avvia un flusso",
+      "openMonitor": "Apri nel monitoraggio",
+      "noWorkflow": "Nessun flusso in corso su questo documento."
+    },
+    "errors": {
+      "generic": "Qualcosa è andato storto.",
+      "network": "Errore di rete: controlla la connessione.",
+      "forbidden": "Non sei autorizzato a farlo.",
+      "notFound": "Non trovato.",
+      "conflict": "Questa azione non è più possibile nello stato attuale.",
+      "validation": "La richiesta è stata rifiutata."
     }
   }
 }
