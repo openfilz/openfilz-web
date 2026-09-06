@@ -46,7 +46,7 @@
         @if (globalProblems.length) {
           <div class="hint err">
             <mat-icon>error_outline</mat-icon>
-            <ul>@for (p of globalProblems; track p.path + p.code) { <li>{{ p.message }}</li> }</ul>
+            <ul>@for (p of globalProblems; track p.path + p.code) { <li>{{ problemText(p) }}</li> }</ul>
           </div>
         }
 
@@ -189,7 +189,7 @@
             @if (problemsFor(i).length) {
               <div class="hint err">
                 <mat-icon>error_outline</mat-icon>
-                <ul>@for (p of problemsFor(i); track p.path + p.code) { <li>{{ p.message }}</li> }</ul>
+                <ul>@for (p of problemsFor(i); track p.path + p.code) { <li>{{ problemText(p) }}</li> }</ul>
               </div>
             }
           </section>

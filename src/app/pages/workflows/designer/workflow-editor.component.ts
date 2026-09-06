@@ -22,7 +22,7 @@ import {
 } from '../../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { FolderTreeDialogComponent } from '../../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
-import { WorkflowTemplateId, problemsByState, templateSpec, uniqueKey, validateSpec } from '../../../utils/workflow-spec';
+import { WorkflowTemplateId, problemMessage, problemsByState, templateSpec, uniqueKey, validateSpec } from '../../../utils/workflow-spec';
 
 /** Editable copy of a state: e-mails and metadata are edited as text and turned back into the spec on save. */
 interface EditableAction {
@@ -298,6 +298,11 @@ export class WorkflowEditorComponent implements OnInit {
 
   problemsFor(i: number): WorkflowProblem[] {
     return this.problemsByState.get(i) ?? [];
+  }
+
+  /** Localised text of a problem — the API's English `message` is only the fallback. */
+  problemText(p: WorkflowProblem): string {
+    return problemMessage(p, (key, params) => this.translate.instant(key, params));
   }
 
   get globalProblems(): WorkflowProblem[] {

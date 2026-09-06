@@ -1506,6 +1506,49 @@
       "saved": "Workflow \"{{name}}\" saved.",
       "saveError": "Could not save the workflow."
     },
+    "problem": {
+      "EMPTY": "A workflow needs at least one status",
+      "TOO_MANY": "At most {{value}} statuses",
+      "ONE_START": "Exactly one status must be the start",
+      "NO_END": "At least one status must be a final status",
+      "BAD_KIND": "Status kind must be Start, Step or Final",
+      "BAD_COLOR": "Colour must be a #rrggbb code",
+      "END_HAS_TRANSITIONS": "A final status has no transitions",
+      "END_HAS_ASSIGNEES": "A final status has no assignees",
+      "END_HAS_DUE": "A final status has no due delay",
+      "NO_TRANSITION": "Status \"{{value}}\" needs at least one transition",
+      "NO_EMAIL": "Name at least one e-mail address",
+      "BAD_EMAIL": "Invalid e-mail address: {{value}}",
+      "BAD_ROLE": "Role name is required",
+      "BAD_ASSIGNEE_TYPE": "Assignee type is required",
+      "BAD_DUE": "Due delay must be between 1 and {{value}} days",
+      "NO_TARGET": "Transition needs a target status",
+      "UNKNOWN_TARGET": "Unknown target status: \"{{value}}\"",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "A workflow started automatically from a folder cannot ask the starter to choose assignees",
+      "UNREACHABLE": "Status \"{{value}}\" can never be reached",
+      "DEAD_END": "Status \"{{value}}\" can never reach a final status",
+      "NO_FOLDER": "Choose the destination folder",
+      "NO_ENTRIES": "Name at least one metadata key",
+      "TOO_MANY_ENTRIES": "At most {{value}} metadata keys",
+      "BAD_ACTION_TYPE": "Action type is required",
+      "BAD_KEY": {
+        "state": "Status key must be lowercase letters, digits or _",
+        "transition": "Transition key must be lowercase letters, digits or _",
+        "action": "Metadata keys must not be empty or start with _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Duplicate status key: \"{{value}}\"",
+        "transition": "Duplicate transition key: \"{{value}}\""
+      },
+      "BAD_LABEL": {
+        "state": "Status label is required",
+        "transition": "Transition label is required"
+      },
+      "NULL": {
+        "state": "Empty status",
+        "transition": "Empty transition"
+      }
+    },
     "start": {
       "title": "Start a workflow",
       "chooseWorkflow": "Choose a workflow",

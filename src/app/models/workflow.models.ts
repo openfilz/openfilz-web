@@ -53,7 +53,10 @@ export interface WorkflowSpec {
 export interface WorkflowProblem {
   path: string;
   code: string;
+  /** English fallback, already interpolated — only shown for codes the UI does not know. */
   message: string;
+  /** Dynamic bits of the message (a key, a label, a limit…) the UI re-interpolates in its own language. */
+  args?: string[];
 }
 
 export interface WorkflowValidationResult {

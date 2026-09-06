@@ -1506,6 +1506,49 @@
       "saved": "Workflow „{{name}}“ gespeichert.",
       "saveError": "Der Workflow konnte nicht gespeichert werden."
     },
+    "problem": {
+      "EMPTY": "Ein Workflow braucht mindestens einen Status",
+      "TOO_MANY": "Höchstens {{value}} Status",
+      "ONE_START": "Genau ein Status muss der Start sein",
+      "NO_END": "Mindestens ein Status muss ein Endstatus sein",
+      "BAD_KIND": "Die Statusart muss Start, Schritt oder Endstatus sein",
+      "BAD_COLOR": "Die Farbe muss ein #rrggbb-Code sein",
+      "END_HAS_TRANSITIONS": "Ein Endstatus hat keine Übergänge",
+      "END_HAS_ASSIGNEES": "Ein Endstatus hat keine Zuständigen",
+      "END_HAS_DUE": "Ein Endstatus hat keine Frist",
+      "NO_TRANSITION": "Status „{{value}}“ braucht mindestens einen Übergang",
+      "NO_EMAIL": "Geben Sie mindestens eine E-Mail-Adresse an",
+      "BAD_EMAIL": "Ungültige E-Mail-Adresse: {{value}}",
+      "BAD_ROLE": "Der Rollenname ist erforderlich",
+      "BAD_ASSIGNEE_TYPE": "Die Art der Zuständigkeit ist erforderlich",
+      "BAD_DUE": "Die Frist muss zwischen 1 und {{value}} Tagen liegen",
+      "NO_TARGET": "Der Übergang braucht einen Zielstatus",
+      "UNKNOWN_TARGET": "Unbekannter Zielstatus: „{{value}}“",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Ein Workflow, der automatisch aus einem Ordner startet, kann die startende Person nicht nach Zuständigen fragen",
+      "UNREACHABLE": "Status „{{value}}“ kann nie erreicht werden",
+      "DEAD_END": "Status „{{value}}“ kann nie einen Endstatus erreichen",
+      "NO_FOLDER": "Wählen Sie den Zielordner",
+      "NO_ENTRIES": "Geben Sie mindestens einen Metadaten-Schlüssel an",
+      "TOO_MANY_ENTRIES": "Höchstens {{value}} Metadaten-Schlüssel",
+      "BAD_ACTION_TYPE": "Die Aktionsart ist erforderlich",
+      "BAD_KEY": {
+        "state": "Der Statusschlüssel darf nur Kleinbuchstaben, Ziffern oder _ enthalten",
+        "transition": "Der Übergangsschlüssel darf nur Kleinbuchstaben, Ziffern oder _ enthalten",
+        "action": "Metadaten-Schlüssel dürfen nicht leer sein und nicht mit _ beginnen"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Doppelter Statusschlüssel: „{{value}}“",
+        "transition": "Doppelter Übergangsschlüssel: „{{value}}“"
+      },
+      "BAD_LABEL": {
+        "state": "Die Statusbezeichnung ist erforderlich",
+        "transition": "Die Bezeichnung des Übergangs ist erforderlich"
+      },
+      "NULL": {
+        "state": "Leerer Status",
+        "transition": "Leerer Übergang"
+      }
+    },
     "start": {
       "title": "Workflow starten",
       "chooseWorkflow": "Workflow wählen",

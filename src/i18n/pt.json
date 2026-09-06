@@ -1506,6 +1506,49 @@
       "saved": "Fluxo «{{name}}» guardado.",
       "saveError": "Não foi possível guardar o fluxo."
     },
+    "problem": {
+      "EMPTY": "Um fluxo precisa de pelo menos um estado",
+      "TOO_MANY": "No máximo {{value}} estados",
+      "ONE_START": "Exatamente um estado deve ser o início",
+      "NO_END": "Pelo menos um estado deve ser final",
+      "BAD_KIND": "O tipo de estado deve ser Início, Etapa ou Final",
+      "BAD_COLOR": "A cor deve ser um código #rrggbb",
+      "END_HAS_TRANSITIONS": "Um estado final não tem transições",
+      "END_HAS_ASSIGNEES": "Um estado final não tem responsáveis",
+      "END_HAS_DUE": "Um estado final não tem prazo",
+      "NO_TRANSITION": "O estado «{{value}}» precisa de pelo menos uma transição",
+      "NO_EMAIL": "Indique pelo menos um endereço de e-mail",
+      "BAD_EMAIL": "Endereço de e-mail inválido: {{value}}",
+      "BAD_ROLE": "O nome do papel é obrigatório",
+      "BAD_ASSIGNEE_TYPE": "O tipo de responsável é obrigatório",
+      "BAD_DUE": "O prazo deve estar entre 1 e {{value}} dias",
+      "NO_TARGET": "A transição precisa de um estado de destino",
+      "UNKNOWN_TARGET": "Estado de destino desconhecido: «{{value}}»",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Um fluxo iniciado automaticamente a partir de uma pasta não pode pedir que se escolham os responsáveis ao iniciar",
+      "UNREACHABLE": "O estado «{{value}}» nunca pode ser alcançado",
+      "DEAD_END": "O estado «{{value}}» nunca pode chegar a um estado final",
+      "NO_FOLDER": "Escolha a pasta de destino",
+      "NO_ENTRIES": "Indique pelo menos uma chave de metadados",
+      "TOO_MANY_ENTRIES": "No máximo {{value}} chaves de metadados",
+      "BAD_ACTION_TYPE": "O tipo de ação é obrigatório",
+      "BAD_KEY": {
+        "state": "A chave do estado só admite minúsculas, dígitos ou _",
+        "transition": "A chave da transição só admite minúsculas, dígitos ou _",
+        "action": "As chaves de metadados não podem estar vazias nem começar por _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Chave de estado duplicada: «{{value}}»",
+        "transition": "Chave de transição duplicada: «{{value}}»"
+      },
+      "BAD_LABEL": {
+        "state": "A etiqueta do estado é obrigatória",
+        "transition": "A etiqueta da transição é obrigatória"
+      },
+      "NULL": {
+        "state": "Estado vazio",
+        "transition": "Transição vazia"
+      }
+    },
     "start": {
       "title": "Iniciar um fluxo",
       "chooseWorkflow": "Escolha um fluxo",

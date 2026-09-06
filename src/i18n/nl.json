@@ -1506,6 +1506,49 @@
       "saved": "Workflow ‘{{name}}’ opgeslagen.",
       "saveError": "De workflow kon niet worden opgeslagen."
     },
+    "problem": {
+      "EMPTY": "Een workflow heeft minstens één status nodig",
+      "TOO_MANY": "Maximaal {{value}} statussen",
+      "ONE_START": "Precies één status moet de start zijn",
+      "NO_END": "Minstens één status moet een eindstatus zijn",
+      "BAD_KIND": "Het statustype moet Start, Stap of Eindstatus zijn",
+      "BAD_COLOR": "De kleur moet een #rrggbb-code zijn",
+      "END_HAS_TRANSITIONS": "Een eindstatus heeft geen overgangen",
+      "END_HAS_ASSIGNEES": "Een eindstatus heeft geen toegewezen personen",
+      "END_HAS_DUE": "Een eindstatus heeft geen deadline",
+      "NO_TRANSITION": "Status ‘{{value}}’ heeft minstens één overgang nodig",
+      "NO_EMAIL": "Geef minstens één e-mailadres op",
+      "BAD_EMAIL": "Ongeldig e-mailadres: {{value}}",
+      "BAD_ROLE": "De rolnaam is verplicht",
+      "BAD_ASSIGNEE_TYPE": "Het type toewijzing is verplicht",
+      "BAD_DUE": "De deadline moet tussen 1 en {{value}} dagen liggen",
+      "NO_TARGET": "De overgang heeft een doelstatus nodig",
+      "UNKNOWN_TARGET": "Onbekende doelstatus: ‘{{value}}’",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Een workflow die automatisch vanuit een map start, kan de starter niet om toegewezen personen vragen",
+      "UNREACHABLE": "Status ‘{{value}}’ kan nooit worden bereikt",
+      "DEAD_END": "Status ‘{{value}}’ kan nooit een eindstatus bereiken",
+      "NO_FOLDER": "Kies de doelmap",
+      "NO_ENTRIES": "Geef minstens één metadatasleutel op",
+      "TOO_MANY_ENTRIES": "Maximaal {{value}} metadatasleutels",
+      "BAD_ACTION_TYPE": "Het actietype is verplicht",
+      "BAD_KEY": {
+        "state": "De statussleutel mag alleen kleine letters, cijfers of _ bevatten",
+        "transition": "De overgangssleutel mag alleen kleine letters, cijfers of _ bevatten",
+        "action": "Metadatasleutels mogen niet leeg zijn of met _ beginnen"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Dubbele statussleutel: ‘{{value}}’",
+        "transition": "Dubbele overgangssleutel: ‘{{value}}’"
+      },
+      "BAD_LABEL": {
+        "state": "Het statuslabel is verplicht",
+        "transition": "Het label van de overgang is verplicht"
+      },
+      "NULL": {
+        "state": "Lege status",
+        "transition": "Lege overgang"
+      }
+    },
     "start": {
       "title": "Een workflow starten",
       "chooseWorkflow": "Kies een workflow",

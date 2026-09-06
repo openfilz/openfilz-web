@@ -13,6 +13,8 @@ import {
  */
 
 export const KEY_PATTERN = /^[a-z0-9_]{1,40}$/;
+export const MAX_DUE_DAYS = 365;
+export const MAX_METADATA_ENTRIES = 20;
 export const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 /** Turns a label into a status / transition key ("Pending approval" → "pending_approval"). */
@@ -47,7 +49,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
     return problems;
   }
   if (states.length > maxStates) {
-    problems.push({ path: 'states', code: 'TOO_MANY', message: `At most ${maxStates} statuses` });
+    problems.push({ path: 'states', code: 'TOO_MANY', message: `At most ${maxStates} statuses`, args: [String(maxStates)] });
   }
   const byKey = new Map<string, WorkflowState>();
   let starts = 0, ends = 0, chosenAtStart = false;
@@ -56,7 +58,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
     if (!s.key || !KEY_PATTERN.test(s.key)) {
       problems.push({ path: `${p}.key`, code: 'BAD_KEY', message: 'Status key must be lowercase letters, digits or _' });
     } else if (byKey.has(s.key)) {
-      problems.push({ path: `${p}.key`, code: 'DUPLICATE_KEY', message: `Duplicate status key '${s.key}'` });
+      problems.push({ path: `${p}.key`, code: 'DUPLICATE_KEY', message: `Duplicate status key '${s.key}'`, args: [s.key] });
     } else {
       byKey.set(s.key, s);
     }
@@ -76,7 +78,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
       if (s.dueInDays) problems.push({ path: `${p}.dueInDays`, code: 'END_HAS_DUE', message: 'A final status has no due delay' });
     } else {
       if (!transitions.length) {
-        problems.push({ path: `${p}.transitions`, code: 'NO_TRANSITION', message: `Status '${s.label}' needs at least one transition` });
+        problems.push({ path: `${p}.transitions`, code: 'NO_TRANSITION', message: `Status '${s.label}' needs at least one transition`, args: [s.label] });
       }
       const a = s.assignees ?? { type: 'INITIATOR' as const };
       switch (a.type) {
@@ -84,7 +86,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
           const emails = (a.emails ?? []).map(e => e.trim().toLowerCase()).filter(e => e);
           if (!emails.length) problems.push({ path: `${p}.assignees.emails`, code: 'NO_EMAIL', message: 'Name at least one e-mail address' });
           emails.filter(e => !validEmail(e)).forEach(e =>
-            problems.push({ path: `${p}.assignees.emails`, code: 'BAD_EMAIL', message: `Invalid e-mail address '${e}'` }));
+            problems.push({ path: `${p}.assignees.emails`, code: 'BAD_EMAIL', message: `Invalid e-mail address '${e}'`, args: [e] }));
           break;
         }
         case 'ROLE':
@@ -100,8 +102,8 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
         default:
           problems.push({ path: `${p}.assignees.type`, code: 'BAD_ASSIGNEE_TYPE', message: 'Assignee type is required' });
       }
-      if (s.dueInDays != null && (s.dueInDays < 1 || s.dueInDays > 365)) {
-        problems.push({ path: `${p}.dueInDays`, code: 'BAD_DUE', message: 'Due delay must be between 1 and 365 days' });
+      if (s.dueInDays != null && (s.dueInDays < 1 || s.dueInDays > MAX_DUE_DAYS)) {
+        problems.push({ path: `${p}.dueInDays`, code: 'BAD_DUE', message: `Due delay must be between 1 and ${MAX_DUE_DAYS} days`, args: [String(MAX_DUE_DAYS)] });
       }
     }
     const tKeys = new Set<string>();
@@ -110,7 +112,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
       if (!t.key || !KEY_PATTERN.test(t.key)) {
         problems.push({ path: `${tp}.key`, code: 'BAD_KEY', message: 'Transition key must be lowercase letters, digits or _' });
       } else if (tKeys.has(t.key)) {
-        problems.push({ path: `${tp}.key`, code: 'DUPLICATE_KEY', message: `Duplicate transition key '${t.key}'` });
+        problems.push({ path: `${tp}.key`, code: 'DUPLICATE_KEY', message: `Duplicate transition key '${t.key}'`, args: [t.key] });
       } else {
         tKeys.add(t.key);
       }
@@ -127,7 +129,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
   if (ends === 0) problems.push({ path: 'states', code: 'NO_END', message: 'At least one status must be an END' });
   states.forEach((s, i) => (s.transitions ?? []).forEach((t, j) => {
     if (t.to && !byKey.has(t.to)) {
-      problems.push({ path: `states[${i}].transitions[${j}].to`, code: 'UNKNOWN_TARGET', message: `Unknown target status '${t.to}'` });
+      problems.push({ path: `states[${i}].transitions[${j}].to`, code: 'UNKNOWN_TARGET', message: `Unknown target status '${t.to}'`, args: [t.to] });
     }
   }));
   if (triggerFolderIds.length && chosenAtStart) {
@@ -146,7 +148,9 @@ function validateAction(a: WorkflowAction, p: string, problems: WorkflowProblem[
     case 'SET_METADATA': {
       const keys = Object.keys(a.entries ?? {});
       if (!keys.length) problems.push({ path: `${p}.entries`, code: 'NO_ENTRIES', message: 'Name at least one metadata key' });
-      if (keys.length > 20) problems.push({ path: `${p}.entries`, code: 'TOO_MANY_ENTRIES', message: 'At most 20 metadata keys' });
+      if (keys.length > MAX_METADATA_ENTRIES) {
+        problems.push({ path: `${p}.entries`, code: 'TOO_MANY_ENTRIES', message: `At most ${MAX_METADATA_ENTRIES} metadata keys`, args: [String(MAX_METADATA_ENTRIES)] });
+      }
       if (keys.some(k => !k.trim() || k.startsWith('_') || k.length > 100)) {
         problems.push({ path: `${p}.entries`, code: 'BAD_KEY', message: 'Metadata keys must not be empty or start with _' });
       }
@@ -156,7 +160,7 @@ function validateAction(a: WorkflowAction, p: string, problems: WorkflowProblem[
       const emails = (a.emails ?? []).map(e => e.trim()).filter(e => e);
       if (!emails.length) problems.push({ path: `${p}.emails`, code: 'NO_EMAIL', message: 'Name at least one e-mail address' });
       emails.filter(e => !validEmail(e)).forEach(e =>
-        problems.push({ path: `${p}.emails`, code: 'BAD_EMAIL', message: `Invalid e-mail address '${e}'` }));
+        problems.push({ path: `${p}.emails`, code: 'BAD_EMAIL', message: `Invalid e-mail address '${e}'`, args: [e] }));
       break;
     }
     default:
@@ -175,7 +179,7 @@ function reachability(states: WorkflowState[], byKey: Map<string, WorkflowState>
     (byKey.get(k)?.transitions ?? []).forEach(t => queue.push(t.to));
   }
   states.forEach((s, i) => {
-    if (!seen.has(s.key)) problems.push({ path: `states[${i}]`, code: 'UNREACHABLE', message: `Status '${s.label}' can never be reached` });
+    if (!seen.has(s.key)) problems.push({ path: `states[${i}]`, code: 'UNREACHABLE', message: `Status '${s.label}' can never be reached`, args: [s.label] });
   });
   const reverse = new Map<string, Set<string>>();
   states.forEach(s => (s.transitions ?? []).forEach(t => {
@@ -192,9 +196,41 @@ function reachability(states: WorkflowState[], byKey: Map<string, WorkflowState>
   }
   states.forEach((s, i) => {
     if (s.kind !== 'END' && seen.has(s.key) && !canFinish.has(s.key)) {
-      problems.push({ path: `states[${i}]`, code: 'DEAD_END', message: `Status '${s.label}' can never reach a final status` });
+      problems.push({ path: `states[${i}]`, code: 'DEAD_END', message: `Status '${s.label}' can never reach a final status`, args: [s.label] });
     }
   });
+}
+
+/**
+ * i18n key of a problem, under `workflow.problem.*`. The `code` alone is ambiguous — the same rule
+ * fires on a status, on a transition and on a metadata key — so the path tells the three apart.
+ * Server-side problems carry the same codes and paths (the validators mirror each other), so both
+ * sources go through here.
+ */
+export function problemMessageKey(p: WorkflowProblem): string {
+  const onTransition = p.path.includes('.transitions[');
+  const onAction = p.path.includes('.onEnter[');
+  const scope = onAction ? 'action' : onTransition ? 'transition' : 'state';
+  switch (p.code) {
+    case 'BAD_KEY':
+    case 'DUPLICATE_KEY':
+    case 'BAD_LABEL':
+    case 'NULL':
+      return `workflow.problem.${p.code}.${scope}`;
+    default:
+      return `workflow.problem.${p.code}`;
+  }
+}
+
+/**
+ * Localised text of a problem. `t` is `TranslateService.instant`, which returns the key itself when
+ * it is missing — that is the signal to fall back on the API's English `message`, so a code shipped
+ * by a newer backend still reads as a sentence.
+ */
+export function problemMessage(p: WorkflowProblem, t: (key: string, params?: object) => string): string {
+  const key = problemMessageKey(p);
+  const text = t(key, { value: p.args?.[0] ?? '' });
+  return !text || text === key ? p.message : text;
 }
 
 /** Problems keyed by the state index they point at (-1 = whole workflow). */

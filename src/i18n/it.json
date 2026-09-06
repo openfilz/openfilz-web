@@ -1506,6 +1506,49 @@
       "saved": "Flusso «{{name}}» salvato.",
       "saveError": "Impossibile salvare il flusso."
     },
+    "problem": {
+      "EMPTY": "Un flusso richiede almeno uno stato",
+      "TOO_MANY": "Al massimo {{value}} stati",
+      "ONE_START": "Esattamente uno stato deve essere l’inizio",
+      "NO_END": "Almeno uno stato deve essere finale",
+      "BAD_KIND": "Il tipo di stato deve essere Inizio, Passo o Finale",
+      "BAD_COLOR": "Il colore deve essere un codice #rrggbb",
+      "END_HAS_TRANSITIONS": "Uno stato finale non ha transizioni",
+      "END_HAS_ASSIGNEES": "Uno stato finale non ha assegnatari",
+      "END_HAS_DUE": "Uno stato finale non ha scadenza",
+      "NO_TRANSITION": "Lo stato «{{value}}» richiede almeno una transizione",
+      "NO_EMAIL": "Indica almeno un indirizzo e-mail",
+      "BAD_EMAIL": "Indirizzo e-mail non valido: {{value}}",
+      "BAD_ROLE": "Il nome del ruolo è obbligatorio",
+      "BAD_ASSIGNEE_TYPE": "Il tipo di assegnatario è obbligatorio",
+      "BAD_DUE": "La scadenza deve essere compresa tra 1 e {{value}} giorni",
+      "NO_TARGET": "La transizione richiede uno stato di destinazione",
+      "UNKNOWN_TARGET": "Stato di destinazione sconosciuto: «{{value}}»",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Un flusso avviato automaticamente da una cartella non può chiedere di scegliere gli assegnatari all’avvio",
+      "UNREACHABLE": "Lo stato «{{value}}» non può mai essere raggiunto",
+      "DEAD_END": "Lo stato «{{value}}» non può mai raggiungere uno stato finale",
+      "NO_FOLDER": "Scegli la cartella di destinazione",
+      "NO_ENTRIES": "Indica almeno una chiave di metadati",
+      "TOO_MANY_ENTRIES": "Al massimo {{value}} chiavi di metadati",
+      "BAD_ACTION_TYPE": "Il tipo di azione è obbligatorio",
+      "BAD_KEY": {
+        "state": "La chiave dello stato ammette solo minuscole, cifre o _",
+        "transition": "La chiave della transizione ammette solo minuscole, cifre o _",
+        "action": "Le chiavi dei metadati non possono essere vuote né iniziare con _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Chiave di stato duplicata: «{{value}}»",
+        "transition": "Chiave di transizione duplicata: «{{value}}»"
+      },
+      "BAD_LABEL": {
+        "state": "L’etichetta dello stato è obbligatoria",
+        "transition": "L’etichetta della transizione è obbligatoria"
+      },
+      "NULL": {
+        "state": "Stato vuoto",
+        "transition": "Transizione vuota"
+      }
+    },
     "start": {
       "title": "Avvia un flusso",
       "chooseWorkflow": "Scegli un flusso",

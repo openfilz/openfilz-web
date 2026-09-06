@@ -1506,6 +1506,49 @@
       "saved": "Workflow « {{name}} » enregistré.",
       "saveError": "Impossible d’enregistrer le workflow."
     },
+    "problem": {
+      "EMPTY": "Un workflow doit comporter au moins un statut",
+      "TOO_MANY": "{{value}} statuts au maximum",
+      "ONE_START": "Un seul statut doit être le départ",
+      "NO_END": "Au moins un statut doit être final",
+      "BAD_KIND": "Le type de statut doit être Départ, Étape ou Final",
+      "BAD_COLOR": "La couleur doit être un code #rrggbb",
+      "END_HAS_TRANSITIONS": "Un statut final n’a pas de transition",
+      "END_HAS_ASSIGNEES": "Un statut final n’a pas d’intervenant",
+      "END_HAS_DUE": "Un statut final n’a pas de délai",
+      "NO_TRANSITION": "Le statut « {{value}} » doit avoir au moins une transition",
+      "NO_EMAIL": "Indiquez au moins une adresse e-mail",
+      "BAD_EMAIL": "Adresse e-mail invalide : {{value}}",
+      "BAD_ROLE": "Le nom du rôle est obligatoire",
+      "BAD_ASSIGNEE_TYPE": "Le type d’intervenant est obligatoire",
+      "BAD_DUE": "Le délai doit être compris entre 1 et {{value}} jours",
+      "NO_TARGET": "La transition doit mener à un statut",
+      "UNKNOWN_TARGET": "Statut cible inconnu : « {{value}} »",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Un workflow lancé automatiquement depuis un dossier ne peut pas demander de choisir les intervenants au lancement",
+      "UNREACHABLE": "Le statut « {{value}} » ne peut jamais être atteint",
+      "DEAD_END": "Le statut « {{value}} » ne peut jamais atteindre un statut final",
+      "NO_FOLDER": "Choisissez le dossier de destination",
+      "NO_ENTRIES": "Indiquez au moins une clé de métadonnée",
+      "TOO_MANY_ENTRIES": "{{value}} clés de métadonnées au maximum",
+      "BAD_ACTION_TYPE": "Le type d’action est obligatoire",
+      "BAD_KEY": {
+        "state": "La clé du statut ne peut contenir que des minuscules, des chiffres ou _",
+        "transition": "La clé de la transition ne peut contenir que des minuscules, des chiffres ou _",
+        "action": "Les clés de métadonnées ne doivent pas être vides ni commencer par _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Clé de statut en double : « {{value}} »",
+        "transition": "Clé de transition en double : « {{value}} »"
+      },
+      "BAD_LABEL": {
+        "state": "Le libellé du statut est obligatoire",
+        "transition": "Le libellé de la transition est obligatoire"
+      },
+      "NULL": {
+        "state": "Statut vide",
+        "transition": "Transition vide"
+      }
+    },
     "start": {
       "title": "Lancer un workflow",
       "chooseWorkflow": "Choisir un workflow",

@@ -1506,6 +1506,49 @@
       "saved": "Flujo «{{name}}» guardado.",
       "saveError": "No se pudo guardar el flujo."
     },
+    "problem": {
+      "EMPTY": "Un flujo necesita al menos un estado",
+      "TOO_MANY": "Como máximo {{value}} estados",
+      "ONE_START": "Exactamente un estado debe ser el inicio",
+      "NO_END": "Al menos un estado debe ser final",
+      "BAD_KIND": "El tipo de estado debe ser Inicio, Paso o Final",
+      "BAD_COLOR": "El color debe ser un código #rrggbb",
+      "END_HAS_TRANSITIONS": "Un estado final no tiene transiciones",
+      "END_HAS_ASSIGNEES": "Un estado final no tiene responsables",
+      "END_HAS_DUE": "Un estado final no tiene plazo",
+      "NO_TRANSITION": "El estado «{{value}}» necesita al menos una transición",
+      "NO_EMAIL": "Indique al menos una dirección de correo",
+      "BAD_EMAIL": "Dirección de correo no válida: {{value}}",
+      "BAD_ROLE": "El nombre del rol es obligatorio",
+      "BAD_ASSIGNEE_TYPE": "El tipo de responsable es obligatorio",
+      "BAD_DUE": "El plazo debe estar entre 1 y {{value}} días",
+      "NO_TARGET": "La transición necesita un estado de destino",
+      "UNKNOWN_TARGET": "Estado de destino desconocido: «{{value}}»",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Un flujo iniciado automáticamente desde una carpeta no puede pedir que se elijan los responsables al iniciarlo",
+      "UNREACHABLE": "El estado «{{value}}» nunca puede alcanzarse",
+      "DEAD_END": "El estado «{{value}}» nunca puede llegar a un estado final",
+      "NO_FOLDER": "Elija la carpeta de destino",
+      "NO_ENTRIES": "Indique al menos una clave de metadatos",
+      "TOO_MANY_ENTRIES": "Como máximo {{value}} claves de metadatos",
+      "BAD_ACTION_TYPE": "El tipo de acción es obligatorio",
+      "BAD_KEY": {
+        "state": "La clave del estado solo admite minúsculas, dígitos o _",
+        "transition": "La clave de la transición solo admite minúsculas, dígitos o _",
+        "action": "Las claves de metadatos no pueden estar vacías ni empezar por _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Clave de estado duplicada: «{{value}}»",
+        "transition": "Clave de transición duplicada: «{{value}}»"
+      },
+      "BAD_LABEL": {
+        "state": "La etiqueta del estado es obligatoria",
+        "transition": "La etiqueta de la transición es obligatoria"
+      },
+      "NULL": {
+        "state": "Estado vacío",
+        "transition": "Transición vacía"
+      }
+    },
     "start": {
       "title": "Iniciar un flujo",
       "chooseWorkflow": "Elija un flujo",
