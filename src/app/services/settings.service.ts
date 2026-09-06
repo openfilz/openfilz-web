@@ -11,6 +11,12 @@ export interface Settings {
   userQuotaMB: number | null;
   thumbnailsActive: boolean;
   aiActive: boolean;
+  /**
+   * openfilz.ai.chat.active on the API (AND aiActive) — the in-app chat assistant.
+   * Its own switch: a deployment can run the automatic AI features (insights, smart filing,
+   * semantic retrieval) with no chat model at all, and then aiActive stays true while this is false.
+   */
+  aiChatActive?: boolean;
   aiUserSettingsEnabled: boolean;
   /** openfilz.ai.insights.active on the API — document insights (summary, keywords…) shown in the details panel. */
   aiInsightsActive?: boolean;
@@ -67,8 +73,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
       })
     );
   }
@@ -90,15 +96,38 @@ export class SettingsService {
   }
 
   // Driven by openfilz.ai.active on the API: the AI endpoints only exist when that flag is on,
-  // so the chat UI follows the backend rather than a frontend toggle of its own.
+  // so the AI UI follows the backend rather than a frontend toggle of its own.
+  // This is the *whole* AI feature (embeddings, insights, smart filing, maintenance jobs) —
+  // for the chat assistant specifically, use isAiChatActive.
   get isAiActive(): boolean {
     return this.settingsSubject.value?.aiActive ?? false;
   }
 
+  /**
+   * The in-app chat assistant (openfilz.ai.chat.active AND openfilz.ai.active on the API):
+   * the chat button, the chat panel and "Organise with AI", which opens the chat.
+   *
+   * Deliberately separate from isAiActive: a deployment may run the automatic AI features with
+   * no chat model at all (prototype/learned classification, the neighbour vote, by-kind
+   * reorganisation), and then offering a chat that cannot answer would be a broken promise.
+   * The backend answers 404 on /ai/chat** when it is off, so this only hides what would fail.
+   *
+   * Older backends (before the switch existed) do not send the field; an undefined value
+   * therefore falls back to aiActive, which is exactly what they meant.
+   */
+  get isAiChatActive(): boolean {
+    const settings = this.settingsSubject.value;
+    if (!settings?.aiActive) {
+      return false;
+    }
+    return settings.aiChatActive ?? true;
+  }
+
   // BYOK: users may override the chat LLM with their own provider + API key.
-  // Follows the backend's openfilz.ai.user-settings.enabled flag.
+  // Follows the backend's openfilz.ai.user-settings.enabled flag — and the chat switch, since
+  // there is nothing to override when the assistant is off.
   get isAiUserSettingsEnabled(): boolean {
-    return (this.settingsSubject.value?.aiActive ?? false)
+    return this.isAiChatActive
       && (this.settingsSubject.value?.aiUserSettingsEnabled ?? false);
   }
 
