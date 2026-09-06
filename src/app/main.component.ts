@@ -67,7 +67,7 @@ export class MainComponent implements OnInit {
   // Settings are loaded by the app initializer before bootstrap completes, so this is
   // populated by the time the template first renders (same as isRecycleBinEnabled elsewhere).
   get isAiEnabled(): boolean {
-    return this.settingsService.isAiActive;
+    return this.settingsService.isAiChatActive;
   }
 
   // This is needed for the header component

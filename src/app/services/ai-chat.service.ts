@@ -38,7 +38,7 @@ export class AiChatService {
   private abortController: AbortController | null = null;
 
   get isEnabled(): boolean {
-    return this.settingsService.isAiActive;
+    return this.settingsService.isAiChatActive;
   }
 
   loadConversations(): Observable<AiConversation[]> {
