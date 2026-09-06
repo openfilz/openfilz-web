@@ -157,7 +157,6 @@
   text-transform: uppercase;
   letter-spacing: 0.4px;
   color: var(--text-secondary);
-  align-self: baseline;
 }
 
 .insights-facts dd {
@@ -165,6 +164,13 @@
   font-size: 13px;
   color: var(--text-primary);
   word-break: break-word;
+}
+
+/* Key and value are different sizes: align their text baselines, not the cell boxes */
+.insights-facts dt,
+.insights-facts dd {
+  align-self: baseline;
+  line-height: 1.45;
 }
 
 /* The kind: a chip that opens a select; the icon says a user set it */
