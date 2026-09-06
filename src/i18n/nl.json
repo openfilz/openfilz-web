@@ -276,6 +276,7 @@
     "activity": "Activiteit",
     "addMetadata": "Toevoegen",
     "clickToEdit": "Klik om te bewerken",
+    "lockedByESign": "Vergrendeld door e-Sign — kan niet worden bewerkt of verwijderd",
     "keyDeleted": "\"{{key}}\" verwijderd",
     "saveFailed": "Opslaan van metadata mislukt"
   },
