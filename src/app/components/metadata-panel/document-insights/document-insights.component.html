@@ -105,14 +105,23 @@
       @if (editingCategory) {
         <select class="category-select" [attr.aria-label]="'insights.editCategory' | translate"
           [disabled]="savingCategory" #categorySelect
-          (change)="saveCategory(categorySelect.value)" (keydown.escape)="cancelEditCategory()" (blur)="cancelEditCategory()">
+          (keydown.enter)="saveCategory(categorySelect.value)" (keydown.escape)="cancelEditCategory()">
           @for (category of categories; track category) {
             <option [value]="category" [selected]="category === insights.category">{{ categoryLabel(category) }}</option>
           }
         </select>
-        @if (savingCategory) {
-          <mat-spinner diameter="14" aria-hidden="true"></mat-spinner>
-        }
+        <button type="button" class="category-action category-action-save" (click)="saveCategory(categorySelect.value)"
+          [disabled]="savingCategory" [attr.aria-label]="'common.save' | translate" [matTooltip]="'common.save' | translate">
+          @if (savingCategory) {
+            <mat-spinner diameter="16" aria-hidden="true"></mat-spinner>
+          } @else {
+            <mat-icon aria-hidden="true">check</mat-icon>
+          }
+        </button>
+        <button type="button" class="category-action" (click)="cancelEditCategory()"
+          [disabled]="savingCategory" [attr.aria-label]="'common.cancel' | translate" [matTooltip]="'common.cancel' | translate">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
       } @else if (insights.category) {
         <button type="button" class="category-chip" [class.category-chip-editable]="canEditCategory"
           [disabled]="!canEditCategory" (click)="startEditCategory()"

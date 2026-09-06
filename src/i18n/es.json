@@ -536,6 +536,28 @@
       "pitch": "Está usando la edición Community de código abierto. OpenFilz Enterprise añade espacios privados por usuario, compartición de documentos con permisos, comentarios y menciones, equipos, analíticas, webhooks e integraciones, escaneo con OCR, antivirus, copias de seguridad y archivado PDF/A con firmas electrónicas de confianza.",
       "learnMore": "Explorar Enterprise",
       "tryDemo": "Probar la demo Enterprise"
+    },
+    "aiMaintenance": {
+      "title": "Mantenimiento de la IA",
+      "description": "Tareas que mantienen las funciones de IA al día con la biblioteca. Se ejecutan en segundo plano en el servidor: puede salir de esta página y volver a lanzarlas más tarde.",
+      "embeddings": {
+        "title": "Recalcular los vectores de los documentos",
+        "hint": "Calcula los vectores de los que dependen la búsqueda por similitud, el archivado inteligente y el clasificador aprendido. Por defecto solo se procesan los documentos sin vector: tras una subida cuyo cálculo falló o tras reiniciar el almacén de vectores por un cambio de modelo.",
+        "start": "Recalcular"
+      },
+      "insights": {
+        "title": "Volver a analizar los documentos",
+        "hint": "Vuelve a pedir al modelo el tipo, el resumen y las palabras clave de los documentos sin análisis actual. Con «Todos los documentos» se analizan todos de nuevo, lo que consume tokens.",
+        "start": "Volver a analizar"
+      },
+      "force": "Todos los documentos",
+      "started": "Tarea iniciada",
+      "enumerating": "Buscando los documentos que procesar…",
+      "running": "{{done}} de {{total}} procesados",
+      "done": "Terminado.",
+      "result": "{{done}} procesados, {{skipped}} omitidos, {{failed}} fallidos.",
+      "startError": "No se pudo iniciar la tarea.",
+      "statusError": "No se pudo leer el progreso; la tarea sigue ejecutándose en el servidor."
     }
   },
   "bottomSheet": {

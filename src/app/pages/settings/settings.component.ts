@@ -12,12 +12,14 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
 import { McpSettingsComponent } from '../../components/mcp-settings/mcp-settings.component';
 import { SmartFilingToggleComponent } from '../../components/smart-filing-toggle/smart-filing-toggle.component';
+import { AiMaintenanceComponent } from '../../components/ai-maintenance/ai-maintenance.component';
+import { AiMaintenanceService } from '../../services/ai-maintenance.service';
 import { IS_ENTERPRISE } from '../../edition';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent, AiMaintenanceComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
@@ -34,6 +36,7 @@ export class SettingsComponent implements OnInit {
 
   private themeService = inject(ThemeService);
   private settingsService = inject(SettingsService);
+  private aiMaintenance = inject(AiMaintenanceService);
   private signatureService = inject(SignatureService);
   private oidcSecurityService = inject(OidcSecurityService);
   private translate = inject(TranslateService);
@@ -69,6 +72,11 @@ export class SettingsComponent implements OnInit {
 
   get showAiSettings(): boolean {
     return this.settingsService.isAiUserSettingsEnabled;
+  }
+
+  /** The AI maintenance jobs (re-embed, re-enrich): AI on and the CONTRIBUTOR role, whatever BYOK says. */
+  get showAiMaintenance(): boolean {
+    return this.aiMaintenance.enabled;
   }
 
   /** Smart filing switches follow openfilz.ai.auto-file.active alone (independent of BYOK). */
