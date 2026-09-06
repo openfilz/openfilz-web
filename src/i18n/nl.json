@@ -536,6 +536,28 @@
       "pitch": "U gebruikt de open source Community Edition. OpenFilz Enterprise voegt privéruimtes per gebruiker toe, documenten delen met rechten, reacties en vermeldingen, teams, analyses, webhooks en integraties, scannen met OCR, antivirus, back-ups en PDF/A-archivering met vertrouwde e-handtekeningen.",
       "learnMore": "Verken Enterprise",
       "tryDemo": "Probeer de Enterprise-demo"
+    },
+    "aiMaintenance": {
+      "title": "AI-onderhoud",
+      "description": "Taken die de AI-functies in lijn houden met de bibliotheek. Ze draaien op de achtergrond op de server: u kunt deze pagina verlaten en ze later opnieuw starten.",
+      "embeddings": {
+        "title": "Documenten opnieuw inbedden",
+        "hint": "Berekent de vectoren waarop zoeken op gelijkenis, slim archiveren en de geleerde classificatie steunen. Standaard worden alleen documenten zonder vector verwerkt: na een upload waarvan de inbedding mislukte, of nadat de vectoropslag is gewist voor een modelwissel.",
+        "start": "Opnieuw inbedden"
+      },
+      "insights": {
+        "title": "Documenten opnieuw analyseren",
+        "hint": "Vraagt het model opnieuw om het type, de samenvatting en de trefwoorden van documenten zonder actuele analyse. Met ‘Alle documenten’ worden ze allemaal opnieuw geanalyseerd, wat tokens kost.",
+        "start": "Opnieuw analyseren"
+      },
+      "force": "Alle documenten",
+      "started": "Taak gestart",
+      "enumerating": "Documenten om te verwerken worden gezocht…",
+      "running": "{{done}} van {{total}} verwerkt",
+      "done": "Klaar.",
+      "result": "{{done}} verwerkt, {{skipped}} overgeslagen, {{failed}} mislukt.",
+      "startError": "De taak kon niet worden gestart.",
+      "statusError": "De voortgang kon niet worden gelezen; de taak loopt door op de server."
     }
   },
   "bottomSheet": {

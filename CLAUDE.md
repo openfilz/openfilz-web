@@ -95,6 +95,7 @@ src/app/
 | `settings.service` | App settings (bin interval, quotas, thumbnails, AI flags incl. `aiUserSettingsEnabled`) |
 | `ai-chat.service` | AI chat panel state + SSE streaming (`/ai/chat`, conversations) |
 | `ai-settings.service` | Per-user AI model settings — BYOK (`/settings/ai`, key is write-only) |
+| `ai-maintenance.service` | AI maintenance jobs of the settings page — re-embed (`/ai/embeddings/backfill`) and re-enrich (`/ai/insights/backfill`) the documents; `enabled` = AI on + CONTRIBUTOR, `components/ai-maintenance/` polls the job |
 | `search.service` | Search with filters and suggestions |
 | `user-preferences.service` | User preferences persistence |
 | `breadcrumb.service` | Navigation breadcrumb state |

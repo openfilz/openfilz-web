@@ -177,6 +177,20 @@
     </div>
   }
 
+  <!-- Its own section, gated on openfilz.ai.active + CONTRIBUTOR (not on BYOK like the AI
+       settings above): the maintenance jobs exist on every AI deployment -->
+  @if (showAiMaintenance) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>build</mat-icon>
+        {{ 'settings.aiMaintenance.title' | translate }}
+      </div>
+      <div class="section-content">
+        <app-ai-maintenance></app-ai-maintenance>
+      </div>
+    </div>
+  }
+
   @if (showSmartFiling) {
     <div class="settings-section">
       <div class="section-title">

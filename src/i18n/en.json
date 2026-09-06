@@ -536,6 +536,28 @@
       "pitch": "You are running the open-source Community Edition. OpenFilz Enterprise adds private per-user spaces, document sharing & permissions, comments & mentions, teams, analytics, webhooks & integrations, document scanning with OCR, antivirus, backups and PDF/A archiving with trusted e-signatures.",
       "learnMore": "Explore Enterprise",
       "tryDemo": "Try the Enterprise demo"
+    },
+    "aiMaintenance": {
+      "title": "AI maintenance",
+      "description": "Jobs that keep the AI features in step with the library. They run on the server in the background: you can leave this page, and start them again later.",
+      "embeddings": {
+        "title": "Re-embed the documents",
+        "hint": "Computes the vectors that similarity search, smart filing and the learned classifier rely on. By default only the documents that have no vector are processed: after an upload whose embedding failed, or after the vector store was reset for a change of embedding model.",
+        "start": "Re-embed"
+      },
+      "insights": {
+        "title": "Re-enrich the documents",
+        "hint": "Asks the model again for the kind, summary and keywords of the documents that have no current insight. With every document, all of them are enriched again, which spends tokens.",
+        "start": "Re-enrich"
+      },
+      "force": "Every document",
+      "started": "Job started",
+      "enumerating": "Looking for the documents to process…",
+      "running": "{{done}} of {{total}} processed",
+      "done": "Finished.",
+      "result": "{{done}} processed, {{skipped}} skipped, {{failed}} failed.",
+      "startError": "The job could not be started.",
+      "statusError": "The job's progress could not be read; it keeps running on the server."
     }
   },
   "bottomSheet": {

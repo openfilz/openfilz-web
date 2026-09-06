@@ -536,6 +536,28 @@
       "pitch": "Está a usar a edição Community de código aberto. O OpenFilz Enterprise acrescenta espaços privados por utilizador, partilha de documentos com permissões, comentários e menções, equipas, análises, webhooks e integrações, digitalização com OCR, antivírus, cópias de segurança e arquivo PDF/A com assinaturas eletrónicas fidedignas.",
       "learnMore": "Explorar o Enterprise",
       "tryDemo": "Experimentar a demo Enterprise"
+    },
+    "aiMaintenance": {
+      "title": "Manutenção da IA",
+      "description": "Tarefas que mantêm as funções de IA alinhadas com a biblioteca. Correm em segundo plano no servidor: pode sair desta página e voltar a lançá-las mais tarde.",
+      "embeddings": {
+        "title": "Recalcular os vetores dos documentos",
+        "hint": "Calcula os vetores de que dependem a pesquisa por semelhança, a arrumação inteligente e o classificador aprendido. Por omissão só são processados os documentos sem vetor: após um carregamento cujo cálculo falhou ou após a reposição do armazém de vetores por uma mudança de modelo.",
+        "start": "Recalcular"
+      },
+      "insights": {
+        "title": "Reanalisar os documentos",
+        "hint": "Volta a pedir ao modelo o tipo, o resumo e as palavras-chave dos documentos sem análise atual. Com «Todos os documentos», todos são reanalisados, o que consome tokens.",
+        "start": "Reanalisar"
+      },
+      "force": "Todos os documentos",
+      "started": "Tarefa iniciada",
+      "enumerating": "A procurar os documentos a processar…",
+      "running": "{{done}} de {{total}} processados",
+      "done": "Concluído.",
+      "result": "{{done}} processados, {{skipped}} ignorados, {{failed}} falhados.",
+      "startError": "Não foi possível iniciar a tarefa.",
+      "statusError": "Não foi possível ler o progresso; a tarefa continua no servidor."
     }
   },
   "bottomSheet": {

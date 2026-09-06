@@ -536,6 +536,28 @@
       "pitch": "Sie nutzen die Open-Source Community Edition. OpenFilz Enterprise ergänzt private Benutzerbereiche, Dokumentfreigabe mit Berechtigungen, Kommentare und Erwähnungen, Teams, Auswertungen, Webhooks und Integrationen, Scannen mit OCR, Virenschutz, Backups sowie PDF/A-Archivierung mit vertrauenswürdigen E-Signaturen.",
       "learnMore": "Enterprise entdecken",
       "tryDemo": "Enterprise-Demo testen"
+    },
+    "aiMaintenance": {
+      "title": "KI-Wartung",
+      "description": "Aufgaben, die die KI-Funktionen mit der Bibliothek in Einklang halten. Sie laufen im Hintergrund auf dem Server: Sie können diese Seite verlassen und sie später erneut starten.",
+      "embeddings": {
+        "title": "Dokumente neu einbetten",
+        "hint": "Berechnet die Vektoren, auf denen Ähnlichkeitssuche, intelligente Ablage und der gelernte Klassifikator beruhen. Standardmäßig werden nur Dokumente ohne Vektor verarbeitet: nach einem Upload, dessen Einbettung fehlschlug, oder nach dem Zurücksetzen des Vektorspeichers wegen eines Modellwechsels.",
+        "start": "Neu einbetten"
+      },
+      "insights": {
+        "title": "Dokumente neu analysieren",
+        "hint": "Fragt das Modell erneut nach Art, Zusammenfassung und Schlagwörtern der Dokumente ohne aktuelle Analyse. Mit „Alle Dokumente“ werden alle neu analysiert, was Token verbraucht.",
+        "start": "Neu analysieren"
+      },
+      "force": "Alle Dokumente",
+      "started": "Aufgabe gestartet",
+      "enumerating": "Zu verarbeitende Dokumente werden gesucht…",
+      "running": "{{done}} von {{total}} verarbeitet",
+      "done": "Abgeschlossen.",
+      "result": "{{done}} verarbeitet, {{skipped}} übersprungen, {{failed}} fehlgeschlagen.",
+      "startError": "Die Aufgabe konnte nicht gestartet werden.",
+      "statusError": "Der Fortschritt konnte nicht gelesen werden; die Aufgabe läuft auf dem Server weiter."
     }
   },
   "bottomSheet": {

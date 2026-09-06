@@ -1,0 +1,84 @@
+@if (visible) {
+  <div class="ai-maintenance">
+    <p class="setting-description">{{ 'settings.aiMaintenance.description' | translate }}</p>
+
+    <!-- Re-embed the documents -->
+    <div class="maintenance-job" data-job="embeddings">
+      <div class="job-head">
+        <mat-icon class="job-icon" aria-hidden="true">scatter_plot</mat-icon>
+        <div class="job-text">
+          <span class="job-title">{{ 'settings.aiMaintenance.embeddings.title' | translate }}</span>
+          <p class="job-hint">{{ 'settings.aiMaintenance.embeddings.hint' | translate }}</p>
+        </div>
+      </div>
+      <div class="job-actions">
+        <mat-slide-toggle class="job-force" [(ngModel)]="jobs.embeddings.force" [disabled]="running('embeddings')">
+          {{ 'settings.aiMaintenance.force' | translate }}
+        </mat-slide-toggle>
+        <button mat-flat-button class="job-start" (click)="start('embeddings')" [disabled]="running('embeddings')">
+          @if (running('embeddings')) {
+            <mat-spinner diameter="16" aria-hidden="true"></mat-spinner>
+          } @else {
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+          }
+          <span>{{ 'settings.aiMaintenance.embeddings.start' | translate }}</span>
+        </button>
+      </div>
+      <ng-container *ngTemplateOutlet="progress; context: { job: jobs.embeddings }"></ng-container>
+    </div>
+
+    <!-- Re-enrich the documents (insights) -->
+    @if (insightsAvailable) {
+      <div class="maintenance-job" data-job="insights">
+        <div class="job-head">
+          <mat-icon class="job-icon" aria-hidden="true">auto_awesome</mat-icon>
+          <div class="job-text">
+            <span class="job-title">{{ 'settings.aiMaintenance.insights.title' | translate }}</span>
+            <p class="job-hint">{{ 'settings.aiMaintenance.insights.hint' | translate }}</p>
+          </div>
+        </div>
+        <div class="job-actions">
+          <mat-slide-toggle class="job-force" [(ngModel)]="jobs.insights.force" [disabled]="running('insights')">
+            {{ 'settings.aiMaintenance.force' | translate }}
+          </mat-slide-toggle>
+          <button mat-flat-button class="job-start" (click)="start('insights')" [disabled]="running('insights')">
+            @if (running('insights')) {
+              <mat-spinner diameter="16" aria-hidden="true"></mat-spinner>
+            } @else {
+              <mat-icon aria-hidden="true">refresh</mat-icon>
+            }
+            <span>{{ 'settings.aiMaintenance.insights.start' | translate }}</span>
+          </button>
+        </div>
+        <ng-container *ngTemplateOutlet="progress; context: { job: jobs.insights }"></ng-container>
+      </div>
+    }
+  </div>
+}
+
+<!-- The job's progress line: running counters, then the outcome; the error when the page lost it -->
+<ng-template #progress let-job="job">
+  @if (job.status; as status) {
+    <div class="job-progress" role="status" aria-live="polite">
+      @if (status.status === 'DONE') {
+        <mat-icon class="job-done-icon" aria-hidden="true">check_circle</mat-icon>
+        <span>
+          {{ 'settings.aiMaintenance.done' | translate }}
+          {{ 'settings.aiMaintenance.result' | translate:{ done: status.done, skipped: status.skipped, failed: status.failed, total: status.total } }}
+        </span>
+      } @else {
+        <mat-spinner diameter="14" aria-hidden="true"></mat-spinner>
+        <span>
+          @if (status.total > 0) {
+            {{ 'settings.aiMaintenance.running' | translate:{ done: status.done + status.skipped + status.failed, total: status.total } }}
+          } @else {
+            {{ 'settings.aiMaintenance.enumerating' | translate }}
+          }
+        </span>
+      }
+    </div>
+  }
+  @if (job.error) {
+    <p class="job-error">{{ job.error }}</p>
+  }
+</ng-template>

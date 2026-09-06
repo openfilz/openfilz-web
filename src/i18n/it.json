@@ -536,6 +536,28 @@
       "pitch": "Stai usando l'edizione Community open source. OpenFilz Enterprise aggiunge spazi privati per utente, condivisione documenti con permessi, commenti e menzioni, team, analisi, webhook e integrazioni, scansione con OCR, antivirus, backup e archiviazione PDF/A con firme elettroniche affidabili.",
       "learnMore": "Esplora Enterprise",
       "tryDemo": "Prova la demo Enterprise"
+    },
+    "aiMaintenance": {
+      "title": "Manutenzione dell'IA",
+      "description": "Attività che mantengono le funzioni IA allineate alla libreria. Vengono eseguite in background sul server: puoi lasciare questa pagina e riavviarle più tardi.",
+      "embeddings": {
+        "title": "Ricalcolare i vettori dei documenti",
+        "hint": "Calcola i vettori su cui si basano la ricerca per similarità, l'archiviazione intelligente e il classificatore appreso. Per impostazione predefinita vengono elaborati solo i documenti senza vettore: dopo un caricamento il cui calcolo è fallito o dopo l'azzeramento dell'archivio dei vettori per un cambio di modello.",
+        "start": "Ricalcola"
+      },
+      "insights": {
+        "title": "Rianalizzare i documenti",
+        "hint": "Chiede di nuovo al modello il tipo, il riassunto e le parole chiave dei documenti senza un'analisi aggiornata. Con «Tutti i documenti» vengono rianalizzati tutti, il che consuma token.",
+        "start": "Rianalizza"
+      },
+      "force": "Tutti i documenti",
+      "started": "Attività avviata",
+      "enumerating": "Ricerca dei documenti da elaborare…",
+      "running": "{{done}} di {{total}} elaborati",
+      "done": "Completato.",
+      "result": "{{done}} elaborati, {{skipped}} saltati, {{failed}} falliti.",
+      "startError": "Impossibile avviare l'attività.",
+      "statusError": "Impossibile leggere l'avanzamento; l'attività continua sul server."
     }
   },
   "bottomSheet": {

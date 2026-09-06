@@ -536,6 +536,28 @@
       "pitch": "Vous utilisez l'édition Community open source. OpenFilz Enterprise ajoute des espaces privés par utilisateur, le partage de documents avec permissions, les commentaires et mentions, les équipes, les statistiques, les webhooks et intégrations, la numérisation avec OCR, l'antivirus, les sauvegardes et l'archivage PDF/A avec signatures électroniques de confiance.",
       "learnMore": "Explorer Enterprise",
       "tryDemo": "Essayer la démo Enterprise"
+    },
+    "aiMaintenance": {
+      "title": "Maintenance de l'IA",
+      "description": "Des tâches qui gardent les fonctions IA en phase avec la bibliothèque. Elles s'exécutent en arrière-plan sur le serveur : vous pouvez quitter cette page et les relancer plus tard.",
+      "embeddings": {
+        "title": "Recalculer les vecteurs des documents",
+        "hint": "Calcule les vecteurs dont dépendent la recherche par similarité, le rangement intelligent et le classifieur appris. Par défaut, seuls les documents sans vecteur sont traités : après un envoi dont le calcul a échoué, ou après la remise à zéro du magasin de vecteurs pour un changement de modèle.",
+        "start": "Recalculer"
+      },
+      "insights": {
+        "title": "Ré-analyser les documents",
+        "hint": "Redemande au modèle le type, le résumé et les mots-clés des documents sans analyse à jour. Avec « Tous les documents », tous sont ré-analysés, ce qui consomme des jetons.",
+        "start": "Ré-analyser"
+      },
+      "force": "Tous les documents",
+      "started": "Tâche lancée",
+      "enumerating": "Recherche des documents à traiter…",
+      "running": "{{done}} sur {{total}} traités",
+      "done": "Terminé.",
+      "result": "{{done}} traités, {{skipped}} ignorés, {{failed}} en échec.",
+      "startError": "La tâche n'a pas pu être lancée.",
+      "statusError": "L'avancement n'a pas pu être lu ; la tâche continue sur le serveur."
     }
   },
   "bottomSheet": {

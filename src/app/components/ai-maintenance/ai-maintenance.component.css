@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+.ai-maintenance {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ai-maintenance .setting-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 4px;
+}
+
+/* One job = one card: what it does, its switch and button, its progress */
+.maintenance-job {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light, var(--border-color));
+  background: var(--bg-secondary);
+}
+
+.job-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.job-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+.job-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.job-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.job-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.job-force {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.job-start {
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-state-layer-color: #fff;
+  --mat-button-filled-disabled-container-color: color-mix(in srgb, var(--primary) 40%, transparent);
+  --mat-button-filled-disabled-label-text-color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.job-start mat-icon,
+.job-start mat-spinner {
+  margin-right: 2px;
+}
+
+.job-start mat-spinner {
+  --mdc-circular-progress-active-indicator-color: #fff;
+}
+
+.job-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.job-progress mat-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--primary);
+}
+
+.job-done-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--success, #2e7d32);
+}
+
+.job-error {
+  margin: 0;
+  font-size: 13px;
+  color: var(--error, #c62828);
+}
+
+@media (max-width: 600px) {
+  .job-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .job-start {
+    justify-content: center;
+  }
+}
