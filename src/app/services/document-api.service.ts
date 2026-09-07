@@ -362,8 +362,14 @@ export class DocumentApiService {
     );
   }
 
-  listFolderAndCount(folderId?: string, page: number = 1, pageSize: number = 50, filters?: SearchFilters, sortBy?: string, sortOrder?: 'ASC' | 'DESC'): Observable<ListFolderAndCountResponse> {
+  /**
+   * @param writableOnly keep only the folders the user may write into. The API ignores it in the
+   *   Community Edition (no per-document permissions); the Enterprise Edition drops folders that
+   *   are merely shared read-only. Both requests carry it so the page and the total agree.
+   */
+  listFolderAndCount(folderId?: string, page: number = 1, pageSize: number = 50, filters?: SearchFilters, sortBy?: string, sortOrder?: 'ASC' | 'DESC', writableOnly?: boolean): Observable<ListFolderAndCountResponse> {
     const filterRequest = this.mapFiltersToRequest(filters);
+    const scope = writableOnly ? { writableOnly: true } : {};
     const request1 = {
       id: folderId,
       pageInfo: {
@@ -372,12 +378,14 @@ export class DocumentApiService {
         sortBy,
         sortOrder
       },
-      ...filterRequest
+      ...filterRequest,
+      ...scope
     };
 
     const request2 = {
       id: folderId,
-      ...filterRequest
+      ...filterRequest,
+      ...scope
     };
 
     return this.apollo.watchQuery<any>({

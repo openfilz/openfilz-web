@@ -1,0 +1,85 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper"><mat-icon>account_tree</mat-icon></div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'workflow.start.title' | translate }}</h2>
+      <p class="dialog-subtitle">{{ data.documentName }}</p>
+    </div>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  @if (loading) {
+    <div class="state"><mat-spinner diameter="30"></mat-spinner></div>
+  } @else if (definitions.length === 0) {
+    <div class="state empty">
+      <mat-icon>account_tree</mat-icon>
+      <p>{{ 'workflow.start.noDefinitions' | translate }}</p>
+      <p class="sub">{{ 'workflow.start.noDefinitionsHint' | translate }}</p>
+    </div>
+  } @else {
+    <h3 class="section">{{ 'workflow.start.chooseWorkflow' | translate }}</h3>
+    <div class="def-list" role="radiogroup">
+      @for (def of definitions; track def.id) {
+        <button type="button" class="def-card" [class.selected]="selected?.id === def.id" role="radio"
+          [attr.aria-checked]="selected?.id === def.id" (click)="select(def)">
+          <mat-icon class="radio">{{ selected?.id === def.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          <span class="def-text">
+            <span class="def-name">{{ def.name }}</span>
+            @if (def.description) { <span class="def-desc">{{ def.description }}</span> }
+            <span class="def-steps">
+              @for (s of def.spec.states; track s.key; let last = $last) {
+                <span class="dot" [style.background]="s.color || '#94a3b8'"></span>{{ s.label }}@if (!last) { <span class="sep">›</span> }
+              }
+            </span>
+          </span>
+        </button>
+      }
+    </div>
+
+    @if (selected) {
+      <div class="preview">
+        <app-workflow-diagram [spec]="selected.spec" [currentStateKey]="startState?.key ?? null" [compact]="true"></app-workflow-diagram>
+      </div>
+
+      @for (s of chosenStates; track s.key) {
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>{{ s.assignees?.label || ('workflow.start.who' | translate: { state: s.label }) }}</mat-label>
+          <input matInput [(ngModel)]="assignments[s.key]" autocomplete="off" [placeholder]="'workflow.decision.emailsHint' | translate">
+          <mat-icon matSuffix>group</mat-icon>
+        </mat-form-field>
+        @if (invalidEmailOf(s.key); as bad) {
+          <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: bad } }}</span></div>
+        }
+      }
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>{{ 'workflow.start.comment' | translate }}</mat-label>
+        <textarea matInput rows="2" [(ngModel)]="comment" maxlength="2000"></textarea>
+      </mat-form-field>
+    }
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="cancel()">
+    <mat-icon>close</mat-icon><span>{{ 'common.cancel' | translate }}</span>
+  </button>
+  <span class="spacer"></span>
+  @if (selected) {
+    <button mat-stroked-button class="start-btn plain" (click)="start(null)" [disabled]="!canStart(null)"
+      [matTooltip]="'workflow.start.startHint' | translate: { state: startState?.label }">
+      <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.start.start' | translate }}</span>
+    </button>
+    @for (t of startTransitions; track t.key) {
+      <button mat-raised-button color="primary" class="start-btn primary-btn" [class]="styleClass(t)" (click)="start(t)" [disabled]="!canStart(t)"
+        [matTooltip]="needsComment(t) ? ('workflow.decision.commentRequired' | translate) : ''">
+        @if (starting) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>send</mat-icon> }
+        <span>{{ 'workflow.start.startAnd' | translate: { transition: t.label } }}</span>
+      </button>
+    }
+  }
+</div>

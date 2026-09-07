@@ -1,0 +1,38 @@
+:host { display: block; }
+.workflow-section { margin: 4px 0 16px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.section-header h3 { margin: 0; display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.section-header h3 mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--primary); }
+.monitor-btn { width: 32px; height: 32px; color: var(--text-secondary); }
+.monitor-btn mat-icon { font-size: 18px; width: 18px; height: 18px; }
+.loading { padding: 8px 0; }
+
+.card { background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chip {
+  --chip: #94a3b8;
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap;
+  color: var(--text-primary); background: color-mix(in srgb, var(--chip) 22%, transparent); border-left: 3px solid var(--chip);
+}
+.wf-name { font-size: 13px; color: var(--text-secondary); }
+.sub { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: var(--text-secondary); }
+.sub mat-icon { font-size: 16px; width: 16px; height: 16px; margin-top: 1px; }
+.sub b { color: var(--text-primary); font-weight: 600; word-break: break-word; }
+.due { color: var(--text-secondary); }
+.due.overdue { color: #ef4444; font-weight: 600; }
+.note { margin: 0; padding: 6px 10px; font-size: 12.5px; border-left: 3px solid var(--border-color); background: var(--bg-tertiary); border-radius: 6px; white-space: pre-wrap; color: var(--text-primary); }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.act-btn {
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
+  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
+  border-radius: 8px; height: 34px; font-size: 13px;
+}
+.act-btn.style-success { --mat-button-filled-container-color: #10b981; }
+.act-btn.style-danger { --mat-button-filled-container-color: #ef4444; }
+.act-btn.style-neutral { --mat-button-filled-container-color: #64748b; }
+.meta { font-size: 11.5px; color: var(--text-secondary); }
+.start-btn { border: 2px solid var(--border-color); color: var(--text-primary); border-radius: 10px; width: 100%; }
+.start-btn mat-icon { margin-right: 6px; color: var(--primary); }
+.none { margin: 0; font-size: 12.5px; color: var(--text-secondary); }

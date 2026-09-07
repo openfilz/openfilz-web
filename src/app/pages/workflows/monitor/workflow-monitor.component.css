@@ -1,0 +1,94 @@
+:host { display: block; }
+.monitor { display: flex; gap: 0; min-height: 60vh; }
+.main { flex: 1 1 auto; min-width: 0; padding: 14px 4px; }
+
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+.tile {
+  --tint: var(--primary);
+  display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 12px; cursor: pointer; text-align: left; font: inherit;
+  background: var(--bg-secondary); border: 2px solid var(--border-light); color: var(--text-primary); transition: border-color .15s ease;
+}
+.tile.warn { --tint: #ef4444; }
+.tile.ok { --tint: #10b981; }
+.tile.muted { --tint: #64748b; }
+.tile:hover, .tile.active { border-color: var(--tint); }
+.tile .n { font-size: 24px; font-weight: 700; color: var(--tint); }
+.tile .l { font-size: 12.5px; color: var(--text-secondary); }
+
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 4px; }
+.filters .spacer { flex: 1; }
+.filters button { color: var(--text-secondary); }
+.field { min-width: 200px; }
+.field ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
+.field ::ng-deep .mat-mdc-select-value, .field ::ng-deep .mat-mdc-select-arrow { color: var(--text-primary); }
+.field ::ng-deep .mat-mdc-form-field-label { color: var(--text-secondary); }
+.field ::ng-deep .mdc-notched-outline__leading, .field ::ng-deep .mdc-notched-outline__trailing, .field ::ng-deep .mdc-notched-outline__notch { border-color: var(--border-color) !important; }
+.field ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+.state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 48px 0; color: var(--text-secondary); }
+.state.empty mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: .5; }
+.state.empty p { margin: 0; font-size: 14px; }
+
+.table-wrap { overflow-x: auto; }
+.tbl { width: 100%; background: var(--bg-primary); color: var(--text-primary); }
+.tbl ::ng-deep th.mat-mdc-header-cell { color: var(--text-secondary); border-bottom-color: var(--border-color); background: var(--bg-secondary); white-space: nowrap; }
+.tbl ::ng-deep td.mat-mdc-cell { color: var(--text-primary); border-bottom-color: var(--border-light); }
+.tbl.clickable ::ng-deep tr.mat-mdc-row { cursor: pointer; }
+.tbl.clickable ::ng-deep tr.mat-mdc-row:hover { background: var(--bg-secondary); }
+.tbl.clickable ::ng-deep tr.mat-mdc-row.selected { background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.title-cell { font-weight: 500; }
+.inline-doc { font-size: 18px; width: 18px; height: 18px; vertical-align: middle; margin-right: 6px; color: var(--primary); }
+.dim { color: var(--text-secondary); }
+.late { color: #ef4444; font-weight: 600; }
+.late-ico { font-size: 16px; width: 16px; height: 16px; vertical-align: middle; color: #ef4444; margin-left: 4px; }
+mat-paginator { background: transparent; color: var(--text-secondary); }
+
+.chip { --chip: #94a3b8; display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--text-primary); background: color-mix(in srgb, var(--chip) 22%, transparent); border-left: 3px solid var(--chip); margin-right: 6px; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 999px; white-space: nowrap; font-size: 12px; color: var(--text-primary); background: var(--bg-tertiary); margin-right: 6px; }
+.badge.s-RUNNING { background: color-mix(in srgb, #3b82f6 16%, transparent); }
+.badge.s-COMPLETED { background: color-mix(in srgb, #10b981 18%, transparent); }
+.badge.s-CANCELLED { background: color-mix(in srgb, #ef4444 14%, transparent); }
+
+/* ── Detail drawer ─────────────────────────────────────────────────────── */
+.detail {
+  flex: 0 0 520px; max-width: 50%; min-width: 0; margin-left: 20px;
+  border-left: 1px solid var(--border-color); background: var(--bg-secondary);
+  padding: 18px 22px; overflow-y: auto; max-height: calc(100dvh - 140px); position: sticky; top: 0; border-radius: 0 12px 12px 0;
+}
+.detail-head { display: flex; align-items: flex-start; gap: 8px; }
+.detail-head button { color: var(--text-secondary); }
+.detail-title { flex: 1; min-width: 0; }
+.detail-title h2 { margin: 0 0 4px; font-size: 17px; word-break: break-word; }
+.sub { font-size: 12px; color: var(--text-secondary); }
+.sub.late { color: #ef4444; }
+.diagram-box { margin: 12px 0; padding: 8px; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; }
+.meta { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 12px 0; font-size: 13px; }
+.meta dt { color: var(--text-secondary); }
+.meta dd { margin: 0; }
+.detail-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.detail-actions button { border-radius: 10px; border: 2px solid var(--border-color); color: var(--text-primary); }
+.detail-actions button mat-icon { margin-right: 4px; }
+.detail-actions .danger { color: #ef4444; }
+.detail h3 { font-size: 14px; margin: 14px 0 8px; }
+
+.timeline { list-style: none; margin: 0; padding: 0 0 0 8px; border-left: 2px solid var(--border-color); }
+.ev { position: relative; padding: 0 0 14px 22px; }
+.ev-dot {
+  position: absolute; left: -12px; top: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: var(--primary); color: #fff; border: 2px solid var(--bg-secondary);
+}
+.ev-dot mat-icon { font-size: 13px; width: 13px; height: 13px; }
+.ev-COMPLETED .ev-dot, .ev-ACTION_APPLIED .ev-dot { background: #10b981; }
+.ev-CANCELLED .ev-dot, .ev-ACTION_FAILED .ev-dot { background: #ef4444; }
+.ev-REMINDED .ev-dot, .ev-REASSIGNED .ev-dot { background: #f59e0b; }
+.ev-text { font-size: 13px; font-weight: 500; }
+.ev-meta { font-size: 11.5px; color: var(--text-secondary); }
+.note { margin: 6px 0 0; padding: 6px 10px; border-left: 3px solid var(--border-color); background: var(--bg-tertiary); border-radius: 6px; font-size: 12.5px; white-space: pre-wrap; }
+
+@media (max-width: 1100px) {
+  .monitor { flex-direction: column; }
+  .detail { flex: none; max-width: none; margin: 12px 0 0; border-left: none; border-top: 1px solid var(--border-color); border-radius: 12px; position: static; max-height: none; }
+}
+@media (max-width: 760px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

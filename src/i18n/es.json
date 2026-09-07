@@ -61,7 +61,8 @@
     "settings": "Ajustes",
     "logout": "Cerrar sesión",
     "collapse": "Contraer",
-    "expandSidebar": "Expandir barra lateral"
+    "expandSidebar": "Expandir barra lateral",
+    "workflows": "Flujos de trabajo"
   },
   "header": {
     "searchPlaceholder": "Escribe algo para buscar",
@@ -123,7 +124,8 @@
       "text": "Archivo de texto"
     },
     "moreActions": "Más acciones",
-    "requestSignature": "Solicitar firma"
+    "requestSignature": "Solicitar firma",
+    "startWorkflow": "Iniciar flujo"
   },
   "sortOptions": {
     "date": "Fecha",
@@ -260,6 +262,7 @@
     "noAudit": "No hay historial de auditoría disponible",
     "auditLogs": "Entradas del registro de auditoría",
     "unknownUser": "Usuario desconocido",
+    "viaWorkflow": "mediante el flujo «{{workflow}}» — {{state}}",
     "editMetadata": "Editar metadatos",
     "cancelEditing": "Cancelar edición",
     "saveMetadata": "Guardar cambios de metadatos",
@@ -596,7 +599,16 @@
       "RESTORE_FOLDER": "Carpeta restaurada",
       "PERMANENT_DELETE_FILE": "Archivo eliminado permanentemente",
       "PERMANENT_DELETE_FOLDER": "Carpeta eliminada permanentemente",
-      "EMPTY_RECYCLE_BIN": "Papelera vaciada"
+      "EMPTY_RECYCLE_BIN": "Papelera vaciada",
+      "WORKFLOW_STARTED": "Flujo iniciado",
+      "WORKFLOW_TRANSITIONED": "Paso del flujo realizado",
+      "WORKFLOW_COMPLETED": "Flujo completado",
+      "WORKFLOW_CANCELLED": "Flujo cancelado",
+      "WORKFLOW_TASK_REASSIGNED": "Tarea del flujo reasignada",
+      "WORKFLOW_ACTION_FAILED": "Acción del flujo fallida",
+      "WORKFLOW_DEFINITION_CREATED": "Flujo creado",
+      "WORKFLOW_DEFINITION_UPDATED": "Flujo modificado",
+      "WORKFLOW_DEFINITION_DELETED": "Flujo eliminado"
     },
     "time": {
       "justNow": "Recién",
@@ -1312,6 +1324,293 @@
       "specification": "Especificación",
       "manual": "Manual",
       "other": "Otro"
+    }
+  },
+  "workflow": {
+    "title": "Flujos de trabajo",
+    "tabs": {
+      "tasks": "Mis tareas",
+      "monitor": "Seguimiento",
+      "designer": "Diseñador"
+    },
+    "status": {
+      "RUNNING": "En curso",
+      "COMPLETED": "Completado",
+      "CANCELLED": "Cancelado"
+    },
+    "kind": {
+      "START": "Inicio",
+      "STEP": "Paso",
+      "END": "Final"
+    },
+    "assignees": {
+      "INITIATOR": "La persona que inició el flujo",
+      "USERS": "Personas concretas",
+      "ROLE": "Cualquiera con un rol",
+      "CHOSEN_AT_START": "Elegido al iniciar"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "Mover a una carpeta",
+      "SET_METADATA": "Establecer metadatos",
+      "NOTIFY": "Notificar a personas"
+    },
+    "styles": {
+      "PRIMARY": "Predeterminado",
+      "SUCCESS": "Positivo (verde)",
+      "DANGER": "Negativo (rojo)",
+      "NEUTRAL": "Neutro (gris)"
+    },
+    "events": {
+      "STARTED": "Iniciado en «{{state}}»",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Acción aplicada: {{action}}",
+      "ACTION_FAILED": "Acción fallida: {{action}} — {{error}}",
+      "REASSIGNED": "Reasignado a {{emails}}",
+      "REMINDED": "Recordatorio enviado",
+      "COMPLETED": "Completado con «{{state}}»",
+      "CANCELLED": "Cancelado"
+    },
+    "tasks": {
+      "count": "{{count}} tarea(s) esperan su decisión",
+      "overdueCount": "{{count}} atrasada(s)",
+      "refresh": "Actualizar",
+      "empty": "Nada espera su decisión.",
+      "emptyHint": "Las tareas asignadas a usted, o a un rol que tiene, aparecen aquí.",
+      "openDocument": "Abrir el documento",
+      "openInstance": "Ver en el seguimiento",
+      "waitingSince": "Desde {{date}}",
+      "due": "Vence {{date}}",
+      "overdue": "Atrasada desde {{date}}",
+      "overdueShort": "Atrasada",
+      "from": "De {{who}}",
+      "sharedWith": "+{{count}} candidato(s) más",
+      "withNote": "{{transition}} con una nota…",
+      "reassign": "Reasignar",
+      "reassigned": "Tarea reasignada.",
+      "done": "Hecho — el documento ahora está «{{state}}»."
+    },
+    "monitor": {
+      "running": "En curso",
+      "completed": "Completados",
+      "cancelledCount": "Cancelados",
+      "overdue": "Tareas atrasadas",
+      "workflow": "Flujo",
+      "status": "Estado",
+      "allDefinitions": "Todos los flujos",
+      "allStatuses": "Todos los estados",
+      "mine": "Iniciados por mí",
+      "document": "Documento",
+      "state": "Estado actual",
+      "waitingFor": "Esperando a",
+      "startedBy": "Iniciado por",
+      "updated": "Actualizado",
+      "ended": "Finalizado",
+      "empty": "Ningún flujo coincide con estos filtros.",
+      "timeline": "Historial",
+      "anyoneWith": "cualquiera con el rol {{role}}",
+      "cancel": "Cancelar flujo",
+      "cancelConfirm": "¿Cancelar el flujo «{{workflow}}» de «{{document}}»? La tarea pendiente se cerrará.",
+      "cancelled": "Flujo cancelado.",
+      "cancelError": "No se pudo cancelar el flujo."
+    },
+    "designer": {
+      "intro": "Diseñe los estados de sus documentos y quién decide en cada paso.",
+      "newWorkflow": "Nuevo flujo",
+      "empty": "Aún no hay flujos.",
+      "emptyHint": "Empiece con una plantilla: cada estado se puede renombrar y los actores cambiar.",
+      "templates": {
+        "approval": "Aprobación simple",
+        "review-archive": "Revisión y archivado",
+        "two-step": "Aprobación en dos pasos",
+        "blank": "En blanco"
+      },
+      "templateHints": {
+        "approval": "Borrador → Pendiente de aprobación → Aprobado / Rechazado",
+        "review-archive": "Borrador → En revisión → Aprobado → Archivado",
+        "two-step": "Dos aprobadores consecutivos",
+        "blank": "Empezar desde cero"
+      },
+      "labels": {
+        "draft": "Borrador",
+        "submit": "Enviar para aprobación",
+        "pendingApproval": "Pendiente de aprobación",
+        "approver": "Aprobador",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "approved": "Aprobado",
+        "rejected": "Rechazado",
+        "submitForReview": "Enviar a revisión",
+        "inReview": "En revisión",
+        "reviewer": "Revisor",
+        "requestChanges": "Pedir cambios",
+        "archive": "Archivar",
+        "archived": "Archivado",
+        "firstApproval": "Primera aprobación",
+        "firstApprover": "Primer aprobador",
+        "secondApproval": "Segunda aprobación",
+        "secondApprover": "Segundo aprobador",
+        "done": "Hecho"
+      },
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "ownedBy": "por {{who}}",
+      "readOnly": "Ver (solo lectura)",
+      "notYours": "Solo su autor puede modificar este flujo",
+      "deleteConfirm": "¿Eliminar el flujo «{{name}}»? Las instancias completadas conservan su historial.",
+      "deleted": "Flujo eliminado.",
+      "deleteError": "No se pudo eliminar el flujo.",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "statesCount": "{{count}} estados",
+      "runningCount": "{{count}} en curso",
+      "hotFolders": "{{count}} carpeta(s) de activación"
+    },
+    "editor": {
+      "title": "Editar flujo",
+      "newTitle": "Nuevo flujo",
+      "unsaved": "Cambios sin guardar",
+      "readOnly": "Solo lectura — este flujo pertenece a {{who}}",
+      "name": "Nombre",
+      "description": "Descripción",
+      "active": "Disponible en «Iniciar flujo»",
+      "triggerFolders": "Carpetas de activación",
+      "triggerFoldersHint": "Cada archivo subido a estas carpetas inicia este flujo automáticamente.",
+      "addTriggerFolder": "Añadir carpeta",
+      "chooseTriggerFolder": "Elegir una carpeta de activación",
+      "statuses": "Estados",
+      "addStatus": "Añadir estado",
+      "addEnd": "Añadir estado final",
+      "newStatus": "Nuevo estado",
+      "newTransition": "Continuar",
+      "label": "Etiqueta",
+      "key": "Clave",
+      "kind": "Tipo",
+      "color": "Color",
+      "assignees": "Quién actúa",
+      "dueInDays": "Vence en (días)",
+      "emails": "Direcciones de correo",
+      "role": "Rol",
+      "roleHint": "Un rol del realm de Keycloak, p. ej. CONTRIBUTOR o AUDITOR",
+      "question": "Pregunta al iniciar",
+      "questionHint": "p. ej. ¿Quién aprueba este documento?",
+      "transitions": "Transiciones (los botones)",
+      "addTransition": "Añadir transición",
+      "transitionLabel": "Texto del botón",
+      "target": "Lleva a",
+      "style": "Estilo",
+      "requireComment": "Comentario obligatorio",
+      "requireCommentHint": "La persona debe dejar una nota (típico de un rechazo)",
+      "onEnter": "Cuando un documento llega a este estado",
+      "onEnterHint": "Sin acción: añada una para mover el documento, poner metadatos o notificar a personas.",
+      "addAction": "Añadir acción",
+      "chooseFolder": "Elegir carpeta",
+      "metadataEntries": "Metadatos (una línea clave=valor)",
+      "metadataHint": "estado=aprobado",
+      "notifyEmails": "Correos a notificar",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "remove": "Quitar",
+      "badEmail": "Dirección de correo no válida: {{email}}",
+      "preview": "Vista previa",
+      "previewHint": "Haga clic en un estado del diagrama para editarlo.",
+      "valid": "El flujo es válido.",
+      "problemsCount": "{{count}} problema(s) que corregir antes de guardar",
+      "saved": "Flujo «{{name}}» guardado.",
+      "saveError": "No se pudo guardar el flujo."
+    },
+    "problem": {
+      "EMPTY": "Un flujo necesita al menos un estado",
+      "TOO_MANY": "Como máximo {{value}} estados",
+      "ONE_START": "Exactamente un estado debe ser el inicio",
+      "NO_END": "Al menos un estado debe ser final",
+      "BAD_KIND": "El tipo de estado debe ser Inicio, Paso o Final",
+      "BAD_COLOR": "El color debe ser un código #rrggbb",
+      "END_HAS_TRANSITIONS": "Un estado final no tiene transiciones",
+      "END_HAS_ASSIGNEES": "Un estado final no tiene responsables",
+      "END_HAS_DUE": "Un estado final no tiene plazo",
+      "NO_TRANSITION": "El estado «{{value}}» necesita al menos una transición",
+      "NO_EMAIL": "Indique al menos una dirección de correo",
+      "BAD_EMAIL": "Dirección de correo no válida: {{value}}",
+      "BAD_ROLE": "El nombre del rol es obligatorio",
+      "BAD_ASSIGNEE_TYPE": "El tipo de responsable es obligatorio",
+      "BAD_DUE": "El plazo debe estar entre 1 y {{value}} días",
+      "NO_TARGET": "La transición necesita un estado de destino",
+      "UNKNOWN_TARGET": "Estado de destino desconocido: «{{value}}»",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "Un flujo iniciado automáticamente desde una carpeta no puede pedir que se elijan los responsables al iniciarlo",
+      "UNREACHABLE": "El estado «{{value}}» nunca puede alcanzarse",
+      "DEAD_END": "El estado «{{value}}» nunca puede llegar a un estado final",
+      "NO_FOLDER": "Elija la carpeta de destino",
+      "FOLDER_NOT_WRITABLE": "No puede escribir en esta carpeta — elija una que le pertenezca o que esté compartida con usted en modo editor",
+      "NO_ENTRIES": "Indique al menos una clave de metadatos",
+      "TOO_MANY_ENTRIES": "Como máximo {{value}} claves de metadatos",
+      "BAD_ACTION_TYPE": "El tipo de acción es obligatorio",
+      "BAD_KEY": {
+        "state": "La clave del estado solo admite minúsculas, dígitos o _",
+        "transition": "La clave de la transición solo admite minúsculas, dígitos o _",
+        "action": "Las claves de metadatos no pueden estar vacías ni empezar por _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Clave de estado duplicada: «{{value}}»",
+        "transition": "Clave de transición duplicada: «{{value}}»"
+      },
+      "BAD_LABEL": {
+        "state": "La etiqueta del estado es obligatoria",
+        "transition": "La etiqueta de la transición es obligatoria"
+      },
+      "NULL": {
+        "state": "Estado vacío",
+        "transition": "Transición vacía"
+      }
+    },
+    "diagram": {
+      "title": "Diagrama del flujo",
+      "hint": "Ctrl + rueda del ratón, o las teclas + / − / 0, para hacer zoom",
+      "enlarge": "Ampliar el diagrama",
+      "zoomIn": "Acercar",
+      "zoomOut": "Alejar",
+      "resetZoom": "Restablecer zoom"
+    },
+    "start": {
+      "title": "Iniciar un flujo",
+      "chooseWorkflow": "Elija un flujo",
+      "noDefinitions": "No hay ningún flujo disponible.",
+      "noDefinitionsHint": "Pida a un diseñador que cree uno en Flujos → Diseñador.",
+      "loadError": "No se pudieron cargar los flujos.",
+      "who": "¿Quién actúa en «{{state}}»?",
+      "comment": "Nota para la siguiente persona (opcional)",
+      "start": "Iniciar",
+      "startHint": "El documento permanece en «{{state}}» hasta que continúe.",
+      "startAnd": "Iniciar y {{transition}}",
+      "started": "Flujo «{{workflow}}» iniciado: el documento ahora está «{{state}}».",
+      "startError": "No se pudo iniciar el flujo."
+    },
+    "decision": {
+      "commentRequired": "Comentario (obligatorio)",
+      "commentOptional": "Comentario (opcional)",
+      "reassignTitle": "Pasar esta tarea a otra persona",
+      "emails": "Direcciones de correo",
+      "emailsHint": "Separe varias direcciones con comas"
+    },
+    "panel": {
+      "title": "Flujo de trabajo",
+      "waitingFor": "Esperando a",
+      "you": "usted",
+      "due": "vence {{date}}",
+      "overdue": "atrasada desde {{date}}",
+      "since": "Iniciado por {{who}} el {{date}}",
+      "start": "Iniciar un flujo",
+      "openMonitor": "Abrir en el seguimiento",
+      "noWorkflow": "Ningún flujo en curso en este documento."
+    },
+    "errors": {
+      "generic": "Algo salió mal.",
+      "network": "Error de red: compruebe su conexión.",
+      "forbidden": "No tiene permiso para hacer esto.",
+      "notFound": "No encontrado.",
+      "conflict": "Esta acción ya no es posible en el estado actual.",
+      "validation": "La solicitud fue rechazada."
     }
   }
 }

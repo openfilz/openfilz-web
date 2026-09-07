@@ -1,0 +1,32 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper"><mat-icon>account_tree</mat-icon></div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ data.title?.trim() || ('workflow.diagram.title' | translate) }}</h2>
+      <p class="dialog-subtitle">{{ 'workflow.diagram.hint' | translate }}</p>
+    </div>
+  </div>
+  <div class="zoom-controls">
+    <button mat-icon-button (click)="zoomOut()" [disabled]="!canZoomOut"
+      [matTooltip]="'workflow.diagram.zoomOut' | translate" [attr.aria-label]="'workflow.diagram.zoomOut' | translate">
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+    <button mat-button class="percent" (click)="reset()"
+      [matTooltip]="'workflow.diagram.resetZoom' | translate" [attr.aria-label]="'workflow.diagram.resetZoom' | translate">{{ percent }}%</button>
+    <button mat-icon-button (click)="zoomIn()" [disabled]="!canZoomIn"
+      [matTooltip]="'workflow.diagram.zoomIn' | translate" [attr.aria-label]="'workflow.diagram.zoomIn' | translate">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+    <button mat-icon-button class="close-btn" (click)="close()" [attr.aria-label]="'common.close' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div mat-dialog-content class="dialog-content" (wheel)="onWheel($event)">
+  <div class="canvas">
+    <app-workflow-diagram [spec]="data.spec" [scale]="scale"
+      [currentStateKey]="data.currentStateKey ?? null" [selectedStateKey]="data.selectedStateKey ?? null"
+      [taken]="data.taken ?? []" (stateClick)="pick($event)"></app-workflow-diagram>
+  </div>
+</div>

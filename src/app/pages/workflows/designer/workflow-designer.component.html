@@ -1,0 +1,77 @@
+<div class="designer">
+  <div class="bar">
+    <span class="hint-text">{{ 'workflow.designer.intro' | translate }}</span>
+    <!-- The empty state below offers these very templates as cards, so the button would just be a
+         second, smaller copy of them. It comes back with the first workflow, where the cards are
+         gone and it is the only way to create one. -->
+    @if (!loading && definitions.length > 0) {
+      <button mat-raised-button color="primary" class="new-btn" [matMenuTriggerFor]="newMenu">
+        <mat-icon>add</mat-icon><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
+      </button>
+      <mat-menu #newMenu="matMenu" class="template-menu">
+        @for (t of templates; track t.id) {
+          <button mat-menu-item (click)="create(t.id)">
+            <mat-icon>{{ t.icon }}</mat-icon>
+            <span class="tpl">
+              <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
+              <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
+            </span>
+          </button>
+        }
+      </mat-menu>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="state"><mat-spinner diameter="34"></mat-spinner></div>
+  } @else if (definitions.length === 0) {
+    <div class="state empty">
+      <mat-icon>design_services</mat-icon>
+      <p>{{ 'workflow.designer.empty' | translate }}</p>
+      <p class="sub">{{ 'workflow.designer.emptyHint' | translate }}</p>
+      <div class="tpl-cards">
+        @for (t of templates; track t.id) {
+          <button type="button" class="tpl-card" (click)="create(t.id)">
+            <mat-icon>{{ t.icon }}</mat-icon>
+            <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
+            <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="cards">
+      @for (def of definitions; track trackDef($index, def)) {
+        <article class="card" [class.inactive]="!def.active">
+          <div class="card-head">
+            <div class="card-title">
+              <h3>{{ def.name }}</h3>
+              @if (def.description) { <p class="desc">{{ def.description }}</p> }
+              <div class="facts">
+                <span class="badge" [class.on]="def.active">{{ (def.active ? 'workflow.designer.active' : 'workflow.designer.inactive') | translate }}</span>
+                <span>{{ 'workflow.designer.statesCount' | translate: { count: def.spec.states.length } }}</span>
+                <span>{{ 'workflow.designer.runningCount' | translate: { count: def.runningCount } }}</span>
+                @if (def.triggerFolderIds.length) { <span><mat-icon class="mini">folder_special</mat-icon>{{ 'workflow.designer.hotFolders' | translate: { count: def.triggerFolderIds.length } }}</span> }
+                <span class="dim">v{{ def.version }} · {{ def.updatedAt | date:'mediumDate' }}</span>
+                @if (!def.canEdit) { <span class="owner"><mat-icon class="mini">person</mat-icon>{{ 'workflow.designer.ownedBy' | translate: { who: def.createdBy } }}</span> }
+              </div>
+            </div>
+            <div class="card-actions">
+              @if (busy.has(def.id)) { <mat-spinner diameter="22"></mat-spinner> } @else {
+                <button mat-icon-button (click)="edit(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.edit' : 'workflow.designer.readOnly') | translate" class="tint-blue"><mat-icon>{{ def.canEdit ? 'edit' : 'visibility' }}</mat-icon></button>
+                <button mat-icon-button (click)="toggleActive(def)" [disabled]="!def.canEdit"
+                  [matTooltip]="(!def.canEdit ? 'workflow.designer.notYours' : def.active ? 'workflow.designer.deactivate' : 'workflow.designer.activate') | translate" class="tint-amber">
+                  <mat-icon>{{ def.active ? 'pause_circle' : 'play_circle' }}</mat-icon>
+                </button>
+                <button mat-icon-button (click)="remove(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.delete' : 'workflow.designer.notYours') | translate" class="tint-red" [disabled]="def.runningCount > 0 || !def.canEdit"><mat-icon>delete</mat-icon></button>
+              }
+            </div>
+          </div>
+          <div class="diagram-box" (click)="edit(def)">
+            <app-workflow-diagram [spec]="def.spec" [compact]="true"></app-workflow-diagram>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

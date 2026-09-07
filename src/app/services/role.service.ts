@@ -4,9 +4,9 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type UserRole = 'READER' | 'CONTRIBUTOR' | 'AUDITOR' | 'CLEANER' | 'SIGN_REQUESTER';
+export type UserRole = 'READER' | 'CONTRIBUTOR' | 'AUDITOR' | 'CLEANER' | 'SIGN_REQUESTER' | 'WORKFLOW_DESIGNER';
 
-const VALID_ROLES: UserRole[] = ['READER', 'CONTRIBUTOR', 'AUDITOR', 'CLEANER', 'SIGN_REQUESTER'];
+const VALID_ROLES: UserRole[] = ['READER', 'CONTRIBUTOR', 'AUDITOR', 'CLEANER', 'SIGN_REQUESTER', 'WORKFLOW_DESIGNER'];
 
 @Injectable({ providedIn: 'root' })
 export class RoleService {

@@ -1,0 +1,20 @@
+:host { display: block; max-width: 100%; overflow-x: auto; }
+.diagram { display: block; max-width: 100%; height: auto; font-family: inherit; }
+.diagram.compact { max-height: 160px; }
+/* Zoomed: the picture keeps its requested size and the surrounding box does the scrolling. */
+:host(.fixed) { max-width: none; overflow: visible; }
+.diagram.fixed { max-width: none; }
+
+.edge { fill: none; stroke: var(--text-secondary); stroke-width: 1.6; opacity: .75; }
+.edge.taken { stroke: var(--primary); stroke-width: 2.6; opacity: 1; }
+.arrow-head { fill: var(--text-secondary); }
+.arrow-head.taken { fill: var(--primary); }
+.edge-label { font-size: 11px; fill: var(--text-secondary); paint-order: stroke; stroke: var(--bg-primary); stroke-width: 4px; stroke-linejoin: round; }
+.edge-label.taken { fill: var(--primary); font-weight: 600; }
+
+.node { cursor: pointer; outline: none; }
+.node rect { stroke: transparent; stroke-width: 2; transition: filter .15s ease; }
+.node:hover rect, .node:focus-visible rect { filter: brightness(1.08); stroke: var(--text-primary); }
+.node text { font-size: 13px; font-weight: 600; pointer-events: none; }
+.node.current rect { stroke: var(--text-primary); stroke-width: 3; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--primary) 60%, transparent)); }
+.node.selected rect { stroke: var(--primary); stroke-width: 2.5; stroke-dasharray: 5 3; }

@@ -14,6 +14,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuditVersionActionsComponent } from './audit-version-actions/audit-version-actions.component';
 import { DocumentInsightsComponent } from './document-insights/document-insights.component';
+import { DocumentWorkflowComponent } from './document-workflow/document-workflow.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
@@ -48,6 +49,7 @@ interface MetadataEntry {
     SwipeTabsDirective,
     AuditVersionActionsComponent,
     DocumentInsightsComponent,
+    DocumentWorkflowComponent,
     TranslatePipe
 ]
 })
@@ -642,12 +644,23 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       'RESTORE_FOLDER': 'restore',
       'PERMANENT_DELETE_FILE': 'delete_forever',
       'PERMANENT_DELETE_FOLDER': 'delete_forever',
-      'EMPTY_RECYCLE_BIN': 'delete_sweep'
+      'EMPTY_RECYCLE_BIN': 'delete_sweep',
+      'WORKFLOW_STARTED': 'play_circle',
+      'WORKFLOW_TRANSITIONED': 'arrow_forward',
+      'WORKFLOW_COMPLETED': 'check_circle',
+      'WORKFLOW_CANCELLED': 'cancel',
+      'WORKFLOW_TASK_REASSIGNED': 'group',
+      'WORKFLOW_ACTION_FAILED': 'error_outline',
+      'WORKFLOW_DEFINITION_CREATED': 'design_services',
+      'WORKFLOW_DEFINITION_UPDATED': 'design_services',
+      'WORKFLOW_DEFINITION_DELETED': 'design_services'
     };
     return icons[action] || 'history';
   }
 
   getAuditActionColor(action: string): string {
+    // An action the workflow could not carry out must read as a problem, not as history.
+    if (action.includes('FAILED')) return 'warn';
     if (action.includes('DELETE') || action.includes('PERMANENT')) return 'warn';
     if (action.includes('UPLOAD') || action.includes('CREATE')) return 'success';
     if (action.includes('RESTORE')) return 'success';

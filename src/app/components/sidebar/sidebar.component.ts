@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Output, OnInit, inject, computed } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy, inject, computed } from '@angular/core';
+import { Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { WorkflowService } from '../../services/workflow.service';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +26,7 @@ import { ThemeService } from '../../services/theme.service';
     TranslatePipe
   ],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   isCollapsed = false;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
@@ -39,6 +42,7 @@ export class SidebarComponent implements OnInit {
     { id: 'recycle-bin', labelKey: 'sidebar.recycleBin', active: false, route: '/recycle-bin' },
     { id: 'favorites', labelKey: 'sidebar.favorites', active: false, route: '/favorites' },
     { id: 'signatures', labelKey: 'sidebar.signatures', active: false, route: '/signatures' },
+    { id: 'workflows', labelKey: 'sidebar.workflows', active: false, route: '/workflows' },
     //{ id: 'shared-files', labelKey: 'sidebar.sharedFiles', active: false, route: '/shared-files' },
     { id: 'settings', labelKey: 'sidebar.settings', active: false, route: '/settings' },
     { id: 'logout', labelKey: 'sidebar.logout', active: false, route: null }
@@ -46,17 +50,38 @@ export class SidebarComponent implements OnInit {
 
   private router = inject(Router);
   private settingsService = inject(SettingsService);
+  private workflowService = inject(WorkflowService);
+  private destroy$ = new Subject<void>();
+
+  /** Open workflow tasks of the user (badge on the Workflows entry); red when any is overdue. */
+  myTasksCount = 0;
+  myTasksOverdue = 0;
 
   get navigationItems() {
-    // Hide recycle-bin menu when emptyBinInterval is null; hide signatures when e-Sign is off
+    // Hide recycle-bin menu when emptyBinInterval is null; hide signatures when e-Sign is off; workflows when the engine is off
     return this.allNavigationItems.filter(item =>
       (item.id !== 'recycle-bin' || this.settingsService.isRecycleBinEnabled)
-      && (item.id !== 'signatures' || this.settingsService.isSignatureActive));
+      && (item.id !== 'signatures' || this.settingsService.isSignatureActive)
+      && (item.id !== 'workflows' || this.settingsService.isWorkflowsActive));
   }
 
   constructor() { }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnInit() {
+    // Workflows badge: the service refreshes it after every action; poll slowly for tasks assigned by others.
+    if (this.settingsService.isWorkflowsActive) {
+      this.workflowService.myTasksCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
+        this.myTasksCount = c.count;
+        this.myTasksOverdue = c.overdue;
+      });
+      timer(0, 60000).pipe(takeUntil(this.destroy$)).subscribe(() => this.workflowService.refreshMyTasksCount());
+    }
+
     // Update active state based on current route
     this.updateActiveState(this.router.url);
 
@@ -96,6 +121,7 @@ export class SidebarComponent implements OnInit {
       case 'recycle-bin': return 'delete';
       case 'favorites': return 'favorite';
       case 'signatures': return 'draw';
+      case 'workflows': return 'account_tree';
       //case 'shared-files': return 'share';
       case 'settings': return 'settings';
       case 'logout': return 'logout';

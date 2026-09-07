@@ -9,6 +9,7 @@ import { SearchResultsComponent } from './components/search-results/search-resul
 import { authGuard } from './guards/auth.guard';
 import { recycleBinGuard } from './guards/recycle-bin.guard';
 import { signaturesGuard } from './guards/signatures.guard';
+import { workflowsGuard } from './guards/workflows.guard';
 
 // Since we're using standalone components, we need to import them directly in routes
 export const routes: Routes = [
@@ -25,5 +26,8 @@ export const routes: Routes = [
   // e-Sign: public signer page reached from the invitation email (?token=...). No auth guard —
   // the token is the authenticator; rendered outside the app shell (see main.ts App component).
   { path: 'sign', loadComponent: () => import('./pages/sign/sign.component').then(m => m.SignComponent) },
+  // Workflows: My tasks / Monitor / Designer (hidden when openfilz.workflows.active is off) + the definition editor
+  { path: 'workflows', loadComponent: () => import('./pages/workflows/workflows.component').then(m => m.WorkflowsComponent), canActivate: [authGuard, workflowsGuard] },
+  { path: 'workflows/definitions/:id', loadComponent: () => import('./pages/workflows/designer/workflow-editor.component').then(m => m.WorkflowEditorComponent), canActivate: [authGuard, workflowsGuard] },
   { path: '**', redirectTo: '/dashboard' } // Wildcard route for undefined paths
 ];

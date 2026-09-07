@@ -61,7 +61,8 @@
     "settings": "Settings",
     "logout": "Log Out",
     "collapse": "Collapse",
-    "expandSidebar": "Expand sidebar"
+    "expandSidebar": "Expand sidebar",
+    "workflows": "Workflows"
   },
   "header": {
     "searchPlaceholder": "Type anything to search",
@@ -123,7 +124,8 @@
       "text": "Text File"
     },
     "moreActions": "More actions",
-    "requestSignature": "Request signature"
+    "requestSignature": "Request signature",
+    "startWorkflow": "Start workflow"
   },
   "sortOptions": {
     "date": "Date",
@@ -260,6 +262,7 @@
     "noAudit": "No audit history available",
     "auditLogs": "Audit log entries",
     "unknownUser": "Unknown user",
+    "viaWorkflow": "via the workflow “{{workflow}}” — {{state}}",
     "editMetadata": "Edit Metadata",
     "cancelEditing": "Cancel editing",
     "saveMetadata": "Save metadata changes",
@@ -596,7 +599,16 @@
       "RESTORE_FOLDER": "Folder Restored",
       "PERMANENT_DELETE_FILE": "File Permanently Deleted",
       "PERMANENT_DELETE_FOLDER": "Folder Permanently Deleted",
-      "EMPTY_RECYCLE_BIN": "Recycle Bin Emptied"
+      "EMPTY_RECYCLE_BIN": "Recycle Bin Emptied",
+      "WORKFLOW_STARTED": "Workflow started",
+      "WORKFLOW_TRANSITIONED": "Workflow step taken",
+      "WORKFLOW_COMPLETED": "Workflow completed",
+      "WORKFLOW_CANCELLED": "Workflow cancelled",
+      "WORKFLOW_TASK_REASSIGNED": "Workflow task reassigned",
+      "WORKFLOW_ACTION_FAILED": "Workflow action failed",
+      "WORKFLOW_DEFINITION_CREATED": "Workflow created",
+      "WORKFLOW_DEFINITION_UPDATED": "Workflow modified",
+      "WORKFLOW_DEFINITION_DELETED": "Workflow deleted"
     },
     "time": {
       "justNow": "Just now",
@@ -1312,6 +1324,293 @@
       "specification": "Specification",
       "manual": "Manual",
       "other": "Other"
+    }
+  },
+  "workflow": {
+    "title": "Workflows",
+    "tabs": {
+      "tasks": "My tasks",
+      "monitor": "Monitor",
+      "designer": "Designer"
+    },
+    "status": {
+      "RUNNING": "Running",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "kind": {
+      "START": "Start",
+      "STEP": "Step",
+      "END": "Final"
+    },
+    "assignees": {
+      "INITIATOR": "The person who started the workflow",
+      "USERS": "Specific people",
+      "ROLE": "Anyone with a role",
+      "CHOSEN_AT_START": "Chosen when starting"
+    },
+    "actions": {
+      "MOVE_TO_FOLDER": "Move to a folder",
+      "SET_METADATA": "Set metadata",
+      "NOTIFY": "Notify people"
+    },
+    "styles": {
+      "PRIMARY": "Default",
+      "SUCCESS": "Positive (green)",
+      "DANGER": "Negative (red)",
+      "NEUTRAL": "Neutral (grey)"
+    },
+    "events": {
+      "STARTED": "Started in \"{{state}}\"",
+      "TRANSITIONED": "{{transition}} → {{state}}",
+      "ACTION_APPLIED": "Action applied: {{action}}",
+      "ACTION_FAILED": "Action failed: {{action}} — {{error}}",
+      "REASSIGNED": "Reassigned to {{emails}}",
+      "REMINDED": "Reminder sent",
+      "COMPLETED": "Completed with \"{{state}}\"",
+      "CANCELLED": "Cancelled"
+    },
+    "tasks": {
+      "count": "{{count}} task(s) waiting for you",
+      "overdueCount": "{{count}} overdue",
+      "refresh": "Refresh",
+      "empty": "Nothing waits for your decision.",
+      "emptyHint": "Tasks assigned to you, or to a role you hold, show up here.",
+      "openDocument": "Open the document",
+      "openInstance": "Show in the monitor",
+      "waitingSince": "Since {{date}}",
+      "due": "Due {{date}}",
+      "overdue": "Overdue since {{date}}",
+      "overdueShort": "Overdue",
+      "from": "From {{who}}",
+      "sharedWith": "+{{count}} other candidate(s)",
+      "withNote": "{{transition}} with a note…",
+      "reassign": "Reassign",
+      "reassigned": "Task reassigned.",
+      "done": "Done — the document is now \"{{state}}\"."
+    },
+    "monitor": {
+      "running": "Running",
+      "completed": "Completed",
+      "cancelledCount": "Cancelled",
+      "overdue": "Overdue tasks",
+      "workflow": "Workflow",
+      "status": "Status",
+      "allDefinitions": "All workflows",
+      "allStatuses": "All statuses",
+      "mine": "Started by me",
+      "document": "Document",
+      "state": "Current status",
+      "waitingFor": "Waiting for",
+      "startedBy": "Started by",
+      "updated": "Updated",
+      "ended": "Ended",
+      "empty": "No workflow matches these filters.",
+      "timeline": "Timeline",
+      "anyoneWith": "anyone with the role {{role}}",
+      "cancel": "Cancel workflow",
+      "cancelConfirm": "Cancel the workflow \"{{workflow}}\" on \"{{document}}\"? The pending task will be closed.",
+      "cancelled": "Workflow cancelled.",
+      "cancelError": "Could not cancel the workflow."
+    },
+    "designer": {
+      "intro": "Design the statuses of your documents and who decides at each step.",
+      "newWorkflow": "New workflow",
+      "empty": "No workflow yet.",
+      "emptyHint": "Start from a template — you can rename every status and change who acts.",
+      "templates": {
+        "approval": "Simple approval",
+        "review-archive": "Review, then archive",
+        "two-step": "Two-step approval",
+        "blank": "Blank"
+      },
+      "templateHints": {
+        "approval": "Draft → Pending approval → Approved / Rejected",
+        "review-archive": "Draft → In review → Approved → Archived",
+        "two-step": "Two approvers in a row",
+        "blank": "Start from scratch"
+      },
+      "labels": {
+        "draft": "Draft",
+        "submit": "Submit for approval",
+        "pendingApproval": "Pending approval",
+        "approver": "Approver",
+        "approve": "Approve",
+        "reject": "Reject",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "submitForReview": "Submit for review",
+        "inReview": "In review",
+        "reviewer": "Reviewer",
+        "requestChanges": "Request changes",
+        "archive": "Archive",
+        "archived": "Archived",
+        "firstApproval": "First approval",
+        "firstApprover": "First approver",
+        "secondApproval": "Second approval",
+        "secondApprover": "Second approver",
+        "done": "Done"
+      },
+      "edit": "Edit",
+      "delete": "Delete",
+      "ownedBy": "by {{who}}",
+      "readOnly": "View (read-only)",
+      "notYours": "Only its author can change this workflow",
+      "deleteConfirm": "Delete the workflow \"{{name}}\"? Completed instances keep their history.",
+      "deleted": "Workflow deleted.",
+      "deleteError": "Could not delete the workflow.",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "active": "Active",
+      "inactive": "Inactive",
+      "statesCount": "{{count}} statuses",
+      "runningCount": "{{count}} running",
+      "hotFolders": "{{count}} hot folder(s)"
+    },
+    "editor": {
+      "title": "Edit workflow",
+      "newTitle": "New workflow",
+      "unsaved": "Unsaved changes",
+      "readOnly": "Read-only — this workflow belongs to {{who}}",
+      "name": "Name",
+      "description": "Description",
+      "active": "Available in \"Start workflow\"",
+      "triggerFolders": "Hot folders",
+      "triggerFoldersHint": "Every file uploaded into these folders starts this workflow automatically.",
+      "addTriggerFolder": "Add a folder",
+      "chooseTriggerFolder": "Choose a hot folder",
+      "statuses": "Statuses",
+      "addStatus": "Add a status",
+      "addEnd": "Add a final status",
+      "newStatus": "New status",
+      "newTransition": "Continue",
+      "label": "Label",
+      "key": "Key",
+      "kind": "Kind",
+      "color": "Colour",
+      "assignees": "Who acts",
+      "dueInDays": "Due in (days)",
+      "emails": "E-mail addresses",
+      "role": "Role",
+      "roleHint": "A Keycloak realm role, e.g. CONTRIBUTOR or AUDITOR",
+      "question": "Question asked when starting",
+      "questionHint": "e.g. Who approves this document?",
+      "transitions": "Transitions (the buttons)",
+      "addTransition": "Add a transition",
+      "transitionLabel": "Button label",
+      "target": "Leads to",
+      "style": "Style",
+      "requireComment": "Comment required",
+      "requireCommentHint": "The person must leave a note (typical for a rejection)",
+      "onEnter": "When a document reaches this status",
+      "onEnterHint": "No action — add one to move the document, stamp metadata or notify people.",
+      "addAction": "Add an action",
+      "chooseFolder": "Choose a folder",
+      "metadataEntries": "Metadata (one key=value per line)",
+      "metadataHint": "status=approved",
+      "notifyEmails": "E-mail addresses to notify",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove",
+      "badEmail": "Invalid e-mail address: {{email}}",
+      "preview": "Preview",
+      "previewHint": "Click a status in the picture to edit it.",
+      "valid": "The workflow is valid.",
+      "problemsCount": "{{count}} problem(s) to fix before saving",
+      "saved": "Workflow \"{{name}}\" saved.",
+      "saveError": "Could not save the workflow."
+    },
+    "problem": {
+      "EMPTY": "A workflow needs at least one status",
+      "TOO_MANY": "At most {{value}} statuses",
+      "ONE_START": "Exactly one status must be the start",
+      "NO_END": "At least one status must be a final status",
+      "BAD_KIND": "Status kind must be Start, Step or Final",
+      "BAD_COLOR": "Colour must be a #rrggbb code",
+      "END_HAS_TRANSITIONS": "A final status has no transitions",
+      "END_HAS_ASSIGNEES": "A final status has no assignees",
+      "END_HAS_DUE": "A final status has no due delay",
+      "NO_TRANSITION": "Status \"{{value}}\" needs at least one transition",
+      "NO_EMAIL": "Name at least one e-mail address",
+      "BAD_EMAIL": "Invalid e-mail address: {{value}}",
+      "BAD_ROLE": "Role name is required",
+      "BAD_ASSIGNEE_TYPE": "Assignee type is required",
+      "BAD_DUE": "Due delay must be between 1 and {{value}} days",
+      "NO_TARGET": "Transition needs a target status",
+      "UNKNOWN_TARGET": "Unknown target status: \"{{value}}\"",
+      "TRIGGER_NEEDS_FIXED_ASSIGNEES": "A workflow started automatically from a folder cannot ask the starter to choose assignees",
+      "UNREACHABLE": "Status \"{{value}}\" can never be reached",
+      "DEAD_END": "Status \"{{value}}\" can never reach a final status",
+      "NO_FOLDER": "Choose the destination folder",
+      "FOLDER_NOT_WRITABLE": "You cannot write into this folder — choose one you own or that is shared with you in editor mode",
+      "NO_ENTRIES": "Name at least one metadata key",
+      "TOO_MANY_ENTRIES": "At most {{value}} metadata keys",
+      "BAD_ACTION_TYPE": "Action type is required",
+      "BAD_KEY": {
+        "state": "Status key must be lowercase letters, digits or _",
+        "transition": "Transition key must be lowercase letters, digits or _",
+        "action": "Metadata keys must not be empty or start with _"
+      },
+      "DUPLICATE_KEY": {
+        "state": "Duplicate status key: \"{{value}}\"",
+        "transition": "Duplicate transition key: \"{{value}}\""
+      },
+      "BAD_LABEL": {
+        "state": "Status label is required",
+        "transition": "Transition label is required"
+      },
+      "NULL": {
+        "state": "Empty status",
+        "transition": "Empty transition"
+      }
+    },
+    "diagram": {
+      "title": "Workflow diagram",
+      "hint": "Ctrl + mouse wheel, or the + / − / 0 keys, to zoom",
+      "enlarge": "Enlarge the diagram",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "resetZoom": "Reset zoom"
+    },
+    "start": {
+      "title": "Start a workflow",
+      "chooseWorkflow": "Choose a workflow",
+      "noDefinitions": "No workflow is available.",
+      "noDefinitionsHint": "Ask a designer to create one in Workflows → Designer.",
+      "loadError": "Could not load the workflows.",
+      "who": "Who acts on \"{{state}}\"?",
+      "comment": "Note for the next person (optional)",
+      "start": "Start",
+      "startHint": "The document stays in \"{{state}}\" until you continue.",
+      "startAnd": "Start & {{transition}}",
+      "started": "Workflow \"{{workflow}}\" started — the document is now \"{{state}}\".",
+      "startError": "Could not start the workflow."
+    },
+    "decision": {
+      "commentRequired": "Comment (required)",
+      "commentOptional": "Comment (optional)",
+      "reassignTitle": "Hand this task to someone else",
+      "emails": "E-mail addresses",
+      "emailsHint": "Separate several addresses with commas"
+    },
+    "panel": {
+      "title": "Workflow",
+      "waitingFor": "Waiting for",
+      "you": "you",
+      "due": "due {{date}}",
+      "overdue": "overdue since {{date}}",
+      "since": "Started by {{who}} on {{date}}",
+      "start": "Start a workflow",
+      "openMonitor": "Open in the monitor",
+      "noWorkflow": "No workflow running on this document."
+    },
+    "errors": {
+      "generic": "Something went wrong.",
+      "network": "Network error — check your connection.",
+      "forbidden": "You are not allowed to do this.",
+      "notFound": "Not found.",
+      "conflict": "This action is no longer possible in the current state.",
+      "validation": "The request was rejected."
     }
   }
 }

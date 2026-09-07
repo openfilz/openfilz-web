@@ -1,0 +1,44 @@
+<div class="page">
+  <header class="page-head">
+    <mat-icon>account_tree</mat-icon>
+    <h1>{{ 'workflow.title' | translate }}</h1>
+  </header>
+
+  <mat-tab-group animationDuration="150ms" [selectedIndex]="selectedTab" (selectedIndexChange)="onTabChange($event)" class="tabs">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">task_alt</mat-icon>
+        <span>{{ 'workflow.tabs.tasks' | translate }}</span>
+        @if ((workflows.myTasksCount$ | async); as count) {
+          @if (count.count > 0) {
+            <span class="tab-badge" [class.overdue]="count.overdue > 0">{{ count.count }}</span>
+          }
+        }
+      </ng-template>
+      <!-- Lazy tab bodies: each tab loads its data when shown, so switching tabs always shows fresh state -->
+      <ng-template matTabContent>
+        <app-workflow-my-tasks [highlightTaskId]="highlightTaskId"></app-workflow-my-tasks>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">monitoring</mat-icon>
+        <span>{{ 'workflow.tabs.monitor' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <app-workflow-monitor [openInstanceId]="openInstanceId"></app-workflow-monitor>
+      </ng-template>
+    </mat-tab>
+    @if (canDesign) {
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">design_services</mat-icon>
+          <span>{{ 'workflow.tabs.designer' | translate }}</span>
+        </ng-template>
+        <ng-template matTabContent>
+          <app-workflow-designer></app-workflow-designer>
+        </ng-template>
+      </mat-tab>
+    }
+  </mat-tab-group>
+</div>
