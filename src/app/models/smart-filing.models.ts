@@ -45,7 +45,7 @@ export interface DocumentInsights {
 }
 
 export type FilingStatus = 'FILED' | 'SKIPPED' | 'FAILED' | 'UNDONE' | 'PENDING';
-export type FilingStage = 'NEIGHBOURS' | 'MODEL' | 'NONE';
+export type FilingStage = 'NEIGHBOURS' | 'RULE' | 'MODEL' | 'NONE';
 
 /** What happened to one document of a filing job. */
 export interface FilingOutcome {
@@ -92,4 +92,13 @@ export interface AutoFileInfo {
 export interface AutoFileRequest {
   documentIds: string[];
   allowNewFolders?: boolean;
+}
+
+/**
+ * POST /ai/auto-file/jobs — the whole upload batch in one call. One upload request is sent per
+ * file, so a batch leaves one filing job per file: polling them one by one was as many requests
+ * every couple of seconds.
+ */
+export interface AutoFileJobsRequest {
+  jobIds: string[];
 }

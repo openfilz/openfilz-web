@@ -184,6 +184,32 @@
   flex-wrap: wrap;
 }
 
+.doc-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.doc-action-btn {
+  flex: 1;
+  height: 34px;
+  font-size: 13px;
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.doc-action-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.doc-action-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .type-badge {
   display: inline-block;
   padding: 3px 10px;
