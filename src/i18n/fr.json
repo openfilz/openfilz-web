@@ -1293,8 +1293,19 @@
       "done": "{{filed}} rangé(s) · {{left}} laissé(s) sur place",
       "undo": "Annuler",
       "show": "Afficher",
+      "details": "Voir le détail",
       "movedBack": "Remis à sa place",
       "undoFailed": "Les documents n’ont pas pu être remis à leur place."
+    },
+    "recap": {
+      "title": "Où sont allés vos documents",
+      "summary": "{{filed}} rangé(s) · {{left}} laissé(s) sur place",
+      "leftInPlace": "Laissés sur place",
+      "movedBack": "Remis à sa place",
+      "undoOne": "Remettre celui-ci à sa place",
+      "undoAll": "Tout remettre à sa place",
+      "openTooltip": "Afficher ce document",
+      "empty": "Aucun document n’a été rangé."
     }
   },
   "insights": {

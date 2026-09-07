@@ -1293,8 +1293,19 @@
       "done": "{{filed}} gearchiveerd · {{left}} op hun plaats gelaten",
       "undo": "Ongedaan maken",
       "show": "Tonen",
+      "details": "Details bekijken",
       "movedBack": "Teruggezet",
       "undoFailed": "De documenten konden niet worden teruggezet."
+    },
+    "recap": {
+      "title": "Waar uw documenten terechtkwamen",
+      "summary": "{{filed}} opgeborgen · {{left}} blijven staan",
+      "leftInPlace": "Blijven staan",
+      "movedBack": "Teruggezet",
+      "undoOne": "Dit document terugzetten",
+      "undoAll": "Alles terugzetten",
+      "openTooltip": "Dit document tonen",
+      "empty": "Er is niets opgeborgen."
     }
   },
   "insights": {

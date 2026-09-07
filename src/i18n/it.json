@@ -1293,8 +1293,19 @@
       "done": "{{filed}} archiviato/i · {{left}} lasciato/i al loro posto",
       "undo": "Annulla",
       "show": "Mostra",
+      "details": "Vedi i dettagli",
       "movedBack": "Riportato al suo posto",
       "undoFailed": "Impossibile riportare i documenti al loro posto."
+    },
+    "recap": {
+      "title": "Dove sono finiti i suoi documenti",
+      "summary": "{{filed}} archiviato/i · {{left}} lasciato/i dov’era",
+      "leftInPlace": "Lasciati dov’erano",
+      "movedBack": "Rimesso al suo posto",
+      "undoOne": "Rimetti questo al suo posto",
+      "undoAll": "Rimetti tutto al suo posto",
+      "openTooltip": "Mostra questo documento",
+      "empty": "Non è stato archiviato nulla."
     }
   },
   "insights": {

@@ -9,6 +9,8 @@ export interface SmartFilingToastData {
   left: number;
   /** Undo is only offered when something was actually moved. */
   canUndo: boolean;
+  /** One document: "Show" opens it. A batch: "Show" opens the recap of where everything went. */
+  singleDocument: boolean;
   onUndo: () => void;
   onShow: () => void;
 }
@@ -29,7 +31,9 @@ export interface SmartFilingToastData {
         @if (data.canUndo) {
           <button mat-button class="toast-action" (click)="undo()">{{ 'smartFiling.toast.undo' | translate }}</button>
         }
-        <button mat-button class="toast-action" (click)="show()">{{ 'smartFiling.toast.show' | translate }}</button>
+        <button mat-button class="toast-action" (click)="show()">
+          {{ (data.singleDocument ? 'smartFiling.toast.show' : 'smartFiling.toast.details') | translate }}
+        </button>
       </span>
     </div>
   `,

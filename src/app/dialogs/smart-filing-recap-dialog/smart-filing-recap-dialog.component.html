@@ -1,0 +1,65 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper">
+      <mat-icon>auto_awesome</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'smartFiling.recap.title' | translate }}</h2>
+      <p class="dialog-subtitle">
+        {{ 'smartFiling.recap.summary' | translate: { filed: filed().length, left: left().length } }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  @for (group of groups(); track group.path) {
+    <section class="recap-group">
+      <h3 class="group-title">
+        <mat-icon class="group-icon">{{ group.path ? 'folder' : 'remove_circle_outline' }}</mat-icon>
+        <span class="group-path">
+          {{ group.path ? group.path : ('smartFiling.recap.leftInPlace' | translate) }}
+        </span>
+        <span class="group-count">{{ group.items.length }}</span>
+      </h3>
+
+      <ul class="group-items">
+        @for (item of group.items; track item.documentId) {
+          <li class="recap-item" [class.undone]="item.status === 'UNDONE'">
+            <mat-icon class="file-icon">description</mat-icon>
+            <div class="item-text">
+              <button type="button" class="file-name" (click)="open(item)"
+                      [matTooltip]="'smartFiling.recap.openTooltip' | translate">{{ item.name }}</button>
+              @if (item.status === 'UNDONE') {
+                <span class="item-note">{{ 'smartFiling.recap.movedBack' | translate }}</span>
+              } @else if (item.reason) {
+                <span class="item-note">{{ item.reason }}</span>
+              }
+            </div>
+            @if (item.status === 'FILED' && item.planId) {
+              <button mat-icon-button class="undo-button" (click)="undo(item)" [disabled]="isUndoing(item)"
+                      [matTooltip]="'smartFiling.recap.undoOne' | translate">
+                <mat-icon>undo</mat-icon>
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  } @empty {
+    <p class="recap-empty">{{ 'smartFiling.recap.empty' | translate }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  @if (canUndoAll()) {
+    <button mat-button class="undo-all-btn" (click)="undoAll()">
+      <mat-icon>undo</mat-icon>
+      {{ 'smartFiling.recap.undoAll' | translate }}
+    </button>
+  }
+  <button mat-flat-button class="close-btn" (click)="close()">
+    <mat-icon>check</mat-icon>
+    {{ 'common.close' | translate }}
+  </button>
+</mat-dialog-actions>

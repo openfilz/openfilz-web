@@ -1293,8 +1293,19 @@
       "done": "{{filed}} filed · {{left}} left in place",
       "undo": "Undo",
       "show": "Show",
+      "details": "View details",
       "movedBack": "Moved back",
       "undoFailed": "The documents could not be moved back."
+    },
+    "recap": {
+      "title": "Where your documents went",
+      "summary": "{{filed}} filed · {{left}} left in place",
+      "leftInPlace": "Left in place",
+      "movedBack": "Moved back",
+      "undoOne": "Move this one back",
+      "undoAll": "Move everything back",
+      "openTooltip": "Show this document",
+      "empty": "Nothing was filed."
     }
   },
   "insights": {

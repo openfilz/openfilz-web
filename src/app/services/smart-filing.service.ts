@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, forkJoin, of, timer } from 'rxjs';
 import { catchError, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -10,14 +11,26 @@ import {
   AiPreferences,
   AiPreferencesUpdate,
   AutoFileJob,
+  AutoFileJobsRequest,
   AutoFileRequest,
   FilingOutcome
 } from '../models/smart-filing.models';
 import { SmartFilingToastComponent, SmartFilingToastData } from '../components/smart-filing-toast/smart-filing-toast.component';
+import {
+  SmartFilingRecapDialogComponent,
+  SmartFilingRecapDialogData
+} from '../dialogs/smart-filing-recap-dialog/smart-filing-recap-dialog.component';
 
-/** Polling cadence / budget of the "Filing N document(s)…" toast. */
+/** Polling cadence of the "Filing N document(s)…" toast. */
 const POLL_INTERVAL_MS = 2000;
-const POLL_TIMEOUT_MS = 60000;
+/**
+ * How long the toast follows a batch. A fixed minute was enough for one file and far too short
+ * for a drop of two hundred, which then always reported them as "left in place" while the server
+ * was still filing them: the budget grows with the batch, up to a hard ceiling.
+ */
+const POLL_TIMEOUT_MIN_MS = 60000;
+const POLL_TIMEOUT_PER_DOCUMENT_MS = 3000;
+const POLL_TIMEOUT_MAX_MS = 600000;
 
 /**
  * Smart filing: OpenFilz chooses the destination folder of an upload when the user asks for it.
@@ -33,6 +46,7 @@ export class SmartFilingService {
   private http = inject(HttpClient);
   private settingsService = inject(SettingsService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
   private translate = inject(TranslateService);
 
   private preferencesSubject = new BehaviorSubject<AiPreferences | null>(null);
@@ -105,6 +119,18 @@ export class SmartFilingService {
     return this.http.get<AutoFileJob>(`${this.baseUrl}/ai/auto-file/${jobId}`);
   }
 
+  /**
+   * Several jobs in one call. One upload request is sent per file, so a batch leaves one filing
+   * job per file: asking for them one by one meant as many requests every poll.
+   */
+  getJobs(jobIds: string[]): Observable<AutoFileJob[]> {
+    if (jobIds.length === 0) {
+      return of([]);
+    }
+    const request: AutoFileJobsRequest = { jobIds };
+    return this.http.post<AutoFileJob[]>(`${this.baseUrl}/ai/auto-file/jobs`, request);
+  }
+
   /** Move every FILED document of the job back where it was. */
   undoJob(jobId: string): Observable<AutoFileJob> {
     return this.http.post<AutoFileJob>(`${this.baseUrl}/ai/auto-file/${jobId}/undo`, {}).pipe(
@@ -138,8 +164,9 @@ export class SmartFilingService {
 
   /**
    * After an upload batch whose responses carried filing job ids: show ONE "Filing N
-   * document(s)…" toast, poll the jobs every 2 s for up to 60 s, then replace it with
-   * "X filed · Y left in place" + Undo / Show. Never blocks: no dialog, no await.
+   * document(s)…" toast, poll the jobs in a single request every 2 s within a budget that grows
+   * with the batch, then replace it with "X filed · Y left in place" + Undo / Show. Never
+   * blocks: nothing opens on its own, the recap is behind the toast's own action.
    */
   trackUploadBatch(jobIds: string[], documentCount: number): void {
     const ids = Array.from(new Set(jobIds.filter(id => !!id)));
@@ -167,15 +194,16 @@ export class SmartFilingService {
     };
 
     timer(0, POLL_INTERVAL_MS).pipe(
-      takeUntil(timer(POLL_TIMEOUT_MS)),
-      switchMap(() => forkJoin(ids.map(id => this.getJob(id).pipe(catchError(() => of(null)))))),
-      map(jobs => jobs.filter((j): j is AutoFileJob => j !== null)),
+      takeUntil(timer(this.pollBudget(documentCount))),
+      switchMap(() => this.getJobs(ids).pipe(catchError(() => of([] as AutoFileJob[])))),
+      // An empty answer is a failed poll, not a finished batch: keep what the last one said.
+      map(jobs => jobs.length > 0 ? jobs : lastJobs),
       // Keep polling while any job is still running; the emission that ends it is kept.
-      takeWhile(jobs => jobs.some(j => j.status === 'RUNNING'), true)
+      takeWhile(jobs => jobs.length === 0 || jobs.some(j => j.status === 'RUNNING'), true)
     ).subscribe({
       next: jobs => {
         lastJobs = jobs;
-        if (!jobs.some(j => j.status === 'RUNNING')) {
+        if (jobs.length > 0 && !jobs.some(j => j.status === 'RUNNING')) {
           report();
         }
       },
@@ -184,6 +212,12 @@ export class SmartFilingService {
       complete: () => report(),
       error: () => pending.dismiss()
     });
+  }
+
+  /** A minute for a single file, three seconds per document beyond that, ten minutes at most. */
+  private pollBudget(documentCount: number): number {
+    return Math.min(POLL_TIMEOUT_MAX_MS,
+      Math.max(POLL_TIMEOUT_MIN_MS, documentCount * POLL_TIMEOUT_PER_DOCUMENT_MS));
   }
 
   private showResult(jobs: AutoFileJob[], documentCount: number): void {
@@ -199,15 +233,40 @@ export class SmartFilingService {
       filed,
       left,
       canUndo: filed > 0,
+      // A single document goes straight to itself; a batch opens the recap, which is the only
+      // place that says which file landed in which folder.
+      singleDocument: items.length === 1,
       onUndo: () => this.undoJobs(jobs.filter(j => j.filed > 0).map(j => j.jobId)),
       onShow: () => {
-        // Exactly one filed document: open its details; otherwise the toast just closes.
-        if (filedItems.length === 1) {
-          this.showDocument$.next(filedItems[0].documentId);
+        if (items.length === 1) {
+          this.showDocument$.next(items[0].documentId);
+          return;
         }
+        this.openRecap(items);
       }
     };
     this.snackBar.openFromComponent(SmartFilingToastComponent, { data, duration: 12000 });
+  }
+
+  /**
+   * Where the batch went, file by file, with an undo per row and one for the lot. Both undos go
+   * through the per-document endpoint: one upload request is sent per file, so the batch is one
+   * job per file anyway, and undoing the documents that are still filed — rather than the jobs as
+   * they were — leaves rows already moved back alone.
+   */
+  private openRecap(items: FilingOutcome[]): void {
+    const data: SmartFilingRecapDialogData = {
+      items,
+      undoOne: item => this.undoFiling(item.planId!),
+      undoAll: filed => forkJoin(filed.map(item => this.undoFiling(item.planId!))),
+      openDocument: documentId => this.showDocument$.next(documentId)
+    };
+    this.dialog.open(SmartFilingRecapDialogComponent, {
+      data,
+      width: '620px',
+      maxWidth: '95vw',
+      autoFocus: false
+    });
   }
 
   private undoJobs(jobIds: string[]): void {

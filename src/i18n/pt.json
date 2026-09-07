@@ -1293,8 +1293,19 @@
       "done": "{{filed}} arquivado(s) · {{left}} deixado(s) no lugar",
       "undo": "Anular",
       "show": "Mostrar",
+      "details": "Ver detalhes",
       "movedBack": "Reposto no lugar",
       "undoFailed": "Não foi possível repor os documentos no seu lugar."
+    },
+    "recap": {
+      "title": "Para onde foram os seus documentos",
+      "summary": "{{filed}} arquivado(s) · {{left}} deixado(s) no lugar",
+      "leftInPlace": "Deixados no lugar",
+      "movedBack": "Devolvido ao lugar",
+      "undoOne": "Devolver este ao lugar",
+      "undoAll": "Devolver tudo ao lugar",
+      "openTooltip": "Mostrar este documento",
+      "empty": "Nada foi arquivado."
     }
   },
   "insights": {

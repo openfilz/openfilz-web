@@ -1293,8 +1293,19 @@
       "done": "{{filed}} archivado(s) · {{left}} sin mover",
       "undo": "Deshacer",
       "show": "Mostrar",
+      "details": "Ver detalles",
       "movedBack": "Devuelto a su sitio",
       "undoFailed": "No se pudieron devolver los documentos a su sitio."
+    },
+    "recap": {
+      "title": "Dónde han ido sus documentos",
+      "summary": "{{filed}} archivado(s) · {{left}} sin mover",
+      "leftInPlace": "Sin mover",
+      "movedBack": "Devuelto a su sitio",
+      "undoOne": "Devolver este documento a su sitio",
+      "undoAll": "Devolverlo todo a su sitio",
+      "openTooltip": "Mostrar este documento",
+      "empty": "No se ha archivado nada."
     }
   },
   "insights": {
