@@ -56,6 +56,7 @@
 
   <!-- Metadata Panel -->
   <app-metadata-panel [documentId]="selectedDocumentForMetadata" [isOpen]="metadataPanelOpen"
-    (closePanel)="attemptCloseMetadataPanel()" (metadataSaved)="onMetadataSaved()">
+    (closePanel)="attemptCloseMetadataPanel()" (metadataSaved)="onMetadataSaved()"
+    (openDocument)="onPanelOpenDocument($event)" (goToLocation)="onPanelGoToLocation($event)">
   </app-metadata-panel>
 </div>

@@ -68,6 +68,23 @@
                 </div>
               </div>
 
+              <!-- Open the document / go to the folder that holds it: the panel is often reached
+                   from search, favorites or the AI chat, where the item's location isn't visible -->
+              <div class="doc-actions">
+                <button mat-stroked-button class="doc-action-btn" (click)="onOpen()"
+                  [matTooltip]="openTooltipKey | translate"
+                  [attr.aria-label]="openTooltipKey | translate">
+                  <mat-icon aria-hidden="true">{{ documentInfo.type === 'FOLDER' ? 'folder_open' : 'open_in_new' }}</mat-icon>
+                  <span>{{ 'metadataPanel.openDocument' | translate }}</span>
+                </button>
+                <button mat-stroked-button class="doc-action-btn" (click)="onGoToLocation()"
+                  [matTooltip]="'metadataPanel.goToLocationTooltip' | translate"
+                  [attr.aria-label]="'metadataPanel.goToLocationTooltip' | translate">
+                  <mat-icon aria-hidden="true">my_location</mat-icon>
+                  <span>{{ 'metadataPanel.goToLocation' | translate }}</span>
+                </button>
+              </div>
+
               @if(sha256Hash) {
                 <div class="info-row sha256-row">
                   <span class="info-label">{{ 'metadataPanel.sha256' | translate }}</span>

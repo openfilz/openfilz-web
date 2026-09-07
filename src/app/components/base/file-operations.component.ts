@@ -8,7 +8,7 @@ import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-di
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import { UnsavedChangesDialogComponent, UnsavedChangesResult } from '../../dialogs/unsaved-changes-dialog/unsaved-changes-dialog.component';
-import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
+import { MetadataPanelComponent, MetadataPanelTarget } from '../metadata-panel/metadata-panel.component';
 import { Observable } from "rxjs";
 import { AppConfig } from '../../config/app.config';
 import { Router } from "@angular/router";
@@ -571,6 +571,30 @@ export abstract class FileOperationsComponent implements OnInit {
   /** Close the details panel, guarding unsaved inline edits first. */
   attemptCloseMetadataPanel(): void {
     this.guardPendingMetadata(() => this.closeMetadataPanel());
+  }
+
+  /**
+   * Details panel "Open": preview the file, or enter the folder. Files go through the explorer's
+   * `targetFileId` navigation so the too-large / unsupported handling and the folder context come
+   * for free — the panel is often opened from search or favorites, far from the file's folder.
+   */
+  onPanelOpenDocument(target: MetadataPanelTarget): void {
+    this.guardPendingMetadata(() => {
+      this.closeMetadataPanel();
+      if (target.type === DocumentType.FOLDER) {
+        this.router.navigate(['/my-folder'], { queryParams: { folderId: target.id } });
+      } else {
+        this.router.navigate(['/my-folder'], { queryParams: { targetFileId: target.id, openViewer: 'true' } });
+      }
+    });
+  }
+
+  /** Details panel "Go to location": open the folder holding the item, with the item selected. */
+  onPanelGoToLocation(target: MetadataPanelTarget): void {
+    this.guardPendingMetadata(() => {
+      this.closeMetadataPanel();
+      this.router.navigate(['/my-folder'], { queryParams: { targetFileId: target.id } });
+    });
   }
 
   /**

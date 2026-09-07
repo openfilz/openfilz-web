@@ -19,7 +19,7 @@ import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
-import { AuditLog, DocumentInfo } from '../../models/document.models';
+import { AuditLog, DocumentInfo, DocumentType } from '../../models/document.models';
 import { DocumentVersionInfo } from '../../models/document-versions.models';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { FileIconService } from '../../services/file-icon.service';
@@ -28,6 +28,15 @@ import { FileIconService } from '../../services/file-icon.service';
 interface MetadataEntry {
   key: string;
   value: string;
+}
+
+/** The document a panel navigation action applies to. */
+export interface MetadataPanelTarget {
+  id: string;
+  name: string;
+  type: DocumentType;
+  contentType?: string;
+  size?: number;
 }
 
 @Component({
@@ -58,6 +67,10 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isOpen: boolean = false;
   @Output() closePanel = new EventEmitter<void>();
   @Output() metadataSaved = new EventEmitter<void>();
+  /** "Open": preview the file, or enter the folder. Handled by the host page. */
+  @Output() openDocument = new EventEmitter<MetadataPanelTarget>();
+  /** "Go to location": show the item inside the folder that holds it. */
+  @Output() goToLocation = new EventEmitter<MetadataPanelTarget>();
 
   documentInfo?: DocumentInfo;
   loading: boolean = false;
@@ -468,6 +481,39 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   onClose() {
     this.closePanel.emit();
+  }
+
+  /** Tooltip of the "Open" action: entering a folder and previewing a file read differently. */
+  get openTooltipKey(): string {
+    return this.documentInfo?.type === DocumentType.FOLDER
+      ? 'metadataPanel.openFolderTooltip'
+      : 'metadataPanel.openDocumentTooltip';
+  }
+
+  /** The document shown, in the shape the host page's navigation handlers expect. */
+  private get target(): MetadataPanelTarget | undefined {
+    if (!this.documentId || !this.documentInfo) return undefined;
+    return {
+      id: this.documentId,
+      name: this.documentInfo.name,
+      type: this.documentInfo.type,
+      contentType: this.documentInfo.contentType,
+      size: this.documentInfo.size
+    };
+  }
+
+  onOpen() {
+    const target = this.target;
+    if (target) {
+      this.openDocument.emit(target);
+    }
+  }
+
+  onGoToLocation() {
+    const target = this.target;
+    if (target) {
+      this.goToLocation.emit(target);
+    }
   }
 
   /** Smart filing "Move back": the document changed folder, let the parent refresh its listing. */
