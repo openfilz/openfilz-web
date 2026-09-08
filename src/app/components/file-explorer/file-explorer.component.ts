@@ -222,8 +222,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         [documentId]="selectedDocumentForMetadata"
         [isOpen]="metadataPanelOpen"
         (closePanel)="attemptCloseMetadataPanel()"
+        [showLocationAction]="false"
         (openDocument)="onPanelOpenDocument($event)"
-        (goToLocation)="onPanelGoToLocation($event)"
         (metadataSaved)="onMetadataSaved()">
       </app-metadata-panel>
     </div>

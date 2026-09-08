@@ -71,6 +71,12 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   @Output() openDocument = new EventEmitter<MetadataPanelTarget>();
   /** "Go to location": show the item inside the folder that holds it. */
   @Output() goToLocation = new EventEmitter<MetadataPanelTarget>();
+  /**
+   * Whether to offer "Go to location". Off for the file explorer, which already
+   * displays the folder holding the item; on for the listings that don't
+   * (search results, favorites), where it is the only way to find the document.
+   */
+  @Input() showLocationAction: boolean = true;
 
   documentInfo?: DocumentInfo;
   loading: boolean = false;
