@@ -83,6 +83,39 @@
   color: var(--text-secondary);
 }
 
+/* Inbox row: switch + (inline) an icon shortcut to the folder, (settings) a labelled button */
+.inbox-switch-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.open-inbox-icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--primary);
+}
+
+.open-inbox-icon-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.smart-filing.settings .open-inbox-btn {
+  align-self: flex-start;
+  margin: 6px 0 0 52px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  color: var(--primary);
+}
+
+.smart-filing.settings .open-inbox-btn mat-icon {
+  margin-right: 6px;
+}
+
 @media (max-width: 768px) {
   .smart-filing.inline {
     column-gap: 10px;

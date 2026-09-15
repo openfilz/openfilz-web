@@ -235,7 +235,14 @@
       "currentOnly": "Alleen huidige map",
       "currentAndSubfolders": "Huidige map en submappen",
       "all": "Alle bestanden"
-    }
+    },
+    "documentKind": "Documentsoort",
+    "language": "Taal",
+    "anyKind": "Alle soorten",
+    "anyLanguage": "Alle talen",
+    "facetsWholeLibrary": "Soort en taal doorzoeken de hele bibliotheek.",
+    "activeFacets": "Actieve documentfilters",
+    "removeFilter": "Filter verwijderen"
   },
   "metadataPanel": {
     "title": "Eigenschappen",
@@ -1306,6 +1313,19 @@
       "undoAll": "Alles terugzetten",
       "openTooltip": "Dit document tonen",
       "empty": "Er is niets opgeborgen."
+    },
+    "inbox": {
+      "useInbox": "Een Inbox-map gebruiken",
+      "useInboxHint": "Zet documenten daar neer als u niet wilt nadenken over waar ze horen: OpenFilz bergt ze ergens in uw bibliotheek op",
+      "open": "Mijn Inbox openen",
+      "fileNow": "Mijn Inbox opbergen",
+      "fileNowHint": "OpenFilz bergt elk document op dat in uw Inbox ligt",
+      "uploadTo": "Uploaden naar Inbox",
+      "uploadToHint": "Stuur bestanden naar uw Inbox: OpenFilz bergt ze ergens in uw bibliotheek op",
+      "uploaded": "{{count}} document(en) naar uw Inbox gestuurd",
+      "nothingToFile": "Uw Inbox is leeg, er is niets op te bergen.",
+      "noInbox": "U heeft geen Inbox-map.",
+      "fileFailed": "Uw Inbox kon niet worden opgeborgen."
     }
   },
   "insights": {

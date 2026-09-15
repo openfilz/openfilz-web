@@ -235,7 +235,14 @@
       "currentOnly": "Current folder only",
       "currentAndSubfolders": "Current folder and subfolders",
       "all": "All files"
-    }
+    },
+    "documentKind": "Document kind",
+    "language": "Language",
+    "anyKind": "Any kind",
+    "anyLanguage": "Any language",
+    "facetsWholeLibrary": "Kind and language search the whole library.",
+    "activeFacets": "Active document filters",
+    "removeFilter": "Remove filter"
   },
   "metadataPanel": {
     "title": "Properties",
@@ -1306,6 +1313,19 @@
       "undoAll": "Move everything back",
       "openTooltip": "Show this document",
       "empty": "Nothing was filed."
+    },
+    "inbox": {
+      "useInbox": "Use an Inbox folder",
+      "useInboxHint": "Drop documents there when you don't want to think about where they go: OpenFilz files them anywhere in your library",
+      "open": "Open my Inbox",
+      "fileNow": "File my Inbox",
+      "fileNowHint": "OpenFilz files every document lying in your Inbox",
+      "uploadTo": "Upload to Inbox",
+      "uploadToHint": "Send files to your Inbox: OpenFilz files them anywhere in your library",
+      "uploaded": "{{count}} document(s) sent to your Inbox",
+      "nothingToFile": "Your Inbox is empty, there is nothing to file.",
+      "noInbox": "You have no Inbox folder.",
+      "fileFailed": "Your Inbox could not be filed."
     }
   },
   "insights": {

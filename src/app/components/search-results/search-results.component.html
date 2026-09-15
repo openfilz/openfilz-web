@@ -38,6 +38,8 @@
           }
         }
       </h1>
+      <!-- Document insights facets in force (kind / language), removable one by one -->
+      <app-insight-facet-chips [filters]="currentFilters" (remove)="onRemoveFacet($event)"></app-insight-facet-chips>
       @if (!loading && items.length > 0) {
         <p
           class="search-count"

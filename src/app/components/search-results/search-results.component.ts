@@ -19,6 +19,7 @@ import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.compone
 import { FileOperationsComponent } from '../base/file-operations.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
 import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchFilters, SearchScope } from '../../models/document.models';
+import { InsightFacetChipsComponent, InsightFacetField } from '../insight-facet-chips/insight-facet-chips.component';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
 
@@ -35,7 +36,8 @@ import { UserPreferencesService } from '../../services/user-preferences.service'
     MatSnackBarModule,
     MatIconModule,
     MatTooltipModule,
-    TranslateModule
+    TranslateModule,
+    InsightFacetChipsComponent
 ],
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.css']
@@ -109,10 +111,28 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     this.reloadData();
   }
 
+  /** The filters as the search service holds them (the facet chips render from here). */
+  get currentFilters(): SearchFilters {
+    return this.searchService.getCurrentFilters();
+  }
+
+  /** A document-insights facet (kind / language) is set: only the search index knows those. */
+  get hasFacetFilter(): boolean {
+    const filters = this.currentFilters;
+    return !!filters.category || !!filters.language;
+  }
+
+  /** "x" on a facet chip: drop that facet, keep everything else. */
+  onRemoveFacet(field: InsightFacetField): void {
+    this.searchService.updateFilters({ ...this.currentFilters, [field]: undefined });
+  }
+
   override reloadData(): void {
-    if (this.searchQuery) {
+    if (this.searchQuery || this.hasFacetFilter) {
       // When a search query is typed, always use searchDocuments()
-      // which properly ANDs the query text with all active filters
+      // which properly ANDs the query text with all active filters.
+      // A kind / language facet lives in the search index only, so it takes the same path
+      // (whole library, the scope is pinned to ALL by the filter panel).
       this.reloadSearchData();
     } else if (this.scopeMode) {
       // Filter-only mode (no query text): use scope-based search
@@ -211,7 +231,8 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       (filters.dateModified && filters.dateModified !== 'any') ||
       filters.owner ||
       (filters.fileType && filters.fileType !== 'any') ||
-      (filters.metadata && filters.metadata.length > 0)
+      (filters.metadata && filters.metadata.length > 0) ||
+      filters.category || filters.language
     );
   }
 

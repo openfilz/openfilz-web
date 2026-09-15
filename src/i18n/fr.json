@@ -235,7 +235,14 @@
       "currentOnly": "Dossier actuel uniquement",
       "currentAndSubfolders": "Dossier actuel et sous-dossiers",
       "all": "Tous les fichiers"
-    }
+    },
+    "documentKind": "Type de document",
+    "language": "Langue",
+    "anyKind": "Tous les types",
+    "anyLanguage": "Toutes les langues",
+    "facetsWholeLibrary": "Le type et la langue s’appliquent à toute la bibliothèque.",
+    "activeFacets": "Filtres de document actifs",
+    "removeFilter": "Retirer le filtre"
   },
   "metadataPanel": {
     "title": "Propriétés",
@@ -1306,6 +1313,19 @@
       "undoAll": "Tout remettre à sa place",
       "openTooltip": "Afficher ce document",
       "empty": "Aucun document n’a été rangé."
+    },
+    "inbox": {
+      "useInbox": "Utiliser un dossier Boîte de réception",
+      "useInboxHint": "Déposez-y vos documents quand vous ne voulez pas réfléchir à leur destination : OpenFilz les range n’importe où dans votre bibliothèque",
+      "open": "Ouvrir ma Boîte de réception",
+      "fileNow": "Ranger ma Boîte de réception",
+      "fileNowHint": "OpenFilz range tous les documents qui se trouvent dans votre Boîte de réception",
+      "uploadTo": "Déposer dans la Boîte de réception",
+      "uploadToHint": "Envoyez des fichiers dans votre Boîte de réception : OpenFilz les range n’importe où dans votre bibliothèque",
+      "uploaded": "{{count}} document(s) envoyé(s) dans votre Boîte de réception",
+      "nothingToFile": "Votre Boîte de réception est vide, il n’y a rien à ranger.",
+      "noInbox": "Vous n’avez pas de dossier Boîte de réception.",
+      "fileFailed": "Votre Boîte de réception n’a pas pu être rangée."
     }
   },
   "insights": {
