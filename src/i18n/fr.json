@@ -481,6 +481,10 @@
       "copper": "Cuivre"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "Assistant IA indisponible",
+        "message": "Aucun modèle de conversation n'est configuré sur ce déploiement. Les analyses de documents et le classement intelligent continuent de fonctionner. Un administrateur peut activer l'assistant en définissant {{model}} (provider:model) et {{key}} avec sa propre clé du fournisseur."
+      },
       "title": "Assistant IA",
       "description": "Choisissez le modèle d'IA qui répond à vos conversations. Par défaut, le modèle du serveur est utilisé ; vous pouvez utiliser votre propre compte OpenAI, Anthropic Claude ou Google Gemini avec votre clé API.",
       "provider": "Fournisseur du modèle d'IA",
