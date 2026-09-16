@@ -119,7 +119,19 @@
 @media (max-width: 768px) {
   .smart-filing.inline {
     column-gap: 10px;
+    row-gap: 0;
     padding: 4px 0;
+    /* never wider than the row that hosts it: each switch wraps to its own line when needed */
+    max-width: 100%;
+  }
+
+  .smart-filing.inline .filing-row {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .smart-filing.inline .filing-label {
+    white-space: normal;
   }
 
   .smart-filing.inline .filing-label {
