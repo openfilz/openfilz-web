@@ -12,12 +12,22 @@ export interface AiPreferences {
   autoFile: boolean;
   /** "May create new folders" — only meaningful when autoFile is on. */
   autoFileNewFolders: boolean;
+  /** True when the deployment offers the Inbox folder (Inbox switch on and filing available for this user). */
+  inboxAvailable?: boolean;
+  /** "Use an Inbox folder" — the user has an Inbox. */
+  inbox?: boolean;
+  /** The user's Inbox folder (a root folder named in the user's language); null when there is none. */
+  inboxFolderId?: string | null;
 }
 
-/** PUT body: a null / absent field leaves the stored value unchanged. */
+/**
+ * PUT body: a null / absent field leaves the stored value unchanged. Turning `inbox` on creates
+ * (or reuses) the Inbox folder, named after the request's Accept-Language.
+ */
 export interface AiPreferencesUpdate {
   autoFile?: boolean;
   autoFileNewFolders?: boolean;
+  inbox?: boolean;
 }
 
 export type DocumentInsightsStatus = 'PENDING' | 'DONE' | 'FAILED' | 'SKIPPED';
@@ -92,6 +102,23 @@ export interface AutoFileInfo {
 export interface AutoFileRequest {
   documentIds: string[];
   allowNewFolders?: boolean;
+}
+
+/** POST /ai/auto-file/inbox — file every loose file lying in the caller's Inbox (404 = no Inbox). */
+export interface AutoFileInboxRequest {
+  allowNewFolders?: boolean;
+}
+
+/** One value of a facet and how many documents carry it. */
+export interface InsightFacetCount {
+  key: string;
+  count: number;
+}
+
+/** GET /ai/insights/facets — the kinds and languages present in the library (404 when AI is off). */
+export interface InsightFacets {
+  categories: InsightFacetCount[];
+  languages: InsightFacetCount[];
 }
 
 /**

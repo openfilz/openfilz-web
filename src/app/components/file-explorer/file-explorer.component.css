@@ -214,7 +214,15 @@
 }
 
 @media (max-width: 768px) {
+  /* The filing switches take a full row of their own under the breadcrumb: side by side they no
+     longer fit next to the trail, and a fixed-width host let the second switch overflow the screen */
   .breadcrumb-bar {
     padding: 0 16px;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb-bar-filing {
+    flex: 1 1 100%;
+    min-width: 0;
   }
 }

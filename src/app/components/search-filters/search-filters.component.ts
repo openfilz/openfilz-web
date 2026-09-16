@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentType, SearchFilters, SearchScope } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES } from '../../models/file-type-filters';
+import { InsightFacetsService } from '../../services/insight-facets.service';
+import { InsightFacetCount } from '../../models/smart-filing.models';
 
 @Component({
   selector: 'app-search-filters',
@@ -26,13 +28,20 @@ export class SearchFiltersComponent implements OnInit {
     owner: '',
     fileType: 'any',
     metadata: [],
-    scope: 'ALL'
+    scope: 'ALL',
+    category: undefined,
+    language: undefined
   };
 
   metadataFilters: { key: string; value: string }[] = [];
 
   private snapshotFilters!: string;
   private snapshotMetadata!: string;
+
+  /** Document insights facets ("Document kind" / "Language") — only when the insights are on. */
+  private insightFacets = inject(InsightFacetsService);
+  /** Languages carried by at least one document, most frequent first (loaded once per session). */
+  facetLanguages: InsightFacetCount[] = [];
 
   ngOnInit() {
     if (this.initialFilters) {
@@ -45,6 +54,9 @@ export class SearchFiltersComponent implements OnInit {
       }
     }
     this.takeSnapshot();
+    if (this.showInsightFacets) {
+      this.insightFacets.getLanguages().subscribe(languages => this.facetLanguages = languages);
+    }
   }
 
   private takeSnapshot() {
@@ -60,6 +72,32 @@ export class SearchFiltersComponent implements OnInit {
 
   get showFileTypeFilter(): boolean {
     return this.filters.type !== DocumentType.FOLDER;
+  }
+
+  /** The facet selects follow the backend's insights flag (the facets endpoint 404s without it). */
+  get showInsightFacets(): boolean {
+    return this.insightFacets.enabled;
+  }
+
+  /** The deployment's category list, `other` included; a custom key keeps its raw name as label. */
+  get facetCategories(): string[] {
+    return this.insightFacets.categories;
+  }
+
+  /**
+   * A facet searches the whole library: the insights index knows no folder, so the scope is
+   * pinned to "All files" while one is set (the select shows it, greyed out, with a note).
+   */
+  get hasFacetFilter(): boolean {
+    return !!this.filters.category || !!this.filters.language;
+  }
+
+  categoryLabel(key: string): string {
+    return this.insightFacets.categoryLabel(key);
+  }
+
+  languageLabel(code: string): string {
+    return this.insightFacets.languageLabel(code);
   }
 
   documentTypes = [
@@ -97,10 +135,20 @@ export class SearchFiltersComponent implements OnInit {
     this.metadataFilters.splice(index, 1);
   }
 
+  /** Picking a facet pins the scope to the whole library (see {@link hasFacetFilter}). */
+  onFacetChange() {
+    if (this.hasFacetFilter) {
+      this.filters.scope = 'ALL';
+    }
+  }
+
   applyFilters() {
     // Filter out empty keys
     const validMetadata = this.metadataFilters.filter(m => m.key.trim() !== '');
     this.filters.metadata = validMetadata;
+    if (this.hasFacetFilter) {
+      this.filters.scope = 'ALL';
+    }
     this.filtersChanged.emit(this.filters);
     this.close.emit();
   }
@@ -112,7 +160,9 @@ export class SearchFiltersComponent implements OnInit {
       owner: '',
       fileType: 'any',
       metadata: [],
-      scope: 'ALL'
+      scope: 'ALL',
+      category: undefined,
+      language: undefined
     };
     this.metadataFilters = [];
     this.filtersChanged.emit(this.filters);

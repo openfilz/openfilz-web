@@ -738,12 +738,20 @@ export class DocumentApiService {
           }
         });
       }
+      // Document insights facets (one key, or several comma-separated)
+      if (filters.category) {
+        filterInputs.push({ field: 'category', value: filters.category });
+      }
+      if (filters.language) {
+        filterInputs.push({ field: 'language', value: filters.language });
+      }
     }
 
     return this.apollo.watchQuery<any>({
       fetchPolicy: 'no-cache',
       query: SEARCH_DOCUMENTS_QUERY,
-      variables: { query, filters: filterInputs, sort, page, size }
+      // A filter-only search (facets, no text) must not bind an empty name pattern server-side.
+      variables: { query: query?.trim() ? query : null, filters: filterInputs, sort, page, size }
     }).valueChanges.pipe(
       filter(result => !result.loading),
       map(result => result.data.searchDocuments)

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { SettingsService } from './settings.service';
 import {
   AiPreferences,
   AiPreferencesUpdate,
+  AutoFileInboxRequest,
   AutoFileJob,
   AutoFileJobsRequest,
   AutoFileRequest,
@@ -35,8 +36,9 @@ const POLL_TIMEOUT_MAX_MS = 600000;
 /**
  * Smart filing: OpenFilz chooses the destination folder of an upload when the user asks for it.
  *
- * Owns the per-user preferences ("Let OpenFilz choose the folder" / "May create new folders"),
- * the filing-job endpoints, and the non-blocking toast that follows an upload batch. Every
+ * Owns the per-user preferences ("Let OpenFilz choose the folder" / "May create new folders" /
+ * "Use an Inbox folder"), the filing-job endpoints, the Inbox ("Upload to Inbox", "File my
+ * Inbox"), and the non-blocking toast that follows an upload batch. Every
  * `/ai/**` endpoint answers 404 when the feature is off (`Settings.aiAutoFileActive`), so nothing
  * here is called unless {@link enabled} is true. Dedicated file for the enterprise fork.
  */
@@ -85,6 +87,29 @@ export class SmartFilingService {
     return this.available ? this.preferencesSubject.value!.autoFile : undefined;
   }
 
+  // ── Inbox ──────────────────────────────────────────────────────────────────
+
+  /** The deployment offers the Inbox folder to this user (Inbox switch on and filing available). */
+  get inboxAvailable(): boolean {
+    return this.enabled && this.preferencesSubject.value?.inboxAvailable === true;
+  }
+
+  /** The user has an Inbox folder. */
+  get hasInbox(): boolean {
+    const prefs = this.preferencesSubject.value;
+    return this.enabled && prefs?.inbox === true && !!prefs.inboxFolderId;
+  }
+
+  /** The Inbox folder id, null when the user has none. */
+  get inboxFolderId(): string | null {
+    return this.hasInbox ? this.preferencesSubject.value!.inboxFolderId! : null;
+  }
+
+  /** True when `folderId` is the user's Inbox (null / undefined = root level, never the Inbox). */
+  isInbox(folderId: string | null | undefined): boolean {
+    return !!folderId && folderId === this.inboxFolderId;
+  }
+
   // ── Preferences ────────────────────────────────────────────────────────────
 
   /** Load the preferences once; no-op when the feature is off (the endpoint would 404). */
@@ -106,9 +131,15 @@ export class SmartFilingService {
     );
   }
 
-  /** Persist a change right away (no confirmation) and publish the server's view of the preferences. */
+  /**
+   * Persist a change right away (no confirmation) and publish the server's view of the preferences.
+   * Turning the Inbox on creates the folder server-side, named in the app's current language —
+   * hence the explicit Accept-Language.
+   */
   updatePreferences(update: AiPreferencesUpdate): Observable<AiPreferences> {
-    return this.http.put<AiPreferences>(`${this.baseUrl}/settings/ai/preferences`, update).pipe(
+    const language = this.translate.currentLang || this.translate.defaultLang;
+    const headers = language ? new HttpHeaders({ 'Accept-Language': language }) : undefined;
+    return this.http.put<AiPreferences>(`${this.baseUrl}/settings/ai/preferences`, update, { headers }).pipe(
       tap(prefs => this.preferencesSubject.next(prefs))
     );
   }
@@ -158,6 +189,45 @@ export class SmartFilingService {
   /** File existing documents on demand. */
   fileDocuments(request: AutoFileRequest): Observable<AutoFileJob> {
     return this.http.post<AutoFileJob>(`${this.baseUrl}/ai/auto-file`, request);
+  }
+
+  /** File every loose file lying in the caller's Inbox (404 when the user has no Inbox). */
+  fileInbox(request: AutoFileInboxRequest = {}): Observable<AutoFileJob> {
+    return this.http.post<AutoFileJob>(`${this.baseUrl}/ai/auto-file/inbox`, request);
+  }
+
+  /**
+   * "File my Inbox": start the job with the user's "may create new folders" preference and hand
+   * it to the upload toast flow — "Filing N document(s)…", then the result with Undo / Show. An
+   * empty Inbox just says so; a failure is reported as a snackbar and yields null. The caller
+   * subscribes (and may show a busy state until the job is started).
+   */
+  fileInboxNow(): Observable<AutoFileJob | null> {
+    if (!this.hasInbox) {
+      return of(null);
+    }
+    const allowNewFolders = this.preferencesSubject.value?.autoFileNewFolders === true;
+    return this.fileInbox({ allowNewFolders }).pipe(
+      tap(job => {
+        if (job.total === 0) {
+          this.snackBar.open(
+            this.translate.instant('smartFiling.inbox.nothingToFile'),
+            this.translate.instant('common.close'),
+            { duration: 4000 }
+          );
+          return;
+        }
+        this.trackUploadBatch([job.jobId], job.total);
+      }),
+      catchError(error => {
+        this.snackBar.open(
+          this.translate.instant(error?.status === 404 ? 'smartFiling.inbox.noInbox' : 'smartFiling.inbox.fileFailed'),
+          this.translate.instant('common.close'),
+          { duration: 4000 }
+        );
+        return of(null);
+      })
+    );
   }
 
   // ── Upload follow-up toast ─────────────────────────────────────────────────

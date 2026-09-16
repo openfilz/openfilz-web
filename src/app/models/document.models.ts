@@ -261,6 +261,9 @@ export interface SearchFilters {
   fileType?: string;
   metadata?: { key: string; value: string }[];
   scope?: SearchScope;
+  /** Document insights facets (search results only — the folder listing ignores them). */
+  category?: string;
+  language?: string;
 }
 
 // Navigation interfaces for search suggestion navigation

@@ -109,6 +109,18 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
+/* Note under a select (e.g. why the scope is pinned while a facet is set) */
+.filter-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--text-secondary, #64748b);
+}
+
+.filter-section select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Metadata List */
 .metadata-list {
   display: flex;

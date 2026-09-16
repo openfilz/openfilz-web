@@ -28,5 +28,39 @@
         }
       </div>
     }
+
+    <!-- Inbox folder: only when the deployment offers it to this user -->
+    @if (inboxAvailable) {
+      <div class="filing-row inbox-row">
+        <div class="inbox-switch-line">
+          <mat-slide-toggle class="filing-switch secondary" [checked]="prefs.inbox === true" [disabled]="saving"
+            (change)="onInboxChange($event.checked)"
+            [matTooltip]="variant === 'inline' ? ('smartFiling.inbox.useInboxHint' | translate) : ''">
+            <span class="filing-label secondary-label">
+              @if (variant === 'inline') {
+                <mat-icon class="filing-icon" aria-hidden="true">inbox</mat-icon>
+              }
+              {{ 'smartFiling.inbox.useInbox' | translate }}
+            </span>
+          </mat-slide-toggle>
+          @if (hasInbox && variant === 'inline') {
+            <button mat-icon-button type="button" class="open-inbox-icon-btn" (click)="openInbox()"
+              [matTooltip]="'smartFiling.inbox.open' | translate"
+              [attr.aria-label]="'smartFiling.inbox.open' | translate">
+              <mat-icon aria-hidden="true">inbox</mat-icon>
+            </button>
+          }
+        </div>
+        @if (variant === 'settings') {
+          <p class="filing-hint">{{ 'smartFiling.inbox.useInboxHint' | translate }}</p>
+          @if (hasInbox) {
+            <button mat-stroked-button type="button" class="open-inbox-btn" (click)="openInbox()">
+              <mat-icon aria-hidden="true">inbox</mat-icon>
+              {{ 'smartFiling.inbox.open' | translate }}
+            </button>
+          }
+        }
+      </div>
+    }
   </div>
 }
