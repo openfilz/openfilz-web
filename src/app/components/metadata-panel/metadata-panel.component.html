@@ -77,12 +77,14 @@
                   <mat-icon aria-hidden="true">{{ documentInfo.type === 'FOLDER' ? 'folder_open' : 'open_in_new' }}</mat-icon>
                   <span>{{ 'metadataPanel.openDocument' | translate }}</span>
                 </button>
-                <button mat-stroked-button class="doc-action-btn" (click)="onGoToLocation()"
-                  [matTooltip]="'metadataPanel.goToLocationTooltip' | translate"
-                  [attr.aria-label]="'metadataPanel.goToLocationTooltip' | translate">
-                  <mat-icon aria-hidden="true">my_location</mat-icon>
-                  <span>{{ 'metadataPanel.goToLocation' | translate }}</span>
-                </button>
+                @if (showLocationAction) {
+                  <button mat-stroked-button class="doc-action-btn" (click)="onGoToLocation()"
+                    [matTooltip]="'metadataPanel.goToLocationTooltip' | translate"
+                    [attr.aria-label]="'metadataPanel.goToLocationTooltip' | translate">
+                    <mat-icon aria-hidden="true">my_location</mat-icon>
+                    <span>{{ 'metadataPanel.goToLocation' | translate }}</span>
+                  </button>
+                }
               </div>
 
               @if(sha256Hash) {
