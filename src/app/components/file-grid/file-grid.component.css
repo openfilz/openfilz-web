@@ -25,7 +25,9 @@
   border-radius: 12px;
   overflow: hidden;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: grab;
+  /* pointer, not grab: Chrome's open-hand "grab" cursor is a white glyph with a hairline outline,
+     invisible over a white card in the light theme; the card opens on click, drag still works */
+  cursor: pointer;
   position: relative;
   height: 100%; /* Fill the grid cell */
   display: flex;
