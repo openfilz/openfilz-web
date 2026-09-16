@@ -481,6 +481,10 @@
       "copper": "Koper"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "AI-assistent niet beschikbaar",
+        "message": "Voor deze installatie is geen chatmodel geconfigureerd. Documentinzichten en slim archiveren blijven werken. Een beheerder kan de assistent inschakelen door {{model}} (provider:model) en {{key}} in te stellen met een eigen sleutel van de provider."
+      },
       "title": "AI-assistent",
       "description": "Kies welk AI-model je chats beantwoordt. Standaard wordt het model van de server gebruikt; je kunt je eigen OpenAI-, Anthropic Claude- of Google Gemini-account met je eigen API-sleutel gebruiken.",
       "provider": "AI-modelprovider",

@@ -70,6 +70,17 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * AI is on but no chat model is configured (aiChatUnavailableReason NO_MODEL): explain why the
+   * assistant is missing instead of silently hiding it. Nothing for DISABLED — the operator chose that.
+   */
+  get showAiChatUnavailable(): boolean {
+    return this.settingsService.isAiChatMissingModel;
+  }
+
+  /** Env var names are passed as params so no locale ever translates them. */
+  readonly aiChatConfigParams = { model: 'OPENFILZ_AI_MODEL', key: 'OPENFILZ_AI_API_KEY' };
+
   get showAiSettings(): boolean {
     return this.settingsService.isAiUserSettingsEnabled;
   }

@@ -481,6 +481,10 @@
       "copper": "Kupfer"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "KI-Assistent nicht verfügbar",
+        "message": "Für diese Installation ist kein Chat-Modell konfiguriert. Dokumentanalysen und die intelligente Ablage funktionieren weiterhin. Ein Administrator kann den Assistenten aktivieren, indem er {{model}} (provider:model) und {{key}} mit einem eigenen Anbieterschlüssel setzt."
+      },
       "title": "KI-Assistent",
       "description": "Wählen Sie, welches KI-Modell Ihre Chats beantwortet. Standardmäßig wird das Modell des Servers verwendet; Sie können Ihr eigenes OpenAI-, Anthropic-Claude- oder Google-Gemini-Konto mit eigenem API-Schlüssel nutzen.",
       "provider": "KI-Modell-Anbieter",

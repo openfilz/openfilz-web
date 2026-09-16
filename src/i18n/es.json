@@ -481,6 +481,10 @@
       "copper": "Cobre"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "Asistente de IA no disponible",
+        "message": "Esta instalación no tiene ningún modelo de chat configurado. Los análisis de documentos y el archivado inteligente siguen funcionando. Un administrador puede activar el asistente definiendo {{model}} (provider:model) y {{key}} con su propia clave del proveedor."
+      },
       "title": "Asistente de IA",
       "description": "Elige qué modelo de IA responde a tus conversaciones. De forma predeterminada se usa el modelo del servidor; puedes usar tu propia cuenta de OpenAI, Anthropic Claude o Google Gemini con tu clave API.",
       "provider": "Proveedor del modelo de IA",
