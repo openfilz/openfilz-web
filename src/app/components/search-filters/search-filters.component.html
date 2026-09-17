@@ -12,13 +12,16 @@
     <!-- Search Scope -->
     <div class="filter-section">
       <label>{{ 'searchFilters.scope' | translate }}</label>
-      <select [(ngModel)]="filters.scope">
+      <select [(ngModel)]="filters.scope" [disabled]="hasFacetFilter">
         @for (scope of scopeOptions; track scope) {
           <option [value]="scope.value">
             {{ scope.labelKey | translate }}
           </option>
         }
       </select>
+      @if (hasFacetFilter) {
+        <p class="filter-hint">{{ 'searchFilters.facetsWholeLibrary' | translate }}</p>
+      }
     </div>
 
     <!-- Type Filter -->
@@ -63,6 +66,31 @@
           }
         </select>
       </div>
+    }
+
+    <!-- Document insights facets: kind + language (only when the insights are on) -->
+    @if (showInsightFacets) {
+      <div class="filter-section">
+        <label>{{ 'searchFilters.documentKind' | translate }}</label>
+        <select [(ngModel)]="filters.category" (ngModelChange)="onFacetChange()">
+          <option [ngValue]="undefined">{{ 'searchFilters.anyKind' | translate }}</option>
+          @for (category of facetCategories; track category) {
+            <option [ngValue]="category">{{ categoryLabel(category) }}</option>
+          }
+        </select>
+      </div>
+
+      @if (facetLanguages.length > 0 || filters.language) {
+        <div class="filter-section">
+          <label>{{ 'searchFilters.language' | translate }}</label>
+          <select [(ngModel)]="filters.language" (ngModelChange)="onFacetChange()">
+            <option [ngValue]="undefined">{{ 'searchFilters.anyLanguage' | translate }}</option>
+            @for (language of facetLanguages; track language.key) {
+              <option [ngValue]="language.key">{{ languageLabel(language.key) }} ({{ language.count }})</option>
+            }
+          </select>
+        </div>
+      }
     }
 
     <!-- Metadata Filter -->

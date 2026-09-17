@@ -235,7 +235,14 @@
       "currentOnly": "Solo carpeta actual",
       "currentAndSubfolders": "Carpeta actual y subcarpetas",
       "all": "Todos los archivos"
-    }
+    },
+    "documentKind": "Tipo de documento",
+    "language": "Idioma",
+    "anyKind": "Todos los tipos",
+    "anyLanguage": "Todos los idiomas",
+    "facetsWholeLibrary": "El tipo y el idioma buscan en toda la biblioteca.",
+    "activeFacets": "Filtros de documento activos",
+    "removeFilter": "Quitar el filtro"
   },
   "metadataPanel": {
     "title": "Propiedades",
@@ -474,6 +481,10 @@
       "copper": "Cobre"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "Asistente de IA no disponible",
+        "message": "Esta instalación no tiene ningún modelo de chat configurado. Los análisis de documentos y el archivado inteligente siguen funcionando. Un administrador puede activar el asistente definiendo {{model}} (provider:model) y {{key}} con su propia clave del proveedor."
+      },
       "title": "Asistente de IA",
       "description": "Elige qué modelo de IA responde a tus conversaciones. De forma predeterminada se usa el modelo del servidor; puedes usar tu propia cuenta de OpenAI, Anthropic Claude o Google Gemini con tu clave API.",
       "provider": "Proveedor del modelo de IA",
@@ -1306,6 +1317,19 @@
       "undoAll": "Devolverlo todo a su sitio",
       "openTooltip": "Mostrar este documento",
       "empty": "No se ha archivado nada."
+    },
+    "inbox": {
+      "useInbox": "Usar una carpeta Bandeja de entrada",
+      "useInboxHint": "Deje ahí los documentos cuando no quiera pensar dónde van: OpenFilz los archiva en cualquier lugar de su biblioteca",
+      "open": "Abrir mi Bandeja de entrada",
+      "fileNow": "Archivar mi Bandeja de entrada",
+      "fileNowHint": "OpenFilz archiva todos los documentos que están en su Bandeja de entrada",
+      "uploadTo": "Subir a la Bandeja de entrada",
+      "uploadToHint": "Envíe archivos a su Bandeja de entrada: OpenFilz los archiva en cualquier lugar de su biblioteca",
+      "uploaded": "{{count}} documento(s) enviado(s) a su Bandeja de entrada",
+      "nothingToFile": "Su Bandeja de entrada está vacía, no hay nada que archivar.",
+      "noInbox": "No tiene carpeta Bandeja de entrada.",
+      "fileFailed": "No se pudo archivar su Bandeja de entrada."
     }
   },
   "insights": {

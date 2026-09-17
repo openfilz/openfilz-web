@@ -235,7 +235,14 @@
       "currentOnly": "Nur aktueller Ordner",
       "currentAndSubfolders": "Aktueller Ordner und Unterordner",
       "all": "Alle Dateien"
-    }
+    },
+    "documentKind": "Dokumentart",
+    "language": "Sprache",
+    "anyKind": "Alle Arten",
+    "anyLanguage": "Alle Sprachen",
+    "facetsWholeLibrary": "Art und Sprache durchsuchen die gesamte Bibliothek.",
+    "activeFacets": "Aktive Dokumentfilter",
+    "removeFilter": "Filter entfernen"
   },
   "metadataPanel": {
     "title": "Eigenschaften",
@@ -474,6 +481,10 @@
       "copper": "Kupfer"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "KI-Assistent nicht verfügbar",
+        "message": "Für diese Installation ist kein Chat-Modell konfiguriert. Dokumentanalysen und die intelligente Ablage funktionieren weiterhin. Ein Administrator kann den Assistenten aktivieren, indem er {{model}} (provider:model) und {{key}} mit einem eigenen Anbieterschlüssel setzt."
+      },
       "title": "KI-Assistent",
       "description": "Wählen Sie, welches KI-Modell Ihre Chats beantwortet. Standardmäßig wird das Modell des Servers verwendet; Sie können Ihr eigenes OpenAI-, Anthropic-Claude- oder Google-Gemini-Konto mit eigenem API-Schlüssel nutzen.",
       "provider": "KI-Modell-Anbieter",
@@ -1306,6 +1317,19 @@
       "undoAll": "Alles zurückverschieben",
       "openTooltip": "Dieses Dokument anzeigen",
       "empty": "Es wurde nichts abgelegt."
+    },
+    "inbox": {
+      "useInbox": "Einen Posteingang-Ordner verwenden",
+      "useInboxHint": "Legen Sie Dokumente dort ab, wenn Sie nicht überlegen möchten, wohin sie gehören: OpenFilz ordnet sie irgendwo in Ihrer Bibliothek ein",
+      "open": "Meinen Posteingang öffnen",
+      "fileNow": "Meinen Posteingang einordnen",
+      "fileNowHint": "OpenFilz ordnet alle Dokumente ein, die in Ihrem Posteingang liegen",
+      "uploadTo": "In den Posteingang hochladen",
+      "uploadToHint": "Senden Sie Dateien in Ihren Posteingang: OpenFilz ordnet sie irgendwo in Ihrer Bibliothek ein",
+      "uploaded": "{{count}} Dokument(e) in Ihren Posteingang gesendet",
+      "nothingToFile": "Ihr Posteingang ist leer, es gibt nichts einzuordnen.",
+      "noInbox": "Sie haben keinen Posteingang-Ordner.",
+      "fileFailed": "Ihr Posteingang konnte nicht eingeordnet werden."
     }
   },
   "insights": {

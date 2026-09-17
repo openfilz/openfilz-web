@@ -165,6 +165,22 @@
     </div>
   }
 
+  <!-- AI on, no chat model configured: say why the assistant (chat button, BYOK settings) is missing -->
+  @if (showAiChatUnavailable) {
+    <div class="settings-section">
+      <div class="section-title">
+        <mat-icon>smart_toy</mat-icon>
+        {{ 'settings.ai.chatUnavailable.title' | translate }}
+      </div>
+      <div class="section-content">
+        <div class="upsell-card info-card" role="note">
+          <mat-icon class="info-card-icon" aria-hidden="true">info</mat-icon>
+          <p class="upsell-text">{{ 'settings.ai.chatUnavailable.message' | translate:aiChatConfigParams }}</p>
+        </div>
+      </div>
+    </div>
+  }
+
   @if (showAiSettings) {
     <div class="settings-section">
       <div class="section-title">

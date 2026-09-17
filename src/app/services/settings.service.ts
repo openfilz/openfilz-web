@@ -17,6 +17,13 @@ export interface Settings {
    * semantic retrieval) with no chat model at all, and then aiActive stays true while this is false.
    */
   aiChatActive?: boolean;
+  /**
+   * Why the chat assistant is off while AI is on — null when chat works (or AI is off entirely).
+   * DISABLED: the operator switched the assistant off (OPENFILZ_AI_CHAT_ACTIVE=false), a deliberate choice.
+   * NO_MODEL: no chat model is configured (OPENFILZ_AI_MODEL / OPENFILZ_AI_API_KEY); insights and smart
+   * filing may still run. Older backends do not send it.
+   */
+  aiChatUnavailableReason?: 'DISABLED' | 'NO_MODEL' | null;
   aiUserSettingsEnabled: boolean;
   /** openfilz.ai.insights.active on the API — document insights (summary, keywords…) shown in the details panel. */
   aiInsightsActive?: boolean;
@@ -77,8 +84,8 @@ export class SettingsService {
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
-        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
-        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        this.settingsSubject.next({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiChatUnavailableReason: null, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
+        return of({ emptyBinInterval: null, fileQuotaMB: null, userQuotaMB: null, thumbnailsActive: false, aiActive: false, aiChatActive: false, aiChatUnavailableReason: null, aiUserSettingsEnabled: false, aiInsightsActive: false, aiAutoFileActive: false, signatureActive: false, signatureAuthMethods: ['NONE'] });
       })
     );
   }
@@ -125,6 +132,14 @@ export class SettingsService {
       return false;
     }
     return settings.aiChatActive ?? true;
+  }
+
+  /**
+   * AI is on but the deployment has no chat model: the settings page explains why the assistant
+   * is missing (the chat button stays hidden). A deliberate DISABLED shows nothing.
+   */
+  get isAiChatMissingModel(): boolean {
+    return chatUnavailableBecauseNoModel(this.settingsSubject.value);
   }
 
   // BYOK: users may override the chat LLM with their own provider + API key.
@@ -231,4 +246,9 @@ export class SettingsService {
       clientId: settings.mcpClientId ?? 'openfilz-mcp',
     };
   }
+}
+
+/** True when AI is on but the chat assistant is off because no chat model is configured. */
+export function chatUnavailableBecauseNoModel(settings: Settings | null | undefined): boolean {
+  return settings?.aiActive === true && settings.aiChatUnavailableReason === 'NO_MODEL';
 }

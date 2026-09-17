@@ -146,7 +146,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       (this.currentFilters.fileType && this.currentFilters.fileType !== 'any') ||
       (this.currentFilters.dateModified && this.currentFilters.dateModified !== 'any') ||
       this.currentFilters.owner ||
-      (this.currentFilters.metadata && this.currentFilters.metadata.length > 0)
+      (this.currentFilters.metadata && this.currentFilters.metadata.length > 0) ||
+      this.currentFilters.category || this.currentFilters.language
     );
   }
 

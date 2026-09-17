@@ -235,7 +235,14 @@
       "currentOnly": "Solo cartella corrente",
       "currentAndSubfolders": "Cartella corrente e sottocartelle",
       "all": "Tutti i file"
-    }
+    },
+    "documentKind": "Tipo di documento",
+    "language": "Lingua",
+    "anyKind": "Tutti i tipi",
+    "anyLanguage": "Tutte le lingue",
+    "facetsWholeLibrary": "Tipo e lingua cercano in tutta la libreria.",
+    "activeFacets": "Filtri documento attivi",
+    "removeFilter": "Rimuovi filtro"
   },
   "metadataPanel": {
     "title": "Proprietà",
@@ -474,6 +481,10 @@
       "copper": "Rame"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "Assistente IA non disponibile",
+        "message": "Questa installazione non ha alcun modello di chat configurato. Le analisi dei documenti e l'archiviazione intelligente continuano a funzionare. Un amministratore può attivare l'assistente impostando {{model}} (provider:model) e {{key}} con la propria chiave del fornitore."
+      },
       "title": "Assistente IA",
       "description": "Scegli quale modello di IA risponde alle tue conversazioni. Per impostazione predefinita viene usato il modello del server; puoi usare il tuo account OpenAI, Anthropic Claude o Google Gemini con la tua chiave API.",
       "provider": "Fornitore del modello IA",
@@ -1306,6 +1317,19 @@
       "undoAll": "Rimetti tutto al suo posto",
       "openTooltip": "Mostra questo documento",
       "empty": "Non è stato archiviato nulla."
+    },
+    "inbox": {
+      "useInbox": "Usa una cartella Posta in arrivo",
+      "useInboxHint": "Lascia lì i documenti quando non vuoi pensare a dove vanno: OpenFilz li archivia ovunque nella tua libreria",
+      "open": "Apri la mia Posta in arrivo",
+      "fileNow": "Archivia la mia Posta in arrivo",
+      "fileNowHint": "OpenFilz archivia tutti i documenti presenti nella tua Posta in arrivo",
+      "uploadTo": "Carica nella Posta in arrivo",
+      "uploadToHint": "Invia file alla tua Posta in arrivo: OpenFilz li archivia ovunque nella tua libreria",
+      "uploaded": "{{count}} documento/i inviato/i alla tua Posta in arrivo",
+      "nothingToFile": "La tua Posta in arrivo è vuota, non c’è nulla da archiviare.",
+      "noInbox": "Non hai una cartella Posta in arrivo.",
+      "fileFailed": "Impossibile archiviare la tua Posta in arrivo."
     }
   },
   "insights": {

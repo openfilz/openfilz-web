@@ -38,6 +38,7 @@ import { ResumableUploadService } from '../../services/resumable-upload.service'
 import { FolderUploadService } from '../../services/folder-upload.service';
 import { AiChatService } from '../../services/ai-chat.service';
 import { SmartFilingToggleComponent } from '../smart-filing-toggle/smart-filing-toggle.component';
+import { SmartFilingInboxActionsComponent } from '../smart-filing-inbox-actions/smart-filing-inbox-actions.component';
 
 import {
   AncestorInfo,
@@ -106,6 +107,10 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         [activeFileType]="currentFilters?.fileType || 'any'"
         (fileTypeFilterChange)="onFileTypeFilterChange($event)"
       >
+        <!-- Smart filing Inbox: "File my Inbox" inside it, "Upload to Inbox" anywhere else -->
+        <app-smart-filing-inbox-actions toolbarActions
+          [currentFolderId]="currentFolder?.id ?? null" [hasSelection]="hasSelectedItems">
+        </app-smart-filing-inbox-actions>
 
         <!-- Breadcrumb projected into toolbar for mobile visibility -->
         <div toolbarBreadcrumb class="toolbar-breadcrumb-compact">
@@ -245,7 +250,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
     DownloadProgressComponent,
     TranslatePipe,
     BreadcrumbComponent,
-    SmartFilingToggleComponent
+    SmartFilingToggleComponent,
+    SmartFilingInboxActionsComponent
 ],
 })
 export class FileExplorerComponent extends FileOperationsComponent implements OnInit, OnDestroy {
@@ -914,7 +920,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       (this.currentFilters.fileType && this.currentFilters.fileType !== 'any') ||
       (this.currentFilters.dateModified && this.currentFilters.dateModified !== 'any') ||
       this.currentFilters.owner ||
-      (this.currentFilters.metadata && this.currentFilters.metadata.length > 0)
+      (this.currentFilters.metadata && this.currentFilters.metadata.length > 0) ||
+      this.currentFilters.category || this.currentFilters.language
     );
   }
 

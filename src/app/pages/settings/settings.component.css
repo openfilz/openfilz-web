@@ -306,6 +306,21 @@
     var(--bg-primary) 60%);
 }
 
+/* Informational notice (e.g. AI assistant unavailable) — same card, icon beside the text */
+.upsell-card.info-card {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.info-card-icon {
+  color: var(--primary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .upsell-text {
   margin: 0;
   font-size: 13.5px;

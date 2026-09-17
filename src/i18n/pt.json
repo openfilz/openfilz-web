@@ -235,7 +235,14 @@
       "currentOnly": "Apenas pasta atual",
       "currentAndSubfolders": "Pasta atual e subpastas",
       "all": "Todos os ficheiros"
-    }
+    },
+    "documentKind": "Tipo de documento",
+    "language": "Idioma",
+    "anyKind": "Todos os tipos",
+    "anyLanguage": "Todos os idiomas",
+    "facetsWholeLibrary": "O tipo e o idioma pesquisam em toda a biblioteca.",
+    "activeFacets": "Filtros de documento ativos",
+    "removeFilter": "Remover filtro"
   },
   "metadataPanel": {
     "title": "Propriedades",
@@ -474,6 +481,10 @@
       "copper": "Cobre"
     },
     "ai": {
+      "chatUnavailable": {
+        "title": "Assistente de IA indisponível",
+        "message": "Esta instalação não tem nenhum modelo de conversa configurado. As análises de documentos e o arquivo inteligente continuam a funcionar. Um administrador pode ativar o assistente definindo {{model}} (provider:model) e {{key}} com a sua própria chave do fornecedor."
+      },
       "title": "Assistente de IA",
       "description": "Escolha qual modelo de IA responde às suas conversas. Por padrão é usado o modelo do servidor; pode usar a sua própria conta OpenAI, Anthropic Claude ou Google Gemini com a sua chave API.",
       "provider": "Fornecedor do modelo de IA",
@@ -1306,6 +1317,19 @@
       "undoAll": "Devolver tudo ao lugar",
       "openTooltip": "Mostrar este documento",
       "empty": "Nada foi arquivado."
+    },
+    "inbox": {
+      "useInbox": "Usar uma pasta Caixa de entrada",
+      "useInboxHint": "Deixe lá os documentos quando não quiser pensar onde vão: o OpenFilz arquiva-os em qualquer lugar da sua biblioteca",
+      "open": "Abrir a minha Caixa de entrada",
+      "fileNow": "Arquivar a minha Caixa de entrada",
+      "fileNowHint": "O OpenFilz arquiva todos os documentos que estão na sua Caixa de entrada",
+      "uploadTo": "Carregar para a Caixa de entrada",
+      "uploadToHint": "Envie ficheiros para a sua Caixa de entrada: o OpenFilz arquiva-os em qualquer lugar da sua biblioteca",
+      "uploaded": "{{count}} documento(s) enviado(s) para a sua Caixa de entrada",
+      "nothingToFile": "A sua Caixa de entrada está vazia, não há nada para arquivar.",
+      "noInbox": "Não tem uma pasta Caixa de entrada.",
+      "fileFailed": "Não foi possível arquivar a sua Caixa de entrada."
     }
   },
   "insights": {
