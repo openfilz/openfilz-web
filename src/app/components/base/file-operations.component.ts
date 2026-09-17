@@ -643,6 +643,9 @@ export abstract class FileOperationsComponent implements OnInit {
     // button opens this very panel). Treat toolbar clicks as inside, so opening
     // the panel from the toolbar isn't immediately undone by this same click.
     if (target.closest('app-toolbar')) return;
+    // The AI chat is a separate surface floating over the explorer. Clicking inside it
+    // — including its own close button — must only affect the chat, never this panel.
+    if (target.closest('app-ai-chat-fab, app-ai-chat-panel')) return;
     this.attemptCloseMetadataPanel();
   }
 
