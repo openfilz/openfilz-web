@@ -129,8 +129,15 @@ export class DocumentInsightsComponent implements OnChanges {
     return this.insights?.model === 'user';
   }
 
-  /** The translated name of a kind; a category the deployment added keeps its key. */
+  /**
+   * The name of a kind: the backend's label in the user's language (the deployment's taxonomy, English when
+   * untranslated), else the app's own translation of a built-in kind (older backends), else the key.
+   */
   categoryLabel(key: string): string {
+    const named = this.insightsService.categoryLabel(key);
+    if (named) {
+      return named;
+    }
     const translationKey = `insights.categories.${key}`;
     const label = this.translate.instant(translationKey);
     return label === translationKey ? key : label;
