@@ -28,6 +28,11 @@ export class DocumentInsightsService {
     return this.settingsService.aiInsightsCategories;
   }
 
+  /** The backend's name for a kind in the user's language; null when it sent none. */
+  categoryLabel(key: string): string | null {
+    return this.settingsService.aiInsightsCategoryLabel(key);
+  }
+
   /**
    * The insights of a document, or null when there are none (404 is the normal case for
    * folders and for files uploaded before the feature existed) or when the call fails —
