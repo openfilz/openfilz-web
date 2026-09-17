@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import { McpConnection } from '../models/mcp-settings.models';
 
@@ -29,6 +30,12 @@ export interface Settings {
   aiInsightsActive?: boolean;
   /** The closed category list of the insights (openfilz.ai.insights.categories) — offered when a user corrects a document's kind. */
   aiInsightsCategories?: string[];
+  /**
+   * The display name of each category (key → label) in the Accept-Language the app sent: the label in that
+   * language, else the English one, else the key. Older backends do not send it (the i18n files then name
+   * the built-in kinds).
+   */
+  aiInsightsCategoryLabels?: Record<string, string>;
   /** openfilz.ai.auto-file.active on the API — the only switch for the smart filing UI. */
   aiAutoFileActive?: boolean;
   /** openfilz.signature.active on the API — the only switch for the e-Sign UI. */
@@ -69,9 +76,54 @@ export interface Settings {
 export class SettingsService {
   private readonly baseUrl = environment.apiURL;
   private http = inject(HttpClient);
+  private translate = inject(TranslateService);
 
   private settingsSubject = new BehaviorSubject<Settings | null>(null);
   public settings$ = this.settingsSubject.asObservable();
+
+  /** The language the category labels of the current settings were asked in. */
+  private labelsLanguage: string | null = null;
+
+  constructor() {
+    // The backend names the document kinds in the requested language: ask again when the user switches
+    this.translate.onLangChange.subscribe(({ lang }) => this.refreshCategoryLabels(lang));
+  }
+
+  /**
+   * Re-reads the category labels in `language` and patches them into the current settings — nothing
+   * else of the answer is taken, so a language switch never rewrites the other settings mid-flight.
+   */
+  private refreshCategoryLabels(language: string): void {
+    if (!this.settingsSubject.value?.aiInsightsActive || language === this.labelsLanguage) {
+      return;
+    }
+    this.labelsLanguage = language;
+    this.http.get<Settings>(`${this.baseUrl}/settings`, { headers: this.languageHeaders(language) }).subscribe({
+      next: fresh => {
+        const current = this.settingsSubject.value;
+        if (current && this.labelsLanguage === language) {
+          this.settingsSubject.next({
+            ...current,
+            aiInsightsCategories: fresh.aiInsightsCategories,
+            aiInsightsCategoryLabels: fresh.aiInsightsCategoryLabels
+          });
+        }
+      },
+      error: () => {
+        // Keep the labels already shown; the next language switch or reload asks again
+        this.labelsLanguage = null;
+      }
+    });
+  }
+
+  /** The app's language: the active one, else the remembered choice, else the browser's. */
+  private uiLanguage(): string | null {
+    return this.translate.currentLang || localStorage.getItem('preferredLanguage') || this.translate.getBrowserLang() || null;
+  }
+
+  private languageHeaders(language: string | null): HttpHeaders | undefined {
+    return language ? new HttpHeaders({ 'Accept-Language': language }) : undefined;
+  }
 
   // No manual Authorization or Content-Type. Authorization is injected by the global
   // authInterceptor() from angular-auth-oidc-client (see main.ts secureRoutes).
@@ -79,8 +131,12 @@ export class SettingsService {
   // is passed as an object.
 
   loadSettings(): Observable<Settings> {
-    return this.http.get<Settings>(`${this.baseUrl}/settings`).pipe(
-      tap(settings => this.settingsSubject.next(settings)),
+    const language = this.uiLanguage();
+    return this.http.get<Settings>(`${this.baseUrl}/settings`, { headers: this.languageHeaders(language) }).pipe(
+      tap(settings => {
+        this.labelsLanguage = language;
+        this.settingsSubject.next(settings);
+      }),
       catchError(error => {
         console.error('Failed to load settings', error);
         // Default to null (recycle bin disabled)
@@ -154,6 +210,11 @@ export class SettingsService {
   /** The insight categories, `other` included; empty when insights are off. */
   get aiInsightsCategories(): string[] {
     return this.settingsSubject.value?.aiInsightsCategories ?? [];
+  }
+
+  /** The backend's name for a kind in the user's language (English when untranslated); null when it sent none. */
+  aiInsightsCategoryLabel(key: string): string | null {
+    return this.settingsSubject.value?.aiInsightsCategoryLabels?.[key] ?? null;
   }
 
   get isAiInsightsActive(): boolean {

@@ -14,7 +14,7 @@ const EMPTY_FACETS: InsightFacets = { categories: [], languages: [] };
  * languages present in the library, with their counts. Fetched once per session (the list of
  * languages moves slowly; a stale count only ever hides a brand-new language until the next
  * reload) and shared by the filter panel and the active-filter chips. Also owns the labels: the
- * kind through `insights.categories.<key>`, the language through `languages.<code>` — both fall
+ * kind through the settings' `aiInsightsCategoryLabels` (then `insights.categories.<key>`), the language through `languages.<code>` — both fall
  * back gracefully for values the UI does not know. Dedicated file for the enterprise fork.
  */
 @Injectable({ providedIn: 'root' })
@@ -70,8 +70,15 @@ export class InsightFacetsService {
     this.facets$ = undefined;
   }
 
-  /** The translated name of a kind; a category the deployment added keeps its key. */
+  /**
+   * The name of a kind: the backend's label in the user's language (the deployment's taxonomy, English when
+   * untranslated), else the app's own translation of a built-in kind (older backends), else the key.
+   */
   categoryLabel(key: string): string {
+    const named = this.settingsService.aiInsightsCategoryLabel(key);
+    if (named) {
+      return named;
+    }
     const translationKey = `insights.categories.${key}`;
     const label = this.translate.instant(translationKey);
     return label === translationKey ? key : label;
