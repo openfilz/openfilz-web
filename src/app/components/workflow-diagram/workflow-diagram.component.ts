@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { WorkflowSpec } from '../../models/workflow.models';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostBinding, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { WorkflowSpec, WorkflowState } from '../../models/workflow.models';
 import { DiagramEdge, DiagramLayout, DiagramNode, contrastColor, layoutSpec } from '../../utils/workflow-spec';
 
 /**
  * The picture of a workflow: statuses left to right, transitions as labelled arrows. Pure SVG
  * drawn from `layoutSpec()`; the current status is highlighted, the transitions already taken
- * are bold, and clicking a status emits its key (the designer scrolls to its card).
+ * are bold, and clicking a status emits its key (the designer scrolls to its card). A parallel
+ * review step is drawn as a stack of cards with a "people" badge; its rule is in the tooltip.
  * Dedicated file for the enterprise fork.
  */
 @Component({
@@ -30,6 +32,8 @@ export class WorkflowDiagramComponent implements OnChanges {
    */
   @Input() scale: number | null = null;
   @Output() stateClick = new EventEmitter<string>();
+
+  private translate = inject(TranslateService);
 
   layout: DiagramLayout = { nodes: [], edges: [], width: 0, height: 0 };
   private takenSet = new Set<string>();
@@ -62,6 +66,20 @@ export class WorkflowDiagramComponent implements OnChanges {
 
   text(n: DiagramNode): string {
     return contrastColor(n.state.color);
+  }
+
+  /** Tooltip of a status: its label, plus the review rule for a parallel review step. */
+  title(s: WorkflowState): string {
+    const r = s.review;
+    if (!r || s.kind !== 'STEP') return s.label;
+    const rule = r.rule === 'QUORUM' && r.quorum
+      ? this.translate.instant('workflow.review.quorumRule', { count: r.quorum })
+      : this.translate.instant('workflow.review.rules.' + r.rule);
+    return `${s.label} — ${this.translate.instant('workflow.review.badge', { rule })}`;
+  }
+
+  isReview(n: DiagramNode): boolean {
+    return n.state.kind === 'STEP' && !!n.state.review;
   }
 
   isTaken(e: DiagramEdge): boolean {

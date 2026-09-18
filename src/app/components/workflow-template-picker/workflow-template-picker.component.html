@@ -1,0 +1,42 @@
+<div class="grid" [class.dense]="dense" (keydown)="onKey($event)">
+  @for (c of cards; track c.id) {
+    <button type="button" class="tpl" [class.blank]="c.id === 'blank'" [style.--tone]="c.tone || null" (click)="picked.emit(c.id)">
+      <span class="top">
+        <span class="tile"><mat-icon>{{ c.icon }}</mat-icon></span>
+        <span class="text">
+          <span class="name">{{ 'workflow.designer.templates.' + c.id | translate }}</span>
+          <span class="hint">{{ 'workflow.designer.templateHints.' + c.id | translate }}</span>
+        </span>
+      </span>
+
+      @if (c.id === 'blank') {
+        <span class="flow ghost" aria-hidden="true">
+          <span class="chip"></span>
+          <span class="link"></span>
+          <span class="chip"></span>
+          <span class="link"></span>
+          <span class="chip plus"><mat-icon>add</mat-icon></span>
+        </span>
+      } @else {
+        <span class="flow" aria-hidden="true">
+          @for (col of c.columns; track $index; let last = $last) {
+            <span class="col">
+              @for (chip of col; track chip.key) {
+                @if (chip.review) {
+                  <span class="chip lanes" [style.--c]="chip.color"
+                    [title]="('workflow.designer.labels.' + chip.label | translate) + ' — ' + ('workflow.review.title' | translate)">
+                    <i></i><i></i><i></i>
+                  </span>
+                } @else {
+                  <span class="chip" [class.start]="chip.kind === 'START'" [class.end]="chip.kind === 'END'" [style.--c]="chip.color"
+                    [title]="'workflow.designer.labels.' + chip.label | translate"></span>
+                }
+              }
+            </span>
+            @if (!last) { <span class="link"></span> }
+          }
+        </span>
+      }
+    </button>
+  }
+</div>

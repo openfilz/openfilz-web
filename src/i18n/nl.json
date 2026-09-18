@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Workflow voltooid",
       "WORKFLOW_CANCELLED": "Workflow geannuleerd",
       "WORKFLOW_TASK_REASSIGNED": "Workflowtaak opnieuw toegewezen",
+      "WORKFLOW_REVIEWED": "Workflowbeoordeling ingediend",
       "WORKFLOW_ACTION_FAILED": "Workflowactie mislukt",
       "WORKFLOW_DEFINITION_CREATED": "Workflow aangemaakt",
       "WORKFLOW_DEFINITION_UPDATED": "Workflow gewijzigd",
@@ -1292,9 +1293,27 @@
     "title": "Slim archiveren",
     "description": "Als u erom vraagt, zet OpenFilz de documenten die u uploadt in de map die het beste past. U kunt een document altijd terugzetten.",
     "letOpenfilzChoose": "OpenFilz de map laten kiezen",
-    "letOpenfilzChooseHint": "Geüploade documenten worden in de best passende map gezet. U kunt ze op elk moment terugzetten.",
+    "letOpenfilzChooseHint": "Geüploade documenten worden in de best passende map gezet, binnen de map waarin u uploadt. U kunt ze op elk moment terugzetten.",
     "mayCreateFolders": "Mag nieuwe mappen aanmaken",
-    "mayCreateFoldersHint": "Als geen bestaande map past, mag OpenFilz er een aanmaken.",
+    "mayCreateFoldersHint": "Als geen bestaande map past, mag OpenFilz er een aanmaken, binnen de map waarin u uploadt.",
+    "info": {
+      "open": "Hoe werkt slim archiveren?",
+      "title": "Zo werkt slim archiveren",
+      "subtitle": "Wat OpenFilz met uw uploads doet als „OpenFilz de map laten kiezen” aan staat.",
+      "personalTitle": "Uw instelling, voor al uw uploads",
+      "personal": "Deze schakelaars gelden alleen voor u: voor andere gebruikers verandert er niets. Ze gelden voor elke upload, in welke map ook.",
+      "scopeTitle": "Documenten blijven in de map waarin u uploadt",
+      "scope": "OpenFilz zet een document in de map waarin u het uploadt, of in een van de submappen daarvan — nooit ergens anders.",
+      "scopeRoot": "Uploadt u op het hoogste niveau van Mijn Map, dan mag OpenFilz het overal in uw bibliotheek plaatsen.",
+      "scopeRootOrInbox": "Uploadt u op het hoogste niveau van Mijn Map, of in uw Inbox, dan mag OpenFilz het overal in uw bibliotheek plaatsen.",
+      "newFoldersTitle": "Alleen nieuwe mappen als u dat toestaat",
+      "newFolders": "Met „Mag nieuwe mappen aanmaken” maakt OpenFilz een map aan als geen bestaande past — altijd binnen de map waarin u uploadt.",
+      "unsureTitle": "Bij twijfel verplaatst er niets",
+      "unsure": "Is OpenFilz niet zeker, of staat er al een bestand met dezelfde naam, dan blijft het document waar u het neerzette. Er wordt nooit iets overschreven of hernoemd.",
+      "undoTitle": "U kunt het altijd terugzetten",
+      "undo": "Gebruik „Ongedaan maken” in het bericht na de upload, of „Terugzetten” op het label „Gearchiveerd door OpenFilz” in de documentdetails.",
+      "gotIt": "Begrepen"
+    },
     "saveError": "Uw archiveervoorkeur kon niet worden opgeslagen.",
     "filedByOpenfilz": "Gearchiveerd door OpenFilz",
     "moveBack": "Terugzetten",
@@ -1408,7 +1427,9 @@
       "REASSIGNED": "Opnieuw toegewezen aan {{emails}}",
       "REMINDED": "Herinnering verzonden",
       "COMPLETED": "Voltooid met ‘{{state}}’",
-      "CANCELLED": "Geannuleerd"
+      "CANCELLED": "Geannuleerd",
+      "REVIEWED": "{{who}} heeft beoordeeld: {{transition}}",
+      "reviewClosed": "Beoordeling afgesloten — {{approvals}} goedkeuring(en), {{votes}} stem(men), {{reviewers}} beoordelaar(s)"
     },
     "tasks": {
       "count": "{{count}} taak/taken wachten op u",
@@ -1462,13 +1483,15 @@
         "approval": "Eenvoudige goedkeuring",
         "review-archive": "Beoordelen, dan archiveren",
         "two-step": "Goedkeuring in twee stappen",
-        "blank": "Leeg"
+        "blank": "Leeg",
+        "parallel-review": "Parallelle beoordeling"
       },
       "templateHints": {
         "approval": "Concept → Wacht op goedkeuring → Goedgekeurd / Afgewezen",
         "review-archive": "Concept → In beoordeling → Goedgekeurd → Gearchiveerd",
         "two-step": "Twee goedkeurders na elkaar",
-        "blank": "Vanaf nul beginnen"
+        "blank": "Vanaf nul beginnen",
+        "parallel-review": "Meerdere beoordelaars tegelijk, ieder geeft commentaar"
       },
       "labels": {
         "draft": "Concept",
@@ -1489,7 +1512,8 @@
         "firstApprover": "Eerste goedkeurder",
         "secondApproval": "Tweede goedkeuring",
         "secondApprover": "Tweede goedkeurder",
-        "done": "Klaar"
+        "done": "Klaar",
+        "reviewers": "Beoordelaars"
       },
       "edit": "Bewerken",
       "delete": "Verwijderen",
@@ -1505,7 +1529,9 @@
       "inactive": "Inactief",
       "statesCount": "{{count}} statussen",
       "runningCount": "{{count}} lopend",
-      "hotFolders": "{{count}} hot folder(s)"
+      "hotFolders": "{{count}} hot folder(s)",
+      "pickerTitle": "Een workflow maken",
+      "pickerSubtitle": "Kies een vertrekpunt — daarna kunt u elke status hernoemen en wijzigen wie handelt."
     },
     "editor": {
       "title": "Workflow bewerken",
@@ -1602,7 +1628,13 @@
       "NULL": {
         "state": "Lege status",
         "transition": "Lege overgang"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Alleen een stap kan een parallelle beoordeling zijn",
+      "REVIEW_NEEDS_PEOPLE": "Een parallelle beoordeling heeft benoemde personen nodig — specifieke personen of gekozen bij het starten",
+      "BAD_REVIEW_RULE": "Kies hoe de stemmen van de beoordelaars worden gecombineerd",
+      "REVIEW_NO_APPROVE": "Kies welke knop als goedkeuring telt",
+      "BAD_QUORUM": "Het aantal benodigde goedkeuringen moet tussen 1 en {{value}} liggen",
+      "QUORUM_TOO_HIGH": "Slechts {{value}} beoordelaar(s) opgegeven — minder dan de benodigde goedkeuringen"
     },
     "diagram": {
       "title": "Workflowdiagram",
@@ -1624,7 +1656,10 @@
       "startHint": "Het document blijft in ‘{{state}}’ tot u verdergaat.",
       "startAnd": "Starten & {{transition}}",
       "started": "Workflow ‘{{workflow}}’ gestart — het document is nu ‘{{state}}’.",
-      "startError": "De workflow kon niet worden gestart."
+      "startError": "De workflow kon niet worden gestart.",
+      "reviewers": "Wie beoordeelt ‘{{state}}’? (meerdere personen)",
+      "reviewersHint": "Iedere persoon krijgt een eigen taak — minstens {{count}}",
+      "tooFewReviewers": "Geef minstens {{count}} beoordelaars op"
     },
     "decision": {
       "commentRequired": "Opmerking (verplicht)",
@@ -1651,6 +1686,37 @@
       "notFound": "Niet gevonden.",
       "conflict": "Deze actie is in de huidige staat niet meer mogelijk.",
       "validation": "Het verzoek werd geweigerd."
+    },
+    "review": {
+      "title": "Parallelle beoordeling",
+      "enable": "Parallelle beoordeling",
+      "intro": "Eén taak per beoordelaar: ieder stemt met de knoppen hieronder en kan commentaar geven — iedereen ziet het commentaar.",
+      "needsPeople": "Vereist benoemde personen: kies specifieke personen of personen gekozen bij het starten.",
+      "rule": "Hoe worden de stemmen gecombineerd?",
+      "rules": {
+        "ALL": "Iedereen beoordeelt",
+        "FIRST_REJECTION": "Eerste afwijzing beslist",
+        "QUORUM": "N goedkeuringen volstaan"
+      },
+      "ruleHints": {
+        "ALL": "Wacht op alle beoordelaars. Iedereen keurt goed → goedgekeurd; anders wint het eerste andere antwoord.",
+        "FIRST_REJECTION": "Het eerste antwoord dat geen goedkeuring is, brengt het document meteen verder.",
+        "QUORUM": "Goedgekeurd zodra genoeg beoordelaars goedkeuren; stopt eerder als dat niet meer kan."
+      },
+      "quorumRule": "{{count}} goedkeuringen volstaan",
+      "quorum": "Benodigde goedkeuringen",
+      "quorumOfUsers": "van {{count}} hierboven opgegeven beoordelaar(s)",
+      "quorumChosen": "Wie start, moet minstens zoveel beoordelaars opgeven",
+      "approveTransition": "Knop die als goedkeuring telt",
+      "approveTransitionHint": "Elke andere knop telt als nee",
+      "noTransitions": "Voeg eerst een overgang toe",
+      "progress": "{{done}} van {{total}} beoordeeld",
+      "approvals": "{{approvals}} van {{quorum}} goedkeuringen",
+      "approvalsCount": "{{count}} goedkeuring(en)",
+      "pending": "Wacht nog op",
+      "noVotes": "Nog geen beoordeling.",
+      "voted": "Uw beoordeling is vastgelegd — wachten op de andere beoordelaars.",
+      "badge": "parallelle beoordeling, {{rule}}"
     }
   }
 }

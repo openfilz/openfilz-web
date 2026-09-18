@@ -6,14 +6,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { SmartFilingService } from '../../services/smart-filing.service';
 import { AiPreferences, AiPreferencesUpdate } from '../../models/smart-filing.models';
+import {
+  SmartFilingInfoDialogComponent,
+  SmartFilingInfoDialogData
+} from '../../dialogs/smart-filing-info-dialog/smart-filing-info-dialog.component';
 
 /**
  * The smart filing switches — "Let OpenFilz choose the folder" and, when that is on,
  * "May create new folders" — plus, when the deployment offers it, "Use an Inbox folder" with
- * an "Open my Inbox" shortcut. Bound to the per-user preferences: every change is saved right
+ * an "Open my Inbox" shortcut, and an info button explaining the rules. Bound to the per-user preferences: every change is saved right
  * away (no confirmation). Renders nothing while the feature is off or the preferences are
  * not loaded. Used next to the upload controls (`inline`) and on the settings page
  * (`settings`, with descriptions). Dedicated file for the enterprise fork.
@@ -33,6 +38,7 @@ export class SmartFilingToggleComponent implements OnInit, OnDestroy {
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   prefs: AiPreferences | null = null;
   saving = false;
@@ -81,6 +87,16 @@ export class SmartFilingToggleComponent implements OnInit, OnDestroy {
     if (folderId) {
       this.router.navigate(['/my-folder'], { queryParams: { folderId } });
     }
+  }
+
+  /** "How does smart filing work?": the rules, in a dialog so they also read on touch screens. */
+  openInfo(): void {
+    this.dialog.open<SmartFilingInfoDialogComponent, SmartFilingInfoDialogData>(SmartFilingInfoDialogComponent, {
+      data: { inboxAvailable: this.inboxAvailable },
+      width: '620px',
+      maxWidth: '95vw',
+      autoFocus: false
+    });
   }
 
   private save(update: AiPreferencesUpdate): void {

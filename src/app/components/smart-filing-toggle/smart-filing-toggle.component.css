@@ -116,6 +116,40 @@
   margin-right: 6px;
 }
 
+/* Info button: the rules behind the switches */
+.filing-info-btn {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--text-secondary);
+}
+
+.filing-info-btn:hover {
+  color: var(--primary);
+}
+
+.filing-info-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.smart-filing.settings .filing-info-link {
+  align-self: flex-start;
+  max-width: 100%;
+  /* wraps on a phone: text aligned with its icon, not centred, and the button grows with it */
+  height: auto;
+  min-height: 40px;
+  justify-content: flex-start;
+  text-align: start;
+  color: var(--primary);
+}
+
+.smart-filing.settings .filing-info-link mat-icon {
+  margin-right: 6px;
+}
+
 @media (max-width: 768px) {
   .smart-filing.inline {
     column-gap: 10px;

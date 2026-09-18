@@ -634,18 +634,27 @@ export abstract class FileOperationsComponent implements OnInit {
     if (!this.metadataPanelOpen) return;
     const target = event.target as HTMLElement | null;
     if (!target) return;
-    if (target.closest('.metadata-panel')) return;
+    // Test the dispatch-time path, not target.closest(): a control that removes itself
+    // during its own click (e.g. the AI chat's close button or FAB, both under an @if)
+    // is already detached when the event reaches document, so closest() finds no
+    // ancestor and the click would wrongly count as "outside".
+    const path = event.composedPath().filter((n): n is Element => n instanceof Element);
+    const inside = (selector: string) => path.some(el => el.matches(selector));
+    // A target removed from the DOM whose path we can't attribute belongs to some other
+    // component's own flow — never treat it as a click outside this panel.
+    if (!target.isConnected && path.length <= 1) return;
+    if (inside('.metadata-panel')) return;
     // The mobile backdrop closes the panel itself via (click) — don't double-handle.
-    if (target.closest('.metadata-panel-overlay')) return;
-    if (target.closest('.file-item') || target.closest('.file-row')) return;
-    if (target.closest('.cdk-overlay-container')) return;
+    if (inside('.metadata-panel-overlay')) return;
+    if (inside('.file-item, .file-row')) return;
+    if (inside('.cdk-overlay-container')) return;
     // The toolbar is a control surface for the current selection (its "Details"
     // button opens this very panel). Treat toolbar clicks as inside, so opening
     // the panel from the toolbar isn't immediately undone by this same click.
-    if (target.closest('app-toolbar')) return;
+    if (inside('app-toolbar')) return;
     // The AI chat is a separate surface floating over the explorer. Clicking inside it
     // — including its own close button — must only affect the chat, never this panel.
-    if (target.closest('app-ai-chat-fab, app-ai-chat-panel')) return;
+    if (inside('app-ai-chat-fab, app-ai-chat-panel')) return;
     this.attemptCloseMetadataPanel();
   }
 

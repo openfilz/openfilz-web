@@ -18,3 +18,7 @@
 .node text { font-size: 13px; font-weight: 600; pointer-events: none; }
 .node.current rect { stroke: var(--text-primary); stroke-width: 3; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--primary) 60%, transparent)); }
 .node.selected rect { stroke: var(--primary); stroke-width: 2.5; stroke-dasharray: 5 3; }
+.node rect.stack { stroke: none; filter: none; }
+.node:hover rect.stack, .node:focus-visible rect.stack, .node.current rect.stack, .node.selected rect.stack { stroke: none; filter: none; stroke-dasharray: none; }
+.review-badge { pointer-events: none; }
+.review-badge circle { fill: var(--bg-primary); stroke-width: 1.5; }

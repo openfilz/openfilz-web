@@ -17,13 +17,16 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WorkflowService } from '../../../services/workflow.service';
 import { DocumentApiService } from '../../../services/document-api.service';
 import {
-  TRANSITION_STYLES, WORKFLOW_COLORS, WorkflowAction, WorkflowActionType, WorkflowAssigneeType, WorkflowProblem, WorkflowSpec, WorkflowState,
-  WorkflowStateKind, WorkflowTransition
+  REVIEW_RULES, TRANSITION_STYLES, WORKFLOW_COLORS, WorkflowAction, WorkflowActionType, WorkflowAssigneeType, WorkflowProblem,
+  WorkflowReviewRule, WorkflowSpec, WorkflowState, WorkflowStateKind, WorkflowTransition
 } from '../../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { FolderTreeDialogComponent } from '../../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { WorkflowDiagramDialogComponent } from '../../../dialogs/workflow-diagram-dialog/workflow-diagram-dialog.component';
-import { WorkflowTemplateId, problemMessage, problemsByState, templateSpec, uniqueKey, validateSpec } from '../../../utils/workflow-spec';
+import {
+  MAX_REVIEW_QUORUM, WorkflowTemplateId, defaultApproveTransition, problemMessage, problemsByState, templateSpec, uniqueKey, validateSpec
+} from '../../../utils/workflow-spec';
+import { REVIEW_RULE_ICONS } from '../../../components/workflow-review-progress/workflow-review-progress.component';
 
 /** Editable copy of a state: e-mails and metadata are edited as text and turned back into the spec on save. */
 interface EditableAction {
@@ -47,11 +50,16 @@ interface EditableState {
   dueInDays: number | null;
   transitions: WorkflowTransition[];
   onEnter: EditableAction[];
+  /** Parallel review (STEP only). Kept while switched off or on another kind so toggling back restores it. */
+  reviewOn: boolean;
+  reviewRule: WorkflowReviewRule;
+  quorum: number | null;
+  approveTransition: string;
 }
 
 /**
  * The workflow editor (`/workflows/definitions/new?template=…` and `/workflows/definitions/:id`):
- * one card per status (label, kind, colour, assignees, due delay, transitions, on-enter actions),
+ * one card per status (label, kind, colour, assignees, due delay, parallel review, transitions, on-enter actions),
  * the live diagram on the right, problems inline. Saves through the API's validation.
  */
 @Component({
@@ -76,6 +84,9 @@ export class WorkflowEditorComponent implements OnInit {
   readonly kinds: WorkflowStateKind[] = ['START', 'STEP', 'END'];
   readonly assigneeTypes: WorkflowAssigneeType[] = ['INITIATOR', 'USERS', 'ROLE', 'CHOSEN_AT_START'];
   readonly actionTypes: WorkflowActionType[] = ['MOVE_TO_FOLDER', 'SET_METADATA', 'NOTIFY'];
+  readonly reviewRules = REVIEW_RULES;
+  readonly ruleIcons = REVIEW_RULE_ICONS;
+  readonly maxQuorum = MAX_REVIEW_QUORUM;
 
   id: string | null = null;
   loading = true;
@@ -132,6 +143,8 @@ export class WorkflowEditorComponent implements OnInit {
       assigneeType: a.type, emailsText: (a.emails ?? []).join(', '), role: a.role ?? 'CONTRIBUTOR', question: a.label ?? '',
       dueInDays: s.dueInDays ?? null,
       transitions: (s.transitions ?? []).map(t => ({ ...t })),
+      reviewOn: !!s.review, reviewRule: s.review?.rule ?? 'ALL', quorum: s.review?.quorum ?? null,
+      approveTransition: s.review?.approveTransition ?? defaultApproveTransition(s.transitions ?? []),
       onEnter: (s.onEnter ?? []).map(act => ({
         type: act.type, folderId: act.folderId ?? null, folderName: null,
         entriesText: Object.entries(act.entries ?? {}).map(([k, v]) => `${k}=${v}`).join('\n'),
@@ -162,7 +175,10 @@ export class WorkflowEditorComponent implements OnInit {
         assignees: s.kind === 'END' ? null : assignmentOf(s),
         dueInDays: s.kind === 'END' ? null : s.dueInDays || null,
         transitions: s.kind === 'END' ? [] : s.transitions.map(t => ({ ...t })),
-        onEnter: s.onEnter.map(a => this.toAction(a))
+        onEnter: s.onEnter.map(a => this.toAction(a)),
+        review: s.kind === 'STEP' && s.reviewOn
+          ? { rule: s.reviewRule, quorum: s.reviewRule === 'QUORUM' ? s.quorum : null, approveTransition: s.approveTransition }
+          : null
       }))
     };
   }
@@ -207,7 +223,7 @@ export class WorkflowEditorComponent implements OnInit {
     const s: EditableState = {
       key: uniqueKey(label, this.states.map(x => x.key)), keyLocked: false, label, kind,
       color: this.colors[this.states.length % this.colors.length], assigneeType: 'INITIATOR', emailsText: '', role: 'CONTRIBUTOR', question: '',
-      dueInDays: null, transitions: [], onEnter: []
+      dueInDays: null, transitions: [], onEnter: [], reviewOn: false, reviewRule: 'ALL', quorum: null, approveTransition: ''
     };
     // A new step is inserted before the first END so the picture reads left to right.
     const firstEnd = this.states.findIndex(x => x.kind === 'END');
@@ -242,17 +258,72 @@ export class WorkflowEditorComponent implements OnInit {
     const target = this.states.find(x => x !== s && x.kind === 'END') ?? this.states.find(x => x !== s);
     const label = this.translate.instant('workflow.editor.newTransition');
     s.transitions.push({ key: uniqueKey(label, s.transitions.map(t => t.key)), label, to: target?.key ?? '', style: 'PRIMARY', requireComment: false });
+    if (!s.transitions.some(t => t.key === s.approveTransition)) s.approveTransition = defaultApproveTransition(s.transitions);
     this.touch();
   }
 
   onTransitionLabelChange(s: EditableState, t: WorkflowTransition): void {
+    const old = t.key;
     t.key = uniqueKey(t.label, s.transitions.filter(x => x !== t).map(x => x.key));
+    // The key follows the label, and the review's "approve" follows the key.
+    if (s.approveTransition === old) s.approveTransition = t.key;
     this.touch();
   }
 
   removeTransition(s: EditableState, i: number): void {
-    s.transitions.splice(i, 1);
+    const removed = s.transitions.splice(i, 1)[0];
+    if (removed?.key === s.approveTransition) s.approveTransition = defaultApproveTransition(s.transitions);
     this.touch();
+  }
+
+  // ── parallel review ────────────────────────────────────────────────
+
+  /** A review needs named people: specific e-mails, or people the starter names. */
+  reviewEligible(s: EditableState): boolean {
+    return s.assigneeType === 'USERS' || s.assigneeType === 'CHOSEN_AT_START';
+  }
+
+  toggleReview(s: EditableState, on: boolean): void {
+    s.reviewOn = on;
+    if (on && !s.transitions.some(t => t.key === s.approveTransition)) s.approveTransition = defaultApproveTransition(s.transitions);
+    this.touch();
+  }
+
+  setReviewRule(s: EditableState, rule: WorkflowReviewRule): void {
+    s.reviewRule = rule;
+    if (rule === 'QUORUM' && s.quorum == null) {
+      const named = s.assigneeType === 'USERS' ? splitEmails(s.emailsText).length : 0;
+      s.quorum = named ? Math.min(2, named) : 2;
+    }
+    this.touch();
+  }
+
+  /** Arrow keys move between the rule tiles (radio-group behaviour); left/right follow the reading direction. */
+  onRuleKey(event: KeyboardEvent, s: EditableState): void {
+    const rtl = getComputedStyle(event.currentTarget as Element).direction === 'rtl';
+    const forward = event.key === 'ArrowDown' || event.key === (rtl ? 'ArrowLeft' : 'ArrowRight');
+    const backward = event.key === 'ArrowUp' || event.key === (rtl ? 'ArrowRight' : 'ArrowLeft');
+    if (!forward && !backward) return;
+    event.preventDefault();
+    const i = this.reviewRules.indexOf(s.reviewRule);
+    const next = this.reviewRules[(i + (forward ? 1 : -1) + this.reviewRules.length) % this.reviewRules.length];
+    this.setReviewRule(s, next);
+    const group = event.currentTarget as HTMLElement;
+    setTimeout(() => (group.querySelector(`[data-rule="${next}"]`) as HTMLElement | null)?.focus());
+  }
+
+  /** Reviewers named on a USERS step — the ceiling of the quorum. */
+  namedReviewers(s: EditableState): number {
+    return new Set(splitEmails(s.emailsText)).size;
+  }
+
+  /** Problems of the review block, shown inside it rather than at the bottom of the card. */
+  reviewProblems(i: number): WorkflowProblem[] {
+    return this.problemsFor(i).filter(p => p.path.includes('.review'));
+  }
+
+  otherProblems(i: number): WorkflowProblem[] {
+    return this.problemsFor(i).filter(p => !p.path.includes('.review'));
   }
 
   addAction(s: EditableState, type: WorkflowActionType): void {

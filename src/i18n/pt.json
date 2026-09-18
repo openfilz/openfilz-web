@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Fluxo concluído",
       "WORKFLOW_CANCELLED": "Fluxo cancelado",
       "WORKFLOW_TASK_REASSIGNED": "Tarefa do fluxo reatribuída",
+      "WORKFLOW_REVIEWED": "Revisão do fluxo enviada",
       "WORKFLOW_ACTION_FAILED": "Ação do fluxo falhou",
       "WORKFLOW_DEFINITION_CREATED": "Fluxo criado",
       "WORKFLOW_DEFINITION_UPDATED": "Fluxo modificado",
@@ -1292,9 +1293,27 @@
     "title": "Arquivo inteligente",
     "description": "Quando pedir, o OpenFilz arquiva os documentos que carrega na pasta mais adequada. Pode sempre repor um documento no seu lugar.",
     "letOpenfilzChoose": "Deixar o OpenFilz escolher a pasta",
-    "letOpenfilzChooseHint": "Os documentos carregados são arquivados na pasta mais adequada. Pode repô-los no seu lugar a qualquer momento.",
+    "letOpenfilzChooseHint": "Os documentos carregados são arquivados na pasta mais adequada, dentro da pasta para onde os carrega. Pode repô-los no seu lugar a qualquer momento.",
     "mayCreateFolders": "Pode criar novas pastas",
-    "mayCreateFoldersHint": "Quando nenhuma pasta existente serve, o OpenFilz pode criar uma.",
+    "mayCreateFoldersHint": "Quando nenhuma pasta existente serve, o OpenFilz pode criar uma, dentro da pasta para onde carrega.",
+    "info": {
+      "open": "Como funciona o arquivo inteligente?",
+      "title": "Como funciona o arquivo inteligente",
+      "subtitle": "O que o OpenFilz faz com os seus carregamentos quando «Deixar o OpenFilz escolher a pasta» está ativo.",
+      "personalTitle": "Uma definição sua, para todos os seus carregamentos",
+      "personal": "Estes interruptores são só seus: não mudam nada para os outros utilizadores. Aplicam-se a todos os seus carregamentos, seja qual for a pasta.",
+      "scopeTitle": "Os documentos ficam na pasta para onde carrega",
+      "scope": "O OpenFilz arquiva um documento na pasta para onde o carrega, ou numa das suas subpastas — nunca noutro sítio.",
+      "scopeRoot": "Se carregar na raiz de Minha Pasta, o OpenFilz pode arquivá-lo em qualquer lugar da sua biblioteca.",
+      "scopeRootOrInbox": "Se carregar na raiz de Minha Pasta, ou na sua Caixa de entrada, o OpenFilz pode arquivá-lo em qualquer lugar da sua biblioteca.",
+      "newFoldersTitle": "Novas pastas só se o permitir",
+      "newFolders": "Com «Pode criar novas pastas», o OpenFilz cria uma pasta quando nenhuma existente serve — sempre dentro da pasta para onde carrega.",
+      "unsureTitle": "Na dúvida, nada se move",
+      "unsure": "Se o OpenFilz não tiver certeza, ou se já existir lá um ficheiro com o mesmo nome, o documento fica onde o deixou. Nada é alguma vez substituído ou renomeado.",
+      "undoTitle": "Pode sempre repô-lo no lugar",
+      "undo": "Use «Anular» na mensagem mostrada após o carregamento, ou «Repor no lugar» na etiqueta «Arquivado pelo OpenFilz» nos detalhes do documento.",
+      "gotIt": "Entendi"
+    },
     "saveError": "Não foi possível guardar a sua preferência de arquivo.",
     "filedByOpenfilz": "Arquivado pelo OpenFilz",
     "moveBack": "Repor no lugar",
@@ -1408,7 +1427,9 @@
       "REASSIGNED": "Reatribuído a {{emails}}",
       "REMINDED": "Lembrete enviado",
       "COMPLETED": "Concluído com «{{state}}»",
-      "CANCELLED": "Cancelado"
+      "CANCELLED": "Cancelado",
+      "REVIEWED": "{{who}} reviu: {{transition}}",
+      "reviewClosed": "Revisão encerrada — {{approvals}} aprovação(ões), {{votes}} voto(s), {{reviewers}} revisor(es)"
     },
     "tasks": {
       "count": "{{count}} tarefa(s) à espera da sua decisão",
@@ -1462,13 +1483,15 @@
         "approval": "Aprovação simples",
         "review-archive": "Revisão e arquivo",
         "two-step": "Aprovação em duas etapas",
-        "blank": "Em branco"
+        "blank": "Em branco",
+        "parallel-review": "Revisão em paralelo"
       },
       "templateHints": {
         "approval": "Rascunho → Aprovação pendente → Aprovado / Rejeitado",
         "review-archive": "Rascunho → Em revisão → Aprovado → Arquivado",
         "two-step": "Dois aprovadores em sequência",
-        "blank": "Começar do zero"
+        "blank": "Começar do zero",
+        "parallel-review": "Vários revisores em paralelo, cada um comenta"
       },
       "labels": {
         "draft": "Rascunho",
@@ -1489,7 +1512,8 @@
         "firstApprover": "Primeiro aprovador",
         "secondApproval": "Segunda aprovação",
         "secondApprover": "Segundo aprovador",
-        "done": "Feito"
+        "done": "Feito",
+        "reviewers": "Revisores"
       },
       "edit": "Editar",
       "delete": "Eliminar",
@@ -1505,7 +1529,9 @@
       "inactive": "Inativo",
       "statesCount": "{{count}} estados",
       "runningCount": "{{count}} em curso",
-      "hotFolders": "{{count}} pasta(s) de ativação"
+      "hotFolders": "{{count}} pasta(s) de ativação",
+      "pickerTitle": "Criar um fluxo",
+      "pickerSubtitle": "Escolha um ponto de partida — depois pode renomear cada estado e mudar quem age."
     },
     "editor": {
       "title": "Editar fluxo",
@@ -1602,7 +1628,13 @@
       "NULL": {
         "state": "Estado vazio",
         "transition": "Transição vazia"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Só uma etapa pode ser uma revisão em paralelo",
+      "REVIEW_NEEDS_PEOPLE": "Uma revisão em paralelo precisa de pessoas nomeadas — pessoas específicas ou escolhidas ao iniciar",
+      "BAD_REVIEW_RULE": "Escolha como os votos dos revisores são combinados",
+      "REVIEW_NO_APPROVE": "Escolha o botão que conta como aprovação",
+      "BAD_QUORUM": "As aprovações necessárias devem estar entre 1 e {{value}}",
+      "QUORUM_TOO_HIGH": "Apenas {{value}} revisor(es) indicado(s) — menos do que as aprovações necessárias"
     },
     "diagram": {
       "title": "Diagrama do fluxo",
@@ -1624,7 +1656,10 @@
       "startHint": "O documento fica em «{{state}}» até continuar.",
       "startAnd": "Iniciar e {{transition}}",
       "started": "Fluxo «{{workflow}}» iniciado — o documento está agora «{{state}}».",
-      "startError": "Não foi possível iniciar o fluxo."
+      "startError": "Não foi possível iniciar o fluxo.",
+      "reviewers": "Quem revê «{{state}}»? (várias pessoas)",
+      "reviewersHint": "Cada pessoa recebe a sua própria tarefa — pelo menos {{count}}",
+      "tooFewReviewers": "Indique pelo menos {{count}} revisores"
     },
     "decision": {
       "commentRequired": "Comentário (obrigatório)",
@@ -1651,6 +1686,37 @@
       "notFound": "Não encontrado.",
       "conflict": "Esta ação já não é possível no estado atual.",
       "validation": "O pedido foi recusado."
+    },
+    "review": {
+      "title": "Revisão em paralelo",
+      "enable": "Revisão em paralelo",
+      "intro": "Uma tarefa por revisor: cada um vota com os botões abaixo e pode comentar — todos veem os comentários.",
+      "needsPeople": "Precisa de pessoas nomeadas: escolha pessoas específicas ou escolhidas ao iniciar.",
+      "rule": "Como são combinados os votos?",
+      "rules": {
+        "ALL": "Todos reveem",
+        "FIRST_REJECTION": "A primeira rejeição decide",
+        "QUORUM": "Bastam N aprovações"
+      },
+      "ruleHints": {
+        "ALL": "Espera por todos os revisores. Todos aprovam → aprovado; caso contrário vence a primeira outra resposta.",
+        "FIRST_REJECTION": "A primeira resposta que não é uma aprovação faz o documento avançar de imediato.",
+        "QUORUM": "Aprovado assim que revisores suficientes aprovam; termina mais cedo quando já não é possível."
+      },
+      "quorumRule": "Bastam {{count}} aprovações",
+      "quorum": "Aprovações necessárias",
+      "quorumOfUsers": "de {{count}} revisor(es) indicado(s) acima",
+      "quorumChosen": "Quem inicia tem de indicar pelo menos este número de revisores",
+      "approveTransition": "Botão que conta como aprovação",
+      "approveTransitionHint": "Qualquer outro botão conta como um não",
+      "noTransitions": "Adicione primeiro uma transição",
+      "progress": "{{done}} de {{total}} reviram",
+      "approvals": "{{approvals}} de {{quorum}} aprovações",
+      "approvalsCount": "{{count}} aprovação(ões)",
+      "pending": "Ainda à espera de",
+      "noVotes": "Ainda sem revisões.",
+      "voted": "A sua revisão foi registada — à espera dos outros revisores.",
+      "badge": "revisão em paralelo, {{rule}}"
     }
   }
 }

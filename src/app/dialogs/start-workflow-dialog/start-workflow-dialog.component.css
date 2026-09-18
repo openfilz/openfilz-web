@@ -80,3 +80,5 @@
 .primary-btn.style-neutral { --mat-button-filled-container-color: #64748b; }
 .cancel-btn mat-icon, .start-btn mat-icon { margin-right: 6px; }
 .start-btn mat-spinner { display: inline-block; margin-right: 8px; }
+/* A review field carries a hint line under it: leave room before the next field / error. */
+.review-field { margin-bottom: 8px; }

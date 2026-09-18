@@ -1,0 +1,47 @@
+<div class="review" [class.compact]="compact">
+  <div class="head">
+    <span class="rule" [matTooltip]="'workflow.review.ruleHints.' + review.rule | translate">
+      <mat-icon>{{ ruleIcon }}</mat-icon>
+      {{ review.rule === 'QUORUM' ? ('workflow.review.quorumRule' | translate: { count: quorum }) : ('workflow.review.rules.' + review.rule | translate) }}
+    </span>
+    <span class="count">
+      {{ 'workflow.review.progress' | translate: { done: review.votes.length, total: review.total } }}
+      @if (review.rule === 'QUORUM') {
+        · <b>{{ 'workflow.review.approvals' | translate: { approvals: review.approvals, quorum: quorum } }}</b>
+      } @else if (review.votes.length) {
+        · {{ 'workflow.review.approvalsCount' | translate: { count: review.approvals } }}
+      }
+    </span>
+  </div>
+
+  <div class="bar" role="img" [attr.aria-label]="'workflow.review.progress' | translate: { done: review.votes.length, total: review.total }">
+    @for (seg of segments; track $index) {
+      <span [class]="'seg s-' + seg.style.toLowerCase()" [matTooltip]="seg.title"></span>
+    }
+  </div>
+
+  @if (review.votes.length) {
+    <ul class="votes">
+      @for (v of review.votes; track trackVote($index, v)) {
+        <li class="vote">
+          <div class="vote-line">
+            <mat-icon class="vote-icon" [class.ok]="isApproval(v)">{{ isApproval(v) ? 'check_circle' : 'rate_review' }}</mat-icon>
+            <span class="who">{{ v.reviewer }}</span>
+            <span [class]="'pill ' + styleOf(v.transitionKey)">{{ labelOf(v.transitionKey) }}</span>
+            <span class="at">{{ v.at | date:'short' }}</span>
+          </div>
+          @if (v.comment) { <blockquote class="note">{{ v.comment }}</blockquote> }
+        </li>
+      }
+    </ul>
+  } @else if (!compact) {
+    <p class="none">{{ 'workflow.review.noVotes' | translate }}</p>
+  }
+
+  @if (review.pending.length) {
+    <div class="pending">
+      <mat-icon>hourglass_top</mat-icon>
+      <span>{{ 'workflow.review.pending' | translate }} <b>{{ review.pending.join(', ') }}</b></span>
+    </div>
+  }
+</div>

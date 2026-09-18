@@ -20,10 +20,10 @@
       </div>
       @if (instance.currentTask; as task) {
         <div class="sub">
-          <mat-icon>{{ task.mine ? 'person' : 'hourglass_top' }}</mat-icon>
+          <mat-icon>{{ task.review ? 'groups' : task.mine ? 'person' : 'hourglass_top' }}</mat-icon>
           <span>
             {{ 'workflow.panel.waitingFor' | translate }}
-            <b>{{ task.mine ? ('workflow.panel.you' | translate) : waitingFor }}</b>
+            <b>{{ task.review ? waitingFor : task.mine ? ('workflow.panel.you' | translate) : waitingFor }}</b>
             @if (task.dueAt) {
               <span class="due" [class.overdue]="task.overdue">· {{ (task.overdue ? 'workflow.panel.overdue' : 'workflow.panel.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</span>
             }
@@ -31,6 +31,9 @@
         </div>
         @if (task.previousComment) {
           <blockquote class="note">{{ task.previousComment }}</blockquote>
+        }
+        @if (task.review) {
+          <app-workflow-review-progress [review]="task.review" [transitions]="task.transitions" [compact]="true"></app-workflow-review-progress>
         }
         @if (task.mine) {
           <div class="actions">

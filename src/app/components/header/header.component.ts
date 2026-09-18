@@ -105,7 +105,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (this.showFilters) {
-      const clickedInside = this.elementRef.nativeElement.contains(event.target);
+      // composedPath(): a control that re-renders itself on click is detached by now.
+      const clickedInside = event.composedPath().includes(this.elementRef.nativeElement);
       if (!clickedInside) {
         this.showFilters = false;
       }

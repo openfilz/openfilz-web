@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Workflow completed",
       "WORKFLOW_CANCELLED": "Workflow cancelled",
       "WORKFLOW_TASK_REASSIGNED": "Workflow task reassigned",
+      "WORKFLOW_REVIEWED": "Workflow review submitted",
       "WORKFLOW_ACTION_FAILED": "Workflow action failed",
       "WORKFLOW_DEFINITION_CREATED": "Workflow created",
       "WORKFLOW_DEFINITION_UPDATED": "Workflow modified",
@@ -1292,9 +1293,27 @@
     "title": "Smart filing",
     "description": "When you ask for it, OpenFilz files the documents you upload into the folder that fits them best. You can always move a document back.",
     "letOpenfilzChoose": "Let OpenFilz choose the folder",
-    "letOpenfilzChooseHint": "Uploaded documents are filed into the folder that fits them best. You can move them back at any time.",
+    "letOpenfilzChooseHint": "Uploaded documents are filed into the folder that fits them best, inside the folder you upload to. You can move them back at any time.",
     "mayCreateFolders": "May create new folders",
-    "mayCreateFoldersHint": "When no existing folder fits, OpenFilz may create one.",
+    "mayCreateFoldersHint": "When no existing folder fits, OpenFilz may create one, inside the folder you upload to.",
+    "info": {
+      "open": "How does smart filing work?",
+      "title": "How smart filing works",
+      "subtitle": "What OpenFilz does with your uploads when “Let OpenFilz choose the folder” is on.",
+      "personalTitle": "Your setting, for all your uploads",
+      "personal": "These switches are yours alone: they change nothing for other users. They apply to every upload you make, whatever the folder.",
+      "scopeTitle": "Documents stay in the folder you upload to",
+      "scope": "OpenFilz files a document into the folder you upload it to, or into one of its sub-folders — never anywhere else.",
+      "scopeRoot": "Upload at the root of My Folder and OpenFilz may file it anywhere in your library.",
+      "scopeRootOrInbox": "Upload at the root of My Folder, or into your Inbox, and OpenFilz may file it anywhere in your library.",
+      "newFoldersTitle": "New folders only if you allow it",
+      "newFolders": "With “May create new folders” on, OpenFilz creates a folder when no existing one fits — always inside the folder you upload to.",
+      "unsureTitle": "When in doubt, nothing moves",
+      "unsure": "If OpenFilz is not confident, or a file with the same name is already there, the document stays where you dropped it. Nothing is ever overwritten or renamed.",
+      "undoTitle": "You can always move it back",
+      "undo": "Use “Undo” in the message shown after the upload, or “Move back” on the “Filed by OpenFilz” label in the document details.",
+      "gotIt": "Got it"
+    },
     "saveError": "Your filing preference could not be saved.",
     "filedByOpenfilz": "Filed by OpenFilz",
     "moveBack": "Move back",
@@ -1408,7 +1427,9 @@
       "REASSIGNED": "Reassigned to {{emails}}",
       "REMINDED": "Reminder sent",
       "COMPLETED": "Completed with \"{{state}}\"",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "REVIEWED": "{{who}} reviewed: {{transition}}",
+      "reviewClosed": "Review closed — {{approvals}} approval(s), {{votes}} vote(s), {{reviewers}} reviewer(s)"
     },
     "tasks": {
       "count": "{{count}} task(s) waiting for you",
@@ -1462,13 +1483,15 @@
         "approval": "Simple approval",
         "review-archive": "Review, then archive",
         "two-step": "Two-step approval",
-        "blank": "Blank"
+        "blank": "Blank",
+        "parallel-review": "Parallel review"
       },
       "templateHints": {
         "approval": "Draft → Pending approval → Approved / Rejected",
         "review-archive": "Draft → In review → Approved → Archived",
         "two-step": "Two approvers in a row",
-        "blank": "Start from scratch"
+        "blank": "Start from scratch",
+        "parallel-review": "Several reviewers in parallel, each one comments"
       },
       "labels": {
         "draft": "Draft",
@@ -1489,7 +1512,8 @@
         "firstApprover": "First approver",
         "secondApproval": "Second approval",
         "secondApprover": "Second approver",
-        "done": "Done"
+        "done": "Done",
+        "reviewers": "Reviewers"
       },
       "edit": "Edit",
       "delete": "Delete",
@@ -1505,7 +1529,9 @@
       "inactive": "Inactive",
       "statesCount": "{{count}} statuses",
       "runningCount": "{{count}} running",
-      "hotFolders": "{{count}} hot folder(s)"
+      "hotFolders": "{{count}} hot folder(s)",
+      "pickerTitle": "Create a workflow",
+      "pickerSubtitle": "Pick a starting point — you can rename every status and change who acts afterwards."
     },
     "editor": {
       "title": "Edit workflow",
@@ -1602,7 +1628,13 @@
       "NULL": {
         "state": "Empty status",
         "transition": "Empty transition"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Only a step can be a parallel review",
+      "REVIEW_NEEDS_PEOPLE": "A parallel review needs named people — specific people or chosen when starting",
+      "BAD_REVIEW_RULE": "Choose how the reviewers' votes are combined",
+      "REVIEW_NO_APPROVE": "Choose which button counts as the approval",
+      "BAD_QUORUM": "The approvals needed must be between 1 and {{value}}",
+      "QUORUM_TOO_HIGH": "Only {{value}} reviewer(s) named — fewer than the approvals needed"
     },
     "diagram": {
       "title": "Workflow diagram",
@@ -1624,7 +1656,10 @@
       "startHint": "The document stays in \"{{state}}\" until you continue.",
       "startAnd": "Start & {{transition}}",
       "started": "Workflow \"{{workflow}}\" started — the document is now \"{{state}}\".",
-      "startError": "Could not start the workflow."
+      "startError": "Could not start the workflow.",
+      "reviewers": "Who reviews \"{{state}}\"? (several people)",
+      "reviewersHint": "Each person gets their own task — name at least {{count}}",
+      "tooFewReviewers": "Name at least {{count}} reviewers"
     },
     "decision": {
       "commentRequired": "Comment (required)",
@@ -1651,6 +1686,37 @@
       "notFound": "Not found.",
       "conflict": "This action is no longer possible in the current state.",
       "validation": "The request was rejected."
+    },
+    "review": {
+      "title": "Parallel review",
+      "enable": "Parallel review",
+      "intro": "One task per reviewer: each one votes with the buttons below and can comment — everyone sees the comments.",
+      "needsPeople": "Needs named people: choose specific people, or people chosen when starting.",
+      "rule": "How are the votes combined?",
+      "rules": {
+        "ALL": "Everyone reviews",
+        "FIRST_REJECTION": "First rejection decides",
+        "QUORUM": "N approvals are enough"
+      },
+      "ruleHints": {
+        "ALL": "Waits for every reviewer. All approve → approved; otherwise the first other answer wins.",
+        "FIRST_REJECTION": "The first answer that is not an approval moves the document on at once.",
+        "QUORUM": "Approved as soon as enough reviewers approve; stops early once that can no longer happen."
+      },
+      "quorumRule": "{{count}} approvals are enough",
+      "quorum": "Approvals needed",
+      "quorumOfUsers": "out of {{count}} reviewer(s) named above",
+      "quorumChosen": "The starter must name at least this many reviewers",
+      "approveTransition": "Button that counts as approval",
+      "approveTransitionHint": "Every other button counts as a no",
+      "noTransitions": "Add a transition first",
+      "progress": "{{done}} of {{total}} reviewed",
+      "approvals": "{{approvals}} of {{quorum}} approvals",
+      "approvalsCount": "{{count}} approval(s)",
+      "pending": "Still waiting for",
+      "noVotes": "No review yet.",
+      "voted": "Your review is recorded — waiting for the other reviewers.",
+      "badge": "parallel review, {{rule}}"
     }
   }
 }

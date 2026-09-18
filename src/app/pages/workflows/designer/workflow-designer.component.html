@@ -5,20 +5,9 @@
          second, smaller copy of them. It comes back with the first workflow, where the cards are
          gone and it is the only way to create one. -->
     @if (!loading && definitions.length > 0) {
-      <button mat-raised-button color="primary" class="new-btn" [matMenuTriggerFor]="newMenu">
-        <mat-icon>add</mat-icon><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
+      <button mat-raised-button color="primary" class="new-btn" aria-haspopup="dialog" (click)="openTemplatePicker()">
+        <span class="new-btn-icon"><mat-icon>add</mat-icon></span><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
       </button>
-      <mat-menu #newMenu="matMenu" class="template-menu">
-        @for (t of templates; track t.id) {
-          <button mat-menu-item (click)="create(t.id)">
-            <mat-icon>{{ t.icon }}</mat-icon>
-            <span class="tpl">
-              <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
-              <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
-            </span>
-          </button>
-        }
-      </mat-menu>
     }
   </div>
 
@@ -29,15 +18,7 @@
       <mat-icon>design_services</mat-icon>
       <p>{{ 'workflow.designer.empty' | translate }}</p>
       <p class="sub">{{ 'workflow.designer.emptyHint' | translate }}</p>
-      <div class="tpl-cards">
-        @for (t of templates; track t.id) {
-          <button type="button" class="tpl-card" (click)="create(t.id)">
-            <mat-icon>{{ t.icon }}</mat-icon>
-            <span class="tpl-name">{{ 'workflow.designer.templates.' + t.id | translate }}</span>
-            <span class="tpl-hint">{{ 'workflow.designer.templateHints.' + t.id | translate }}</span>
-          </button>
-        }
-      </div>
+      <app-workflow-template-picker class="tpl-cards" (picked)="create($event)"></app-workflow-template-picker>
     </div>
   } @else {
     <div class="cards">
