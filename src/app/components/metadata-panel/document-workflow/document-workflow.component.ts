@@ -11,17 +11,19 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WorkflowService } from '../../../services/workflow.service';
 import { WorkflowAccessService } from '../../../services/workflow-access.service';
 import { WorkflowInstanceDTO, WorkflowTransition } from '../../../models/workflow.models';
+import { WorkflowReviewProgressComponent } from '../../workflow-review-progress/workflow-review-progress.component';
 
 /**
  * "Workflow" section of the details panel for FILE documents: the running instance (status
- * chip, who it waits for, my transition buttons when I am a candidate, link to the monitor),
+ * chip, who it waits for, my transition buttons when I am a candidate, the progress of a parallel
+ * review, link to the monitor),
  * or a "Start workflow" button when there is none. Hidden when the feature is off.
  * Dedicated file for the enterprise fork; the panel only hosts the element.
  */
 @Component({
   selector: 'app-document-workflow',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
+  imports: [DatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowReviewProgressComponent],
   templateUrl: './document-workflow.component.html',
   styleUrls: ['./document-workflow.component.css']
 })
@@ -78,6 +80,7 @@ export class DocumentWorkflowComponent implements OnChanges {
   get waitingFor(): string {
     const task = this.instance?.currentTask;
     if (!task) return '';
+    if (task.review) return task.review.pending.join(', ');
     if (task.candidateRole) return this.translate.instant('workflow.monitor.anyoneWith', { role: task.candidateRole });
     return task.candidates.join(', ');
   }
@@ -106,7 +109,10 @@ export class DocumentWorkflowComponent implements OnChanges {
         next: instance => {
           this.busy = false;
           this.instance = instance.status === 'RUNNING' ? instance : null;
-          this.snackBar.open(this.translate.instant('workflow.tasks.done', { state: instance.currentStateLabel }),
+          const stillInReview = !!task.review && instance.status === 'RUNNING' && instance.currentStateKey === task.stateKey;
+          this.snackBar.open(stillInReview
+              ? this.translate.instant('workflow.review.voted')
+              : this.translate.instant('workflow.tasks.done', { state: instance.currentStateLabel }),
             this.translate.instant('common.close'), { duration: 4000 });
           this.changed.emit();
         },

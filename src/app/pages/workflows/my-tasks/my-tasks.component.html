@@ -32,7 +32,9 @@
             <div class="line">
               <span class="chip">{{ task.stateLabel }}</span>
               <span class="wf" (click)="openInstance(task)" role="link" tabindex="0" (keydown.enter)="openInstance(task)">{{ task.definitionName }}</span>
-              @if (task.candidateRole || task.candidates.length > 1) {
+              @if (task.review) {
+                <span class="who review-tag"><mat-icon>groups</mat-icon>{{ 'workflow.review.title' | translate }}</span>
+              } @else if (task.candidateRole || task.candidates.length > 1) {
                 <span class="who" [matTooltip]="waitingFor(task)"><mat-icon>group</mat-icon>{{ task.candidateRole ? ('workflow.monitor.anyoneWith' | translate: { role: task.candidateRole }) : ('workflow.tasks.sharedWith' | translate: { count: task.candidates.length - 1 }) }}</span>
               }
             </div>
@@ -45,6 +47,9 @@
             </div>
             @if (task.previousComment) {
               <blockquote class="note">{{ task.previousComment }}</blockquote>
+            }
+            @if (task.review) {
+              <app-workflow-review-progress [review]="task.review" [transitions]="task.transitions"></app-workflow-review-progress>
             }
           </div>
           <div class="card-actions">

@@ -12,16 +12,20 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WorkflowService } from '../../../services/workflow.service';
 import { WorkflowTaskDTO, WorkflowTransition } from '../../../models/workflow.models';
 import { FileIconService } from '../../../services/file-icon.service';
+import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
 
 /**
  * "My tasks": one card per open task the user may act on, overdue first, with the transition
  * buttons right on the card. A transition that requires a comment (or the "Add a note" link)
- * opens the decision dialog. Done tasks leave the list and the badge follows.
+ * opens the decision dialog. Done tasks leave the list and the badge follows. A parallel review
+ * task shows the round's progress and the other reviewers' comments, and every vote asks for an
+ * (optional) comment of its own.
  */
 @Component({
   selector: 'app-workflow-my-tasks',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
+  imports: [DatePipe, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe,
+    WorkflowReviewProgressComponent],
   templateUrl: './my-tasks.component.html',
   styleUrls: ['./my-tasks.component.css']
 })
@@ -85,9 +89,9 @@ export class MyTasksComponent implements OnInit, OnChanges {
     return task.candidates.join(', ');
   }
 
-  /** Direct button: asks for a comment only when the transition requires one. */
+  /** Direct button: asks for a comment only when the transition requires one — or on a review, where commenting is the point. */
   act(task: WorkflowTaskDTO, t: WorkflowTransition): void {
-    if (t.requireComment) {
+    if (t.requireComment || task.review) {
       this.actWithDialog(task, t);
     } else {
       this.complete(task, t, null);
@@ -137,7 +141,11 @@ export class MyTasksComponent implements OnInit, OnChanges {
         this.tasks = this.tasks.filter(x => x.id !== task.id);
         const next = instance.currentTask?.mine ? instance.currentTask : null;
         if (next) this.tasks = [next, ...this.tasks];
-        this.snackBar.open(this.translate.instant('workflow.tasks.done', { state: instance.currentStateLabel }),
+        // A vote that does not close the review leaves the document where it was.
+        const stillInReview = !!task.review && instance.status === 'RUNNING' && instance.currentStateKey === task.stateKey;
+        this.snackBar.open(stillInReview
+            ? this.translate.instant('workflow.review.voted')
+            : this.translate.instant('workflow.tasks.done', { state: instance.currentStateLabel }),
           this.translate.instant('common.close'), { duration: 4000 });
       },
       error: err => {

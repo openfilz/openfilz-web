@@ -1,0 +1,33 @@
+:host { display: block; }
+.review { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border-radius: 10px; background: var(--bg-primary); border: 1px solid var(--border-light); }
+.head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; font-size: 12.5px; }
+.rule { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; color: var(--text-primary); cursor: help; }
+.rule mat-icon { font-size: 17px; width: 17px; height: 17px; color: #8b5cf6; }
+.count { color: var(--text-secondary); }
+.count b { color: var(--text-primary); }
+
+.bar { display: flex; gap: 3px; height: 8px; }
+.seg { flex: 1; min-width: 10px; border-radius: 999px; background: var(--primary); }
+.seg.s-success { background: #10b981; }
+.seg.s-danger { background: #ef4444; }
+.seg.s-neutral { background: #64748b; }
+.seg.s-pending { background: var(--bg-tertiary); box-shadow: inset 0 0 0 1px var(--border-color); }
+
+.votes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.vote-line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 12.5px; }
+.vote-icon { font-size: 16px; width: 16px; height: 16px; color: var(--text-secondary); }
+.vote-icon.ok { color: #10b981; }
+.who { font-weight: 600; color: var(--text-primary); word-break: break-all; }
+.pill { padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color: #fff; background: var(--primary); white-space: nowrap; }
+.pill.style-success { background: #10b981; }
+.pill.style-danger { background: #ef4444; }
+.pill.style-neutral { background: #64748b; }
+.at { color: var(--text-tertiary); font-size: 11.5px; margin-inline-start: auto; }
+.note { margin: 4px 0 0; padding: 6px 10px; border-inline-start: 3px solid var(--border-color); background: var(--bg-tertiary); border-radius: 6px; font-size: 12.5px; white-space: pre-wrap; color: var(--text-primary); }
+.none { margin: 0; font-size: 12px; color: var(--text-secondary); }
+.pending { display: flex; align-items: flex-start; gap: 6px; font-size: 12.5px; color: var(--text-secondary); }
+.pending mat-icon { font-size: 16px; width: 16px; height: 16px; margin-top: 1px; }
+.pending b { color: var(--text-primary); font-weight: 600; word-break: break-word; }
+
+.compact { padding: 8px 10px; }
+.compact .note { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

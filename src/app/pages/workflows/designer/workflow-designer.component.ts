@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -14,12 +13,18 @@ import { WorkflowDefinitionDTO } from '../../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
 import { WorkflowTemplateId } from '../../../utils/workflow-spec';
+import { WorkflowTemplatePickerComponent } from '../../../components/workflow-template-picker/workflow-template-picker.component';
 
-/** "Designer": the definition cards (with their diagram) and the "New workflow" template picker. */
+/**
+ * "Designer": the definition cards (with their diagram) and the "New workflow" template picker —
+ * the template cards inline when there is no workflow yet, in a dialog (a bottom sheet on a phone)
+ * behind the "New workflow" button otherwise.
+ */
 @Component({
   selector: 'app-workflow-designer',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent],
+  imports: [DatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
+    WorkflowTemplatePickerComponent],
   templateUrl: './workflow-designer.component.html',
   styleUrls: ['./workflow-designer.component.css']
 })
@@ -33,12 +38,6 @@ export class WorkflowDesignerComponent implements OnInit {
   loading = true;
   definitions: WorkflowDefinitionDTO[] = [];
   busy = new Set<string>();
-  readonly templates: { id: WorkflowTemplateId; icon: string }[] = [
-    { id: 'approval', icon: 'fact_check' },
-    { id: 'review-archive', icon: 'inventory_2' },
-    { id: 'two-step', icon: 'looks_two' },
-    { id: 'blank', icon: 'add' }
-  ];
 
   ngOnInit(): void {
     this.reload();
@@ -49,6 +48,23 @@ export class WorkflowDesignerComponent implements OnInit {
     this.workflows.listDefinitions().subscribe({
       next: defs => { this.definitions = defs; this.loading = false; },
       error: err => { this.loading = false; this.toastError(err, 'workflow.errors.generic'); }
+    });
+  }
+
+  /** The template cards in a dialog — a full-width bottom sheet under 600px. */
+  openTemplatePicker(): void {
+    const sheet = window.matchMedia('(max-width: 600px)').matches;
+    import('../../../dialogs/workflow-template-dialog/workflow-template-dialog.component').then(m => {
+      this.dialog.open(m.WorkflowTemplateDialogComponent, {
+        width: sheet ? '100vw' : '920px',
+        maxWidth: sheet ? '100vw' : '94vw',
+        maxHeight: sheet ? '92dvh' : '90dvh',
+        position: sheet ? { bottom: '0' } : undefined,
+        panelClass: sheet ? ['wf-template-dialog-panel', 'sheet'] : 'wf-template-dialog-panel',
+        autoFocus: 'button.tpl'
+      }).afterClosed().subscribe((id?: WorkflowTemplateId) => {
+        if (id) this.create(id);
+      });
     });
   }
 

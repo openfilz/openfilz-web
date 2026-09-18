@@ -9,8 +9,18 @@ export type WorkflowActionType = 'MOVE_TO_FOLDER' | 'SET_METADATA' | 'NOTIFY';
 export type WorkflowTransitionStyle = 'PRIMARY' | 'SUCCESS' | 'DANGER' | 'NEUTRAL';
 export type WorkflowInstanceStatus = 'RUNNING' | 'COMPLETED' | 'CANCELLED';
 export type WorkflowTaskStatus = 'OPEN' | 'DONE' | 'CANCELLED';
-export type WorkflowEventType = 'STARTED' | 'TRANSITIONED' | 'ACTION_APPLIED' | 'ACTION_FAILED' | 'REASSIGNED'
+/**
+ * REVIEWED = one reviewer's vote in a parallel review (fromState = the review step, transitionKey = the
+ * vote, details `{ group }`). The TRANSITIONED event that closes a review carries the last voter as
+ * actor and `{ review, approvals, votes, reviewers }` as details.
+ */
+export type WorkflowEventType = 'STARTED' | 'TRANSITIONED' | 'REVIEWED' | 'ACTION_APPLIED' | 'ACTION_FAILED' | 'REASSIGNED'
   | 'REMINDED' | 'COMPLETED' | 'CANCELLED';
+/**
+ * How the votes of a parallel review are combined: ALL waits for everyone, FIRST_REJECTION moves on at
+ * the first vote that is not the approval, QUORUM approves as soon as `quorum` reviewers approved.
+ */
+export type WorkflowReviewRule = 'ALL' | 'FIRST_REJECTION' | 'QUORUM';
 
 export interface WorkflowAssignment {
   type: WorkflowAssigneeType;
@@ -35,6 +45,17 @@ export interface WorkflowAction {
   emails?: string[];
 }
 
+/**
+ * Turns a STEP into a parallel review: one task per reviewer (USERS / CHOSEN_AT_START people only),
+ * the step's transitions become the votes, `approveTransition` is the one that counts as a yes.
+ */
+export interface WorkflowReview {
+  rule: WorkflowReviewRule;
+  /** QUORUM only: approvals needed (1..20). */
+  quorum?: number | null;
+  approveTransition: string;
+}
+
 export interface WorkflowState {
   key: string;
   label: string;
@@ -44,6 +65,7 @@ export interface WorkflowState {
   dueInDays?: number | null;
   transitions: WorkflowTransition[];
   onEnter?: WorkflowAction[];
+  review?: WorkflowReview | null;
 }
 
 export interface WorkflowSpec {
@@ -135,6 +157,29 @@ export interface WorkflowTaskDTO {
   previousComment: string | null;
   previousActor: string | null;
   mine: boolean;
+  /** Progress of the whole review round when the task is one reviewer's vote; null for ordinary tasks. */
+  review?: WorkflowReviewProgress | null;
+}
+
+export interface WorkflowReviewVote {
+  reviewer: string;
+  transitionKey: string;
+  comment?: string | null;
+  at: string;
+}
+
+export interface WorkflowReviewProgress {
+  rule: WorkflowReviewRule;
+  quorum?: number | null;
+  approveTransition: string;
+  /** Number of reviewers (tasks) in this review round. */
+  total: number;
+  /** Votes equal to `approveTransition`. */
+  approvals: number;
+  /** Votes cast so far, oldest first. */
+  votes: WorkflowReviewVote[];
+  /** E-mails still expected to vote. */
+  pending: string[];
 }
 
 export interface WorkflowInstanceDTO {
@@ -197,5 +242,7 @@ export interface MyTasksCountDTO {
 
 /** Palette offered by the designer for statuses. */
 export const WORKFLOW_COLORS = ['#94a3b8', '#3b82f6', '#8b5cf6', '#f59e0b', '#f97316', '#10b981', '#ef4444', '#14b8a6', '#ec4899'];
+
+export const REVIEW_RULES: WorkflowReviewRule[] = ['ALL', 'FIRST_REJECTION', 'QUORUM'];
 
 export const TRANSITION_STYLES: WorkflowTransitionStyle[] = ['PRIMARY', 'SUCCESS', 'DANGER', 'NEUTRAL'];

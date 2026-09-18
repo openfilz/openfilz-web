@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Workflow voltooid",
       "WORKFLOW_CANCELLED": "Workflow geannuleerd",
       "WORKFLOW_TASK_REASSIGNED": "Workflowtaak opnieuw toegewezen",
+      "WORKFLOW_REVIEWED": "Workflowbeoordeling ingediend",
       "WORKFLOW_ACTION_FAILED": "Workflowactie mislukt",
       "WORKFLOW_DEFINITION_CREATED": "Workflow aangemaakt",
       "WORKFLOW_DEFINITION_UPDATED": "Workflow gewijzigd",
@@ -1408,7 +1409,9 @@
       "REASSIGNED": "Opnieuw toegewezen aan {{emails}}",
       "REMINDED": "Herinnering verzonden",
       "COMPLETED": "Voltooid met ‘{{state}}’",
-      "CANCELLED": "Geannuleerd"
+      "CANCELLED": "Geannuleerd",
+      "REVIEWED": "{{who}} heeft beoordeeld: {{transition}}",
+      "reviewClosed": "Beoordeling afgesloten — {{approvals}} goedkeuring(en), {{votes}} stem(men), {{reviewers}} beoordelaar(s)"
     },
     "tasks": {
       "count": "{{count}} taak/taken wachten op u",
@@ -1462,13 +1465,15 @@
         "approval": "Eenvoudige goedkeuring",
         "review-archive": "Beoordelen, dan archiveren",
         "two-step": "Goedkeuring in twee stappen",
-        "blank": "Leeg"
+        "blank": "Leeg",
+        "parallel-review": "Parallelle beoordeling"
       },
       "templateHints": {
         "approval": "Concept → Wacht op goedkeuring → Goedgekeurd / Afgewezen",
         "review-archive": "Concept → In beoordeling → Goedgekeurd → Gearchiveerd",
         "two-step": "Twee goedkeurders na elkaar",
-        "blank": "Vanaf nul beginnen"
+        "blank": "Vanaf nul beginnen",
+        "parallel-review": "Meerdere beoordelaars tegelijk, ieder geeft commentaar"
       },
       "labels": {
         "draft": "Concept",
@@ -1489,7 +1494,8 @@
         "firstApprover": "Eerste goedkeurder",
         "secondApproval": "Tweede goedkeuring",
         "secondApprover": "Tweede goedkeurder",
-        "done": "Klaar"
+        "done": "Klaar",
+        "reviewers": "Beoordelaars"
       },
       "edit": "Bewerken",
       "delete": "Verwijderen",
@@ -1505,7 +1511,9 @@
       "inactive": "Inactief",
       "statesCount": "{{count}} statussen",
       "runningCount": "{{count}} lopend",
-      "hotFolders": "{{count}} hot folder(s)"
+      "hotFolders": "{{count}} hot folder(s)",
+      "pickerTitle": "Een workflow maken",
+      "pickerSubtitle": "Kies een vertrekpunt — daarna kunt u elke status hernoemen en wijzigen wie handelt."
     },
     "editor": {
       "title": "Workflow bewerken",
@@ -1602,7 +1610,13 @@
       "NULL": {
         "state": "Lege status",
         "transition": "Lege overgang"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Alleen een stap kan een parallelle beoordeling zijn",
+      "REVIEW_NEEDS_PEOPLE": "Een parallelle beoordeling heeft benoemde personen nodig — specifieke personen of gekozen bij het starten",
+      "BAD_REVIEW_RULE": "Kies hoe de stemmen van de beoordelaars worden gecombineerd",
+      "REVIEW_NO_APPROVE": "Kies welke knop als goedkeuring telt",
+      "BAD_QUORUM": "Het aantal benodigde goedkeuringen moet tussen 1 en {{value}} liggen",
+      "QUORUM_TOO_HIGH": "Slechts {{value}} beoordelaar(s) opgegeven — minder dan de benodigde goedkeuringen"
     },
     "diagram": {
       "title": "Workflowdiagram",
@@ -1624,7 +1638,10 @@
       "startHint": "Het document blijft in ‘{{state}}’ tot u verdergaat.",
       "startAnd": "Starten & {{transition}}",
       "started": "Workflow ‘{{workflow}}’ gestart — het document is nu ‘{{state}}’.",
-      "startError": "De workflow kon niet worden gestart."
+      "startError": "De workflow kon niet worden gestart.",
+      "reviewers": "Wie beoordeelt ‘{{state}}’? (meerdere personen)",
+      "reviewersHint": "Iedere persoon krijgt een eigen taak — minstens {{count}}",
+      "tooFewReviewers": "Geef minstens {{count}} beoordelaars op"
     },
     "decision": {
       "commentRequired": "Opmerking (verplicht)",
@@ -1651,6 +1668,37 @@
       "notFound": "Niet gevonden.",
       "conflict": "Deze actie is in de huidige staat niet meer mogelijk.",
       "validation": "Het verzoek werd geweigerd."
+    },
+    "review": {
+      "title": "Parallelle beoordeling",
+      "enable": "Parallelle beoordeling",
+      "intro": "Eén taak per beoordelaar: ieder stemt met de knoppen hieronder en kan commentaar geven — iedereen ziet het commentaar.",
+      "needsPeople": "Vereist benoemde personen: kies specifieke personen of personen gekozen bij het starten.",
+      "rule": "Hoe worden de stemmen gecombineerd?",
+      "rules": {
+        "ALL": "Iedereen beoordeelt",
+        "FIRST_REJECTION": "Eerste afwijzing beslist",
+        "QUORUM": "N goedkeuringen volstaan"
+      },
+      "ruleHints": {
+        "ALL": "Wacht op alle beoordelaars. Iedereen keurt goed → goedgekeurd; anders wint het eerste andere antwoord.",
+        "FIRST_REJECTION": "Het eerste antwoord dat geen goedkeuring is, brengt het document meteen verder.",
+        "QUORUM": "Goedgekeurd zodra genoeg beoordelaars goedkeuren; stopt eerder als dat niet meer kan."
+      },
+      "quorumRule": "{{count}} goedkeuringen volstaan",
+      "quorum": "Benodigde goedkeuringen",
+      "quorumOfUsers": "van {{count}} hierboven opgegeven beoordelaar(s)",
+      "quorumChosen": "Wie start, moet minstens zoveel beoordelaars opgeven",
+      "approveTransition": "Knop die als goedkeuring telt",
+      "approveTransitionHint": "Elke andere knop telt als nee",
+      "noTransitions": "Voeg eerst een overgang toe",
+      "progress": "{{done}} van {{total}} beoordeeld",
+      "approvals": "{{approvals}} van {{quorum}} goedkeuringen",
+      "approvalsCount": "{{count}} goedkeuring(en)",
+      "pending": "Wacht nog op",
+      "noVotes": "Nog geen beoordeling.",
+      "voted": "Uw beoordeling is vastgelegd — wachten op de andere beoordelaars.",
+      "badge": "parallelle beoordeling, {{rule}}"
     }
   }
 }

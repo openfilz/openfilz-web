@@ -20,17 +20,19 @@ import {
 } from '../../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
+import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
 
 /**
  * "Monitor": counters, filters, the instance table and a side drawer with the diagram (current
- * status highlighted, taken transitions bold), the open task, the timeline and the
- * reassign / cancel actions.
+ * status highlighted, taken transitions bold), the open task (or the progress of a parallel
+ * review), the timeline and the reassign / cancel actions.
  */
 @Component({
   selector: 'app-workflow-monitor',
   standalone: true,
   imports: [DatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule,
-    MatSelectModule, MatSlideToggleModule, MatTableModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent],
+    MatSelectModule, MatSlideToggleModule, MatTableModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
+    WorkflowReviewProgressComponent],
   templateUrl: './workflow-monitor.component.html',
   styleUrls: ['./workflow-monitor.component.css']
 })
@@ -114,13 +116,34 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
   waitingFor(i: WorkflowInstanceDTO): string {
     const t = i.currentTask;
     if (!t) return '';
+    // A parallel review waits for every reviewer who has not voted yet, not for one task's candidates.
+    if (t.review) return t.review.pending.join(', ');
     if (t.candidateRole) return this.translate.instant('workflow.monitor.anyoneWith', { role: t.candidateRole });
     return t.candidates.join(', ');
+  }
+
+  /** Review progress of the open task, with the transitions of its step (the votes' labels). */
+  reviewTransitions(d: WorkflowInstanceDetailDTO) {
+    return d.instance.currentTask?.transitions ?? d.spec.states.find(s => s.key === d.instance.currentStateKey)?.transitions ?? [];
+  }
+
+  /** Sub-line of the TRANSITIONED event that closed a parallel review: its tally. */
+  reviewTally(e: WorkflowEventDTO): string | null {
+    const r = e.details?.['review'];
+    if (e.type !== 'TRANSITIONED' || !r) return null;
+    return this.translate.instant('workflow.events.reviewClosed', {
+      approvals: e.details?.['approvals'] ?? 0, votes: e.details?.['votes'] ?? 0, reviewers: e.details?.['reviewers'] ?? 0
+    });
   }
 
   eventText(e: WorkflowEventDTO, d: WorkflowInstanceDetailDTO): string {
     const label = (key: string | null) => d.spec.states.find(s => s.key === key)?.label ?? key ?? '';
     switch (e.type) {
+      case 'REVIEWED': {
+        const from = d.spec.states.find(s => s.key === e.fromState);
+        const t = from?.transitions.find(x => x.key === e.transitionKey)?.label ?? e.transitionKey;
+        return this.translate.instant('workflow.events.REVIEWED', { who: e.actor ?? '', transition: t });
+      }
       case 'TRANSITIONED': {
         const from = d.spec.states.find(s => s.key === e.fromState);
         const t = from?.transitions.find(x => x.key === e.transitionKey)?.label ?? e.transitionKey;
@@ -146,6 +169,7 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
     switch (type) {
       case 'STARTED': return 'play_arrow';
       case 'TRANSITIONED': return 'arrow_forward';
+      case 'REVIEWED': return 'rate_review';
       case 'ACTION_APPLIED': return 'bolt';
       case 'ACTION_FAILED': return 'error';
       case 'REASSIGNED': return 'group';

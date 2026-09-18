@@ -12,7 +12,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WorkflowService } from '../../services/workflow.service';
 import { WorkflowDefinitionDTO, WorkflowInstanceDTO, WorkflowState, WorkflowTransition } from '../../models/workflow.models';
 import { WorkflowDiagramComponent } from '../../components/workflow-diagram/workflow-diagram.component';
-import { validEmail } from '../../utils/workflow-spec';
+import { minReviewers, validEmail } from '../../utils/workflow-spec';
 
 export interface StartWorkflowDialogData {
   documentId: string;
@@ -26,8 +26,9 @@ export interface StartWorkflowDialogResult {
 
 /**
  * "Start workflow" on a document: pick a definition (cards + diagram), name the people the
- * definition asks for ("chosen at start"), leave an optional note, then either just start or
- * start and take one of the first transitions right away.
+ * definition asks for ("chosen at start" — several reviewers, at least the quorum, for a parallel
+ * review), leave an optional note, then either just start or start and take one of the first
+ * transitions right away.
  */
 @Component({
   selector: 'app-start-workflow-dialog',
@@ -88,7 +89,23 @@ export class StartWorkflowDialogComponent implements OnInit {
   }
 
   emailsOf(stateKey: string): string[] {
-    return (this.assignments[stateKey] ?? '').split(/[,;\s]+/).map(e => e.trim().toLowerCase()).filter(e => e);
+    const emails = (this.assignments[stateKey] ?? '').split(/[,;\s]+/).map(e => e.trim().toLowerCase()).filter(e => e);
+    return [...new Set(emails)];
+  }
+
+  isReview(s: WorkflowState): boolean {
+    return s.kind === 'STEP' && !!s.review;
+  }
+
+  /** People the starter must name on a status: the quorum of a QUORUM review, else one. */
+  minPeople(s: WorkflowState): number {
+    return this.isReview(s) ? minReviewers(s.review) : 1;
+  }
+
+  /** "Name at least N reviewers" once something is typed but not enough people yet. */
+  tooFew(s: WorkflowState): number | null {
+    const n = this.emailsOf(s.key).length;
+    return n > 0 && n < this.minPeople(s) ? this.minPeople(s) : null;
   }
 
   invalidEmailOf(stateKey: string): string | null {
@@ -96,7 +113,7 @@ export class StartWorkflowDialogComponent implements OnInit {
   }
 
   get assignmentsComplete(): boolean {
-    return this.chosenStates.every(s => this.emailsOf(s.key).length > 0 && !this.invalidEmailOf(s.key));
+    return this.chosenStates.every(s => this.emailsOf(s.key).length >= this.minPeople(s) && !this.invalidEmailOf(s.key));
   }
 
   needsComment(t: WorkflowTransition | null): boolean {

@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "اكتمل سير العمل",
       "WORKFLOW_CANCELLED": "أُلغي سير العمل",
       "WORKFLOW_TASK_REASSIGNED": "أُعيد إسناد مهمة سير العمل",
+      "WORKFLOW_REVIEWED": "تم تقديم مراجعة سير العمل",
       "WORKFLOW_ACTION_FAILED": "فشل إجراء في سير العمل",
       "WORKFLOW_DEFINITION_CREATED": "تم إنشاء سير العمل",
       "WORKFLOW_DEFINITION_UPDATED": "تم تعديل سير العمل",
@@ -1408,7 +1409,9 @@
       "REASSIGNED": "أُعيد إسناده إلى {{emails}}",
       "REMINDED": "تم إرسال تذكير",
       "COMPLETED": "اكتمل بالحالة «{{state}}»",
-      "CANCELLED": "ملغى"
+      "CANCELLED": "ملغى",
+      "REVIEWED": "راجع {{who}}: {{transition}}",
+      "reviewClosed": "اكتملت المراجعة — {{approvals}} موافقة، {{votes}} صوت، {{reviewers}} مراجع"
     },
     "tasks": {
       "count": "{{count}} مهمة بانتظار قرارك",
@@ -1462,13 +1465,15 @@
         "approval": "موافقة بسيطة",
         "review-archive": "مراجعة ثم أرشفة",
         "two-step": "موافقة على مرحلتين",
-        "blank": "فارغ"
+        "blank": "فارغ",
+        "parallel-review": "مراجعة متوازية"
       },
       "templateHints": {
         "approval": "مسودة ← بانتظار الموافقة ← موافق عليه / مرفوض",
         "review-archive": "مسودة ← قيد المراجعة ← موافق عليه ← مؤرشف",
         "two-step": "موافقان متتاليان",
-        "blank": "البدء من الصفر"
+        "blank": "البدء من الصفر",
+        "parallel-review": "عدة مراجعين بالتوازي، ويعلّق كل منهم"
       },
       "labels": {
         "draft": "مسودة",
@@ -1489,7 +1494,8 @@
         "firstApprover": "الموافق الأول",
         "secondApproval": "الموافقة الثانية",
         "secondApprover": "الموافق الثاني",
-        "done": "تم"
+        "done": "تم",
+        "reviewers": "المراجعون"
       },
       "edit": "تعديل",
       "delete": "حذف",
@@ -1505,7 +1511,9 @@
       "inactive": "معطّل",
       "statesCount": "{{count}} حالات",
       "runningCount": "{{count}} جارٍ",
-      "hotFolders": "{{count}} مجلد تشغيل"
+      "hotFolders": "{{count}} مجلد تشغيل",
+      "pickerTitle": "إنشاء سير عمل",
+      "pickerSubtitle": "اختر نقطة بداية — يمكنك لاحقًا إعادة تسمية كل حالة وتغيير من يتصرف."
     },
     "editor": {
       "title": "تعديل سير العمل",
@@ -1602,7 +1610,13 @@
       "NULL": {
         "state": "حالة فارغة",
         "transition": "انتقال فارغ"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "الخطوة وحدها يمكن أن تكون مراجعة متوازية",
+      "REVIEW_NEEDS_PEOPLE": "تحتاج المراجعة المتوازية إلى أشخاص محددين — أشخاص محددون أو يُختارون عند البدء",
+      "BAD_REVIEW_RULE": "اختر طريقة جمع أصوات المراجعين",
+      "REVIEW_NO_APPROVE": "اختر الزر الذي يُحتسب موافقة",
+      "BAD_QUORUM": "يجب أن يكون عدد الموافقات المطلوبة بين 1 و {{value}}",
+      "QUORUM_TOO_HIGH": "تم تحديد {{value}} مراجع فقط — أقل من عدد الموافقات المطلوبة"
     },
     "diagram": {
       "title": "مخطط سير العمل",
@@ -1624,7 +1638,10 @@
       "startHint": "يبقى المستند في «{{state}}» حتى تتابع.",
       "startAnd": "بدء و{{transition}}",
       "started": "بدأ سير العمل «{{workflow}}» — المستند الآن «{{state}}».",
-      "startError": "تعذر بدء سير العمل."
+      "startError": "تعذر بدء سير العمل.",
+      "reviewers": "من يراجع «{{state}}»؟ (عدة أشخاص)",
+      "reviewersHint": "يحصل كل شخص على مهمته الخاصة — {{count}} على الأقل",
+      "tooFewReviewers": "حدّد {{count}} مراجعين على الأقل"
     },
     "decision": {
       "commentRequired": "تعليق (إلزامي)",
@@ -1651,6 +1668,37 @@
       "notFound": "غير موجود.",
       "conflict": "لم يعد هذا الإجراء ممكنًا في الحالة الحالية.",
       "validation": "تم رفض الطلب."
+    },
+    "review": {
+      "title": "مراجعة متوازية",
+      "enable": "مراجعة متوازية",
+      "intro": "مهمة لكل مراجع: يصوّت كل منهم بالأزرار أدناه ويمكنه التعليق — ويرى الجميع التعليقات.",
+      "needsPeople": "تتطلب أشخاصًا محددين: اختر أشخاصًا محددين أو يُختارون عند البدء.",
+      "rule": "كيف تُجمع الأصوات؟",
+      "rules": {
+        "ALL": "الجميع يراجع",
+        "FIRST_REJECTION": "أول رفض يحسم",
+        "QUORUM": "تكفي N موافقات"
+      },
+      "ruleHints": {
+        "ALL": "ينتظر جميع المراجعين. إذا وافق الجميع ← موافَق عليه؛ وإلا تفوز أول إجابة أخرى.",
+        "FIRST_REJECTION": "أول إجابة ليست موافقة تنقل المستند فورًا.",
+        "QUORUM": "يُوافَق عليه بمجرد موافقة عدد كافٍ من المراجعين؛ ويتوقف مبكرًا عندما يصبح ذلك مستحيلًا."
+      },
+      "quorumRule": "تكفي {{count}} موافقات",
+      "quorum": "الموافقات المطلوبة",
+      "quorumOfUsers": "من أصل {{count}} مراجع محدد أعلاه",
+      "quorumChosen": "على من يبدأ سير العمل تحديد هذا العدد من المراجعين على الأقل",
+      "approveTransition": "الزر الذي يُحتسب موافقة",
+      "approveTransitionHint": "أي زر آخر يُحتسب رفضًا",
+      "noTransitions": "أضف انتقالًا أولًا",
+      "progress": "راجع {{done}} من {{total}}",
+      "approvals": "{{approvals}} من {{quorum}} موافقات",
+      "approvalsCount": "{{count}} موافقة",
+      "pending": "لا يزال بانتظار",
+      "noVotes": "لا توجد مراجعة بعد.",
+      "voted": "تم تسجيل مراجعتك — بانتظار المراجعين الآخرين.",
+      "badge": "مراجعة متوازية، {{rule}}"
     }
   }
 }

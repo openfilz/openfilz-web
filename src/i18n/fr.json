@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Workflow terminé",
       "WORKFLOW_CANCELLED": "Workflow annulé",
       "WORKFLOW_TASK_REASSIGNED": "Tâche de workflow réassignée",
+      "WORKFLOW_REVIEWED": "Avis de relecture donné",
       "WORKFLOW_ACTION_FAILED": "Action de workflow échouée",
       "WORKFLOW_DEFINITION_CREATED": "Workflow créé",
       "WORKFLOW_DEFINITION_UPDATED": "Workflow modifié",
@@ -1408,7 +1409,9 @@
       "REASSIGNED": "Réassigné à {{emails}}",
       "REMINDED": "Rappel envoyé",
       "COMPLETED": "Terminé avec « {{state}} »",
-      "CANCELLED": "Annulé"
+      "CANCELLED": "Annulé",
+      "REVIEWED": "{{who}} a donné son avis : {{transition}}",
+      "reviewClosed": "Relecture close — {{approvals}} approbation(s), {{votes}} avis, {{reviewers}} relecteur(s)"
     },
     "tasks": {
       "count": "{{count}} tâche(s) en attente de votre décision",
@@ -1462,13 +1465,15 @@
         "approval": "Approbation simple",
         "review-archive": "Relecture puis archivage",
         "two-step": "Approbation à deux niveaux",
-        "blank": "Vierge"
+        "blank": "Vierge",
+        "parallel-review": "Relecture parallèle"
       },
       "templateHints": {
         "approval": "Brouillon → En attente d’approbation → Approuvé / Rejeté",
         "review-archive": "Brouillon → En relecture → Approuvé → Archivé",
         "two-step": "Deux approbateurs successifs",
-        "blank": "Partir de zéro"
+        "blank": "Partir de zéro",
+        "parallel-review": "Plusieurs relecteurs en parallèle, chacun commente"
       },
       "labels": {
         "draft": "Brouillon",
@@ -1489,7 +1494,8 @@
         "firstApprover": "Premier approbateur",
         "secondApproval": "Seconde approbation",
         "secondApprover": "Second approbateur",
-        "done": "Terminé"
+        "done": "Terminé",
+        "reviewers": "Relecteurs"
       },
       "edit": "Modifier",
       "delete": "Supprimer",
@@ -1505,7 +1511,9 @@
       "inactive": "Inactif",
       "statesCount": "{{count}} statuts",
       "runningCount": "{{count}} en cours",
-      "hotFolders": "{{count}} dossier(s) déclencheur(s)"
+      "hotFolders": "{{count}} dossier(s) déclencheur(s)",
+      "pickerTitle": "Créer un workflow",
+      "pickerSubtitle": "Choisissez un point de départ — vous pourrez ensuite renommer chaque statut et changer qui agit."
     },
     "editor": {
       "title": "Modifier le workflow",
@@ -1602,7 +1610,13 @@
       "NULL": {
         "state": "Statut vide",
         "transition": "Transition vide"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Seule une étape peut être une relecture parallèle",
+      "REVIEW_NEEDS_PEOPLE": "Une relecture parallèle nécessite des personnes nommées — des personnes précises ou choisies au lancement",
+      "BAD_REVIEW_RULE": "Choisissez comment combiner les avis des relecteurs",
+      "REVIEW_NO_APPROVE": "Choisissez le bouton qui compte comme approbation",
+      "BAD_QUORUM": "Le nombre d'approbations nécessaires doit être compris entre 1 et {{value}}",
+      "QUORUM_TOO_HIGH": "Seulement {{value}} relecteur(s) nommé(s) — moins que les approbations nécessaires"
     },
     "diagram": {
       "title": "Diagramme du workflow",
@@ -1624,7 +1638,10 @@
       "startHint": "Le document reste en « {{state}} » jusqu’à ce que vous continuiez.",
       "startAnd": "Lancer et {{transition}}",
       "started": "Workflow « {{workflow}} » lancé — le document est maintenant « {{state}} ».",
-      "startError": "Impossible de lancer le workflow."
+      "startError": "Impossible de lancer le workflow.",
+      "reviewers": "Qui relit « {{state}} » ? (plusieurs personnes)",
+      "reviewersHint": "Chaque personne reçoit sa propre tâche — au moins {{count}}",
+      "tooFewReviewers": "Nommez au moins {{count}} relecteurs"
     },
     "decision": {
       "commentRequired": "Commentaire (obligatoire)",
@@ -1651,6 +1668,37 @@
       "notFound": "Introuvable.",
       "conflict": "Cette action n’est plus possible dans l’état actuel.",
       "validation": "La demande a été refusée."
+    },
+    "review": {
+      "title": "Relecture parallèle",
+      "enable": "Relecture parallèle",
+      "intro": "Une tâche par relecteur : chacun vote avec les boutons ci-dessous et peut commenter — tout le monde voit les commentaires.",
+      "needsPeople": "Nécessite des personnes nommées : choisissez des personnes précises, ou choisies au lancement.",
+      "rule": "Comment combiner les avis ?",
+      "rules": {
+        "ALL": "Tout le monde relit",
+        "FIRST_REJECTION": "Le premier refus tranche",
+        "QUORUM": "N approbations suffisent"
+      },
+      "ruleHints": {
+        "ALL": "Attend tous les relecteurs. Tous approuvent → approuvé ; sinon la première autre réponse l'emporte.",
+        "FIRST_REJECTION": "La première réponse qui n'est pas une approbation fait avancer le document aussitôt.",
+        "QUORUM": "Approuvé dès que suffisamment de relecteurs approuvent ; s'arrête plus tôt quand ce n'est plus possible."
+      },
+      "quorumRule": "{{count}} approbations suffisent",
+      "quorum": "Approbations nécessaires",
+      "quorumOfUsers": "sur {{count}} relecteur(s) nommé(s) ci-dessus",
+      "quorumChosen": "La personne qui lance doit nommer au moins autant de relecteurs",
+      "approveTransition": "Bouton qui compte comme approbation",
+      "approveTransitionHint": "Tout autre bouton compte comme un non",
+      "noTransitions": "Ajoutez d'abord une transition",
+      "progress": "{{done}} sur {{total}} ont relu",
+      "approvals": "{{approvals}} approbation(s) sur {{quorum}}",
+      "approvalsCount": "{{count}} approbation(s)",
+      "pending": "En attente de",
+      "noVotes": "Aucun avis pour l'instant.",
+      "voted": "Votre avis est enregistré — en attente des autres relecteurs.",
+      "badge": "relecture parallèle, {{rule}}"
     }
   }
 }

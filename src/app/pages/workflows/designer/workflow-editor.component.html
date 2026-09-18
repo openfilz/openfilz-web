@@ -120,6 +120,62 @@
                 </mat-form-field>
               }
 
+              @if (s.kind === 'STEP') {
+                <div class="review" [class.on]="s.reviewOn" [class.locked]="!s.reviewOn && !reviewEligible(s)">
+                  <div class="review-head">
+                    <span class="review-icon"><mat-icon>groups</mat-icon></span>
+                    <div class="review-title">
+                      <span class="t">{{ 'workflow.review.title' | translate }}</span>
+                      <span class="d">{{ (reviewEligible(s) ? 'workflow.review.intro' : 'workflow.review.needsPeople') | translate }}</span>
+                    </div>
+                    <mat-slide-toggle [ngModel]="s.reviewOn" (ngModelChange)="toggleReview(s, $event)" [disabled]="!s.reviewOn && !reviewEligible(s)"
+                      [attr.aria-label]="'workflow.review.enable' | translate"
+                      [matTooltip]="reviewEligible(s) ? '' : ('workflow.review.needsPeople' | translate)"></mat-slide-toggle>
+                  </div>
+                  @if (s.reviewOn) {
+                    <div class="rule-label" [id]="'rule-label-' + i">{{ 'workflow.review.rule' | translate }}</div>
+                    <div class="rules" role="radiogroup" [attr.aria-labelledby]="'rule-label-' + i" (keydown)="onRuleKey($event, s)">
+                      @for (r of reviewRules; track r) {
+                        <button type="button" class="rule-tile" role="radio" [attr.data-rule]="r" [class.on]="s.reviewRule === r"
+                          [attr.aria-checked]="s.reviewRule === r" [attr.tabindex]="s.reviewRule === r ? 0 : -1" (click)="setReviewRule(s, r)">
+                          <span class="rule-icon"><mat-icon>{{ ruleIcons[r] }}</mat-icon></span>
+                          <span class="rule-text">
+                            <span class="rule-name">{{ 'workflow.review.rules.' + r | translate }}</span>
+                            <span class="rule-hint">{{ 'workflow.review.ruleHints.' + r | translate }}</span>
+                          </span>
+                          <mat-icon class="rule-check">{{ s.reviewRule === r ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+                        </button>
+                      }
+                    </div>
+                    <div class="grid2">
+                      @if (s.reviewRule === 'QUORUM') {
+                        <mat-form-field appearance="outline" class="field">
+                          <mat-label>{{ 'workflow.review.quorum' | translate }}</mat-label>
+                          <input matInput type="number" min="1" [max]="maxQuorum" step="1" [(ngModel)]="s.quorum" (ngModelChange)="touch()">
+                          <mat-icon matSuffix>how_to_vote</mat-icon>
+                          <mat-hint>{{ s.assigneeType === 'USERS' ? ('workflow.review.quorumOfUsers' | translate: { count: namedReviewers(s) }) : ('workflow.review.quorumChosen' | translate) }}</mat-hint>
+                        </mat-form-field>
+                      }
+                      <mat-form-field appearance="outline" class="field">
+                        <mat-label>{{ 'workflow.review.approveTransition' | translate }}</mat-label>
+                        <mat-select [(ngModel)]="s.approveTransition" (selectionChange)="touch()" [placeholder]="'workflow.review.noTransitions' | translate">
+                          @for (t of s.transitions; track t.key) {
+                            <mat-option [value]="t.key"><span [class]="'dot vote-' + (t.style || 'PRIMARY').toLowerCase()"></span>{{ t.label }}</mat-option>
+                          }
+                        </mat-select>
+                        <mat-hint>{{ 'workflow.review.approveTransitionHint' | translate }}</mat-hint>
+                      </mat-form-field>
+                    </div>
+                    @if (reviewProblems(i).length) {
+                      <div class="hint err">
+                        <mat-icon>error_outline</mat-icon>
+                        <ul>@for (p of reviewProblems(i); track p.path + p.code) { <li>{{ problemText(p) }}</li> }</ul>
+                      </div>
+                    }
+                  }
+                </div>
+              }
+
               <div class="sub-head">
                 <h4><mat-icon>alt_route</mat-icon>{{ 'workflow.editor.transitions' | translate }}</h4>
                 <button mat-stroked-button class="small-btn" (click)="addTransition(s)"><mat-icon>add</mat-icon>{{ 'workflow.editor.addTransition' | translate }}</button>
@@ -187,10 +243,10 @@
               </div>
             }
 
-            @if (problemsFor(i).length) {
+            @if (otherProblems(i).length) {
               <div class="hint err">
                 <mat-icon>error_outline</mat-icon>
-                <ul>@for (p of problemsFor(i); track p.path + p.code) { <li>{{ problemText(p) }}</li> }</ul>
+                <ul>@for (p of otherProblems(i); track p.path + p.code) { <li>{{ problemText(p) }}</li> }</ul>
               </div>
             }
           </section>
