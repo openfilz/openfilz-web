@@ -6,7 +6,7 @@
          gone and it is the only way to create one. -->
     @if (!loading && definitions.length > 0) {
       <button mat-raised-button color="primary" class="new-btn" aria-haspopup="dialog" (click)="openTemplatePicker()">
-        <span class="new-btn-icon"><mat-icon>add</mat-icon></span><span>{{ 'workflow.designer.newWorkflow' | translate }}</span>
+        <span class="new-btn-content"><span class="new-btn-icon"><mat-icon>add</mat-icon></span><span>{{ 'workflow.designer.newWorkflow' | translate }}</span></span>
       </button>
     }
   </div>

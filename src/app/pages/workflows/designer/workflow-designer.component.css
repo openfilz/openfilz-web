@@ -10,18 +10,25 @@
   --mat-button-protected-label-text-color: #fff;
   --mat-button-protected-state-layer-color: #fff;
   --mat-button-protected-container-shape: 12px;
+  --mat-button-protected-container-elevation-shadow: none;
+  --mat-button-protected-hover-container-elevation-shadow: none;
+  --mat-button-protected-pressed-container-elevation-shadow: none;
   color: #fff;
-  border-radius: 12px; height: 46px; padding: 0 20px 0 10px; font-size: 14.5px; font-weight: 700; letter-spacing: .01em;
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 38%, transparent);
-  transition: transform .15s ease, box-shadow .15s ease;
+  border-radius: 12px; height: 44px; padding: 0 18px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: .01em;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 30%, transparent);
+  transition: box-shadow .15s ease, filter .15s ease;
 }
-.new-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px color-mix(in srgb, var(--primary) 45%, transparent); }
+/* No lift on hover (it made the button jump): a slightly deeper shade + glow instead. */
+.new-btn:hover { filter: brightness(1.06); box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 42%, transparent); }
 .new-btn:focus-visible { outline: 3px solid color-mix(in srgb, var(--primary) 45%, transparent); outline-offset: 2px; }
+/* Material's label is inline, so an inline-flex icon chip sat on the text baseline and pushed the
+   text off-centre — lay icon + text out as one centred flex row instead. */
+.new-btn-content { display: inline-flex; align-items: center; gap: 10px; vertical-align: middle; line-height: 1; }
 .new-btn-icon {
-  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin-inline-end: 10px;
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 28px; height: 28px;
   border-radius: 8px; background: rgba(255, 255, 255, .22);
 }
-.new-btn-icon mat-icon { margin: 0; font-size: 20px; width: 20px; height: 20px; color: #fff; }
+.new-btn-icon mat-icon { margin: 0; font-size: 20px; width: 20px; height: 20px; line-height: 20px; color: #fff; }
 .owner { display: inline-flex; align-items: center; gap: 3px; color: var(--text-tertiary); }
 
 .state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 40px 0; color: var(--text-secondary); }
