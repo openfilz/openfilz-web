@@ -116,6 +116,33 @@
   margin-right: 6px;
 }
 
+/* Info button: the rules behind the switches */
+.filing-info-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--text-secondary);
+}
+
+.filing-info-btn:hover {
+  color: var(--primary);
+}
+
+.filing-info-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.smart-filing.settings .filing-info-link {
+  align-self: flex-start;
+  color: var(--primary);
+}
+
+.smart-filing.settings .filing-info-link mat-icon {
+  margin-right: 6px;
+}
+
 @media (max-width: 768px) {
   .smart-filing.inline {
     column-gap: 10px;

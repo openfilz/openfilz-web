@@ -1,0 +1,59 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper">
+      <mat-icon>auto_awesome</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title">{{ 'smartFiling.info.title' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'smartFiling.info.subtitle' | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <ul class="rules">
+    <li class="rule">
+      <mat-icon class="rule-icon" aria-hidden="true">person</mat-icon>
+      <div class="rule-text">
+        <h3 class="rule-title">{{ 'smartFiling.info.personalTitle' | translate }}</h3>
+        <p>{{ 'smartFiling.info.personal' | translate }}</p>
+      </div>
+    </li>
+    <li class="rule">
+      <mat-icon class="rule-icon" aria-hidden="true">folder_special</mat-icon>
+      <div class="rule-text">
+        <h3 class="rule-title">{{ 'smartFiling.info.scopeTitle' | translate }}</h3>
+        <p>{{ 'smartFiling.info.scope' | translate }}</p>
+        <p>{{ (data.inboxAvailable ? 'smartFiling.info.scopeRootOrInbox' : 'smartFiling.info.scopeRoot') | translate }}</p>
+      </div>
+    </li>
+    <li class="rule">
+      <mat-icon class="rule-icon" aria-hidden="true">create_new_folder</mat-icon>
+      <div class="rule-text">
+        <h3 class="rule-title">{{ 'smartFiling.info.newFoldersTitle' | translate }}</h3>
+        <p>{{ 'smartFiling.info.newFolders' | translate }}</p>
+      </div>
+    </li>
+    <li class="rule">
+      <mat-icon class="rule-icon" aria-hidden="true">pan_tool</mat-icon>
+      <div class="rule-text">
+        <h3 class="rule-title">{{ 'smartFiling.info.unsureTitle' | translate }}</h3>
+        <p>{{ 'smartFiling.info.unsure' | translate }}</p>
+      </div>
+    </li>
+    <li class="rule">
+      <mat-icon class="rule-icon" aria-hidden="true">undo</mat-icon>
+      <div class="rule-text">
+        <h3 class="rule-title">{{ 'smartFiling.info.undoTitle' | translate }}</h3>
+        <p>{{ 'smartFiling.info.undo' | translate }}</p>
+      </div>
+    </li>
+  </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-flat-button class="close-btn" (click)="close()">
+    <mat-icon>check</mat-icon>
+    {{ 'smartFiling.info.gotIt' | translate }}
+  </button>
+</mat-dialog-actions>

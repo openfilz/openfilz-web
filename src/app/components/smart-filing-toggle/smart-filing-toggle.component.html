@@ -62,5 +62,19 @@
         }
       </div>
     }
+
+    <!-- The rules behind the switches: who they apply to, where a document may go, how to undo -->
+    @if (variant === 'inline') {
+      <button mat-icon-button type="button" class="filing-info-btn" (click)="openInfo()"
+        [matTooltip]="'smartFiling.info.open' | translate"
+        [attr.aria-label]="'smartFiling.info.open' | translate">
+        <mat-icon aria-hidden="true">info_outline</mat-icon>
+      </button>
+    } @else {
+      <button mat-button type="button" class="filing-info-link" (click)="openInfo()">
+        <mat-icon aria-hidden="true">info_outline</mat-icon>
+        {{ 'smartFiling.info.open' | translate }}
+      </button>
+    }
   </div>
 }
