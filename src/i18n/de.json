@@ -37,6 +37,7 @@
     "key": "Schlüssel",
     "value": "Wert",
     "dropFilesHere": "Dateien zum Hochladen hier ablegen",
+    "dropFilesToUpload": "Dateien zum Hochladen ablegen",
     "expand": "Erweitern",
     "minimize": "Minimieren",
     "details": "Details",
@@ -171,6 +172,14 @@
     "replacingFile": "{{name}} wird ersetzt...",
     "replaceSuccess": "{{name}} erfolgreich ersetzt",
     "replaceError": "{{name}} konnte nicht ersetzt werden"
+  },
+  "confirmReplace": {
+    "title": "Datei existiert bereits",
+    "subtitle": "In diesem Ordner gibt es bereits eine Datei mit diesem Namen",
+    "message": "Die Datei „{{name}}“ existiert bereits in diesem Ordner.",
+    "question": "Möchten Sie die vorhandene Datei durch die neue ersetzen?",
+    "cancel": "Abbrechen",
+    "replace": "Ersetzen"
   },
   "duplicateResolution": {
     "title": "Einige Dateien existieren bereits",
@@ -677,6 +686,7 @@
     "loading": "Dashboard wird geladen...",
     "loadingRecent": "Letzte Dateien werden geladen...",
     "goToFile": "Gehe zur Datei",
+    "goToFolder": "Ordnerspeicherort anzeigen",
     "noRecent": "Keine letzte Aktivität",
     "retry": "Laden erneut versuchen",
     "error": "Fehler beim Laden der Dashboard-Statistiken",
@@ -1718,5 +1728,55 @@
       "voted": "Ihre Prüfung ist erfasst — es wird auf die anderen Prüfer gewartet.",
       "badge": "parallele Prüfung, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Startseite",
+    "navigateBack": "Zurück",
+    "dashboard": "Dashboard",
+    "searchResults": "Suchergebnisse",
+    "pagination": "Seitennavigation",
+    "viewModeToggle": "Ansichtsmodus",
+    "conflictResolution": "Konfliktlösung"
+  },
+  "shortcuts": {
+    "title": "Tastenkürzel",
+    "subtitle": "Kurzübersicht aller verfügbaren Tastenkürzel",
+    "closeDialog": "Tastenkürzel-Dialog schließen",
+    "listLabel": "Tastenkürzel nach Kategorie",
+    "groupLabel": "Tastenkürzel: {{category}}",
+    "categories": {
+      "fileManagement": "Dateiverwaltung",
+      "selection": "Auswahl",
+      "copyMove": "Kopieren & Verschieben",
+      "navigation": "Navigation",
+      "general": "Allgemein"
+    },
+    "items": {
+      "upload": "Dateien hochladen",
+      "newFolder": "Neuen Ordner erstellen",
+      "download": "Ausgewählte Elemente herunterladen",
+      "rename": "Ausgewähltes Element umbenennen",
+      "delete": "Ausgewählte Elemente löschen",
+      "selectAll": "Alle Elemente auswählen",
+      "clearSelection": "Auswahl aufheben",
+      "toggleSelection": "Elementauswahl umschalten (Raster/Liste)",
+      "copy": "Ausgewählte Elemente kopieren",
+      "move": "Ausgewählte Elemente verschieben",
+      "navigateItems": "Zwischen Elementen navigieren",
+      "open": "Ordner oder Datei öffnen",
+      "first": "Zum ersten Element",
+      "last": "Zum letzten Element",
+      "showShortcuts": "Tastenkürzel anzeigen",
+      "closeDialogs": "Dialoge schließen"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Editor wird geladen...",
+    "documentIdRequired": "Dokument-ID ist erforderlich",
+    "loadConfigError": "Editor-Konfiguration konnte nicht geladen werden",
+    "loadError": "OnlyOffice-Editor konnte nicht geladen werden",
+    "editorError": "Editor-Fehler: {{error}}",
+    "unknownError": "Unbekannter Fehler",
+    "createError": "OnlyOffice-Editor konnte nicht erstellt werden"
   }
 }

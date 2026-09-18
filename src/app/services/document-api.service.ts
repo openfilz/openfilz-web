@@ -636,9 +636,9 @@ export class DocumentApiService {
     return this.http.get<DashboardStatistics>(`${this.baseUrl}/dashboard/statistics`);
   }
 
-  getRecentlyEditedFiles(limit: number = 5): Observable<RecentFileInfo[]> {
+  /** Most recently updated files AND folders (no type filter), newest first. */
+  getRecentDocuments(limit: number = 5): Observable<RecentFileInfo[]> {
     const request = {
-      type: 'FILE',
       pageInfo: {
         pageNumber: 1,
         pageSize: limit,

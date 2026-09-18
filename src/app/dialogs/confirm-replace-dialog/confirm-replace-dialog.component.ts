@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 
 export interface ConfirmReplaceDialogData {
   fileName: string;
@@ -22,7 +23,8 @@ export interface ConfirmReplaceDialogResult {
   imports: [
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslatePipe
 ],
 })
 export class ConfirmReplaceDialogComponent {

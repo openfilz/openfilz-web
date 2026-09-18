@@ -36,6 +36,7 @@
     "key": "Sleutel",
     "value": "Waarde",
     "dropFilesHere": "Sleep bestanden hierheen om te uploaden",
+    "dropFilesToUpload": "Zet bestanden neer om te uploaden",
     "view": "Bekijken",
     "expand": "Uitvouwen",
     "minimize": "Minimaliseren",
@@ -171,6 +172,14 @@
     "replacingFile": "{{name}} vervangen...",
     "replaceSuccess": "{{name}} succesvol vervangen",
     "replaceError": "Vervangen van {{name}} mislukt"
+  },
+  "confirmReplace": {
+    "title": "Bestand bestaat al",
+    "subtitle": "Er staat al een bestand met deze naam in deze map",
+    "message": "Het bestand \"{{name}}\" bestaat al in deze map.",
+    "question": "Wilt u het bestaande bestand vervangen door het nieuwe?",
+    "cancel": "Annuleren",
+    "replace": "Vervangen"
   },
   "duplicateResolution": {
     "title": "Sommige bestanden bestaan al",
@@ -677,6 +686,7 @@
     "loading": "Uw dashboard laden...",
     "loadingRecent": "Recente bestanden laden...",
     "goToFile": "Ga naar bestand",
+    "goToFolder": "Maplocatie tonen",
     "noRecent": "Geen recente activiteit",
     "retry": "Opnieuw proberen",
     "error": "Laden van dashboardstatistieken mislukt",
@@ -1718,5 +1728,55 @@
       "voted": "Uw beoordeling is vastgelegd — wachten op de andere beoordelaars.",
       "badge": "parallelle beoordeling, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Start",
+    "navigateBack": "Terug",
+    "dashboard": "Dashboard",
+    "searchResults": "Zoekresultaten",
+    "pagination": "Paginering",
+    "viewModeToggle": "Weergavemodus",
+    "conflictResolution": "Conflictoplossing"
+  },
+  "shortcuts": {
+    "title": "Sneltoetsen",
+    "subtitle": "Snel overzicht van alle beschikbare sneltoetsen",
+    "closeDialog": "Sneltoetsenvenster sluiten",
+    "listLabel": "Sneltoetsen per categorie",
+    "groupLabel": "Sneltoetsen: {{category}}",
+    "categories": {
+      "fileManagement": "Bestandsbeheer",
+      "selection": "Selectie",
+      "copyMove": "Kopiëren & verplaatsen",
+      "navigation": "Navigatie",
+      "general": "Algemeen"
+    },
+    "items": {
+      "upload": "Bestanden uploaden",
+      "newFolder": "Nieuwe map maken",
+      "download": "Geselecteerde items downloaden",
+      "rename": "Geselecteerd item hernoemen",
+      "delete": "Geselecteerde items verwijderen",
+      "selectAll": "Alle items selecteren",
+      "clearSelection": "Selectie wissen",
+      "toggleSelection": "Itemselectie wisselen (raster/lijst)",
+      "copy": "Geselecteerde items kopiëren",
+      "move": "Geselecteerde items verplaatsen",
+      "navigateItems": "Tussen items navigeren",
+      "open": "Map of bestand openen",
+      "first": "Naar eerste item",
+      "last": "Naar laatste item",
+      "showShortcuts": "Sneltoetsen tonen",
+      "closeDialogs": "Vensters sluiten"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Editor laden...",
+    "documentIdRequired": "Document-ID is verplicht",
+    "loadConfigError": "Kan de editorconfiguratie niet laden",
+    "loadError": "Kan de OnlyOffice-editor niet laden",
+    "editorError": "Editorfout: {{error}}",
+    "unknownError": "Onbekende fout",
+    "createError": "Kan de OnlyOffice-editor niet aanmaken"
   }
 }

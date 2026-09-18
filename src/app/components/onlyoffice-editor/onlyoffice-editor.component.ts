@@ -10,6 +10,7 @@ import {
     inject
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { OnlyOfficeService, OnlyOfficeConfig } from '../../services/onlyoffice.service';
 
 /**
@@ -20,13 +21,13 @@ import { OnlyOfficeService, OnlyOfficeConfig } from '../../services/onlyoffice.s
 @Component({
     selector: 'app-onlyoffice-editor',
     standalone: true,
-    imports: [MatProgressSpinnerModule],
+    imports: [MatProgressSpinnerModule, TranslatePipe],
     template: `
         <div class="onlyoffice-container">
             @if (loading) {
                 <div class="loading-overlay">
                     <mat-spinner diameter="48"></mat-spinner>
-                    <span class="loading-text">Loading editor...</span>
+                    <span class="loading-text">{{ 'onlyoffice.loading' | translate }}</span>
                 </div>
             }
             @if (error) {
@@ -128,13 +129,14 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
 
     private docEditor?: any;
     private onlyOfficeService = inject(OnlyOfficeService);
+    private translate = inject(TranslateService);
 
     /** Unique ID for the editor container element */
     readonly editorId = `onlyoffice-editor-${Math.random().toString(36).substring(2, 9)}`;
 
     ngOnInit() {
         if (!this.documentId) {
-            this.error = 'Document ID is required';
+            this.error = this.translate.instant('onlyoffice.documentIdRequired');
             this.loading = false;
             this.editorError.emit(this.error);
             return;
@@ -160,7 +162,7 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Failed to get OnlyOffice config:', err);
-                this.error = 'Failed to load editor configuration';
+                this.error = this.translate.instant('onlyoffice.loadConfigError');
                 this.loading = false;
                 this.editorError.emit(this.error);
             }
@@ -177,7 +179,7 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Failed to load OnlyOffice API:', err);
-                this.error = 'Failed to load OnlyOffice editor';
+                this.error = this.translate.instant('onlyoffice.loadError');
                 this.loading = false;
                 this.editorError.emit(this.error);
             }
@@ -216,7 +218,9 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
                     },
                     onError: (event: DocsAPI.ErrorEvent) => {
                         console.error('OnlyOffice error:', event.data);
-                        this.error = `Editor error: ${event.data.errorDescription || 'Unknown error'}`;
+                        this.error = this.translate.instant('onlyoffice.editorError', {
+                            error: event.data.errorDescription || this.translate.instant('onlyoffice.unknownError')
+                        });
                         this.editorError.emit(this.error);
                     },
                     onWarning: (event: DocsAPI.WarningEvent) => {
@@ -234,7 +238,7 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
 
         } catch (err) {
             console.error('Failed to create OnlyOffice editor:', err);
-            this.error = 'Failed to create OnlyOffice editor';
+            this.error = this.translate.instant('onlyoffice.createError');
             this.loading = false;
             this.editorError.emit(this.error);
         }

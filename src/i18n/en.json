@@ -37,6 +37,7 @@
     "key": "Key",
     "value": "Value",
     "dropFilesHere": "Drop files here to upload",
+    "dropFilesToUpload": "Drop files to upload",
     "expand": "Expand",
     "minimize": "Minimize",
     "details": "Details",
@@ -171,6 +172,14 @@
     "replacingFile": "Replacing {{name}}...",
     "replaceSuccess": "{{name}} replaced successfully",
     "replaceError": "Failed to replace {{name}}"
+  },
+  "confirmReplace": {
+    "title": "File already exists",
+    "subtitle": "A file with this name is already in this folder",
+    "message": "The file \"{{name}}\" already exists in this folder.",
+    "question": "Do you want to replace the existing file with the new one?",
+    "cancel": "Cancel",
+    "replace": "Replace"
   },
   "duplicateResolution": {
     "title": "Some files already exist",
@@ -677,6 +686,7 @@
     "loading": "Loading your dashboard...",
     "loadingRecent": "Loading recent files...",
     "goToFile": "Go to File",
+    "goToFolder": "Show folder location",
     "noRecent": "No recent activity",
     "retry": "Retry Loading",
     "error": "Failed to load dashboard statistics",
@@ -1718,5 +1728,55 @@
       "voted": "Your review is recorded — waiting for the other reviewers.",
       "badge": "parallel review, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Home",
+    "navigateBack": "Navigate back",
+    "dashboard": "Dashboard",
+    "searchResults": "Search results",
+    "pagination": "Pagination",
+    "viewModeToggle": "View mode",
+    "conflictResolution": "Conflict resolution"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "subtitle": "Quick reference for all available keyboard shortcuts",
+    "closeDialog": "Close keyboard shortcuts dialog",
+    "listLabel": "Keyboard shortcuts by category",
+    "groupLabel": "{{category}} shortcuts",
+    "categories": {
+      "fileManagement": "File management",
+      "selection": "Selection",
+      "copyMove": "Copy & move",
+      "navigation": "Navigation",
+      "general": "General"
+    },
+    "items": {
+      "upload": "Upload files",
+      "newFolder": "Create new folder",
+      "download": "Download selected items",
+      "rename": "Rename selected item",
+      "delete": "Delete selected items",
+      "selectAll": "Select all items",
+      "clearSelection": "Clear selection",
+      "toggleSelection": "Toggle item selection (in grid/list)",
+      "copy": "Copy selected items",
+      "move": "Move selected items",
+      "navigateItems": "Navigate between items",
+      "open": "Open folder or file",
+      "first": "Go to first item",
+      "last": "Go to last item",
+      "showShortcuts": "Show keyboard shortcuts",
+      "closeDialogs": "Close dialogs"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Loading editor...",
+    "documentIdRequired": "Document ID is required",
+    "loadConfigError": "Failed to load editor configuration",
+    "loadError": "Failed to load OnlyOffice editor",
+    "editorError": "Editor error: {{error}}",
+    "unknownError": "Unknown error",
+    "createError": "Failed to create OnlyOffice editor"
   }
 }

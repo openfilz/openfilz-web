@@ -134,7 +134,7 @@
   <!-- Pagination Controls (center) - Desktop only -->
   @if(!hasSelection && totalItems > 0) {
   <div class="toolbar-center desktop-only">
-    <nav class="pagination-controls" role="navigation" aria-label="Pagination">
+    <nav class="pagination-controls" role="navigation" [attr.aria-label]="'a11y.pagination' | translate">
       <span class="pagination-info" role="status" aria-live="polite">
         {{ getStartIndex() }}-{{ getEndIndex() }} {{ 'toolbar.of' | translate }} {{ totalItems }}
       </span>
@@ -200,7 +200,7 @@
     }
 
     <!-- View toggle - always visible -->
-    <div class="view-toggle" role="group" aria-label="View mode toggle">
+    <div class="view-toggle" role="group" [attr.aria-label]="'a11y.viewModeToggle' | translate">
       <button mat-icon-button [class.active]="viewMode === 'grid'" (click)="viewMode !== 'grid' && toggleViewMode()"
         [matTooltip]="'toolbar.gridView' | translate" [attr.aria-label]="'toolbar.gridView' | translate"
         [attr.aria-pressed]="viewMode === 'grid'">
@@ -218,7 +218,7 @@
   @if(totalItems > 0) {
   <div class="toolbar-pagination mobile-only">
     <!-- View toggle for mobile - in pagination row -->
-    <div class="view-toggle mobile-view-toggle" role="group" aria-label="View mode toggle">
+    <div class="view-toggle mobile-view-toggle" role="group" [attr.aria-label]="'a11y.viewModeToggle' | translate">
       <button mat-icon-button [class.active]="viewMode === 'grid'" (click)="viewMode !== 'grid' && toggleViewMode()"
         [matTooltip]="'toolbar.gridView' | translate" [attr.aria-label]="'toolbar.gridView' | translate"
         [attr.aria-pressed]="viewMode === 'grid'">
@@ -230,7 +230,7 @@
         <mat-icon aria-hidden="true">view_list</mat-icon>
       </button>
     </div>
-    <nav class="pagination-controls" role="navigation" aria-label="Pagination">
+    <nav class="pagination-controls" role="navigation" [attr.aria-label]="'a11y.pagination' | translate">
       <span class="pagination-info" role="status" aria-live="polite">
         {{ getStartIndex() }}-{{ getEndIndex() }} {{ 'toolbar.of' | translate }} {{ totalItems }}
       </span>

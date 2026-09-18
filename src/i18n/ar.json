@@ -36,6 +36,7 @@
     "key": "المفتاح",
     "value": "القيمة",
     "dropFilesHere": "اسحب الملفات هنا للرفع",
+    "dropFilesToUpload": "أفلت الملفات لرفعها",
     "view": "عرض",
     "expand": "توسيع",
     "minimize": "تصغير",
@@ -171,6 +172,14 @@
     "replacingFile": "جاري استبدال {{name}}...",
     "replaceSuccess": "تم استبدال {{name}} بنجاح",
     "replaceError": "فشل استبدال {{name}}"
+  },
+  "confirmReplace": {
+    "title": "الملف موجود بالفعل",
+    "subtitle": "يوجد بالفعل ملف بهذا الاسم في هذا المجلد",
+    "message": "الملف \"{{name}}\" موجود بالفعل في هذا المجلد.",
+    "question": "هل تريد استبدال الملف الموجود بالملف الجديد؟",
+    "cancel": "إلغاء",
+    "replace": "استبدال"
   },
   "duplicateResolution": {
     "title": "بعض الملفات موجودة بالفعل",
@@ -677,6 +686,7 @@
     "loading": "جاري تحميل لوحة القيادة...",
     "loadingRecent": "جاري تحميل الملفات الأخيرة...",
     "goToFile": "الذهاب إلى الملف",
+    "goToFolder": "إظهار موقع المجلد",
     "noRecent": "لا يوجد نشاط أخير",
     "retry": "إعادة المحاولة",
     "error": "فشل تحميل إحصائيات لوحة القيادة",
@@ -1718,5 +1728,55 @@
       "voted": "تم تسجيل مراجعتك — بانتظار المراجعين الآخرين.",
       "badge": "مراجعة متوازية، {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "الرئيسية",
+    "navigateBack": "رجوع",
+    "dashboard": "لوحة التحكم",
+    "searchResults": "نتائج البحث",
+    "pagination": "ترقيم الصفحات",
+    "viewModeToggle": "وضع العرض",
+    "conflictResolution": "حل التعارضات"
+  },
+  "shortcuts": {
+    "title": "اختصارات لوحة المفاتيح",
+    "subtitle": "مرجع سريع لجميع اختصارات لوحة المفاتيح المتاحة",
+    "closeDialog": "إغلاق نافذة اختصارات لوحة المفاتيح",
+    "listLabel": "اختصارات لوحة المفاتيح حسب الفئة",
+    "groupLabel": "اختصارات: {{category}}",
+    "categories": {
+      "fileManagement": "إدارة الملفات",
+      "selection": "التحديد",
+      "copyMove": "النسخ والنقل",
+      "navigation": "التنقل",
+      "general": "عام"
+    },
+    "items": {
+      "upload": "رفع الملفات",
+      "newFolder": "إنشاء مجلد جديد",
+      "download": "تنزيل العناصر المحددة",
+      "rename": "إعادة تسمية العنصر المحدد",
+      "delete": "حذف العناصر المحددة",
+      "selectAll": "تحديد كل العناصر",
+      "clearSelection": "مسح التحديد",
+      "toggleSelection": "تبديل تحديد العنصر (شبكة/قائمة)",
+      "copy": "نسخ العناصر المحددة",
+      "move": "نقل العناصر المحددة",
+      "navigateItems": "التنقل بين العناصر",
+      "open": "فتح المجلد أو الملف",
+      "first": "الانتقال إلى العنصر الأول",
+      "last": "الانتقال إلى العنصر الأخير",
+      "showShortcuts": "عرض اختصارات لوحة المفاتيح",
+      "closeDialogs": "إغلاق النوافذ"
+    }
+  },
+  "onlyoffice": {
+    "loading": "جارٍ تحميل المحرر...",
+    "documentIdRequired": "معرّف المستند مطلوب",
+    "loadConfigError": "تعذّر تحميل إعدادات المحرر",
+    "loadError": "تعذّر تحميل محرر OnlyOffice",
+    "editorError": "خطأ في المحرر: {{error}}",
+    "unknownError": "خطأ غير معروف",
+    "createError": "تعذّر إنشاء محرر OnlyOffice"
   }
 }

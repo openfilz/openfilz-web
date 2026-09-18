@@ -55,7 +55,7 @@
           [value]="actions[i]"
           (change)="setAction(i, $event.value)"
           [hideSingleSelectionIndicator]="true"
-          aria-label="Conflict resolution">
+          [attr.aria-label]="'a11y.conflictResolution' | translate">
           <mat-button-toggle value="replace" class="toggle-replace">
             <mat-icon>swap_horiz</mat-icon>
             <span class="toggle-text">{{ 'duplicateResolution.replace' | translate }}</span>

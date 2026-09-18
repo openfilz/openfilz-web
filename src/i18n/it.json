@@ -37,6 +37,7 @@
     "key": "Chiave",
     "value": "Valore",
     "dropFilesHere": "Trascina i file qui per il caricamento",
+    "dropFilesToUpload": "Rilascia i file per caricarli",
     "expand": "Espandi",
     "minimize": "Minimizza",
     "details": "Dettagli",
@@ -171,6 +172,14 @@
     "replacingFile": "Sostituzione di {{name}}...",
     "replaceSuccess": "{{name}} sostituito con successo",
     "replaceError": "Impossibile sostituire {{name}}"
+  },
+  "confirmReplace": {
+    "title": "Il file esiste già",
+    "subtitle": "In questa cartella esiste già un file con questo nome",
+    "message": "Il file «{{name}}» esiste già in questa cartella.",
+    "question": "Vuoi sostituire il file esistente con quello nuovo?",
+    "cancel": "Annulla",
+    "replace": "Sostituisci"
   },
   "duplicateResolution": {
     "title": "Alcuni file esistono già",
@@ -677,6 +686,7 @@
     "loading": "Caricamento dashboard...",
     "loadingRecent": "Caricamento file recenti...",
     "goToFile": "Vai al file",
+    "goToFolder": "Mostra la posizione della cartella",
     "noRecent": "Nessuna attività recente",
     "retry": "Riprova caricamento",
     "error": "Impossibile caricare le statistiche della dashboard",
@@ -1718,5 +1728,55 @@
       "voted": "La tua revisione è registrata — in attesa degli altri revisori.",
       "badge": "revisione in parallelo, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Home",
+    "navigateBack": "Torna indietro",
+    "dashboard": "Dashboard",
+    "searchResults": "Risultati della ricerca",
+    "pagination": "Paginazione",
+    "viewModeToggle": "Modalità di visualizzazione",
+    "conflictResolution": "Risoluzione dei conflitti"
+  },
+  "shortcuts": {
+    "title": "Scorciatoie da tastiera",
+    "subtitle": "Riepilogo di tutte le scorciatoie da tastiera disponibili",
+    "closeDialog": "Chiudi la finestra delle scorciatoie",
+    "listLabel": "Scorciatoie da tastiera per categoria",
+    "groupLabel": "Scorciatoie: {{category}}",
+    "categories": {
+      "fileManagement": "Gestione file",
+      "selection": "Selezione",
+      "copyMove": "Copia e sposta",
+      "navigation": "Navigazione",
+      "general": "Generale"
+    },
+    "items": {
+      "upload": "Carica file",
+      "newFolder": "Crea nuova cartella",
+      "download": "Scarica gli elementi selezionati",
+      "rename": "Rinomina l'elemento selezionato",
+      "delete": "Elimina gli elementi selezionati",
+      "selectAll": "Seleziona tutti gli elementi",
+      "clearSelection": "Annulla la selezione",
+      "toggleSelection": "Seleziona/deseleziona l'elemento (griglia/elenco)",
+      "copy": "Copia gli elementi selezionati",
+      "move": "Sposta gli elementi selezionati",
+      "navigateItems": "Spostati tra gli elementi",
+      "open": "Apri cartella o file",
+      "first": "Vai al primo elemento",
+      "last": "Vai all'ultimo elemento",
+      "showShortcuts": "Mostra le scorciatoie da tastiera",
+      "closeDialogs": "Chiudi le finestre"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Caricamento dell'editor...",
+    "documentIdRequired": "L'ID del documento è obbligatorio",
+    "loadConfigError": "Impossibile caricare la configurazione dell'editor",
+    "loadError": "Impossibile caricare l'editor OnlyOffice",
+    "editorError": "Errore dell'editor: {{error}}",
+    "unknownError": "Errore sconosciuto",
+    "createError": "Impossibile creare l'editor OnlyOffice"
   }
 }

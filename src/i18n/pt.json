@@ -36,6 +36,7 @@
     "key": "Chave",
     "value": "Valor",
     "dropFilesHere": "Solte os arquivos aqui para fazer upload",
+    "dropFilesToUpload": "Solte os arquivos para enviar",
     "view": "Visualizar",
     "expand": "Expandir",
     "minimize": "Minimizar",
@@ -171,6 +172,14 @@
     "replacingFile": "Substituindo {{name}}...",
     "replaceSuccess": "{{name}} substituído com sucesso",
     "replaceError": "Falha ao substituir {{name}}"
+  },
+  "confirmReplace": {
+    "title": "O arquivo já existe",
+    "subtitle": "Já existe um arquivo com este nome nesta pasta",
+    "message": "O arquivo \"{{name}}\" já existe nesta pasta.",
+    "question": "Deseja substituir o arquivo existente pelo novo?",
+    "cancel": "Cancelar",
+    "replace": "Substituir"
   },
   "duplicateResolution": {
     "title": "Alguns arquivos já existem",
@@ -677,6 +686,7 @@
     "loading": "Carregando seu painel...",
     "loadingRecent": "Carregando arquivos recentes...",
     "goToFile": "Ir para o arquivo",
+    "goToFolder": "Mostrar a localização da pasta",
     "noRecent": "Nenhuma atividade recente",
     "retry": "Tentar Novamente",
     "error": "Falha ao carregar estatísticas do painel",
@@ -1718,5 +1728,55 @@
       "voted": "A sua revisão foi registada — à espera dos outros revisores.",
       "badge": "revisão em paralelo, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Início",
+    "navigateBack": "Voltar",
+    "dashboard": "Painel",
+    "searchResults": "Resultados da pesquisa",
+    "pagination": "Paginação",
+    "viewModeToggle": "Modo de visualização",
+    "conflictResolution": "Resolução de conflitos"
+  },
+  "shortcuts": {
+    "title": "Atalhos de teclado",
+    "subtitle": "Referência rápida de todos os atalhos de teclado disponíveis",
+    "closeDialog": "Fechar a janela de atalhos de teclado",
+    "listLabel": "Atalhos de teclado por categoria",
+    "groupLabel": "Atalhos: {{category}}",
+    "categories": {
+      "fileManagement": "Gestão de arquivos",
+      "selection": "Seleção",
+      "copyMove": "Copiar e mover",
+      "navigation": "Navegação",
+      "general": "Geral"
+    },
+    "items": {
+      "upload": "Enviar arquivos",
+      "newFolder": "Criar nova pasta",
+      "download": "Baixar os itens selecionados",
+      "rename": "Renomear o item selecionado",
+      "delete": "Excluir os itens selecionados",
+      "selectAll": "Selecionar todos os itens",
+      "clearSelection": "Limpar a seleção",
+      "toggleSelection": "Alternar a seleção do item (grade/lista)",
+      "copy": "Copiar os itens selecionados",
+      "move": "Mover os itens selecionados",
+      "navigateItems": "Navegar entre os itens",
+      "open": "Abrir pasta ou arquivo",
+      "first": "Ir para o primeiro item",
+      "last": "Ir para o último item",
+      "showShortcuts": "Mostrar atalhos de teclado",
+      "closeDialogs": "Fechar janelas"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Carregando o editor...",
+    "documentIdRequired": "O ID do documento é obrigatório",
+    "loadConfigError": "Falha ao carregar a configuração do editor",
+    "loadError": "Falha ao carregar o editor OnlyOffice",
+    "editorError": "Erro do editor: {{error}}",
+    "unknownError": "Erro desconhecido",
+    "createError": "Falha ao criar o editor OnlyOffice"
   }
 }
