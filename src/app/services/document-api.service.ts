@@ -636,24 +636,28 @@ export class DocumentApiService {
     return this.http.get<DashboardStatistics>(`${this.baseUrl}/dashboard/statistics`);
   }
 
-  /** Most recently updated files AND folders (no type filter), newest first. */
+  /**
+   * Most recently updated files AND folders, newest first.
+   * listAllFolder always sorts by type before the requested field (folders-first browsing),
+   * so an untyped query returns only folders. Fetch the newest N of each type and merge.
+   */
   getRecentDocuments(limit: number = 5): Observable<RecentFileInfo[]> {
-    const request = {
-      pageInfo: {
-        pageNumber: 1,
-        pageSize: limit,
-        sortBy: 'updatedAt',
-        sortOrder: 'DESC'
-      }
-    };
-
-    return this.apollo.watchQuery<any>({
+    const fetchType = (type: 'FILE' | 'FOLDER') => this.apollo.query<any>({
       fetchPolicy: 'no-cache',
       query: RECENT_FILES_QUERY,
-      variables: { request }
-    }).valueChanges.pipe(
-      filter(result => !result.loading),
-      map(result => result.data?.listAllFolder ?? [])
+      variables: {
+        request: {
+          type,
+          pageInfo: { pageNumber: 1, pageSize: limit, sortBy: 'updatedAt', sortOrder: 'DESC' }
+        }
+      }
+    }).pipe(map(result => (result.data?.listAllFolder ?? []) as RecentFileInfo[]));
+
+    const time = (d: RecentFileInfo) => new Date(d.updatedAt ?? d.createdAt ?? 0).getTime();
+    return forkJoin([fetchType('FILE'), fetchType('FOLDER')]).pipe(
+      map(([files, folders]) => [...files, ...folders]
+        .sort((a, b) => time(b) - time(a))
+        .slice(0, limit))
     );
   }
 
