@@ -19,7 +19,7 @@
   >
   </app-toolbar>
 
-  <main class="search-results-content" role="main" aria-label="Search results">
+  <main class="search-results-content" role="main" [attr.aria-label]="'a11y.searchResults' | translate">
     <div class="search-header">
       <h1 class="search-title">
         @if (scopeMode) {

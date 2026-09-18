@@ -4,23 +4,23 @@
       <mat-icon aria-hidden="true">keyboard</mat-icon>
     </div>
     <div class="header-text">
-      <h2 class="dialog-title" id="shortcuts-dialog-title">Keyboard Shortcuts</h2>
-      <p class="dialog-subtitle" id="shortcuts-dialog-description">Quick reference for all available keyboard shortcuts</p>
+      <h2 class="dialog-title" id="shortcuts-dialog-title">{{ 'shortcuts.title' | translate }}</h2>
+      <p class="dialog-subtitle" id="shortcuts-dialog-description">{{ 'shortcuts.subtitle' | translate }}</p>
     </div>
   </div>
   <button mat-icon-button
           class="close-btn"
           (click)="onClose()"
-          aria-label="Close keyboard shortcuts dialog">
+          [attr.aria-label]="'shortcuts.closeDialog' | translate">
     <mat-icon aria-hidden="true">close</mat-icon>
   </button>
 </div>
 
 <div mat-dialog-content class="dialog-content">
-  <div class="shortcuts-container" role="list" aria-label="Keyboard shortcuts by category">
+  <div class="shortcuts-container" role="list" [attr.aria-label]="'shortcuts.listLabel' | translate">
     @for (group of shortcutGroups; track group.category) {
-      <div class="shortcut-group" role="group" [attr.aria-label]="group.category + ' shortcuts'">
-        <h3 class="category-title">{{ group.category }}</h3>
+      <div class="shortcut-group" role="group" [attr.aria-label]="'shortcuts.groupLabel' | translate: { category: (group.category | translate) }">
+        <h3 class="category-title">{{ group.category | translate }}</h3>
         <div class="shortcuts-list">
           @for (shortcut of group.shortcuts; track shortcut.description) {
             <div class="shortcut-item" role="listitem">
@@ -32,7 +32,7 @@
                   }
                 }
               </div>
-              <div class="shortcut-description">{{ shortcut.description }}</div>
+              <div class="shortcut-description">{{ shortcut.description | translate }}</div>
             </div>
           }
         </div>
@@ -45,8 +45,8 @@
   <button mat-raised-button
           class="close-action-btn"
           (click)="onClose()"
-          aria-label="Close dialog">
+          [attr.aria-label]="'common.close' | translate">
     <mat-icon aria-hidden="true">close</mat-icon>
-    <span>Close</span>
+    <span>{{ 'common.close' | translate }}</span>
   </button>
 </div>

@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 import { KeyboardShortcutsService } from '../../services/keyboard-shortcuts.service';
 
 interface ShortcutGroup {
@@ -21,50 +22,51 @@ interface ShortcutGroup {
   imports: [
     MatDialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    TranslatePipe
 ]
 })
 export class KeyboardShortcutsDialogComponent {
   shortcutGroups: ShortcutGroup[] = [
     {
-      category: 'File Management',
+      category: 'shortcuts.categories.fileManagement',
       shortcuts: [
-        { keys: 'Ctrl+U', description: 'Upload files' },
-        { keys: 'Ctrl+N', description: 'Create new folder' },
-        { keys: 'Ctrl+D', description: 'Download selected items' },
-        { keys: 'F2', description: 'Rename selected item' },
-        { keys: 'Delete', description: 'Delete selected items' }
+        { keys: 'Ctrl+U', description: 'shortcuts.items.upload' },
+        { keys: 'Ctrl+N', description: 'shortcuts.items.newFolder' },
+        { keys: 'Ctrl+D', description: 'shortcuts.items.download' },
+        { keys: 'F2', description: 'shortcuts.items.rename' },
+        { keys: 'Delete', description: 'shortcuts.items.delete' }
       ]
     },
     {
-      category: 'Selection',
+      category: 'shortcuts.categories.selection',
       shortcuts: [
-        { keys: 'Ctrl+A', description: 'Select all items' },
-        { keys: 'Escape', description: 'Clear selection' },
-        { keys: 'Space', description: 'Toggle item selection (in grid/list)' }
+        { keys: 'Ctrl+A', description: 'shortcuts.items.selectAll' },
+        { keys: 'Escape', description: 'shortcuts.items.clearSelection' },
+        { keys: 'Space', description: 'shortcuts.items.toggleSelection' }
       ]
     },
     {
-      category: 'Copy & Move',
+      category: 'shortcuts.categories.copyMove',
       shortcuts: [
-        { keys: 'Ctrl+Shift+C', description: 'Copy selected items' },
-        { keys: 'Ctrl+X', description: 'Move selected items' }
+        { keys: 'Ctrl+Shift+C', description: 'shortcuts.items.copy' },
+        { keys: 'Ctrl+X', description: 'shortcuts.items.move' }
       ]
     },
     {
-      category: 'Navigation',
+      category: 'shortcuts.categories.navigation',
       shortcuts: [
-        { keys: '↑ ↓ ← →', description: 'Navigate between items' },
-        { keys: 'Enter', description: 'Open folder or file' },
-        { keys: 'Home', description: 'Go to first item' },
-        { keys: 'End', description: 'Go to last item' }
+        { keys: '↑ ↓ ← →', description: 'shortcuts.items.navigateItems' },
+        { keys: 'Enter', description: 'shortcuts.items.open' },
+        { keys: 'Home', description: 'shortcuts.items.first' },
+        { keys: 'End', description: 'shortcuts.items.last' }
       ]
     },
     {
-      category: 'General',
+      category: 'shortcuts.categories.general',
       shortcuts: [
-        { keys: '?', description: 'Show keyboard shortcuts' },
-        { keys: 'Escape', description: 'Close dialogs' }
+        { keys: '?', description: 'shortcuts.items.showShortcuts' },
+        { keys: 'Escape', description: 'shortcuts.items.closeDialogs' }
       ]
     }
   ];

@@ -127,7 +127,7 @@ The official open-source web application for [OpenFilz](https://github.com/openf
 
 ### Dialogs (12)
 
-`confirm-dialog`, `confirm-replace-dialog`, `create-document-dialog`, `create-folder-dialog`, `document-properties-dialog`, `file-viewer-dialog`, `folder-tree-dialog`, `keyboard-shortcuts-dialog`, `partial-upload-result-dialog`, `rename-dialog`, `settings-dialog`, `upload-dialog`
+`confirm-dialog`, `confirm-replace-dialog`, `create-document-dialog`, `create-folder-dialog`, `file-viewer-dialog`, `folder-tree-dialog`, `keyboard-shortcuts-dialog`, `partial-upload-result-dialog`, `rename-dialog`, `upload-dialog`
 
 ### Services (14)
 

@@ -1,5 +1,5 @@
 <main class="dashboard-grid" appDragDrop (filesDropped)="onFilesDropped($event)"
-  (fileOverChange)="onFileOverChange($event)" [class.file-over]="fileOver" role="main" aria-label="Dashboard">
+  (fileOverChange)="onFileOverChange($event)" [class.file-over]="fileOver" role="main" [attr.aria-label]="'a11y.dashboard' | translate">
 
   <!-- Error State -->
   @if (dashboardError) {

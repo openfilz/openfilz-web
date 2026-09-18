@@ -45,15 +45,14 @@ src/app/
 │   ├── toolbar/         Action toolbar
 │   ├── upload-progress/ Upload tracking
 │   └── upload-zone/     File drop zone
-├── dialogs/             13 dialog components
+├── dialogs/             dialog components
 │   ├── confirm-dialog, confirm-replace-dialog
 │   ├── create-document-dialog, create-folder-dialog
-│   ├── document-properties-dialog
 │   ├── file-too-large-dialog, file-viewer-dialog
 │   ├── folder-tree-dialog
 │   ├── keyboard-shortcuts-dialog
 │   ├── partial-upload-result-dialog
-│   ├── rename-dialog, settings-dialog, upload-dialog
+│   ├── rename-dialog, upload-dialog
 ├── pages/               Route pages
 │   ├── dashboard/       Dashboard overview
 │   ├── favorites/       Favorited documents
@@ -171,7 +170,7 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 - `drag-drop.directive` — file drag-drop zone
 - `file-draggable.directive` — make elements draggable
 - `folder-drop-zone.directive` — drop target for folders
-- `swipe-tabs.directive` — `appSwipeTabs` on a `mat-tab-group`: swipe horizontally to move between tabs on touch screens (used by the metadata panel and the document properties dialog)
+- `swipe-tabs.directive` — `appSwipeTabs` on a `mat-tab-group`: swipe horizontally to move between tabs on touch screens (used by the metadata panel)
 
 ---
 

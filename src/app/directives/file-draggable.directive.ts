@@ -1,4 +1,5 @@
-import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, OnDestroy, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { FileItem } from '../models/document.models';
 import { DragDropService } from '../services/drag-drop.service';
 
@@ -20,6 +21,7 @@ export class FileDraggableDirective implements OnDestroy {
   }
 
   private isDragHandle = false;
+  private translate = inject(TranslateService);
 
   constructor(
     private dragDropService: DragDropService,
@@ -112,18 +114,19 @@ export class FileDraggableDirective implements OnDestroy {
       pointer-events: none;
     `;
 
+    // Built with textContent, never innerHTML: the file name is user-controlled.
+    const icon = document.createElement('span');
+    icon.className = 'material-icons';
+    icon.style.fontSize = '20px';
+    const label = document.createElement('span');
     if (items.length === 1) {
-      const icon = items[0].type === 'FOLDER' ? 'folder' : 'description';
-      dragImage.innerHTML = `
-        <span class="material-icons" style="font-size: 20px;">${icon}</span>
-        <span>${this.truncateName(items[0].name, 25)}</span>
-      `;
+      icon.textContent = items[0].type === 'FOLDER' ? 'folder' : 'description';
+      label.textContent = this.truncateName(items[0].name, 25);
     } else {
-      dragImage.innerHTML = `
-        <span class="material-icons" style="font-size: 20px;">content_copy</span>
-        <span>${items.length} items</span>
-      `;
+      icon.textContent = 'content_copy';
+      label.textContent = this.translate.instant('bottomSheet.items', { count: items.length });
     }
+    dragImage.append(icon, label);
 
     return dragImage;
   }

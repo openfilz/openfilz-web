@@ -116,7 +116,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         <div toolbarBreadcrumb class="toolbar-breadcrumb-compact">
           @if(breadcrumbTrail.length > 0) {
             <button mat-icon-button (click)="navigateBack()"
-                    aria-label="Navigate back"
+                    [attr.aria-label]="'a11y.navigateBack' | translate"
                     class="breadcrumb-back-btn">
               <mat-icon>arrow_back</mat-icon>
             </button>
@@ -124,11 +124,11 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
             <span class="breadcrumb-text">{{ breadcrumbTrail[breadcrumbTrail.length - 1].name }}</span>
           } @else {
             <button mat-icon-button (click)="navigateToHome()"
-                    aria-label="Home"
+                    [attr.aria-label]="'a11y.home' | translate"
                     class="breadcrumb-home-btn">
               <mat-icon>home</mat-icon>
             </button>
-            <span class="breadcrumb-text">My Folder</span>
+            <span class="breadcrumb-text">{{ 'sidebar.myFolder' | translate }}</span>
           }
         </div>
       </app-toolbar>
@@ -151,7 +151,8 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
            (filesDropped)="onFilesDropped($event)"
            (entriesDropped)="onEntriesDropped($event)"
            (fileOverChange)="onFileOverChange($event)"
-           [class.file-over]="fileOver">
+           [class.file-over]="fileOver"
+           [attr.data-drop-label]="'common.dropFilesToUpload' | translate">
 
         <!-- Hidden file input -->
         <input type="file" #fileInput multiple style="display: none;" (change)="onFileSelected($event)">
@@ -213,7 +214,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       @else {
           <div class="loading-container">
               <mat-spinner></mat-spinner>
-              <p>Loading...</p>
+              <p>{{ 'common.loading' | translate }}</p>
           </div>
         }
       </div>

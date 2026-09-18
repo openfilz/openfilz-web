@@ -37,6 +37,7 @@
     "key": "Clave",
     "value": "Valor",
     "dropFilesHere": "Suelte archivos aquí para subir",
+    "dropFilesToUpload": "Suelte los archivos para subirlos",
     "expand": "Expandir",
     "minimize": "Minimizar",
     "details": "Detalles",
@@ -171,6 +172,14 @@
     "replacingFile": "Reemplazando {{name}}...",
     "replaceSuccess": "{{name}} reemplazado con éxito",
     "replaceError": "Error al reemplazar {{name}}"
+  },
+  "confirmReplace": {
+    "title": "El archivo ya existe",
+    "subtitle": "Ya hay un archivo con este nombre en esta carpeta",
+    "message": "El archivo «{{name}}» ya existe en esta carpeta.",
+    "question": "¿Desea reemplazar el archivo existente por el nuevo?",
+    "cancel": "Cancelar",
+    "replace": "Reemplazar"
   },
   "duplicateResolution": {
     "title": "Algunos archivos ya existen",
@@ -1718,5 +1727,55 @@
       "voted": "Su revisión se ha registrado — esperando a los demás revisores.",
       "badge": "revisión en paralelo, {{rule}}"
     }
+  },
+  "a11y": {
+    "home": "Inicio",
+    "navigateBack": "Volver atrás",
+    "dashboard": "Panel",
+    "searchResults": "Resultados de búsqueda",
+    "pagination": "Paginación",
+    "viewModeToggle": "Modo de vista",
+    "conflictResolution": "Resolución de conflictos"
+  },
+  "shortcuts": {
+    "title": "Atajos de teclado",
+    "subtitle": "Referencia rápida de todos los atajos de teclado disponibles",
+    "closeDialog": "Cerrar el diálogo de atajos de teclado",
+    "listLabel": "Atajos de teclado por categoría",
+    "groupLabel": "Atajos: {{category}}",
+    "categories": {
+      "fileManagement": "Gestión de archivos",
+      "selection": "Selección",
+      "copyMove": "Copiar y mover",
+      "navigation": "Navegación",
+      "general": "General"
+    },
+    "items": {
+      "upload": "Subir archivos",
+      "newFolder": "Crear carpeta nueva",
+      "download": "Descargar los elementos seleccionados",
+      "rename": "Renombrar el elemento seleccionado",
+      "delete": "Eliminar los elementos seleccionados",
+      "selectAll": "Seleccionar todos los elementos",
+      "clearSelection": "Borrar la selección",
+      "toggleSelection": "Alternar la selección del elemento (cuadrícula/lista)",
+      "copy": "Copiar los elementos seleccionados",
+      "move": "Mover los elementos seleccionados",
+      "navigateItems": "Navegar entre elementos",
+      "open": "Abrir carpeta o archivo",
+      "first": "Ir al primer elemento",
+      "last": "Ir al último elemento",
+      "showShortcuts": "Mostrar atajos de teclado",
+      "closeDialogs": "Cerrar diálogos"
+    }
+  },
+  "onlyoffice": {
+    "loading": "Cargando el editor...",
+    "documentIdRequired": "Se requiere el ID del documento",
+    "loadConfigError": "No se pudo cargar la configuración del editor",
+    "loadError": "No se pudo cargar el editor OnlyOffice",
+    "editorError": "Error del editor: {{error}}",
+    "unknownError": "Error desconocido",
+    "createError": "No se pudo crear el editor OnlyOffice"
   }
 }

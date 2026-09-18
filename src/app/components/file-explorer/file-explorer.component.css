@@ -38,7 +38,7 @@
 }
 
 .file-explorer-content.file-over::before {
-  content: '📤 Drop files to upload';
+  content: '📤 ' attr(data-drop-label);
   position: fixed;
   top: 50%;
   left: 50%;
