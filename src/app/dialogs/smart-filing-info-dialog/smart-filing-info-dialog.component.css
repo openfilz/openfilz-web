@@ -174,3 +174,39 @@
     font-size: 18px;
   }
 }
+
+/* Phones: the dialog never grows past the screen (a short phone clipped its bottom edge);
+   header and button stay put, only the rules scroll */
+@media (max-width: 600px) {
+  :host {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .dialog-header,
+  .dialog-actions {
+    flex: 0 0 auto;
+  }
+
+  .dialog-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+/* Narrow phones: the decorative icon gives its width back to the title */
+@media (max-width: 400px) {
+  .icon-wrapper {
+    display: none;
+  }
+
+  .dialog-header {
+    padding: 16px 20px 12px;
+  }
+
+  .dialog-actions {
+    padding: 12px 20px 16px !important;
+  }
+}

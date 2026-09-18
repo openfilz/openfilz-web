@@ -118,6 +118,7 @@
 
 /* Info button: the rules behind the switches */
 .filing-info-btn {
+  flex: 0 0 auto;
   width: 32px;
   height: 32px;
   padding: 0;
@@ -136,6 +137,12 @@
 
 .smart-filing.settings .filing-info-link {
   align-self: flex-start;
+  max-width: 100%;
+  /* wraps on a phone: text aligned with its icon, not centred, and the button grows with it */
+  height: auto;
+  min-height: 40px;
+  justify-content: flex-start;
+  text-align: start;
   color: var(--primary);
 }
 
