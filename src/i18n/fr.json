@@ -686,6 +686,7 @@
     "loading": "Chargement de votre tableau de bord...",
     "loadingRecent": "Chargement des fichiers récents...",
     "goToFile": "Aller au fichier",
+    "goToFolder": "Afficher l'emplacement du dossier",
     "noRecent": "Aucune activité récente",
     "retry": "Réessayer le chargement",
     "error": "Échec du chargement des statistiques du tableau de bord",

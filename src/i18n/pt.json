@@ -686,6 +686,7 @@
     "loading": "Carregando seu painel...",
     "loadingRecent": "Carregando arquivos recentes...",
     "goToFile": "Ir para o arquivo",
+    "goToFolder": "Mostrar a localização da pasta",
     "noRecent": "Nenhuma atividade recente",
     "retry": "Tentar Novamente",
     "error": "Falha ao carregar estatísticas do painel",

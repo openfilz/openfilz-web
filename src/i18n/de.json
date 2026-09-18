@@ -686,6 +686,7 @@
     "loading": "Dashboard wird geladen...",
     "loadingRecent": "Letzte Dateien werden geladen...",
     "goToFile": "Gehe zur Datei",
+    "goToFolder": "Ordnerspeicherort anzeigen",
     "noRecent": "Keine letzte Aktivität",
     "retry": "Laden erneut versuchen",
     "error": "Fehler beim Laden der Dashboard-Statistiken",

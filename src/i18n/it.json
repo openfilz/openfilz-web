@@ -686,6 +686,7 @@
     "loading": "Caricamento dashboard...",
     "loadingRecent": "Caricamento file recenti...",
     "goToFile": "Vai al file",
+    "goToFolder": "Mostra la posizione della cartella",
     "noRecent": "Nessuna attività recente",
     "retry": "Riprova caricamento",
     "error": "Impossibile caricare le statistiche della dashboard",

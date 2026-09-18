@@ -27,6 +27,7 @@ export interface RecentFile {
   id: string;
   name: string;
   type: string;
+  isFolder: boolean;
   contentType: string; // Add contentType
   size: number;
   lastModified?: string;
@@ -174,16 +175,17 @@ export class DashboardComponent implements OnInit {
   loadRecentlyEditedFiles() {
     this.isLoadingRecentFiles = true;
 
-    this.documentApi.getRecentlyEditedFiles(this.recentFilesLimit).subscribe({
+    this.documentApi.getRecentDocuments(this.recentFilesLimit).subscribe({
       next: (files) => {
         this.recentlyEditedFiles = files.map(file => ({
           id: file.id,
           name: file.name,
-          type: this.getFileTypeCategory(file.contentType || ''),
+          type: file.type === 'FOLDER' ? 'folder' : this.getFileTypeCategory(file.contentType || ''),
+          isFolder: file.type === 'FOLDER',
           contentType: file.contentType || '', // Populate contentType
           size: file.size || 0,
           updatedAt: file.updatedAt || '',
-          icon: this.getIconForContentType(file.contentType || ''),
+          icon: file.type === 'FOLDER' ? 'folder' : this.getIconForContentType(file.contentType || ''),
           thumbnailUrl: file.thumbnailUrl
         }));
         this.isLoadingRecentFiles = false;
@@ -214,6 +216,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getIconColor(file: RecentFile): string {
+    if (file.isFolder) {
+      return this.fileIconService.getFileColor(file.name, 'FOLDER');
+    }
     return this.fileIconService.getContentTypeColor(file.contentType);
   }
 
@@ -327,6 +332,12 @@ export class DashboardComponent implements OnInit {
 
   // File Actions
   onOpenFile(file: RecentFile) {
+    // A folder opens in the explorer, not in the viewer
+    if (file.isFolder) {
+      this.router.navigate(['/my-folder'], { queryParams: { folderId: file.id } });
+      return;
+    }
+
     // Check if file is too large for preview
     if (file.size && this.isFileTooLargeForPreview(file)) {
       const isPdf = (file.contentType || '').toLowerCase() === 'application/pdf'
@@ -393,7 +404,7 @@ export class DashboardComponent implements OnInit {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = file.name;
+        link.download = file.name + (file.isFolder ? '.zip' : '');
         link.click();
         window.URL.revokeObjectURL(url);
       },

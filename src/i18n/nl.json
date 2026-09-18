@@ -686,6 +686,7 @@
     "loading": "Uw dashboard laden...",
     "loadingRecent": "Recente bestanden laden...",
     "goToFile": "Ga naar bestand",
+    "goToFolder": "Maplocatie tonen",
     "noRecent": "Geen recente activiteit",
     "retry": "Opnieuw proberen",
     "error": "Laden van dashboardstatistieken mislukt",

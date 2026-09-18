@@ -161,7 +161,7 @@
             }
             <div class="file-info">
               <p class="file-name">{{ file.name }}</p>
-              <p class="file-meta">{{ formatFileSize(file.size) }}</p>
+              <p class="file-meta">{{ file.isFolder ? ('common.folder' | translate) : formatFileSize(file.size) }}</p>
             </div>
             <span class="file-timestamp-badge">{{ formatRelativeTime(file.updatedAt) }}</span>
           </div>
@@ -172,8 +172,8 @@
                       [attr.aria-label]="'common.open' | translate">
                 <mat-icon>open_in_new</mat-icon>
               </button>
-              <button mat-icon-button (click)="onGoToFile(file)" [matTooltip]="'dashboard.goToFile' | translate"
-                      [attr.aria-label]="'dashboard.goToFile' | translate">
+              <button mat-icon-button (click)="onGoToFile(file)" [matTooltip]="(file.isFolder ? 'dashboard.goToFolder' : 'dashboard.goToFile') | translate"
+                      [attr.aria-label]="(file.isFolder ? 'dashboard.goToFolder' : 'dashboard.goToFile') | translate">
                 <mat-icon>folder_open</mat-icon>
               </button>
               <button mat-icon-button (click)="onDownloadFile(file)" [matTooltip]="'common.download' | translate"

@@ -686,6 +686,7 @@
     "loading": "Cargando su tablero...",
     "loadingRecent": "Cargando archivos recientes...",
     "goToFile": "Ir al archivo",
+    "goToFolder": "Mostrar la ubicación de la carpeta",
     "noRecent": "No hay actividad reciente",
     "retry": "Reintentar carga",
     "error": "Error al cargar las estadísticas del tablero",

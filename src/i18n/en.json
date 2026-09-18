@@ -686,6 +686,7 @@
     "loading": "Loading your dashboard...",
     "loadingRecent": "Loading recent files...",
     "goToFile": "Go to File",
+    "goToFolder": "Show folder location",
     "noRecent": "No recent activity",
     "retry": "Retry Loading",
     "error": "Failed to load dashboard statistics",
