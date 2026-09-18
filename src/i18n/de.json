@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Workflow abgeschlossen",
       "WORKFLOW_CANCELLED": "Workflow abgebrochen",
       "WORKFLOW_TASK_REASSIGNED": "Workflow-Aufgabe neu zugewiesen",
+      "WORKFLOW_REVIEWED": "Workflow-Prüfung abgegeben",
       "WORKFLOW_ACTION_FAILED": "Workflow-Aktion fehlgeschlagen",
       "WORKFLOW_DEFINITION_CREATED": "Workflow erstellt",
       "WORKFLOW_DEFINITION_UPDATED": "Workflow geändert",
@@ -1426,7 +1427,9 @@
       "REASSIGNED": "Neu zugewiesen an {{emails}}",
       "REMINDED": "Erinnerung gesendet",
       "COMPLETED": "Abgeschlossen mit „{{state}}“",
-      "CANCELLED": "Abgebrochen"
+      "CANCELLED": "Abgebrochen",
+      "REVIEWED": "{{who}} hat geprüft: {{transition}}",
+      "reviewClosed": "Prüfung abgeschlossen — {{approvals}} Zustimmung(en), {{votes}} Stimme(n), {{reviewers}} Prüfer"
     },
     "tasks": {
       "count": "{{count}} Aufgabe(n) warten auf Sie",
@@ -1480,13 +1483,15 @@
         "approval": "Einfache Genehmigung",
         "review-archive": "Prüfung, dann Archivierung",
         "two-step": "Zweistufige Genehmigung",
-        "blank": "Leer"
+        "blank": "Leer",
+        "parallel-review": "Parallele Prüfung"
       },
       "templateHints": {
         "approval": "Entwurf → Genehmigung ausstehend → Genehmigt / Abgelehnt",
         "review-archive": "Entwurf → In Prüfung → Genehmigt → Archiviert",
         "two-step": "Zwei Genehmiger nacheinander",
-        "blank": "Von Grund auf neu"
+        "blank": "Von Grund auf neu",
+        "parallel-review": "Mehrere Prüfer gleichzeitig, jeder kommentiert"
       },
       "labels": {
         "draft": "Entwurf",
@@ -1507,7 +1512,8 @@
         "firstApprover": "Erster Genehmiger",
         "secondApproval": "Zweite Genehmigung",
         "secondApprover": "Zweiter Genehmiger",
-        "done": "Erledigt"
+        "done": "Erledigt",
+        "reviewers": "Prüfer"
       },
       "edit": "Bearbeiten",
       "delete": "Löschen",
@@ -1523,7 +1529,9 @@
       "inactive": "Inaktiv",
       "statesCount": "{{count}} Status",
       "runningCount": "{{count}} laufend",
-      "hotFolders": "{{count}} Hot Folder"
+      "hotFolders": "{{count}} Hot Folder",
+      "pickerTitle": "Workflow erstellen",
+      "pickerSubtitle": "Wählen Sie einen Ausgangspunkt — jeden Status und wer handelt, können Sie danach ändern."
     },
     "editor": {
       "title": "Workflow bearbeiten",
@@ -1620,7 +1628,13 @@
       "NULL": {
         "state": "Leerer Status",
         "transition": "Leerer Übergang"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Nur ein Schritt kann eine parallele Prüfung sein",
+      "REVIEW_NEEDS_PEOPLE": "Eine parallele Prüfung braucht benannte Personen — bestimmte Personen oder beim Start ausgewählt",
+      "BAD_REVIEW_RULE": "Wählen Sie, wie die Stimmen der Prüfer zusammengeführt werden",
+      "REVIEW_NO_APPROVE": "Wählen Sie die Schaltfläche, die als Zustimmung zählt",
+      "BAD_QUORUM": "Die Zahl der nötigen Zustimmungen muss zwischen 1 und {{value}} liegen",
+      "QUORUM_TOO_HIGH": "Nur {{value}} Prüfer benannt — weniger als die nötigen Zustimmungen"
     },
     "diagram": {
       "title": "Workflow-Diagramm",
@@ -1642,7 +1656,10 @@
       "startHint": "Das Dokument bleibt in „{{state}}“, bis Sie fortfahren.",
       "startAnd": "Starten & {{transition}}",
       "started": "Workflow „{{workflow}}“ gestartet — das Dokument ist jetzt „{{state}}“.",
-      "startError": "Der Workflow konnte nicht gestartet werden."
+      "startError": "Der Workflow konnte nicht gestartet werden.",
+      "reviewers": "Wer prüft „{{state}}“? (mehrere Personen)",
+      "reviewersHint": "Jede Person erhält eine eigene Aufgabe — mindestens {{count}}",
+      "tooFewReviewers": "Geben Sie mindestens {{count}} Prüfer an"
     },
     "decision": {
       "commentRequired": "Kommentar (erforderlich)",
@@ -1669,6 +1686,37 @@
       "notFound": "Nicht gefunden.",
       "conflict": "Diese Aktion ist im aktuellen Zustand nicht mehr möglich.",
       "validation": "Die Anfrage wurde abgelehnt."
+    },
+    "review": {
+      "title": "Parallele Prüfung",
+      "enable": "Parallele Prüfung",
+      "intro": "Eine Aufgabe pro Prüfer: jeder stimmt mit den Schaltflächen unten ab und kann kommentieren — alle sehen die Kommentare.",
+      "needsPeople": "Braucht benannte Personen: wählen Sie bestimmte Personen oder beim Start ausgewählte.",
+      "rule": "Wie werden die Stimmen zusammengeführt?",
+      "rules": {
+        "ALL": "Alle prüfen",
+        "FIRST_REJECTION": "Erste Ablehnung entscheidet",
+        "QUORUM": "N Zustimmungen genügen"
+      },
+      "ruleHints": {
+        "ALL": "Wartet auf alle Prüfer. Alle stimmen zu → genehmigt; sonst gewinnt die erste andere Antwort.",
+        "FIRST_REJECTION": "Die erste Antwort, die keine Zustimmung ist, bringt das Dokument sofort weiter.",
+        "QUORUM": "Genehmigt, sobald genug Prüfer zustimmen; endet früher, wenn das nicht mehr möglich ist."
+      },
+      "quorumRule": "{{count}} Zustimmungen genügen",
+      "quorum": "Nötige Zustimmungen",
+      "quorumOfUsers": "von {{count}} oben benannten Prüfer(n)",
+      "quorumChosen": "Wer startet, muss mindestens so viele Prüfer angeben",
+      "approveTransition": "Schaltfläche, die als Zustimmung zählt",
+      "approveTransitionHint": "Jede andere Schaltfläche zählt als Nein",
+      "noTransitions": "Fügen Sie zuerst einen Übergang hinzu",
+      "progress": "{{done}} von {{total}} geprüft",
+      "approvals": "{{approvals}} von {{quorum}} Zustimmungen",
+      "approvalsCount": "{{count}} Zustimmung(en)",
+      "pending": "Wartet noch auf",
+      "noVotes": "Noch keine Prüfung.",
+      "voted": "Ihre Prüfung ist erfasst — es wird auf die anderen Prüfer gewartet.",
+      "badge": "parallele Prüfung, {{rule}}"
     }
   }
 }

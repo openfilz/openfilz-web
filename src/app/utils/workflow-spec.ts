@@ -1,6 +1,8 @@
 import {
+  REVIEW_RULES,
   WorkflowAction,
   WorkflowProblem,
+  WorkflowReview,
   WorkflowSpec,
   WorkflowState,
   WorkflowTransition
@@ -16,6 +18,8 @@ export const KEY_PATTERN = /^[a-z0-9_]{1,40}$/;
 export const MAX_DUE_DAYS = 365;
 export const MAX_METADATA_ENTRIES = 20;
 export const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+/** Upper bound of a QUORUM review's `quorum`. */
+export const MAX_REVIEW_QUORUM = 20;
 
 /** Turns a label into a status / transition key ("Pending approval" → "pending_approval"). */
 export function slugify(label: string): string {
@@ -123,6 +127,7 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
         problems.push({ path: `${tp}.to`, code: 'NO_TARGET', message: 'Transition needs a target status' });
       }
     });
+    if (s.review) validateReview(s, p, problems);
     (s.onEnter ?? []).forEach((a, j) => validateAction(a, `${p}.onEnter[${j}]`, problems));
   });
   if (starts !== 1) problems.push({ path: 'states', code: 'ONE_START', message: 'Exactly one status must be the START' });
@@ -138,6 +143,47 @@ export function validateSpec(spec: WorkflowSpec, triggerFolderIds: string[] = []
   }
   if (!problems.length) reachability(states, byKey, problems);
   return problems;
+}
+
+/** A parallel review: only on a STEP, only with named people, a known rule and an approve transition among the step's own. */
+function validateReview(s: WorkflowState, p: string, problems: WorkflowProblem[]): void {
+  const r = s.review as WorkflowReview;
+  const rp = `${p}.review`;
+  if (s.kind !== 'STEP') {
+    problems.push({ path: rp, code: 'REVIEW_NOT_ON_STEP', message: 'Only a step can be a parallel review' });
+    return;
+  }
+  const type = s.assignees?.type ?? 'INITIATOR';
+  if (type !== 'USERS' && type !== 'CHOSEN_AT_START') {
+    problems.push({ path: rp, code: 'REVIEW_NEEDS_PEOPLE', message: 'A parallel review needs named people (specific people or chosen when starting)' });
+  }
+  if (!r.rule || !REVIEW_RULES.includes(r.rule)) {
+    problems.push({ path: `${rp}.rule`, code: 'BAD_REVIEW_RULE', message: 'Choose how the reviewers\' votes are combined' });
+  }
+  if (!r.approveTransition || !(s.transitions ?? []).some(t => t.key === r.approveTransition)) {
+    problems.push({ path: `${rp}.approveTransition`, code: 'REVIEW_NO_APPROVE', message: 'Choose which transition counts as the approval' });
+  }
+  if (r.rule === 'QUORUM') {
+    const q = r.quorum;
+    if (q == null || !Number.isInteger(q) || q < 1 || q > MAX_REVIEW_QUORUM) {
+      problems.push({ path: `${rp}.quorum`, code: 'BAD_QUORUM', message: `The quorum must be between 1 and ${MAX_REVIEW_QUORUM}`, args: [String(MAX_REVIEW_QUORUM)] });
+    } else if (type === 'USERS') {
+      const n = new Set((s.assignees?.emails ?? []).map(e => e.trim().toLowerCase()).filter(e => e)).size;
+      if (n < q) {
+        problems.push({ path: `${rp}.quorum`, code: 'QUORUM_TOO_HIGH', message: `Only ${n} reviewer(s) for a quorum of ${q}`, args: [String(n)] });
+      }
+    }
+  }
+}
+
+/** Fewest reviewers the starter must name for a CHOSEN_AT_START review step (the quorum, else one). */
+export function minReviewers(review: WorkflowReview | null | undefined): number {
+  return review?.rule === 'QUORUM' && review.quorum && review.quorum > 0 ? review.quorum : 1;
+}
+
+/** The transition a new review counts as "approve": the first positive one, else the first. */
+export function defaultApproveTransition(transitions: WorkflowTransition[]): string {
+  return (transitions.find(t => t.style === 'SUCCESS') ?? transitions[0])?.key ?? '';
 }
 
 function validateAction(a: WorkflowAction, p: string, problems: WorkflowProblem[]): void {
@@ -247,7 +293,7 @@ export function problemsByState(problems: WorkflowProblem[]): Map<number, Workfl
 
 // ── templates ────────────────────────────────────────────────────────────
 
-export type WorkflowTemplateId = 'blank' | 'approval' | 'review-archive' | 'two-step';
+export type WorkflowTemplateId = 'blank' | 'approval' | 'review-archive' | 'two-step' | 'parallel-review';
 
 /** Starter definitions of the designer. Labels are English defaults the user renames freely. */
 export function templateSpec(id: WorkflowTemplateId, t: (key: string) => string): WorkflowSpec {
@@ -288,6 +334,15 @@ export function templateSpec(id: WorkflowTemplateId, t: (key: string) => string)
           transitions: [tr('approve', t('approve'), 'approved', 'SUCCESS'), tr('reject', t('reject'), 'rejected', 'DANGER', true)] }),
         s('approved', t('approved'), 'END', '#10b981'),
         s('rejected', t('rejected'), 'END', '#ef4444')
+      ] };
+    case 'parallel-review':
+      return { states: [
+        s('draft', t('draft'), 'START', '#94a3b8', { transitions: [tr('submit', t('submitForReview'), 'in_review', 'PRIMARY')] }),
+        s('in_review', t('inReview'), 'STEP', '#8b5cf6', {
+          assignees: { type: 'CHOSEN_AT_START', label: t('reviewers') }, dueInDays: 5,
+          review: { rule: 'ALL', approveTransition: 'approve' },
+          transitions: [tr('approve', t('approve'), 'approved', 'SUCCESS'), tr('changes', t('requestChanges'), 'draft', 'NEUTRAL', true)] }),
+        s('approved', t('approved'), 'END', '#10b981')
       ] };
     default:
       return { states: [

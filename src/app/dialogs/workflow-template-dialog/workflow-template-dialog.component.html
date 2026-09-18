@@ -1,0 +1,17 @@
+<div class="sheet-grip" aria-hidden="true"></div>
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper"><mat-icon>account_tree</mat-icon></div>
+    <div class="header-text">
+      <h2 class="dialog-title" mat-dialog-title>{{ 'workflow.designer.pickerTitle' | translate }}</h2>
+      <p class="dialog-subtitle">{{ 'workflow.designer.pickerSubtitle' | translate }}</p>
+    </div>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="close()" [attr.aria-label]="'common.close' | translate">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <app-workflow-template-picker [dense]="true" (picked)="pick($event)"></app-workflow-template-picker>
+</div>

@@ -621,6 +621,7 @@
       "WORKFLOW_COMPLETED": "Flujo completado",
       "WORKFLOW_CANCELLED": "Flujo cancelado",
       "WORKFLOW_TASK_REASSIGNED": "Tarea del flujo reasignada",
+      "WORKFLOW_REVIEWED": "Revisión del flujo enviada",
       "WORKFLOW_ACTION_FAILED": "Acción del flujo fallida",
       "WORKFLOW_DEFINITION_CREATED": "Flujo creado",
       "WORKFLOW_DEFINITION_UPDATED": "Flujo modificado",
@@ -1426,7 +1427,9 @@
       "REASSIGNED": "Reasignado a {{emails}}",
       "REMINDED": "Recordatorio enviado",
       "COMPLETED": "Completado con «{{state}}»",
-      "CANCELLED": "Cancelado"
+      "CANCELLED": "Cancelado",
+      "REVIEWED": "{{who}} revisó: {{transition}}",
+      "reviewClosed": "Revisión cerrada — {{approvals}} aprobación(es), {{votes}} voto(s), {{reviewers}} revisor(es)"
     },
     "tasks": {
       "count": "{{count}} tarea(s) esperan su decisión",
@@ -1480,13 +1483,15 @@
         "approval": "Aprobación simple",
         "review-archive": "Revisión y archivado",
         "two-step": "Aprobación en dos pasos",
-        "blank": "En blanco"
+        "blank": "En blanco",
+        "parallel-review": "Revisión en paralelo"
       },
       "templateHints": {
         "approval": "Borrador → Pendiente de aprobación → Aprobado / Rechazado",
         "review-archive": "Borrador → En revisión → Aprobado → Archivado",
         "two-step": "Dos aprobadores consecutivos",
-        "blank": "Empezar desde cero"
+        "blank": "Empezar desde cero",
+        "parallel-review": "Varios revisores en paralelo, cada uno comenta"
       },
       "labels": {
         "draft": "Borrador",
@@ -1507,7 +1512,8 @@
         "firstApprover": "Primer aprobador",
         "secondApproval": "Segunda aprobación",
         "secondApprover": "Segundo aprobador",
-        "done": "Hecho"
+        "done": "Hecho",
+        "reviewers": "Revisores"
       },
       "edit": "Editar",
       "delete": "Eliminar",
@@ -1523,7 +1529,9 @@
       "inactive": "Inactivo",
       "statesCount": "{{count}} estados",
       "runningCount": "{{count}} en curso",
-      "hotFolders": "{{count}} carpeta(s) de activación"
+      "hotFolders": "{{count}} carpeta(s) de activación",
+      "pickerTitle": "Crear un flujo",
+      "pickerSubtitle": "Elija un punto de partida — después podrá renombrar cada estado y cambiar quién actúa."
     },
     "editor": {
       "title": "Editar flujo",
@@ -1620,7 +1628,13 @@
       "NULL": {
         "state": "Estado vacío",
         "transition": "Transición vacía"
-      }
+      },
+      "REVIEW_NOT_ON_STEP": "Solo un paso puede ser una revisión en paralelo",
+      "REVIEW_NEEDS_PEOPLE": "Una revisión en paralelo necesita personas concretas — indicadas o elegidas al iniciar",
+      "BAD_REVIEW_RULE": "Elija cómo se combinan los votos de los revisores",
+      "REVIEW_NO_APPROVE": "Elija qué botón cuenta como aprobación",
+      "BAD_QUORUM": "Las aprobaciones necesarias deben estar entre 1 y {{value}}",
+      "QUORUM_TOO_HIGH": "Solo {{value}} revisor(es) indicado(s) — menos que las aprobaciones necesarias"
     },
     "diagram": {
       "title": "Diagrama del flujo",
@@ -1642,7 +1656,10 @@
       "startHint": "El documento permanece en «{{state}}» hasta que continúe.",
       "startAnd": "Iniciar y {{transition}}",
       "started": "Flujo «{{workflow}}» iniciado: el documento ahora está «{{state}}».",
-      "startError": "No se pudo iniciar el flujo."
+      "startError": "No se pudo iniciar el flujo.",
+      "reviewers": "¿Quién revisa «{{state}}»? (varias personas)",
+      "reviewersHint": "Cada persona recibe su propia tarea — al menos {{count}}",
+      "tooFewReviewers": "Indique al menos {{count}} revisores"
     },
     "decision": {
       "commentRequired": "Comentario (obligatorio)",
@@ -1669,6 +1686,37 @@
       "notFound": "No encontrado.",
       "conflict": "Esta acción ya no es posible en el estado actual.",
       "validation": "La solicitud fue rechazada."
+    },
+    "review": {
+      "title": "Revisión en paralelo",
+      "enable": "Revisión en paralelo",
+      "intro": "Una tarea por revisor: cada uno vota con los botones de abajo y puede comentar — todos ven los comentarios.",
+      "needsPeople": "Necesita personas concretas: elija personas concretas o elegidas al iniciar.",
+      "rule": "¿Cómo se combinan los votos?",
+      "rules": {
+        "ALL": "Todos revisan",
+        "FIRST_REJECTION": "El primer rechazo decide",
+        "QUORUM": "Bastan N aprobaciones"
+      },
+      "ruleHints": {
+        "ALL": "Espera a todos los revisores. Todos aprueban → aprobado; si no, gana la primera otra respuesta.",
+        "FIRST_REJECTION": "La primera respuesta que no es una aprobación hace avanzar el documento de inmediato.",
+        "QUORUM": "Aprobado en cuanto aprueban suficientes revisores; termina antes si ya no es posible."
+      },
+      "quorumRule": "Bastan {{count}} aprobaciones",
+      "quorum": "Aprobaciones necesarias",
+      "quorumOfUsers": "de {{count}} revisor(es) indicado(s) arriba",
+      "quorumChosen": "Quien inicia debe indicar al menos este número de revisores",
+      "approveTransition": "Botón que cuenta como aprobación",
+      "approveTransitionHint": "Cualquier otro botón cuenta como un no",
+      "noTransitions": "Añada primero una transición",
+      "progress": "{{done}} de {{total}} revisado(s)",
+      "approvals": "{{approvals}} de {{quorum}} aprobaciones",
+      "approvalsCount": "{{count}} aprobación(es)",
+      "pending": "Aún se espera a",
+      "noVotes": "Todavía no hay revisiones.",
+      "voted": "Su revisión se ha registrado — esperando a los demás revisores.",
+      "badge": "revisión en paralelo, {{rule}}"
     }
   }
 }

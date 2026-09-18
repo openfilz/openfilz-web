@@ -702,6 +702,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       'WORKFLOW_COMPLETED': 'check_circle',
       'WORKFLOW_CANCELLED': 'cancel',
       'WORKFLOW_TASK_REASSIGNED': 'group',
+      'WORKFLOW_REVIEWED': 'rate_review',
       'WORKFLOW_ACTION_FAILED': 'error_outline',
       'WORKFLOW_DEFINITION_CREATED': 'design_services',
       'WORKFLOW_DEFINITION_UPDATED': 'design_services',

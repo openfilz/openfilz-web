@@ -68,6 +68,9 @@
             <td mat-cell *matCellDef="let i">
               @if (i.currentTask) {
                 <span [class.late]="i.currentTask.overdue">{{ waitingFor(i) }}</span>
+                @if (i.currentTask.review; as r) {
+                  <span class="review-count" [matTooltip]="'workflow.review.title' | translate"><mat-icon>groups</mat-icon>{{ r.votes.length }}/{{ r.total }}</span>
+                }
                 @if (i.currentTask.overdue) { <mat-icon class="late-ico" [matTooltip]="'workflow.tasks.overdueShort' | translate">warning</mat-icon> }
               } @else { <span class="dim">—</span> }
             </td>
@@ -119,6 +122,10 @@
         }
       </dl>
 
+      @if (d.instance.status === 'RUNNING' && d.instance.currentTask?.review; as review) {
+        <app-workflow-review-progress class="review-box" [review]="review" [transitions]="reviewTransitions(d)"></app-workflow-review-progress>
+      }
+
       <div class="detail-actions">
         <button mat-stroked-button (click)="openDocument(d.instance)"><mat-icon>folder_open</mat-icon>{{ 'workflow.tasks.openDocument' | translate }}</button>
         @if (d.instance.status === 'RUNNING' && d.canManage) {
@@ -133,7 +140,8 @@
           <li class="ev" [class]="'ev ev-' + e.type">
             <span class="ev-dot"><mat-icon>{{ eventIcon(e.type) }}</mat-icon></span>
             <div class="ev-text">{{ eventText(e, d) }}</div>
-            <div class="ev-meta">{{ e.createdAt | date:'medium' }}@if (e.actor) { · {{ e.actor }} }</div>
+            @if (reviewTally(e); as tally) { <div class="ev-tally">{{ tally }}</div> }
+            <div class="ev-meta">{{ e.createdAt | date:'medium' }}@if (e.actor && e.type !== 'REVIEWED') { · {{ e.actor }} }</div>
             @if (e.comment) { <blockquote class="note">{{ e.comment }}</blockquote> }
           </li>
         }

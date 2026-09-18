@@ -46,13 +46,18 @@
       </div>
 
       @for (s of chosenStates; track s.key) {
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>{{ s.assignees?.label || ('workflow.start.who' | translate: { state: s.label }) }}</mat-label>
+        <mat-form-field appearance="outline" class="field" [class.review-field]="isReview(s)">
+          <mat-label>{{ s.assignees?.label || ((isReview(s) ? 'workflow.start.reviewers' : 'workflow.start.who') | translate: { state: s.label }) }}</mat-label>
           <input matInput [(ngModel)]="assignments[s.key]" autocomplete="off" [placeholder]="'workflow.decision.emailsHint' | translate">
-          <mat-icon matSuffix>group</mat-icon>
+          <mat-icon matSuffix>{{ isReview(s) ? 'groups' : 'group' }}</mat-icon>
+          @if (isReview(s)) {
+            <mat-hint>{{ 'workflow.start.reviewersHint' | translate: { count: minPeople(s), done: emailsOf(s.key).length } }}</mat-hint>
+          }
         </mat-form-field>
         @if (invalidEmailOf(s.key); as bad) {
           <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: bad } }}</span></div>
+        } @else if (tooFew(s); as min) {
+          <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.start.tooFewReviewers' | translate: { count: min } }}</span></div>
         }
       }
 

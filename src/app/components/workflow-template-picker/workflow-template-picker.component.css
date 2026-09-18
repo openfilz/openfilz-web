@@ -1,0 +1,73 @@
+:host { display: block; width: 100%; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.grid.dense { gap: 12px; }
+
+.tpl {
+  --tone: var(--primary);
+  position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 16px; min-height: 168px;
+  text-align: start; font: inherit; color: var(--text-primary); cursor: pointer; overflow: hidden;
+  background: var(--bg-secondary); border: 2px solid var(--border-light); border-radius: 16px;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+/* accent strip in the template's colour */
+.tpl::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--tone); }
+.tpl:hover {
+  border-color: color-mix(in srgb, var(--tone) 60%, var(--border-light)); transform: translateY(-2px);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--tone) 18%, transparent);
+}
+.tpl:focus-visible { outline: 3px solid color-mix(in srgb, var(--tone) 55%, transparent); outline-offset: 2px; border-color: var(--tone); }
+.tpl:active { transform: none; }
+
+.top { display: flex; align-items: flex-start; gap: 12px; }
+.tile {
+  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px;
+  background: color-mix(in srgb, var(--tone) 16%, transparent); color: var(--tone);
+}
+.tile mat-icon { font-size: 24px; width: 24px; height: 24px; }
+.text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.name { font-size: 15px; font-weight: 700; line-height: 1.25; }
+.hint { font-size: 12.5px; line-height: 1.4; color: var(--text-secondary); }
+
+/* ── mini flow preview ─────────────────────────────────────────────────── */
+.flow {
+  display: flex; align-items: center; margin-top: auto; padding: 10px 12px; min-height: 54px;
+  border-radius: 10px; background: var(--bg-primary); border: 1px solid var(--border-light);
+}
+.col { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.chip { --c: #94a3b8; position: relative; display: block; width: 26px; height: 12px; border-radius: 4px; background: var(--c); }
+/* start: a dot inside, like the diagram's START box */
+.chip.start::before {
+  content: ''; position: absolute; top: 50%; inset-inline-start: 4px; width: 4px; height: 4px; margin-top: -2px;
+  border-radius: 50%; background: #fff;
+}
+/* end: round, like the diagram's final pills */
+.chip.end { width: 14px; height: 14px; border-radius: 50%; }
+/* parallel review: several lanes side by side */
+.chip.lanes { display: flex; flex-direction: column; gap: 2px; height: auto; background: none; }
+.chip.lanes i { display: block; height: 5px; border-radius: 3px; background: var(--c); }
+.chip.lanes i:nth-child(2) { opacity: .75; }
+.chip.lanes i:nth-child(3) { opacity: .5; }
+/* arrow between columns — logical properties turn it around in RTL */
+.link { position: relative; flex: 1 1 12px; min-width: 12px; max-width: 34px; height: 2px; margin: 0 4px 0 3px; background: var(--border-color); }
+.link::after {
+  content: ''; position: absolute; top: -3px; inset-inline-end: -2px;
+  border-block: 4px solid transparent; border-inline-start: 5px solid var(--border-color);
+}
+
+/* ── the Blank card: dashed, no accent, hollow preview ────────────────── */
+.tpl.blank { background: transparent; border-style: dashed; border-color: var(--border-color); }
+.tpl.blank::before { display: none; }
+.tpl.blank:hover { border-color: var(--primary); }
+.ghost { background: transparent; border-style: dashed; }
+.ghost .chip { background: transparent; box-shadow: inset 0 0 0 2px var(--border-color); }
+.ghost .chip.plus { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; color: var(--primary); box-shadow: inset 0 0 0 2px var(--primary); }
+.ghost .chip.plus mat-icon { font-size: 14px; width: 14px; height: 14px; }
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; gap: 10px; }
+  .tpl { min-height: 0; padding: 14px 14px 12px; gap: 10px; }
+  .tpl:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tpl, .tpl:hover { transition: none; transform: none; }
+}

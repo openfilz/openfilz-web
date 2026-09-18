@@ -225,6 +225,13 @@ as e-Sign / PDF tools so the enterprise fork only mirrors the descriptor + route
   every action and on a 60 s poll from the sidebar), `utils/workflow-spec.ts` (client mirror of the API
   `WorkflowSpecValidator` — same codes and paths; the starter templates; `layoutSpec()` = layered
   left-to-right layout of the diagram; `slugify`/`uniqueKey` for status keys), `guards/workflows.guard.ts`.
+- **Parallel review** (a status with `review {rule ALL|FIRST_REJECTION|QUORUM, quorum, approveTransition}` — one task per
+  reviewer, see core `docs/workflows.md` §3): `components/workflow-review-progress/` (votes + comments + pending, used by My
+  tasks, the monitor drawer and the details panel), the editor's review section, the `parallel-review` template.
+  `components/workflow-template-picker/` = the template cards (empty state + `dialogs/workflow-template-dialog`, the
+  "New workflow" button), each with a mini flow preview built from `templateSpec()`. `utils/workflow-spec.spec.ts` pins
+  every template (valid + structure, mirrored by core `WorkflowTemplatesIT`) — no test runner is configured, run it with
+  `npx vitest run src/app/utils/workflow-spec.spec.ts --globals`.
 - `components/workflow-diagram/` — pure SVG picture of a spec (current status highlighted, taken
   transitions bold, `stateClick` for the designer).
 - `pages/workflows/` — `workflows.component` (tabs, `?tab=tasks|monitor|designer`, `?task=`, `?instance=`),

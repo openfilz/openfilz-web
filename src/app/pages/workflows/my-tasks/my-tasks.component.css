@@ -53,3 +53,4 @@
   .card { flex-direction: column; }
   .card-actions { align-self: stretch; justify-content: flex-start; }
 }
+.review-tag { color: #8b5cf6; font-weight: 600; }
