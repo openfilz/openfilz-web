@@ -148,6 +148,125 @@ mat-dialog-content {
   font-weight: 300;
 }
 
+/* Filter + sort toolbar */
+.picker-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-primary);
+  flex-shrink: 0;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 4px 0 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--bg-secondary);
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.filter-field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
+}
+
+.filter-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+/* The whole field shows focus (see .filter-field:focus-within): drop the global
+   input:focus-visible outline, which would draw a second box inside it. */
+.filter-field .filter-input:focus,
+.filter-field .filter-input:focus-visible {
+  outline: none !important;
+  box-shadow: none;
+}
+
+.filter-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.clear-filter-btn,
+.sort-order-btn {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  padding: 4px !important;
+  color: var(--text-secondary) !important;
+  flex-shrink: 0;
+}
+
+.sort-order-btn {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+}
+
+.clear-filter-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.sort-btn {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  text-transform: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sort-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.folder-date {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+@media (max-width: 599px) {
+  .picker-toolbar {
+    padding: 10px 16px;
+  }
+
+  /* Keep the icon only: the sort menu still names the active field. */
+  .sort-btn span {
+    display: none;
+  }
+}
+
 .folder-grid-container {
   flex: 1;
   overflow-y: auto;
