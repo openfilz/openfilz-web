@@ -24,6 +24,8 @@ export interface ElementInfo {
   size?: number;
   favorite?: boolean;
   thumbnailUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ListFolderAndCountResponse {
@@ -256,6 +258,8 @@ export type SearchScope = 'CURRENT_ONLY' | 'CURRENT_AND_SUBFOLDERS' | 'ALL';
 
 export interface SearchFilters {
   type?: DocumentType;
+  /** Case-insensitive "contains" match on the name (folder listing only). */
+  nameLike?: string;
   dateModified?: string;
   owner?: string;
   fileType?: string;
