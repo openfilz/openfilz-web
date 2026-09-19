@@ -199,6 +199,10 @@ export class DocumentApiService {
       request.type = filters.type;
     }
 
+    if (filters.nameLike) {
+      request.nameLike = filters.nameLike;
+    }
+
     if (filters.owner) {
       request.createdBy = filters.owner;
     }

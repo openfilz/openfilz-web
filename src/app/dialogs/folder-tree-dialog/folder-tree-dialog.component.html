@@ -28,12 +28,54 @@
     </div>
   </div>
 
+  <div class="picker-toolbar">
+    <div class="filter-field">
+      <mat-icon class="filter-icon">search</mat-icon>
+      <input type="text" class="filter-input"
+             [value]="nameFilter"
+             (input)="onFilterInput($any($event.target).value)"
+             (keydown.enter)="applyFilterNow()"
+             [placeholder]="'dialogs.folderTree.filterPlaceholder' | translate"
+             [attr.aria-label]="'dialogs.folderTree.filterPlaceholder' | translate">
+      @if (nameFilter) {
+        <button mat-icon-button class="clear-filter-btn" (click)="clearFilter()"
+                [matTooltip]="'dialogs.folderTree.clearFilter' | translate"
+                [attr.aria-label]="'dialogs.folderTree.clearFilter' | translate">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+    <button mat-stroked-button class="sort-btn" [matMenuTriggerFor]="sortMenu"
+            [matTooltip]="'dialogs.folderTree.sortBy' | translate"
+            [attr.aria-label]="'dialogs.folderTree.sortBy' | translate">
+      <mat-icon>sort</mat-icon>
+      <span>{{ sortLabel | translate }}</span>
+    </button>
+    <button mat-icon-button class="sort-order-btn" (click)="toggleSortOrder()"
+            [matTooltip]="(sortOrder === 'ASC' ? 'dialogs.folderTree.sortAscending' : 'dialogs.folderTree.sortDescending') | translate"
+            [attr.aria-label]="(sortOrder === 'ASC' ? 'dialogs.folderTree.sortAscending' : 'dialogs.folderTree.sortDescending') | translate">
+      <mat-icon>{{ sortOrder === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+    </button>
+    <mat-menu #sortMenu="matMenu">
+      @for (option of sortOptions; track option.value) {
+        <button mat-menu-item (click)="onSortFieldChange(option.value)">
+          <mat-icon>{{ sortBy === option.value ? 'check' : '' }}</mat-icon>
+          <span>{{ option.label | translate }}</span>
+        </button>
+      }
+    </mat-menu>
+  </div>
+
   @if (!loading) {
     <div class="folder-grid-container">
       @if (folders.length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">folder_open</mat-icon>
-          <p>{{ 'dialogs.folderTree.noFoldersAvailable' | translate }}</p>
+          @if (appliedFilter) {
+            <p>{{ 'dialogs.folderTree.noFolderMatch' | translate: { filter: appliedFilter } }}</p>
+          } @else {
+            <p>{{ 'dialogs.folderTree.noFoldersAvailable' | translate }}</p>
+          }
         </div>
       }
       @else {
@@ -45,6 +87,9 @@
                (dblclick)="onFolderDoubleClick(folder)">
             <mat-icon class="folder-icon">folder</mat-icon>
             <span class="folder-name">{{ folder.name }}</span>
+            @if (sortBy !== 'name' && folder[sortBy]) {
+              <span class="folder-date">{{ folder[sortBy] | date: 'mediumDate' }}</span>
+            }
             <button mat-icon-button class="enter-folder-btn"
                     (click)="enterFolder(folder); $event.stopPropagation()"
                     [attr.aria-label]="'dialogs.folderTree.openFolder' | translate">
