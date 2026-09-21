@@ -301,7 +301,7 @@
                 <td>{{ r.reminderCount }}</td>
                 <td>{{ r.fields.length || 0 }}</td>
                 <td class="row-actions">
-                    Signature Link display                  <span class="acts">
+                  <span class="acts">
                   @if (canResend(d, r)) {
                     <button mat-icon-button type="button" class="tint-blue" (click)="resend(d, r)" [disabled]="isBusy(d.id + ':' + r.id)"
                             [matTooltip]="'signature.list.resend' | translate" [attr.aria-label]="'signature.list.resend' | translate">
