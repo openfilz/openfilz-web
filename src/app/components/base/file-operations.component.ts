@@ -893,8 +893,14 @@ export abstract class FileOperationsComponent implements OnInit {
     if (files.length > 0) {
       observables.push(this.documentApi.deleteFiles({ documentIds: files.map(f => f.id) }));
     }
+    const deletedIds = new Set(itemsToDelete.map(item => item.id));
     observables.forEach(obs => obs.subscribe({
       next: () => {
+        // The details panel must not keep showing a document that no longer exists.
+        // Close it directly (not attemptCloseMetadataPanel): pending edits can't be saved anyway.
+        if (this.metadataPanelOpen && this.selectedDocumentForMetadata && deletedIds.has(this.selectedDocumentForMetadata)) {
+          this.closeMetadataPanel();
+        }
         this.snackBar.open(this.translate.instant('operations.deleteSuccess'), this.translate.instant('common.close'), { duration: 3000 });
         this.reloadData();
       },
