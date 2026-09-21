@@ -1371,7 +1371,6 @@
     "moveBack": "Devolver a su sitio",
     "movedFrom": "Movido desde {{path}}",
     "toast": {
-      "filing": "Archivando {{count}} documento(s)…",
       "done": "{{filed}} archivado(s) · {{left}} sin mover",
       "undo": "Deshacer",
       "show": "Mostrar",

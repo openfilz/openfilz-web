@@ -1371,7 +1371,6 @@
     "moveBack": "Terugzetten",
     "movedFrom": "Verplaatst vanuit {{path}}",
     "toast": {
-      "filing": "{{count}} document(en) worden gearchiveerd…",
       "done": "{{filed}} gearchiveerd · {{left}} op hun plaats gelaten",
       "undo": "Ongedaan maken",
       "show": "Tonen",
