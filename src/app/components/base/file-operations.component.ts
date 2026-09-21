@@ -2,7 +2,7 @@ import { DestroyRef, Directive, HostListener, OnInit, ViewChild, inject } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CopyRequest, DocumentType, FileItem, MoveRequest, RenameRequest } from '../../models/document.models';
+import { CopyRequest, DocumentType, FileItem, MoveRequest, RenameRequest, UnzipResponse } from '../../models/document.models';
 import { DocumentApiService } from '../../services/document-api.service';
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
@@ -15,6 +15,8 @@ import { Router } from "@angular/router";
 import { UserPreferencesService } from '../../services/user-preferences.service';
 import { SettingsService } from '../../services/settings.service';
 import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { UnzipAccessService } from '../../services/unzip-access.service';
+import { UnzipDialogComponent, UnzipDialogData } from '../../dialogs/unzip-dialog/unzip-dialog.component';
 import { PdfToolsService } from '../../services/pdf-tools.service';
 import { PdfOutputInfo, PdfToolActionId, PdfToolResult } from '../../models/pdf-tools.models';
 import { SignatureAccessService } from '../../services/signature-access.service';
@@ -72,6 +74,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected signatureAccess = inject(SignatureAccessService);
   protected workflowAccess = inject(WorkflowAccessService);
   protected pdfToolsAccess = inject(PdfToolsAccessService);
+  protected unzipAccess = inject(UnzipAccessService);
   protected pdfTools = inject(PdfToolsService);
   protected translate = inject(TranslateService);
   protected aiChat = inject(AiChatService);
@@ -390,6 +393,58 @@ export abstract class FileOperationsComponent implements OnInit {
     if (selected.length === 1) {
       this.onOrganizeWithAi(selected[0]);
     }
+  }
+
+  // ===== Unzip =====
+
+  /** "Unzip" applies to the selection: exactly one ZIP file, CONTRIBUTOR. */
+  get canUnzipSelection(): boolean {
+    const selected = this.selectedItems;
+    return selected.length === 1 && this.unzipAccess.canUnzip(selected[0]);
+  }
+
+  /** From the contextual selection toolbar / mobile sheet. */
+  onUnzipSelected(): void {
+    const selected = this.selectedItems;
+    if (selected.length === 1) {
+      this.onUnzipItem(selected[0]);
+    }
+  }
+
+  /**
+   * From a per-item kebab / context menu: ask for the destination, let the dialog run the
+   * server-side extraction, then summarise and refresh the listing.
+   */
+  onUnzipItem(item: FileItem): void {
+    if (!this.unzipAccess.canUnzip(item)) {
+      return;
+    }
+    const data: UnzipDialogData = { zip: item, currentFolder: this.unzipCurrentFolder() };
+    this.dialog.open(UnzipDialogComponent, { width: '560px', maxWidth: '95vw', data, autoFocus: false })
+      .afterClosed()
+      .subscribe((response?: UnzipResponse) => {
+        if (!response) {
+          return;
+        }
+        const params = {
+          files: response.filesExtracted,
+          folders: response.foldersCreated,
+          skipped: response.skipped.length
+        };
+        const key = response.skipped.length > 0 ? 'operations.unzipPartial' : 'operations.unzipSuccess';
+        this.snackBar.open(this.translate.instant(key, params), this.translate.instant('common.close'), { duration: 5000 });
+        this.reloadData();
+      });
+  }
+
+  /**
+   * The folder this listing shows, when it is the ZIP's own folder (`name` undefined = the root;
+   * `writable: false` when the user may not write into it): labels the dialog's "current folder"
+   * option. Listings without a current folder (search, favorites) return undefined and the option
+   * reads "the folder containing the ZIP".
+   */
+  protected unzipCurrentFolder(): { name?: string; writable?: boolean } | undefined {
+    return undefined;
   }
 
   // ===== PDF tools (merge / split / rotate / organize pages) =====

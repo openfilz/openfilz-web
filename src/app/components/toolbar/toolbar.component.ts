@@ -11,7 +11,7 @@ import { AppConfig } from '../../config/app.config';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentTemplateType } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES, FileTypeCategory, getFileTypeCategory } from '../../models/file-type-filters';
-import { FileActionCategory, FileActionDescriptor, FileActionId, ORGANIZE_WITH_AI_ACTION, REQUEST_SIGNATURE_ACTION, START_WORKFLOW_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS , PDF_TOOLS_SELECTION_ACTIONS, isPdfToolsAction } from '../../models/file-actions';
+import { FileActionCategory, FileActionDescriptor, FileActionId, ORGANIZE_WITH_AI_ACTION, REQUEST_SIGNATURE_ACTION, START_WORKFLOW_ACTION, UNZIP_ACTION, SHEET_CATEGORIES, STANDARD_SELECTION_ACTIONS , PDF_TOOLS_SELECTION_ACTIONS, isPdfToolsAction } from '../../models/file-actions';
 
 @Component({
   selector: 'app-toolbar',
@@ -51,6 +51,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() pdfToolsAvailable = false;
   /** "Organise with AI" applies to the selection (chat on, CONTRIBUTOR, exactly one folder selected) */
   @Input() organizeWithAiAvailable = false;
+  /** "Unzip" applies to the selection (CONTRIBUTOR, exactly one ZIP file selected) */
+  @Input() unzipAvailable = false;
   /** "Organise with AI" for the folder currently displayed (no selection): the create-actions button + FAB entry */
   @Input() showOrganizeWithAi = false;
 
@@ -74,6 +76,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Output() startWorkflowSelected = new EventEmitter<void>();
   @Output() pdfToolSelected = new EventEmitter<PdfToolActionId>();
   @Output() organizeWithAiSelected = new EventEmitter<void>();
+  @Output() unzipSelected = new EventEmitter<void>();
   @Output() organizeWithAi = new EventEmitter<void>();
   @Output() clearSelection = new EventEmitter<void>();
   @Output() sortChange = new EventEmitter<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>();
@@ -289,7 +292,8 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
         : [...STANDARD_SELECTION_ACTIONS];
     const withWorkflow = this.startWorkflowAvailable ? [...defs, START_WORKFLOW_ACTION] : defs;
     const withPdf = this.pdfToolsAvailable ? [...withWorkflow, ...PDF_TOOLS_SELECTION_ACTIONS] : withWorkflow;
-    return this.organizeWithAiAvailable ? [...withPdf, ORGANIZE_WITH_AI_ACTION] : withPdf;
+    const withUnzip = this.unzipAvailable ? [...withPdf, UNZIP_ACTION] : withPdf;
+    return this.organizeWithAiAvailable ? [...withUnzip, ORGANIZE_WITH_AI_ACTION] : withUnzip;
   }
   readonly sheetCategories = SHEET_CATEGORIES;
 
@@ -303,7 +307,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
    * item's own Details menu entry).
    */
   private readonly DESKTOP_ACTION_ORDER: FileActionId[] =
-    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'startWorkflow', 'organizePdf', 'mergePdf', 'splitPdf', 'rotatePdf', 'organizeWithAi', 'delete'];
+    ['open', 'download', 'rename', 'move', 'copy', 'requestSignature', 'startWorkflow', 'organizePdf', 'mergePdf', 'splitPdf', 'rotatePdf', 'unzip', 'organizeWithAi', 'delete'];
 
   /**
    * How many action icons fit inline in the toolbar; the rest spill into the
@@ -351,7 +355,7 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     // Selection count changes the number of available actions (1 vs many).
-    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature'] || changes['startWorkflowAvailable'] || changes['pdfToolsAvailable'] || changes['organizeWithAiAvailable']) {
+    if (changes['hasSelection'] || changes['selectionCount'] || changes['canRequestSignature'] || changes['startWorkflowAvailable'] || changes['pdfToolsAvailable'] || changes['organizeWithAiAvailable'] || changes['unzipAvailable']) {
       this.scheduleMeasure();
     }
   }
@@ -447,6 +451,11 @@ export class ToolbarComponent implements AfterViewInit, OnChanges, OnDestroy {
       case 'organizeWithAi':
         if (this.selectionCount === 1) {
           this.organizeWithAiSelected.emit();
+        }
+        break;
+      case 'unzip':
+        if (this.selectionCount === 1) {
+          this.unzipSelected.emit();
         }
         break;
       case 'delete':
