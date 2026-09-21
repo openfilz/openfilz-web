@@ -655,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadatos reemplazados",
       "UPDATE_DOCUMENT_METADATA": "Metadatos actualizados",
       "DOWNLOAD_DOCUMENT": "Documento descargado",
+      "OPEN_DOCUMENT": "Documento abierto",
       "DELETE_DOCUMENT_METADATA": "Metadatos eliminados",
       "SHARE_DOCUMENTS": "Documentos compartidos",
       "RESTORE_FILE": "Archivo restaurado",

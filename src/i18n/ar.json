@@ -655,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "تم استبدال البيانات الوصفية",
       "UPDATE_DOCUMENT_METADATA": "تم تحديث البيانات الوصفية",
       "DOWNLOAD_DOCUMENT": "تم تنزيل المستند",
+      "OPEN_DOCUMENT": "تم فتح المستند",
       "DELETE_DOCUMENT_METADATA": "تم حذف البيانات الوصفية",
       "SHARE_DOCUMENTS": "تم مشاركة المستندات",
       "RESTORE_FILE": "تم استعادة الملف",

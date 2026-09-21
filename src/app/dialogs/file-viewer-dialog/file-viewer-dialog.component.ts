@@ -310,7 +310,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
     const content$ = this.data.versionId
       ? this.documentVersions.downloadVersion(this.data.documentId, this.data.versionId)
-      : this.documentApi.downloadDocument(this.data.documentId);
+      : this.documentApi.downloadDocument(this.data.documentId, true);
 
     // Stepping quickly through images: only the last requested file may land in the viewer.
     this.contentSub?.unsubscribe();
@@ -718,10 +718,12 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   // ========== Actions ==========
   download() {
-    if (this.fileBlob) {
+    // A version download is not audited, so the blob already shown can be saved as is. The current
+    // document is fetched again: the viewer loaded it as an OPEN_DOCUMENT, and the trail must also
+    // record this DOWNLOAD_DOCUMENT (OnlyOffice documents have no blob here at all).
+    if (this.fileBlob && this.data.versionId) {
       saveAs(this.fileBlob, this.data.fileName);
     } else {
-      // For OnlyOffice documents, download directly from the API
       const content$ = this.data.versionId
         ? this.documentVersions.downloadVersion(this.data.documentId, this.data.versionId)
         : this.documentApi.downloadDocument(this.data.documentId);

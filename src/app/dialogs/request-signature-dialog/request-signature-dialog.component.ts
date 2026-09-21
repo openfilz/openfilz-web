@@ -146,7 +146,7 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.title = this.data.documentName?.replace(/\.pdf$/i, '') ?? 'Document';
-    this.documentApi.downloadDocument(this.data.documentId).subscribe({
+    this.documentApi.downloadDocument(this.data.documentId, true).subscribe({
       next: async (blob) => {
         try {
           const buf = await blob.arrayBuffer();
