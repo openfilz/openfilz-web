@@ -1371,7 +1371,6 @@
     "moveBack": "Remettre à sa place",
     "movedFrom": "Déplacé depuis {{path}}",
     "toast": {
-      "filing": "Classement de {{count}} document(s)…",
       "done": "{{filed}} rangé(s) · {{left}} laissé(s) sur place",
       "undo": "Annuler",
       "show": "Afficher",

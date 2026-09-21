@@ -233,22 +233,17 @@ export class SmartFilingService {
   // ── Upload follow-up toast ─────────────────────────────────────────────────
 
   /**
-   * After an upload batch whose responses carried filing job ids: show ONE "Filing N
-   * document(s)…" toast, poll the jobs in a single request every 2 s within a budget that grows
-   * with the batch, then replace it with "X filed · Y left in place" + Undo / Show. Never
-   * blocks: nothing opens on its own, the recap is behind the toast's own action.
+   * After an upload batch whose responses carried filing job ids: poll the jobs in a single
+   * request every 2 s within a budget that grows with the batch, then show "X filed · Y left in
+   * place" + Undo / Show — only when at least one document actually left its upload folder (a
+   * batch left entirely in place shows nothing). Never blocks: nothing opens on its own, the
+   * recap is behind the toast's own action.
    */
   trackUploadBatch(jobIds: string[], documentCount: number): void {
     const ids = Array.from(new Set(jobIds.filter(id => !!id)));
     if (ids.length === 0 || !this.enabled) {
       return;
     }
-
-    const pending = this.snackBar.open(
-      this.translate.instant('smartFiling.toast.filing', { count: documentCount }),
-      undefined,
-      { duration: 0 }
-    );
 
     let lastJobs: AutoFileJob[] = [];
     let reported = false;
@@ -257,7 +252,6 @@ export class SmartFilingService {
         return;
       }
       reported = true;
-      pending.dismiss();
       if (lastJobs.length > 0) {
         this.showResult(lastJobs, documentCount);
       }
@@ -279,8 +273,7 @@ export class SmartFilingService {
       },
       // Finished, or timed out with jobs still running: report what is known so far
       // (documents still pending count as "left in place").
-      complete: () => report(),
-      error: () => pending.dismiss()
+      complete: () => report()
     });
   }
 
@@ -298,6 +291,12 @@ export class SmartFilingService {
     const left = Math.max(0, total - filed);
 
     this.foldersChanged$.next(this.foldersOf(items));
+
+    // Nothing left its upload folder: the toast would only say "0 filed", so stay silent.
+    const moved = filedItems.some(i => (i.fromFolderId ?? null) !== (i.toFolderId ?? null));
+    if (!moved) {
+      return;
+    }
 
     const data: SmartFilingToastData = {
       filed,

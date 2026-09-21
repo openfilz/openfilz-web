@@ -1371,7 +1371,6 @@
     "moveBack": "Riporta al suo posto",
     "movedFrom": "Spostato da {{path}}",
     "toast": {
-      "filing": "Archiviazione di {{count}} documento/i…",
       "done": "{{filed}} archiviato/i · {{left}} lasciato/i al loro posto",
       "undo": "Annulla",
       "show": "Mostra",

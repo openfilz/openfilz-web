@@ -1371,7 +1371,6 @@
     "moveBack": "Zurückverschieben",
     "movedFrom": "Verschoben aus {{path}}",
     "toast": {
-      "filing": "{{count}} Dokument(e) werden abgelegt…",
       "done": "{{filed}} abgelegt · {{left}} unverändert",
       "undo": "Rückgängig",
       "show": "Anzeigen",
