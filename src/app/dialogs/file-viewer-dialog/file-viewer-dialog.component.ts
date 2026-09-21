@@ -21,6 +21,7 @@ import { determineViewerMode, ViewerMode } from '../../utils/viewer-mode.util';
 import { OnlyOfficeEditorComponent } from '../../components/onlyoffice-editor/onlyoffice-editor.component';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { saveAs } from 'file-saver';
+import { Subscription } from 'rxjs';
 
 // PDF.js imports
 import * as pdfjsLib from 'pdfjs-dist';
@@ -45,7 +46,15 @@ export interface FileViewerDialogData {
   versionId?: string;
   /** Human-readable label for the version (e.g. its formatted date), shown next to the file name */
   versionLabel?: string;
+  /**
+   * The files listed next to this one (e.g. the current folder), in display order. When the
+   * opened file is an image, the viewer lets the user step through the images among them.
+   */
+  siblings?: FileViewerItem[];
 }
+
+/** A file the viewer can switch to without being reopened. */
+export type FileViewerItem = Omit<FileViewerDialogData, 'versionId' | 'versionLabel' | 'siblings'>;
 
 /**
  * File size threshold in bytes above which Monaco editor disables minimap
@@ -95,6 +104,16 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   imageZoom: number = 1;
   imageRotation: number = 0;
 
+  /** Images of the listing the viewer was opened from, for previous / next navigation. */
+  galleryImages: FileViewerItem[] = [];
+  /** The previous / next arrows only show up while the mouse moves (or after a tap on touch screens). */
+  galleryNavVisible = false;
+  private galleryNavPointer?: string;
+  private galleryNavTimer?: ReturnType<typeof setTimeout>;
+  private touchStartX?: number;
+  private touchStartY?: number;
+  private contentSub?: Subscription;
+
   // PDF viewer properties
   pdfDocument?: pdfjsLib.PDFDocumentProxy;
   currentPage: number = 1;
@@ -123,6 +142,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   private snackBar = inject(MatSnackBar);
   private sanitizer = inject(DomSanitizer);
   private translate = inject(TranslateService);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   
   // Track original content for auto-save
   private originalContent?: string;
@@ -176,6 +196,10 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.onClose();
     });
 
+    this.galleryImages = (this.data.versionId ? [] : this.data.siblings ?? [])
+      .filter(item => determineViewerMode(item.fileName, item.contentType) === 'image');
+    this.dialogRef.keydownEvents().subscribe(event => this.onGalleryKeydown(event));
+
     this.resolveViewerMode();
   }
 
@@ -184,6 +208,8 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy() {
+    this.contentSub?.unsubscribe();
+    clearTimeout(this.galleryNavTimer);
     // Clean up object URLs
     if (this.fileUrl) {
       URL.revokeObjectURL(this.fileUrl);
@@ -286,7 +312,9 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       ? this.documentVersions.downloadVersion(this.data.documentId, this.data.versionId)
       : this.documentApi.downloadDocument(this.data.documentId);
 
-    content$.subscribe({
+    // Stepping quickly through images: only the last requested file may land in the viewer.
+    this.contentSub?.unsubscribe();
+    this.contentSub = content$.subscribe({
       next: (blob) => {
         this.fileBlob = blob;
         this.fileUrl = URL.createObjectURL(blob);
@@ -476,6 +504,118 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   get imageTransform(): string {
     return `scale(${this.imageZoom}) rotate(${this.imageRotation}deg)`;
+  }
+
+  // ========== Image navigation (previous / next image of the listing) ==========
+  /** Position of the displayed file among {@link galleryImages}, -1 when it is not one of them. */
+  get galleryIndex(): number {
+    return this.galleryImages.findIndex(item => item.documentId === this.data.documentId);
+  }
+
+  get showGalleryNavigation(): boolean {
+    return this.viewerMode === 'image' && this.galleryImages.length > 1 && this.galleryIndex >= 0;
+  }
+
+  get hasPreviousImage(): boolean {
+    return this.showGalleryNavigation && this.galleryIndex > 0;
+  }
+
+  get hasNextImage(): boolean {
+    return this.showGalleryNavigation && this.galleryIndex < this.galleryImages.length - 1;
+  }
+
+  previousImage(): void {
+    if (this.hasPreviousImage) {
+      this.showImage(this.galleryImages[this.galleryIndex - 1]);
+    }
+  }
+
+  nextImage(): void {
+    if (this.hasNextImage) {
+      this.showImage(this.galleryImages[this.galleryIndex + 1]);
+    }
+  }
+
+  /**
+   * Show the arrows for a moment: on mouse move over the viewer, or on a tap (touch screens have
+   * no hover), then fade them out again so they stay out of the picture.
+   */
+  revealGalleryNav(event: PointerEvent): void {
+    if (!this.showGalleryNavigation) return;
+    this.galleryNavPointer = event.pointerType;
+    this.galleryNavVisible = true;
+    this.scheduleGalleryNavHide(event.pointerType === 'mouse' ? 1500 : 3000);
+  }
+
+  /** The mouse left the viewer. A finger lifting off the screen also fires this: ignore it. */
+  hideGalleryNav(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    clearTimeout(this.galleryNavTimer);
+    this.galleryNavVisible = false;
+  }
+
+  private scheduleGalleryNavHide(delay: number): void {
+    clearTimeout(this.galleryNavTimer);
+    this.galleryNavTimer = setTimeout(() => {
+      // An arrow under a resting mouse stays visible (touch screens keep a sticky :hover, so
+      // only trust it for a mouse). Checked here rather than tracked with enter/leave: the arrow
+      // under the mouse disappears without a leave event when the last image is reached.
+      if (this.galleryNavPointer === 'mouse' && this.host.nativeElement.querySelector('.gallery-nav:hover')) {
+        this.scheduleGalleryNavHide(delay);
+        return;
+      }
+      this.galleryNavVisible = false;
+    }, delay);
+  }
+
+  /** Left / right arrow keys step through the images, unless the user is typing somewhere. */
+  private onGalleryKeydown(event: KeyboardEvent): void {
+    if (!this.showGalleryNavigation || event.altKey || event.ctrlKey || event.metaKey) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('input, textarea, [contenteditable="true"]')) return;
+    // In a right-to-left layout the "previous" image sits on the right.
+    const rtl = document.documentElement.dir === 'rtl';
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      rtl ? this.nextImage() : this.previousImage();
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      rtl ? this.previousImage() : this.nextImage();
+    }
+  }
+
+  onImageTouchStart(event: TouchEvent): void {
+    if (event.touches.length !== 1) {
+      this.touchStartX = undefined;
+      return;
+    }
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+  }
+
+  /** A horizontal swipe on an unzoomed image goes to the previous / next image. */
+  onImageTouchEnd(event: TouchEvent): void {
+    if (this.touchStartX === undefined || this.touchStartY === undefined || this.imageZoom > 1) return;
+    const dx = event.changedTouches[0].clientX - this.touchStartX;
+    const dy = event.changedTouches[0].clientY - this.touchStartY;
+    this.touchStartX = undefined;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const rtl = document.documentElement.dir === 'rtl';
+    (dx > 0) !== rtl ? this.previousImage() : this.nextImage();
+  }
+
+  /** Point the viewer at another image of the listing and load it in place. */
+  private showImage(item: FileViewerItem): void {
+    if (this.fileUrl) {
+      URL.revokeObjectURL(this.fileUrl);
+      this.fileUrl = undefined;
+    }
+    Object.assign(this.data, item);
+    this.fileBlob = undefined;
+    this.imageSrc = undefined;
+    this.imageZoom = 1;
+    this.imageRotation = 0;
+    this.resolveViewerMode();
   }
 
   // ========== Text Viewer ==========

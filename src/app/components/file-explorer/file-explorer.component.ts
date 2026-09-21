@@ -19,7 +19,8 @@ import { CreateFolderDialogComponent } from '../../dialogs/create-folder-dialog/
 import { CreateDocumentDialogComponent, CreateDocumentDialogData, CreateDocumentDialogResult } from '../../dialogs/create-document-dialog/create-document-dialog.component';
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
-import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { FileViewerDialogComponent, FileViewerItem } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { determineViewerMode } from '../../utils/viewer-mode.util';
 import { FileTooLargeDialogComponent } from '../../dialogs/file-too-large-dialog/file-too-large-dialog.component';
 import { KeyboardShortcutsDialogComponent } from '../../dialogs/keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { ConfirmReplaceDialogComponent, ConfirmReplaceDialogData, ConfirmReplaceDialogResult } from '../../dialogs/confirm-replace-dialog/confirm-replace-dialog.component';
@@ -998,16 +999,32 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       maxHeight: '900px',
       panelClass: 'file-viewer-dialog-container',
       data: {
-        documentId: item.id,
-        fileName: item.name,
-        contentType: item.contentType || '',
-        fileSize: item.size
+        ...this.toViewerItem(item),
+        siblings: this.previewableImages()
       }
     });
 
     dialogRef.afterClosed().subscribe(() => {
       this.onSelectAll(false);
     });
+  }
+
+  private toViewerItem(item: FileItem): FileViewerItem {
+    return {
+      documentId: item.id,
+      fileName: item.name,
+      contentType: item.contentType || '',
+      fileSize: item.size
+    };
+  }
+
+  /** Images of the listed page the viewer can step through with its previous / next arrows. */
+  private previewableImages(): FileViewerItem[] {
+    return this.items
+      .filter(i => i.type !== 'FOLDER'
+        && determineViewerMode(i.name, i.contentType) === 'image'
+        && !this.isFileTooLargeForPreview(i))
+      .map(i => this.toViewerItem(i));
   }
 
   private isFileTooLargeForPreview(item: FileItem): boolean {

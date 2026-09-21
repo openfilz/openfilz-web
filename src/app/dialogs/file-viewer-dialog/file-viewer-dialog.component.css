@@ -240,6 +240,62 @@
   background-color: white;
 }
 
+/* Previous / next image navigation (slider arrows over the image) */
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  /* Hidden until the mouse moves over the viewer (or the screen is tapped) */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, background-color 0.2s ease;
+}
+
+.gallery-nav.visible,
+.gallery-nav:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gallery-nav:hover,
+.gallery-nav:focus-visible {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.gallery-nav mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.gallery-nav-previous {
+  inset-inline-start: 16px;
+}
+
+.gallery-nav-next {
+  inset-inline-end: 16px;
+}
+
+/* chevron_left / chevron_right point the wrong way in a right-to-left layout */
+:host-context([dir='rtl']) .gallery-nav mat-icon {
+  transform: scaleX(-1);
+}
+
+.gallery-position {
+  font-size: 13px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
 /* Text Viewer */
 .text-viewer {
   width: 100%;
@@ -516,7 +572,8 @@
 
 /* Print Styles */
 @media print {
-  .viewer-toolbar {
+  .viewer-toolbar,
+  .gallery-nav {
     display: none !important;
   }
 
