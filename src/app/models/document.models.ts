@@ -75,6 +75,33 @@ export interface CopyRequest {
   allowDuplicateFileNames?: boolean;
 }
 
+/**
+ * POST /files/{id}/unzip. Destination: the root when `targetRoot`, else `targetFolderId`, else the
+ * folder containing the ZIP; with `newFolderName`, that folder is created there first.
+ */
+export interface UnzipRequest {
+  targetFolderId?: string;
+  targetRoot?: boolean;
+  newFolderName?: string;
+  allowDuplicateFileNames?: boolean;
+}
+
+export type UnzipSkipReason = 'DUPLICATE_NAME' | 'UNSAFE_PATH' | 'UNSUPPORTED' | 'FILE_TOO_LARGE' | 'PARENT_NOT_CREATED' | 'ERROR';
+
+export interface UnzipSkippedEntry {
+  path: string;
+  reason: UnzipSkipReason;
+  message?: string;
+}
+
+export interface UnzipResponse {
+  targetFolderId?: string;
+  createdFolderId?: string;
+  foldersCreated: number;
+  filesExtracted: number;
+  skipped: UnzipSkippedEntry[];
+}
+
 export interface DeleteRequest {
   documentIds: string[];
 }

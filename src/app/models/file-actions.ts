@@ -7,7 +7,7 @@
  * descriptors instead of forking the templates.
  */
 export type FileActionId = 'open' | 'rename' | 'download' | 'move' | 'copy' | 'delete' | 'details' | 'requestSignature'
-  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf' | 'organizeWithAi' | 'startWorkflow';
+  | 'organizePdf' | 'mergePdf' | 'splitPdf' | 'rotatePdf' | 'organizeWithAi' | 'startWorkflow' | 'unzip';
 
 export type FileActionCategory = 'organize' | 'transfer' | 'danger';
 
@@ -76,6 +76,22 @@ export function isPdfItem(item: { name?: string; contentType?: string; type?: st
   return item.contentType === 'application/pdf' || /\.pdf$/i.test(item.name ?? '');
 }
 
+/** True for ZIP archives (by content type, falling back to the extension). */
+export function isZipItem(item: { name?: string; contentType?: string; type?: string }): boolean {
+  if (item.type === 'FOLDER') return false;
+  const contentType = (item.contentType ?? '').toLowerCase();
+  return contentType === 'application/zip' || contentType === 'application/x-zip-compressed'
+    || /\.zip$/i.test(item.name ?? '');
+}
+
+/**
+ * "Unzip" on a ZIP file: extracts it server-side into a folder the user picks. Single ZIP only,
+ * and only for CONTRIBUTORs — see `UnzipAccessService` and `canUnzipSelection` in FileOperationsComponent.
+ */
+export const UNZIP_ACTION: FileActionDescriptor = {
+  id: 'unzip', icon: 'folder_zip', labelKey: 'toolbar.unzip', ariaKey: 'toolbar.unzip', category: 'organize', placement: 'primary', singleOnly: true
+};
+
 /**
  * PDF tools (merge / split / rotate / organize pages). Offered only when every selected item is a
  * PDF and the API reports `pdfToolsActive` (plus the CONTRIBUTOR role) — see
@@ -107,6 +123,7 @@ export const STANDARD_ITEM_ACTIONS: FileActionDescriptor[] = [
   REQUEST_SIGNATURE_ACTION,
   START_WORKFLOW_ACTION,
   ...PDF_TOOLS_ITEM_ACTIONS,
+  UNZIP_ACTION,
   ORGANIZE_WITH_AI_ACTION,
   { id: 'details', icon: 'info', labelKey: 'common.details', ariaKey: 'fileList.viewProperties', category: 'organize', placement: 'primary' },
   { id: 'delete', icon: 'delete', labelKey: 'common.delete', ariaKey: 'toolbar.deleteSelected', category: 'danger', placement: 'primary', danger: true },

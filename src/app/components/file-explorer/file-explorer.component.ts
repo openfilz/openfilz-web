@@ -78,7 +78,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-toolbar
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
-        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [unzipAvailable]="canUnzipSelection"
         [organizeWithAiAvailable]="canOrganizeSelectionWithAi" [showOrganizeWithAi]="canOrganizeWithAi"
         (organizeWithAiSelected)="onOrganizeWithAiSelected()" (organizeWithAi)="organizeFolderWithAi(currentFolder)"
         [pageIndex]="pageIndex"
@@ -95,7 +95,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
-        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
+        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" (unzipSelected)="onUnzipSelected()"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
@@ -182,7 +182,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -203,7 +203,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"
@@ -1265,6 +1265,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.performMoveWithRetry(item, targetFolderId);
       }
     });
+  }
+
+  /** The explorer lists the ZIP's own folder: the unzip dialog's "current folder" is this one. */
+  protected override unzipCurrentFolder(): { name?: string; writable?: boolean } {
+    return { name: this.currentFolder?.name };
   }
 
   override onCopyItem(item: FileItem) {

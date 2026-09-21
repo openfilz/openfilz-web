@@ -126,7 +126,8 @@
     },
     "moreActions": "Altre azioni",
     "requestSignature": "Richiedi firma",
-    "startWorkflow": "Avvia flusso"
+    "startWorkflow": "Avvia flusso",
+    "unzip": "Decomprimi"
   },
   "sortOptions": {
     "date": "Data",
@@ -380,6 +381,33 @@
       "sortDescending": "Decrescente",
       "noFolderMatch": "Nessuna cartella corrisponde a «{{filter}}»",
       "openFolder": "Apri cartella"
+    },
+    "unzip": {
+      "title": "Decomprimi",
+      "subtitle": "Estrai «{{name}}»",
+      "currentFolder": "Cartella corrente",
+      "zipFolder": "Cartella che contiene il file ZIP",
+      "newFolder": "Nuova cartella",
+      "newFolderName": "Nome della cartella",
+      "newFolderHint": "Creata nella cartella corrente.",
+      "newFolderHintZip": "Creata nella cartella che contiene il file ZIP.",
+      "existingFolder": "Un’altra cartella",
+      "chooseFolder": "Scegli una cartella…",
+      "changeFolder": "Cambia cartella",
+      "mergeNote": "Le cartelle esistenti vengono unite; i file il cui nome esiste già vengono ignorati.",
+      "extract": "Estrai",
+      "extracting": "Estrazione in corso…",
+      "errors": {
+        "folderExists": "Qui esiste già una cartella «{{name}}». Scegli un altro nome.",
+        "notFound": "Il file ZIP o la cartella di destinazione non esiste più, oppure non puoi scriverci.",
+        "forbidden": "Non sei autorizzato a estrarre file qui.",
+        "quota": "Quota di archiviazione insufficiente per estrarre questo archivio.",
+        "tooManyEntries": "Questo archivio contiene troppi file per essere estratto.",
+        "tooLarge": "Questo archivio è troppo grande una volta estratto.",
+        "suspicious": "Questo archivio sembra sospetto (rapporto di compressione anomalo) e non è stato estratto.",
+        "invalid": "Questo file non è un archivio ZIP leggibile.",
+        "generic": "Impossibile estrarre l’archivio. Riprova."
+      }
     },
     "confirm": {},
     "partialUpload": {
@@ -814,6 +842,8 @@
     "moveMultipleError": "Impossibile spostare gli elementi",
     "copySuccess": "Elemento copiato con successo",
     "copyError": "Impossibile copiare l'elemento",
+    "unzipSuccess": "{{files}} file e {{folders}} cartella/e estratti",
+    "unzipPartial": "{{files}} file e {{folders}} cartella/e estratti — {{skipped}} elemento/i ignorato/i (già esistenti o non validi)",
     "copyMultipleSuccess": "Elementi copiati con successo",
     "copyMultipleError": "Impossibile copiare gli elementi",
     "deleteSuccess": "Elementi eliminati con successo",

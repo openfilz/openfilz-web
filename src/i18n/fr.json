@@ -126,7 +126,8 @@
     },
     "moreActions": "Plus d'actions",
     "requestSignature": "Demander une signature",
-    "startWorkflow": "Lancer un workflow"
+    "startWorkflow": "Lancer un workflow",
+    "unzip": "Décompresser"
   },
   "sortOptions": {
     "date": "Date",
@@ -380,6 +381,33 @@
       "sortDescending": "Décroissant",
       "noFolderMatch": "Aucun dossier ne correspond à « {{filter}} »",
       "openFolder": "Ouvrir le dossier"
+    },
+    "unzip": {
+      "title": "Décompresser",
+      "subtitle": "Extraire « {{name}} »",
+      "currentFolder": "Dossier courant",
+      "zipFolder": "Dossier contenant le fichier ZIP",
+      "newFolder": "Nouveau dossier",
+      "newFolderName": "Nom du dossier",
+      "newFolderHint": "Créé dans le dossier courant.",
+      "newFolderHintZip": "Créé dans le dossier contenant le fichier ZIP.",
+      "existingFolder": "Un autre dossier",
+      "chooseFolder": "Choisir un dossier…",
+      "changeFolder": "Changer de dossier",
+      "mergeNote": "Les dossiers existants sont fusionnés ; les fichiers dont le nom existe déjà sont ignorés.",
+      "extract": "Extraire",
+      "extracting": "Extraction…",
+      "errors": {
+        "folderExists": "Un dossier « {{name}} » existe déjà ici. Choisissez un autre nom.",
+        "notFound": "Le fichier ZIP ou le dossier de destination n’existe plus, ou vous ne pouvez pas y écrire.",
+        "forbidden": "Vous n’êtes pas autorisé à extraire des fichiers ici.",
+        "quota": "Quota de stockage insuffisant pour extraire cette archive.",
+        "tooManyEntries": "Cette archive contient trop de fichiers pour être extraite.",
+        "tooLarge": "Cette archive est trop volumineuse une fois extraite.",
+        "suspicious": "Cette archive semble suspecte (taux de compression anormal) et n’a pas été extraite.",
+        "invalid": "Ce fichier n’est pas une archive ZIP lisible.",
+        "generic": "L’archive n’a pas pu être extraite. Veuillez réessayer."
+      }
     },
     "confirm": {},
     "partialUpload": {
@@ -814,6 +842,8 @@
     "moveMultipleError": "Échec du déplacement des éléments",
     "copySuccess": "Élément copié avec succès",
     "copyError": "Échec de la copie de l'élément",
+    "unzipSuccess": "{{files}} fichier(s) et {{folders}} dossier(s) extraits",
+    "unzipPartial": "{{files}} fichier(s) et {{folders}} dossier(s) extraits — {{skipped}} élément(s) ignoré(s) (déjà existants ou invalides)",
     "copyMultipleSuccess": "Éléments copiés avec succès",
     "copyMultipleError": "Échec de la copie des éléments",
     "deleteSuccess": "Éléments supprimés avec succès",

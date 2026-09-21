@@ -18,6 +18,8 @@ import {
   MoveRequest,
   RecentFileInfo,
   RenameRequest,
+  UnzipRequest,
+  UnzipResponse,
   SearchByMetadataRequest,
   UploadResponse,
   MultipleUploadFileParameter,
@@ -492,6 +494,11 @@ export class DocumentApiService {
 
   copyFiles(request: CopyRequest): Observable<any[]> {
     return this.http.post<any[]>(`${this.baseUrl}/files/copy`, request);
+  }
+
+  /** Extracts a ZIP document server-side (see {@link UnzipRequest} for the destination rules). */
+  unzipFile(fileId: string, request: UnzipRequest): Observable<UnzipResponse> {
+    return this.http.post<UnzipResponse>(`${this.baseUrl}/files/${fileId}/unzip`, request);
   }
 
   deleteFiles(request: DeleteRequest): Observable<void> {

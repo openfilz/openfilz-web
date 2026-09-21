@@ -4,7 +4,7 @@
     [totalItems]="totalItems"
     [isSearchResultsPage]="true"
     [hasSelection]="hasSelectedItems"
-    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [unzipAvailable]="canUnzipSelection"
     [sortBy]="sortBy"
     [sortOrder]="sortOrder"
     (viewModeChange)="onViewModeChange($event)"
@@ -14,7 +14,7 @@
     (moveSelected)="onMoveSelected()"
     (copySelected)="onCopySelected()"
     (deleteSelected)="onDeleteSelected()"
-    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" [organizeWithAiAvailable]="canOrganizeSelectionWithAi" (organizeWithAiSelected)="onOrganizeWithAiSelected()"
+    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" (unzipSelected)="onUnzipSelected()" [organizeWithAiAvailable]="canOrganizeSelectionWithAi" (organizeWithAiSelected)="onOrganizeWithAiSelected()"
     (clearSelection)="onSelectAll(false)"
   >
   </app-toolbar>
@@ -77,7 +77,7 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
         >
         </app-file-grid>
       }
@@ -98,7 +98,7 @@
           (copy)="onCopyItem($event)"
           (delete)="onDeleteItem($event)"
           (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
         >
         </app-file-list>
       }

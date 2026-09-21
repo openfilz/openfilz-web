@@ -126,7 +126,8 @@
     },
     "moreActions": "Mais ações",
     "requestSignature": "Pedir assinatura",
-    "startWorkflow": "Iniciar fluxo"
+    "startWorkflow": "Iniciar fluxo",
+    "unzip": "Descompactar"
   },
   "sortOptions": {
     "date": "Data",
@@ -380,6 +381,33 @@
       "sortDescending": "Decrescente",
       "noFolderMatch": "Nenhuma pasta corresponde a «{{filter}}»",
       "openFolder": "Abrir pasta"
+    },
+    "unzip": {
+      "title": "Descompactar",
+      "subtitle": "Extrair “{{name}}”",
+      "currentFolder": "Pasta atual",
+      "zipFolder": "Pasta que contém o arquivo ZIP",
+      "newFolder": "Nova pasta",
+      "newFolderName": "Nome da pasta",
+      "newFolderHint": "Criada na pasta atual.",
+      "newFolderHintZip": "Criada na pasta que contém o arquivo ZIP.",
+      "existingFolder": "Outra pasta",
+      "chooseFolder": "Escolher uma pasta…",
+      "changeFolder": "Mudar de pasta",
+      "mergeNote": "As pastas existentes são mescladas; os arquivos cujo nome já existe são ignorados.",
+      "extract": "Extrair",
+      "extracting": "Extraindo…",
+      "errors": {
+        "folderExists": "Já existe uma pasta chamada “{{name}}” aqui. Escolha outro nome.",
+        "notFound": "O arquivo ZIP ou a pasta de destino não existe mais, ou você não pode gravar nela.",
+        "forbidden": "Você não tem permissão para extrair arquivos aqui.",
+        "quota": "Cota de armazenamento insuficiente para extrair este arquivo.",
+        "tooManyEntries": "Este arquivo compactado contém arquivos demais para ser extraído.",
+        "tooLarge": "Este arquivo compactado é grande demais depois de extraído.",
+        "suspicious": "Este arquivo compactado parece suspeito (taxa de compressão anormal) e não foi extraído.",
+        "invalid": "Este arquivo não é um arquivo ZIP legível.",
+        "generic": "Não foi possível extrair o arquivo. Tente novamente."
+      }
     },
     "confirm": {},
     "partialUpload": {
@@ -814,6 +842,8 @@
     "moveMultipleError": "Falha ao mover os itens",
     "copySuccess": "Item copiado com sucesso",
     "copyError": "Falha ao copiar o item",
+    "unzipSuccess": "{{files}} arquivo(s) e {{folders}} pasta(s) extraídos",
+    "unzipPartial": "{{files}} arquivo(s) e {{folders}} pasta(s) extraídos — {{skipped}} item(ns) ignorado(s) (já existentes ou inválidos)",
     "copyMultipleSuccess": "Itens copiados com sucesso",
     "copyMultipleError": "Falha ao copiar os itens",
     "deleteSuccess": "Itens excluídos com sucesso",
