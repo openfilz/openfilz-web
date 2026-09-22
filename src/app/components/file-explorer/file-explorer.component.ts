@@ -21,6 +21,7 @@ import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-di
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
 import { FileViewerDialogComponent, FileViewerItem } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
 import { determineViewerMode } from '../../utils/viewer-mode.util';
+import { ImageGalleryService } from '../../services/image-gallery.service';
 import { FileTooLargeDialogComponent } from '../../dialogs/file-too-large-dialog/file-too-large-dialog.component';
 import { KeyboardShortcutsDialogComponent } from '../../dialogs/keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { ConfirmReplaceDialogComponent, ConfirmReplaceDialogData, ConfirmReplaceDialogResult } from '../../dialogs/confirm-replace-dialog/confirm-replace-dialog.component';
@@ -289,6 +290,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
   private resumableUploadService = inject(ResumableUploadService);
   private folderUploadService = inject(FolderUploadService);
   private aiChatService = inject(AiChatService);
+  private imageGallery = inject(ImageGalleryService);
 
   get isOnlyOfficeEnabled(): boolean {
     return this.onlyOfficeService.isOnlyOfficeEnabled();
@@ -1000,7 +1002,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       panelClass: 'file-viewer-dialog-container',
       data: {
         ...this.toViewerItem(item),
-        siblings: this.previewableImages()
+        gallery: this.folderImages(item)
       }
     });
 
@@ -1018,13 +1020,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
     };
   }
 
-  /** Images of the listed page the viewer can step through with its previous / next arrows. */
-  private previewableImages(): FileViewerItem[] {
-    return this.items
-      .filter(i => i.type !== 'FOLDER'
-        && determineViewerMode(i.name, i.contentType) === 'image'
-        && !this.isFileTooLargeForPreview(i))
-      .map(i => this.toViewerItem(i));
+  /** Opening an image: the viewer's previous / next arrows step through all the images of the folder. */
+  private folderImages(item: FileItem) {
+    return determineViewerMode(item.name, item.contentType) === 'image'
+      ? this.imageGallery.folder(this.currentFolder?.id, this.currentFilters, this.sortBy, this.sortOrder)
+      : undefined;
   }
 
   private isFileTooLargeForPreview(item: FileItem): boolean {

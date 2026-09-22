@@ -190,7 +190,7 @@ export class DocumentApiService {
   // multipart breaks the boundary generation, which is why the old getMultipartHeaders
   // deliberately left it out.
 
-  private mapFiltersToRequest(filters?: SearchFilters): Partial<ListFolderRequest> {
+  mapFiltersToRequest(filters?: SearchFilters): Partial<ListFolderRequest> {
     if (!filters) {
       return {};
     }
