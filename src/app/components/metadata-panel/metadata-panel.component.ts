@@ -690,6 +690,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       'REPLACE_DOCUMENT_METADATA': 'label',
       'UPDATE_DOCUMENT_METADATA': 'label',
       'DOWNLOAD_DOCUMENT': 'download',
+      'OPEN_DOCUMENT': 'visibility',
       'DELETE_DOCUMENT_METADATA': 'label_off',
       'SHARE_DOCUMENTS': 'share',
       'RESTORE_FILE': 'restore',

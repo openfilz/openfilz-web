@@ -91,7 +91,7 @@ export class PdfSplitDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     forkJoin({
       info: this.pdfTools.info(this.data.documentId),
-      blob: this.documentApi.downloadDocument(this.data.documentId)
+      blob: this.documentApi.downloadDocument(this.data.documentId, true)
     }).subscribe({
       next: async ({ info, blob }) => {
         this.info = info;

@@ -517,8 +517,14 @@ export class DocumentApiService {
     });
   }
 
-  downloadDocument(documentId: string): Observable<Blob> {
+  /**
+   * `open` = the content is fetched to be shown in the app (viewer, PDF tools), not saved as a
+   * file: the server then audits an OPEN_DOCUMENT instead of a DOWNLOAD_DOCUMENT.
+   */
+  downloadDocument(documentId: string, open = false): Observable<Blob> {
+    const params = open ? new HttpParams().set('open', 'true') : undefined;
     return this.http.get(`${this.baseUrl}/documents/${documentId}/download`, {
+      params,
       responseType: 'blob'
     });
   }

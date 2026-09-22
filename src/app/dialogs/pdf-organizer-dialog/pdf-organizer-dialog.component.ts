@@ -84,7 +84,7 @@ export class PdfOrganizerDialogComponent implements OnInit, OnDestroy {
     this.newName = this.baseName + ' (edited).pdf';
     forkJoin({
       info: this.pdfTools.info(this.data.documentId),
-      blob: this.documentApi.downloadDocument(this.data.documentId)
+      blob: this.documentApi.downloadDocument(this.data.documentId, true)
     }).subscribe({
       next: async ({ info, blob }) => {
         this.info = info;
