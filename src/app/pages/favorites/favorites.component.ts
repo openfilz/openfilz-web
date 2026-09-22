@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { SearchService } from "../../services/search.service";
 import { MatDialog } from "@angular/material/dialog";
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { ImageGalleryService } from '../../services/image-gallery.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { UserPreferencesService } from '../../services/user-preferences.service';
@@ -47,6 +48,7 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
 
   private route = inject(ActivatedRoute);
   private searchService = inject(SearchService);
+  private imageGallery = inject(ImageGalleryService);
   private fileIconService = inject(FileIconService);
 
 
@@ -140,7 +142,9 @@ export class FavoritesComponent extends FileOperationsComponent implements OnIni
         documentId: item.id,
         fileName: item.name,
         contentType: item.contentType || '',
-        fileSize: item.size
+        fileSize: item.size,
+        // Previous / next arrows over all the favorite images
+        gallery: this.imageGallery.favorites(this.currentFilters, this.sortBy, this.sortOrder)
       }
     });
   }

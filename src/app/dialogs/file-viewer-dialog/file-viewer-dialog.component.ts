@@ -21,7 +21,8 @@ import { determineViewerMode, ViewerMode } from '../../utils/viewer-mode.util';
 import { OnlyOfficeEditorComponent } from '../../components/onlyoffice-editor/onlyoffice-editor.component';
 import { TextEditorComponent } from '../../components/text-editor/text-editor.component';
 import { saveAs } from 'file-saver';
-import { Subscription } from 'rxjs';
+import { Observable, shareReplay, Subscription } from 'rxjs';
+import type { ImageGallery } from '../../services/image-gallery.service';
 
 // PDF.js imports
 import * as pdfjsLib from 'pdfjs-dist';
@@ -47,14 +48,20 @@ export interface FileViewerDialogData {
   /** Human-readable label for the version (e.g. its formatted date), shown next to the file name */
   versionLabel?: string;
   /**
-   * The files listed next to this one (e.g. the current folder), in display order. When the
-   * opened file is an image, the viewer lets the user step through the images among them.
+   * The images of the listing the viewer was opened from (a folder, the favorites, a search).
+   * When the opened file is one of them, the viewer lets the user step through them.
    */
-  siblings?: FileViewerItem[];
+  gallery?: ImageGallery;
 }
 
 /** A file the viewer can switch to without being reopened. */
-export type FileViewerItem = Omit<FileViewerDialogData, 'versionId' | 'versionLabel' | 'siblings'>;
+export type FileViewerItem = Omit<FileViewerDialogData, 'versionId' | 'versionLabel' | 'gallery'>;
+
+/** Images fetched per request while stepping through a gallery. */
+const GALLERY_PAGE_SIZE = 50;
+
+/** Largest image the viewer downloads to display (same limit as opening it from a listing). */
+const MAX_IMAGE_PREVIEW_SIZE = 10 * 1024 * 1024; // 10 MB
 
 /**
  * File size threshold in bytes above which Monaco editor disables minimap
@@ -104,8 +111,17 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   imageZoom: number = 1;
   imageRotation: number = 0;
 
-  /** Images of the listing the viewer was opened from, for previous / next navigation. */
-  galleryImages: FileViewerItem[] = [];
+  /** Previous / next navigation through the images of the listing the viewer was opened from. */
+  galleryTotal = 0;
+  /** Index of the image on screen. */
+  galleryIndex = -1;
+  /** Index of the image being fetched, so steps taken meanwhile add up; -1 when idle. */
+  private galleryTarget = -1;
+  /** Reached an image too large to preview while stepping through the gallery. */
+  imageTooLarge = false;
+  readonly maxImagePreviewSizeMb = MAX_IMAGE_PREVIEW_SIZE / (1024 * 1024);
+  private galleryPages = new Map<number, Observable<FileViewerItem[]>>();
+  private gallerySub?: Subscription;
   /** The previous / next arrows only show up while the mouse moves (or after a tap on touch screens). */
   galleryNavVisible = false;
   private galleryNavPointer?: string;
@@ -196,8 +212,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
       this.onClose();
     });
 
-    this.galleryImages = (this.data.versionId ? [] : this.data.siblings ?? [])
-      .filter(item => determineViewerMode(item.fileName, item.contentType) === 'image');
+    this.initGallery();
     this.dialogRef.keydownEvents().subscribe(event => this.onGalleryKeydown(event));
 
     this.resolveViewerMode();
@@ -209,6 +224,7 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnDestroy() {
     this.contentSub?.unsubscribe();
+    this.gallerySub?.unsubscribe();
     clearTimeout(this.galleryNavTimer);
     // Clean up object URLs
     if (this.fileUrl) {
@@ -507,32 +523,101 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   // ========== Image navigation (previous / next image of the listing) ==========
-  /** Position of the displayed file among {@link galleryImages}, -1 when it is not one of them. */
-  get galleryIndex(): number {
-    return this.galleryImages.findIndex(item => item.documentId === this.data.documentId);
+  /**
+   * Where the opened image sits among the listing's images, and how many there are. The images
+   * themselves are only fetched, a page at a time, as the user steps through them.
+   */
+  private initGallery(): void {
+    const gallery = this.data.gallery;
+    if (!gallery || this.data.versionId
+      || determineViewerMode(this.data.fileName, this.data.contentType) !== 'image') return;
+    this.gallerySub = gallery.locate(this.data.documentId).subscribe({
+      next: ({ total, index }) => {
+        if (index !== null) {
+          this.galleryTotal = total;
+          this.galleryIndex = index;
+        }
+      },
+      error: err => console.warn('Image navigation unavailable:', err)
+    });
   }
 
   get showGalleryNavigation(): boolean {
-    return this.viewerMode === 'image' && this.galleryImages.length > 1 && this.galleryIndex >= 0;
+    return this.viewerMode === 'image' && this.galleryTotal > 1 && this.galleryIndex >= 0;
+  }
+
+  /** Where the next step starts from: the image being fetched, if any, else the one on screen. */
+  private get galleryCursor(): number {
+    return this.galleryTarget >= 0 ? this.galleryTarget : this.galleryIndex;
   }
 
   get hasPreviousImage(): boolean {
-    return this.showGalleryNavigation && this.galleryIndex > 0;
+    return this.showGalleryNavigation && this.galleryCursor > 0;
   }
 
   get hasNextImage(): boolean {
-    return this.showGalleryNavigation && this.galleryIndex < this.galleryImages.length - 1;
+    return this.showGalleryNavigation && this.galleryCursor < this.galleryTotal - 1;
   }
 
   previousImage(): void {
     if (this.hasPreviousImage) {
-      this.showImage(this.galleryImages[this.galleryIndex - 1]);
+      this.goToGalleryImage(this.galleryCursor - 1);
     }
   }
 
   nextImage(): void {
     if (this.hasNextImage) {
-      this.showImage(this.galleryImages[this.galleryIndex + 1]);
+      this.goToGalleryImage(this.galleryCursor + 1);
+    }
+  }
+
+  private goToGalleryImage(index: number): void {
+    const page = Math.floor(index / GALLERY_PAGE_SIZE);
+    this.galleryTarget = index;
+    // A newer step replaces one still waiting for its page
+    this.gallerySub?.unsubscribe();
+    this.gallerySub = this.galleryPage(page).subscribe({
+      next: items => {
+        this.galleryTarget = -1;
+        const item = items[index - page * GALLERY_PAGE_SIZE];
+        if (!item) {
+          // The listing shrank since it was counted (files deleted or moved meanwhile)
+          this.galleryTotal = Math.min(this.galleryTotal, page * GALLERY_PAGE_SIZE + items.length);
+          return;
+        }
+        this.galleryIndex = index;
+        this.showImage(item);
+        this.prefetchGalleryPages(index);
+      },
+      error: () => {
+        this.galleryTarget = -1;
+        this.snackBar.open(
+          this.translate.instant('errors.loadFailed'), this.translate.instant('common.close'), { duration: 3000 });
+      }
+    });
+  }
+
+  /** A page of the gallery, fetched once and shared by every later step onto it. */
+  private galleryPage(page: number): Observable<FileViewerItem[]> {
+    let items$ = this.galleryPages.get(page);
+    if (!items$) {
+      items$ = this.data.gallery!.page(page, GALLERY_PAGE_SIZE).pipe(shareReplay(1));
+      this.galleryPages.set(page, items$);
+      // A failed fetch is retried on the next step rather than cached
+      items$.subscribe({ error: () => this.galleryPages.delete(page) });
+    }
+    return items$;
+  }
+
+  /** Near either end of a page, fetch the neighbouring page before the user gets there. */
+  private prefetchGalleryPages(index: number): void {
+    const page = Math.floor(index / GALLERY_PAGE_SIZE);
+    const offset = index - page * GALLERY_PAGE_SIZE;
+    if (offset >= GALLERY_PAGE_SIZE - 3 && (page + 1) * GALLERY_PAGE_SIZE < this.galleryTotal) {
+      this.galleryPage(page + 1);
+    }
+    if (offset < 3 && page > 0) {
+      this.galleryPage(page - 1);
     }
   }
 
@@ -615,6 +700,15 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
     this.imageSrc = undefined;
     this.imageZoom = 1;
     this.imageRotation = 0;
+    this.error = undefined;
+    // Too large to preview: say so (with a download button) instead of downloading it
+    this.imageTooLarge = !!item.fileSize && item.fileSize > MAX_IMAGE_PREVIEW_SIZE;
+    if (this.imageTooLarge) {
+      this.contentSub?.unsubscribe();
+      this.viewerMode = 'image';
+      this.loading = false;
+      return;
+    }
     this.resolveViewerMode();
   }
 

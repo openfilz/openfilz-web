@@ -7,7 +7,7 @@
       <span class="version-label">{{ 'versions.viewingVersion' | translate:{date: data.versionLabel} }}</span>
       }
       @if (showGalleryNavigation) {
-      <span class="gallery-position">{{ 'fileViewer.imagePosition' | translate:{current: galleryIndex + 1, total: galleryImages.length} }}</span>
+      <span class="gallery-position">{{ 'fileViewer.imagePosition' | translate:{current: galleryIndex + 1, total: galleryTotal} }}</span>
       }
       <!-- Page Navigation (PDF only) -->
       @if (showPageNavigation) {
@@ -148,14 +148,27 @@
     }
 
     <!-- Image Viewer -->
-    @if (viewerMode === 'image' && !loading && !error) {
+    @if (viewerMode === 'image' && !loading && !error && !imageTooLarge) {
     <div class="image-viewer" #imageContainer
       (touchstart)="onImageTouchStart($event)" (touchend)="onImageTouchEnd($event)">
       <img [src]="imageSrc" [style.transform]="imageTransform" alt="{{ data.fileName }}" />
     </div>
     }
 
-    <!-- Previous / next image of the folder (also: arrow keys, swipe) -->
+    <!-- An image of the gallery too large to preview -->
+    @if (imageTooLarge && !loading) {
+    <div class="unsupported-container">
+      <mat-icon class="unsupported-icon">image</mat-icon>
+      <h3>{{ 'fileViewer.fileTooLargeTitle' | translate }}</h3>
+      <p>{{ 'fileViewer.fileTooLargeMessage' | translate:{maxSize: maxImagePreviewSizeMb} }}</p>
+      <button mat-raised-button color="primary" (click)="download()">
+        <mat-icon>download</mat-icon>
+        {{ 'fileViewer.downloadFile' | translate }}
+      </button>
+    </div>
+    }
+
+    <!-- Previous / next image of the listing (also: arrow keys, swipe) -->
     @if (showGalleryNavigation) {
     @if (hasPreviousImage) {
     <button mat-icon-button class="gallery-nav gallery-nav-previous" [class.visible]="galleryNavVisible"

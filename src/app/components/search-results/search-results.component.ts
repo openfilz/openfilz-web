@@ -18,6 +18,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { ImageGallery, ImageGalleryService, inMemoryImageGallery } from '../../services/image-gallery.service';
 import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchFilters, SearchScope } from '../../models/document.models';
 import { InsightFacetChipsComponent, InsightFacetField } from '../insight-facet-chips/insight-facet-chips.component';
 
@@ -53,6 +54,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   private originalSearchQuery = '';
 
   private route = inject(ActivatedRoute);
+  private imageGallery = inject(ImageGalleryService);
   private searchService = inject(SearchService);
   private fileIconService = inject(FileIconService);
 
@@ -310,8 +312,27 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         documentId: item.id,
         fileName: item.name,
         contentType: item.contentType || '',
-        fileSize: item.size
+        fileSize: item.size,
+        gallery: this.resultImages()
       }
     });
+  }
+
+  /** The images the viewer's previous / next arrows step through: those of the same results as on screen. */
+  private resultImages(): ImageGallery | undefined {
+    if (this.searchQuery || this.hasFacetFilter) {
+      // Full-text results are not paged: all of them are already here
+      return inMemoryImageGallery(this.items.filter(i => i.type !== 'FOLDER').map(i => ({
+        documentId: i.id, fileName: i.name, contentType: i.contentType || '', fileSize: i.size
+      })));
+    }
+    const filters = this.currentFilters;
+    if (this.scopeMode === 'ALL' || (this.scopeMode === 'CURRENT_AND_SUBFOLDERS' && !this.scopeFolderId)) {
+      return this.imageGallery.allFolders(filters, this.sortBy, this.sortOrder);
+    }
+    if (this.scopeMode === 'CURRENT_AND_SUBFOLDERS') {
+      return this.imageGallery.folder(this.scopeFolderId, { ...filters, scope: 'CURRENT_AND_SUBFOLDERS' }, this.sortBy, this.sortOrder);
+    }
+    return undefined;
   }
 }
