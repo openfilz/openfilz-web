@@ -6,6 +6,9 @@
       @if (data.versionLabel) {
       <span class="version-label">{{ 'versions.viewingVersion' | translate:{date: data.versionLabel} }}</span>
       }
+      @if (showGalleryNavigation) {
+      <span class="gallery-position">{{ 'fileViewer.imagePosition' | translate:{current: galleryIndex + 1, total: galleryImages.length} }}</span>
+      }
       <!-- Page Navigation (PDF only) -->
       @if (showPageNavigation) {
       <div class="page-navigation" role="group"
@@ -111,7 +114,9 @@
   </mat-toolbar>
 
   <!-- Content Area -->
-  <div class="viewer-content" [class.loading]="loading" tabindex="-1" cdkFocusInitial>
+  <div class="viewer-content" [class.loading]="loading" tabindex="-1" cdkFocusInitial
+    (pointermove)="revealGalleryNav($event)" (pointerdown)="revealGalleryNav($event)"
+    (pointerleave)="hideGalleryNav($event)">
     <!-- Loading Spinner -->
     @if (loading) {
     <div class="loading-container">
@@ -144,9 +149,30 @@
 
     <!-- Image Viewer -->
     @if (viewerMode === 'image' && !loading && !error) {
-    <div class="image-viewer" #imageContainer>
+    <div class="image-viewer" #imageContainer
+      (touchstart)="onImageTouchStart($event)" (touchend)="onImageTouchEnd($event)">
       <img [src]="imageSrc" [style.transform]="imageTransform" alt="{{ data.fileName }}" />
     </div>
+    }
+
+    <!-- Previous / next image of the folder (also: arrow keys, swipe) -->
+    @if (showGalleryNavigation) {
+    @if (hasPreviousImage) {
+    <button mat-icon-button class="gallery-nav gallery-nav-previous" [class.visible]="galleryNavVisible"
+      (click)="previousImage()"
+      [matTooltip]="'fileViewer.previousImage' | translate"
+      [attr.aria-label]="'fileViewer.previousImage' | translate">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    }
+    @if (hasNextImage) {
+    <button mat-icon-button class="gallery-nav gallery-nav-next" [class.visible]="galleryNavVisible"
+      (click)="nextImage()"
+      [matTooltip]="'fileViewer.nextImage' | translate"
+      [attr.aria-label]="'fileViewer.nextImage' | translate">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    }
     }
 
     <!-- Text Editor -->

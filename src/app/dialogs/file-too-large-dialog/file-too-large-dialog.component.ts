@@ -36,7 +36,7 @@ export class FileTooLargeDialogComponent {
   downloading = false;
 
   openInNewTab() {
-    this.documentApi.downloadDocument(this.data.documentId).subscribe({
+    this.documentApi.downloadDocument(this.data.documentId, true).subscribe({
       next: (blob) => {
         const pdfBlob = new Blob([blob], { type: 'application/pdf' });
         const url = URL.createObjectURL(pdfBlob);

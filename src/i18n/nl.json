@@ -126,7 +126,8 @@
     },
     "moreActions": "Meer acties",
     "requestSignature": "Handtekening aanvragen",
-    "startWorkflow": "Workflow starten"
+    "startWorkflow": "Workflow starten",
+    "unzip": "Uitpakken"
   },
   "sortOptions": {
     "date": "Datum",
@@ -381,6 +382,33 @@
       "noFolderMatch": "Geen map komt overeen met \"{{filter}}\"",
       "openFolder": "Map openen"
     },
+    "unzip": {
+      "title": "Uitpakken",
+      "subtitle": "“{{name}}” uitpakken",
+      "currentFolder": "Huidige map",
+      "zipFolder": "Map met het ZIP-bestand",
+      "newFolder": "Nieuwe map",
+      "newFolderName": "Mapnaam",
+      "newFolderHint": "Wordt aangemaakt in de huidige map.",
+      "newFolderHintZip": "Wordt aangemaakt in de map met het ZIP-bestand.",
+      "existingFolder": "Andere map",
+      "chooseFolder": "Kies een map…",
+      "changeFolder": "Andere map kiezen",
+      "mergeNote": "Bestaande mappen worden samengevoegd; bestanden waarvan de naam al bestaat, worden overgeslagen.",
+      "extract": "Uitpakken",
+      "extracting": "Bezig met uitpakken…",
+      "errors": {
+        "folderExists": "Er bestaat hier al een map “{{name}}”. Kies een andere naam.",
+        "notFound": "Het ZIP-bestand of de doelmap bestaat niet meer, of u kunt er niet naar schrijven.",
+        "forbidden": "U mag hier geen bestanden uitpakken.",
+        "quota": "Onvoldoende opslagquotum om dit archief uit te pakken.",
+        "tooManyEntries": "Dit archief bevat te veel bestanden om uit te pakken.",
+        "tooLarge": "Dit archief is uitgepakt te groot.",
+        "suspicious": "Dit archief lijkt verdacht (abnormale compressieverhouding) en is niet uitgepakt.",
+        "invalid": "Dit bestand is geen leesbaar ZIP-archief.",
+        "generic": "Het archief kon niet worden uitgepakt. Probeer het opnieuw."
+      }
+    },
     "confirm": {},
     "partialUpload": {
       "title": "Gedeeltelijk uploadresultaat",
@@ -627,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadata vervangen",
       "UPDATE_DOCUMENT_METADATA": "Metadata bijgewerkt",
       "DOWNLOAD_DOCUMENT": "Document gedownload",
+      "OPEN_DOCUMENT": "Document geopend",
       "DELETE_DOCUMENT_METADATA": "Metadata verwijderd",
       "SHARE_DOCUMENTS": "Documenten gedeeld",
       "RESTORE_FILE": "Bestand hersteld",
@@ -743,6 +772,9 @@
     "goToPage": "Ga naar pagina",
     "previousPage": "Vorige pagina",
     "nextPage": "Volgende pagina",
+    "previousImage": "Vorige afbeelding",
+    "nextImage": "Volgende afbeelding",
+    "imagePosition": "Afbeelding {{current}} van {{total}}",
     "zoomOut": "Uitzoomen",
     "zoomIn": "Inzoomen",
     "resetZoom": "Zoom herstellen",
@@ -814,6 +846,8 @@
     "moveMultipleError": "Verplaatsen van items mislukt",
     "copySuccess": "Item succesvol gekopieerd",
     "copyError": "Kopiëren van item mislukt",
+    "unzipSuccess": "{{files}} bestand(en) en {{folders}} map(pen) uitgepakt",
+    "unzipPartial": "{{files}} bestand(en) en {{folders}} map(pen) uitgepakt — {{skipped}} item(s) overgeslagen (al bestaand of ongeldig)",
     "copyMultipleSuccess": "Items succesvol gekopieerd",
     "copyMultipleError": "Kopiëren van items mislukt",
     "deleteSuccess": "Items succesvol verwijderd",
@@ -1338,7 +1372,6 @@
     "moveBack": "Terugzetten",
     "movedFrom": "Verplaatst vanuit {{path}}",
     "toast": {
-      "filing": "{{count}} document(en) worden gearchiveerd…",
       "done": "{{filed}} gearchiveerd · {{left}} op hun plaats gelaten",
       "undo": "Ongedaan maken",
       "show": "Tonen",

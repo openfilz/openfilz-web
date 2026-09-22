@@ -126,7 +126,8 @@
     },
     "moreActions": "More actions",
     "requestSignature": "Request signature",
-    "startWorkflow": "Start workflow"
+    "startWorkflow": "Start workflow",
+    "unzip": "Unzip"
   },
   "sortOptions": {
     "date": "Date",
@@ -381,6 +382,33 @@
       "noFolderMatch": "No folder matches \"{{filter}}\"",
       "openFolder": "Open folder"
     },
+    "unzip": {
+      "title": "Unzip",
+      "subtitle": "Extract “{{name}}”",
+      "currentFolder": "Current folder",
+      "zipFolder": "Folder containing the ZIP file",
+      "newFolder": "New folder",
+      "newFolderName": "Folder name",
+      "newFolderHint": "Created in the current folder.",
+      "newFolderHintZip": "Created in the folder containing the ZIP file.",
+      "existingFolder": "Another folder",
+      "chooseFolder": "Choose a folder…",
+      "changeFolder": "Change folder",
+      "mergeNote": "Folders that already exist are merged; files whose name already exists are skipped.",
+      "extract": "Extract",
+      "extracting": "Extracting…",
+      "errors": {
+        "folderExists": "A folder named “{{name}}” already exists here. Choose another name.",
+        "notFound": "The ZIP file or the destination folder no longer exists, or you cannot write to it.",
+        "forbidden": "You are not allowed to extract files here.",
+        "quota": "Not enough storage quota left to extract this archive.",
+        "tooManyEntries": "This archive contains too many files to be extracted.",
+        "tooLarge": "This archive is too large once extracted.",
+        "suspicious": "This archive looks suspicious (abnormal compression ratio) and was not extracted.",
+        "invalid": "This file is not a readable ZIP archive.",
+        "generic": "The archive could not be extracted. Please try again."
+      }
+    },
     "confirm": {},
     "partialUpload": {
       "title": "Partial Upload Result",
@@ -627,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadata Replaced",
       "UPDATE_DOCUMENT_METADATA": "Metadata Updated",
       "DOWNLOAD_DOCUMENT": "Document Downloaded",
+      "OPEN_DOCUMENT": "Document Opened",
       "DELETE_DOCUMENT_METADATA": "Metadata Deleted",
       "SHARE_DOCUMENTS": "Documents Shared",
       "RESTORE_FILE": "File Restored",
@@ -743,6 +772,9 @@
     "goToPage": "Go to page",
     "previousPage": "Previous page",
     "nextPage": "Next page",
+    "previousImage": "Previous image",
+    "nextImage": "Next image",
+    "imagePosition": "Image {{current}} of {{total}}",
     "zoomOut": "Zoom out",
     "zoomIn": "Zoom in",
     "resetZoom": "Reset zoom",
@@ -814,6 +846,8 @@
     "moveMultipleError": "Failed to move items",
     "copySuccess": "Item copied successfully",
     "copyError": "Failed to copy item",
+    "unzipSuccess": "{{files}} file(s) and {{folders}} folder(s) extracted",
+    "unzipPartial": "{{files}} file(s) and {{folders}} folder(s) extracted — {{skipped}} item(s) skipped (already existing or invalid)",
     "copyMultipleSuccess": "Items copied successfully",
     "copyMultipleError": "Failed to copy items",
     "deleteSuccess": "Items deleted successfully",
@@ -1338,7 +1372,6 @@
     "moveBack": "Move back",
     "movedFrom": "Moved from {{path}}",
     "toast": {
-      "filing": "Filing {{count}} document(s)…",
       "done": "{{filed}} filed · {{left}} left in place",
       "undo": "Undo",
       "show": "Show",

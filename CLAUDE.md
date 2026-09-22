@@ -212,6 +212,21 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   favorites and search-results, and an "Edit pages" button in the PDF viewer.
 - i18n block `pdfTools.*` in all 8 locales. Design doc: `openfilz-core/docs/pdf-tools.md`.
 
+## Unzip (ZIP extraction)
+
+Core feature, always on for CONTRIBUTORs (`services/unzip-access.service.ts`: role + `isZipItem`). The extraction runs
+server-side (`POST /api/v1/files/{id}/unzip`, see `openfilz-core` CLAUDE.md §8): the browser never downloads the archive.
+- `UNZIP_ACTION` + `isZipItem()` in `models/file-actions.ts` (per-item menu via `STANDARD_ITEM_ACTIONS`, toolbar via
+  `unzipAvailable` / `(unzipSelected)`), `(unzip)` output on file-list / file-grid, bindings on file-explorer,
+  search-results and favorites.
+- `FileOperationsComponent.onUnzipItem` opens `dialogs/unzip-dialog` (destination: current folder / new folder / any
+  writable folder via `FolderTreeDialogComponent`) — the dialog runs the call itself so errors (409 folder exists, 413
+  limits, 507 quota…) stay inline — then shows the summary snackbar and `reloadData()`. The protected
+  `unzipCurrentFolder()` hook labels the "current folder" option (file explorer only; `writable: false` disables it).
+- i18n: `toolbar.unzip`, `dialogs.unzip.*`, `operations.unzipSuccess` / `unzipPartial` in all 8 locales.
+- `mat-radio-button` colours come from the `.mat-mdc-radio-button` token block in `global_styles.css` (the M3
+  `--mat-sys-*` colours are empty in every theme — same fix as the checkbox / slide-toggle blocks).
+
 ## Workflows (statuses / transitions / tasks)
 
 Core feature gated by the API flag `Settings.workflowsActive` (`openfilz.workflows.active`) —

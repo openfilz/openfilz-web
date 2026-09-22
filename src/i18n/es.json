@@ -126,7 +126,8 @@
     },
     "moreActions": "Más acciones",
     "requestSignature": "Solicitar firma",
-    "startWorkflow": "Iniciar flujo"
+    "startWorkflow": "Iniciar flujo",
+    "unzip": "Descomprimir"
   },
   "sortOptions": {
     "date": "Fecha",
@@ -381,6 +382,33 @@
       "noFolderMatch": "Ninguna carpeta coincide con «{{filter}}»",
       "openFolder": "Abrir carpeta"
     },
+    "unzip": {
+      "title": "Descomprimir",
+      "subtitle": "Extraer «{{name}}»",
+      "currentFolder": "Carpeta actual",
+      "zipFolder": "Carpeta que contiene el archivo ZIP",
+      "newFolder": "Nueva carpeta",
+      "newFolderName": "Nombre de la carpeta",
+      "newFolderHint": "Se crea en la carpeta actual.",
+      "newFolderHintZip": "Se crea en la carpeta que contiene el archivo ZIP.",
+      "existingFolder": "Otra carpeta",
+      "chooseFolder": "Elegir una carpeta…",
+      "changeFolder": "Cambiar de carpeta",
+      "mergeNote": "Las carpetas existentes se fusionan; los archivos cuyo nombre ya existe se omiten.",
+      "extract": "Extraer",
+      "extracting": "Extrayendo…",
+      "errors": {
+        "folderExists": "Ya existe una carpeta llamada «{{name}}» aquí. Elija otro nombre.",
+        "notFound": "El archivo ZIP o la carpeta de destino ya no existe, o no puede escribir en ella.",
+        "forbidden": "No tiene permiso para extraer archivos aquí.",
+        "quota": "No queda suficiente cuota de almacenamiento para extraer este archivo.",
+        "tooManyEntries": "Este archivo contiene demasiados ficheros para ser extraído.",
+        "tooLarge": "Este archivo es demasiado grande una vez extraído.",
+        "suspicious": "Este archivo parece sospechoso (tasa de compresión anormal) y no se ha extraído.",
+        "invalid": "Este fichero no es un archivo ZIP legible.",
+        "generic": "No se pudo extraer el archivo. Inténtelo de nuevo."
+      }
+    },
     "confirm": {},
     "partialUpload": {
       "title": "Resultado de subida parcial",
@@ -627,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadatos reemplazados",
       "UPDATE_DOCUMENT_METADATA": "Metadatos actualizados",
       "DOWNLOAD_DOCUMENT": "Documento descargado",
+      "OPEN_DOCUMENT": "Documento abierto",
       "DELETE_DOCUMENT_METADATA": "Metadatos eliminados",
       "SHARE_DOCUMENTS": "Documentos compartidos",
       "RESTORE_FILE": "Archivo restaurado",
@@ -743,6 +772,9 @@
     "goToPage": "Ir a la página",
     "previousPage": "Página anterior",
     "nextPage": "Página siguiente",
+    "previousImage": "Imagen anterior",
+    "nextImage": "Imagen siguiente",
+    "imagePosition": "Imagen {{current}} de {{total}}",
     "zoomOut": "Alejar",
     "zoomIn": "Acercar",
     "resetZoom": "Restablecer zoom",
@@ -814,6 +846,8 @@
     "moveMultipleError": "Error al mover los elementos",
     "copySuccess": "Elemento copiado con éxito",
     "copyError": "Error al copiar el elemento",
+    "unzipSuccess": "{{files}} archivo(s) y {{folders}} carpeta(s) extraídos",
+    "unzipPartial": "{{files}} archivo(s) y {{folders}} carpeta(s) extraídos — {{skipped}} elemento(s) omitido(s) (ya existentes o no válidos)",
     "copyMultipleSuccess": "Elementos copiados con éxito",
     "copyMultipleError": "Error al copiar los elementos",
     "deleteSuccess": "Elementos eliminados con éxito",
@@ -1338,7 +1372,6 @@
     "moveBack": "Devolver a su sitio",
     "movedFrom": "Movido desde {{path}}",
     "toast": {
-      "filing": "Archivando {{count}} documento(s)…",
       "done": "{{filed}} archivado(s) · {{left}} sin mover",
       "undo": "Deshacer",
       "show": "Mostrar",

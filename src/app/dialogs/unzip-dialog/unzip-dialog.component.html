@@ -1,0 +1,87 @@
+<div class="dialog-header">
+  <div class="header-content">
+    <div class="icon-wrapper">
+      <mat-icon aria-hidden="true">folder_zip</mat-icon>
+    </div>
+    <div class="header-text">
+      <h2 class="dialog-title" id="unzip-dialog-title">{{ 'dialogs.unzip.title' | translate }}</h2>
+      <p class="dialog-subtitle" [title]="data.zip.name">{{ 'dialogs.unzip.subtitle' | translate: { name: data.zip.name } }}</p>
+    </div>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="onCancel()" [disabled]="extracting"
+    [attr.aria-label]="'common.close' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  <mat-radio-group class="destinations" [(ngModel)]="destination" (ngModelChange)="errorKey = undefined" [disabled]="extracting"
+    aria-labelledby="unzip-dialog-title">
+
+    <mat-radio-button value="current" class="destination" [disabled]="!currentWritable">
+      <span class="destination-label">
+        @if (data.currentFolder) {
+          {{ 'dialogs.unzip.currentFolder' | translate }}
+          <span class="destination-hint">{{ data.currentFolder.name ?? ('dialogs.folderTree.root' | translate) }}</span>
+        } @else {
+          {{ 'dialogs.unzip.zipFolder' | translate }}
+        }
+      </span>
+    </mat-radio-button>
+
+    <mat-radio-button value="new" class="destination" [disabled]="!currentWritable">
+      <span class="destination-label">{{ 'dialogs.unzip.newFolder' | translate }}</span>
+    </mat-radio-button>
+    @if (destination === 'new') {
+      <mat-form-field appearance="outline" class="folder-name-field">
+        <mat-label>{{ 'dialogs.unzip.newFolderName' | translate }}</mat-label>
+        <input matInput [(ngModel)]="newFolderName" (ngModelChange)="errorKey = undefined" (keyup.enter)="onExtract()" autocomplete="off"
+          [disabled]="extracting" cdkFocusInitial>
+        <mat-icon matPrefix class="input-icon" aria-hidden="true">create_new_folder</mat-icon>
+      </mat-form-field>
+      <p class="field-hint">{{ (data.currentFolder ? 'dialogs.unzip.newFolderHint' : 'dialogs.unzip.newFolderHintZip') | translate }}</p>
+    }
+
+    <mat-radio-button value="pick" class="destination">
+      <span class="destination-label">
+        {{ 'dialogs.unzip.existingFolder' | translate }}
+        @if (destination === 'pick' && pickedFolderId !== undefined) {
+          <span class="destination-hint">{{ pickedFolderId === null ? ('dialogs.folderTree.root' | translate) : (pickedFolderName ?? '…') }}</span>
+        }
+      </span>
+    </mat-radio-button>
+    @if (destination === 'pick') {
+      <button mat-stroked-button class="choose-btn" (click)="chooseFolder()" [disabled]="extracting">
+        <mat-icon aria-hidden="true">folder_open</mat-icon>
+        <span>{{ (pickedFolderId === undefined ? 'dialogs.unzip.chooseFolder' : 'dialogs.unzip.changeFolder') | translate }}</span>
+      </button>
+    }
+  </mat-radio-group>
+
+  <p class="merge-note">
+    <mat-icon aria-hidden="true">info</mat-icon>
+    <span>{{ 'dialogs.unzip.mergeNote' | translate }}</span>
+  </p>
+
+  @if (errorKey) {
+    <p class="error" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <span>{{ errorKey | translate: errorParams }}</span>
+    </p>
+  }
+</div>
+
+<div mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button class="cancel-btn" (click)="onCancel()" [disabled]="extracting">
+    <mat-icon aria-hidden="true">close</mat-icon>
+    <span>&nbsp;&nbsp;{{ 'common.cancel' | translate }}</span>
+  </button>
+  <button mat-raised-button color="primary" class="create-btn" [disabled]="!canExtract" (click)="onExtract()">
+    @if (extracting) {
+      <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+    } @else {
+      <mat-icon aria-hidden="true">unarchive</mat-icon>
+    }
+    <span>&nbsp;&nbsp;{{ (extracting ? 'dialogs.unzip.extracting' : 'dialogs.unzip.extract') | translate }}</span>
+  </button>
+</div>

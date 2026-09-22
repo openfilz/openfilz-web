@@ -126,7 +126,8 @@
     },
     "moreActions": "Weitere Aktionen",
     "requestSignature": "Signatur anfordern",
-    "startWorkflow": "Workflow starten"
+    "startWorkflow": "Workflow starten",
+    "unzip": "Entpacken"
   },
   "sortOptions": {
     "date": "Datum",
@@ -381,6 +382,33 @@
       "noFolderMatch": "Kein Ordner entspricht „{{filter}}“",
       "openFolder": "Ordner öffnen"
     },
+    "unzip": {
+      "title": "Entpacken",
+      "subtitle": "„{{name}}“ extrahieren",
+      "currentFolder": "Aktueller Ordner",
+      "zipFolder": "Ordner mit der ZIP-Datei",
+      "newFolder": "Neuer Ordner",
+      "newFolderName": "Ordnername",
+      "newFolderHint": "Wird im aktuellen Ordner erstellt.",
+      "newFolderHintZip": "Wird im Ordner mit der ZIP-Datei erstellt.",
+      "existingFolder": "Anderer Ordner",
+      "chooseFolder": "Ordner auswählen…",
+      "changeFolder": "Ordner ändern",
+      "mergeNote": "Vorhandene Ordner werden zusammengeführt; Dateien, deren Name bereits existiert, werden übersprungen.",
+      "extract": "Extrahieren",
+      "extracting": "Wird extrahiert…",
+      "errors": {
+        "folderExists": "Ein Ordner „{{name}}“ existiert hier bereits. Wählen Sie einen anderen Namen.",
+        "notFound": "Die ZIP-Datei oder der Zielordner existiert nicht mehr, oder Sie haben keine Schreibrechte.",
+        "forbidden": "Sie dürfen hier keine Dateien extrahieren.",
+        "quota": "Nicht genügend Speicherkontingent, um dieses Archiv zu extrahieren.",
+        "tooManyEntries": "Dieses Archiv enthält zu viele Dateien, um extrahiert zu werden.",
+        "tooLarge": "Dieses Archiv ist entpackt zu groß.",
+        "suspicious": "Dieses Archiv wirkt verdächtig (ungewöhnliche Kompressionsrate) und wurde nicht extrahiert.",
+        "invalid": "Diese Datei ist kein lesbares ZIP-Archiv.",
+        "generic": "Das Archiv konnte nicht extrahiert werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "confirm": {},
     "partialUpload": {
       "title": "Teilergebnis des Uploads",
@@ -627,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadaten ersetzt",
       "UPDATE_DOCUMENT_METADATA": "Metadaten aktualisiert",
       "DOWNLOAD_DOCUMENT": "Dokument heruntergeladen",
+      "OPEN_DOCUMENT": "Dokument geöffnet",
       "DELETE_DOCUMENT_METADATA": "Metadaten gelöscht",
       "SHARE_DOCUMENTS": "Dokumente geteilt",
       "RESTORE_FILE": "Datei wiederhergestellt",
@@ -743,6 +772,9 @@
     "goToPage": "Gehe zu Seite",
     "previousPage": "Vorherige Seite",
     "nextPage": "Nächste Seite",
+    "previousImage": "Vorheriges Bild",
+    "nextImage": "Nächstes Bild",
+    "imagePosition": "Bild {{current}} von {{total}}",
     "zoomOut": "Verkleinern",
     "zoomIn": "Vergrößern",
     "resetZoom": "Zoom zurücksetzen",
@@ -814,6 +846,8 @@
     "moveMultipleError": "Elemente konnten nicht verschoben werden",
     "copySuccess": "Element erfolgreich kopiert",
     "copyError": "Element konnte nicht kopiert werden",
+    "unzipSuccess": "{{files}} Datei(en) und {{folders}} Ordner extrahiert",
+    "unzipPartial": "{{files}} Datei(en) und {{folders}} Ordner extrahiert — {{skipped}} Element(e) übersprungen (bereits vorhanden oder ungültig)",
     "copyMultipleSuccess": "Elemente erfolgreich kopiert",
     "copyMultipleError": "Elemente konnten nicht kopiert werden",
     "deleteSuccess": "Elemente erfolgreich gelöscht",
@@ -1338,7 +1372,6 @@
     "moveBack": "Zurückverschieben",
     "movedFrom": "Verschoben aus {{path}}",
     "toast": {
-      "filing": "{{count}} Dokument(e) werden abgelegt…",
       "done": "{{filed}} abgelegt · {{left}} unverändert",
       "undo": "Rückgängig",
       "show": "Anzeigen",

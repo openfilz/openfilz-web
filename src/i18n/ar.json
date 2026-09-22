@@ -126,7 +126,8 @@
     },
     "moreActions": "المزيد من الإجراءات",
     "requestSignature": "طلب توقيع",
-    "startWorkflow": "بدء سير عمل"
+    "startWorkflow": "بدء سير عمل",
+    "unzip": "فك الضغط"
   },
   "sortOptions": {
     "date": "التاريخ",
@@ -381,6 +382,33 @@
       "noFolderMatch": "لا يوجد مجلد يطابق \"{{filter}}\"",
       "openFolder": "فتح المجلد"
     },
+    "unzip": {
+      "title": "فك الضغط",
+      "subtitle": "استخراج «{{name}}»",
+      "currentFolder": "المجلد الحالي",
+      "zipFolder": "المجلد الذي يحتوي على ملف ZIP",
+      "newFolder": "مجلد جديد",
+      "newFolderName": "اسم المجلد",
+      "newFolderHint": "يُنشأ في المجلد الحالي.",
+      "newFolderHintZip": "يُنشأ في المجلد الذي يحتوي على ملف ZIP.",
+      "existingFolder": "مجلد آخر",
+      "chooseFolder": "اختر مجلدًا…",
+      "changeFolder": "تغيير المجلد",
+      "mergeNote": "تُدمج المجلدات الموجودة مسبقًا؛ ويتم تخطي الملفات التي يوجد اسمها بالفعل.",
+      "extract": "استخراج",
+      "extracting": "جارٍ الاستخراج…",
+      "errors": {
+        "folderExists": "يوجد مجلد باسم «{{name}}» هنا بالفعل. اختر اسمًا آخر.",
+        "notFound": "ملف ZIP أو مجلد الوجهة لم يعد موجودًا، أو لا تملك صلاحية الكتابة فيه.",
+        "forbidden": "غير مسموح لك باستخراج الملفات هنا.",
+        "quota": "حصة التخزين المتبقية غير كافية لاستخراج هذا الأرشيف.",
+        "tooManyEntries": "يحتوي هذا الأرشيف على عدد كبير جدًا من الملفات لاستخراجه.",
+        "tooLarge": "حجم هذا الأرشيف كبير جدًا بعد الاستخراج.",
+        "suspicious": "يبدو هذا الأرشيف مريبًا (نسبة ضغط غير طبيعية) ولم يتم استخراجه.",
+        "invalid": "هذا الملف ليس أرشيف ZIP قابلًا للقراءة.",
+        "generic": "تعذّر استخراج الأرشيف. يُرجى المحاولة مرة أخرى."
+      }
+    },
     "confirm": {},
     "partialUpload": {
       "title": "نتيجة الرفع الجزئي",
@@ -627,6 +655,7 @@
       "REPLACE_DOCUMENT_METADATA": "تم استبدال البيانات الوصفية",
       "UPDATE_DOCUMENT_METADATA": "تم تحديث البيانات الوصفية",
       "DOWNLOAD_DOCUMENT": "تم تنزيل المستند",
+      "OPEN_DOCUMENT": "تم فتح المستند",
       "DELETE_DOCUMENT_METADATA": "تم حذف البيانات الوصفية",
       "SHARE_DOCUMENTS": "تم مشاركة المستندات",
       "RESTORE_FILE": "تم استعادة الملف",
@@ -743,6 +772,9 @@
     "goToPage": "الانتقال إلى الصفحة",
     "previousPage": "الصفحة السابقة",
     "nextPage": "الصفحة التالية",
+    "previousImage": "الصورة السابقة",
+    "nextImage": "الصورة التالية",
+    "imagePosition": "الصورة {{current}} من {{total}}",
     "zoomOut": "تصغير",
     "zoomIn": "تكبير",
     "resetZoom": "إعادة تعيين الزوم",
@@ -814,6 +846,8 @@
     "moveMultipleError": "فشل نقل العناصر",
     "copySuccess": "تم نسخ العنصر بنجاح",
     "copyError": "فشل نسخ العنصر",
+    "unzipSuccess": "تم استخراج {{files}} ملف و{{folders}} مجلد",
+    "unzipPartial": "تم استخراج {{files}} ملف و{{folders}} مجلد — تم تخطي {{skipped}} عنصر (موجود مسبقًا أو غير صالح)",
     "copyMultipleSuccess": "تم نسخ العناصر بنجاح",
     "copyMultipleError": "فشل نسخ العناصر",
     "deleteSuccess": "تم حذف العناصر بنجاح",
@@ -1338,7 +1372,6 @@
     "moveBack": "إعادة إلى المكان الأصلي",
     "movedFrom": "نُقل من {{path}}",
     "toast": {
-      "filing": "جارٍ حفظ {{count}} مستند(ات)…",
       "done": "{{filed}} حُفظت · {{left}} بقيت في مكانها",
       "undo": "تراجع",
       "show": "عرض",

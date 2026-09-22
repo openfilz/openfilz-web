@@ -19,7 +19,8 @@ import { CreateFolderDialogComponent } from '../../dialogs/create-folder-dialog/
 import { CreateDocumentDialogComponent, CreateDocumentDialogData, CreateDocumentDialogResult } from '../../dialogs/create-document-dialog/create-document-dialog.component';
 import { RenameDialogComponent, RenameDialogData } from '../../dialogs/rename-dialog/rename-dialog.component';
 import { FolderTreeDialogComponent } from '../../dialogs/folder-tree-dialog/folder-tree-dialog.component';
-import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { FileViewerDialogComponent, FileViewerItem } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
+import { determineViewerMode } from '../../utils/viewer-mode.util';
 import { FileTooLargeDialogComponent } from '../../dialogs/file-too-large-dialog/file-too-large-dialog.component';
 import { KeyboardShortcutsDialogComponent } from '../../dialogs/keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { ConfirmReplaceDialogComponent, ConfirmReplaceDialogData, ConfirmReplaceDialogResult } from '../../dialogs/confirm-replace-dialog/confirm-replace-dialog.component';
@@ -78,7 +79,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
       <app-toolbar
         [viewMode]="viewMode"
         [hasSelection]="hasSelectedItems"
-        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection"
+        [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [unzipAvailable]="canUnzipSelection"
         [organizeWithAiAvailable]="canOrganizeSelectionWithAi" [showOrganizeWithAi]="canOrganizeWithAi"
         (organizeWithAiSelected)="onOrganizeWithAiSelected()" (organizeWithAi)="organizeFolderWithAi(currentFolder)"
         [pageIndex]="pageIndex"
@@ -95,7 +96,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
         (moveSelected)="onMoveSelected()"
         (copySelected)="onCopySelected()"
         (deleteSelected)="onDeleteSelected()"
-        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)"
+        (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" (unzipSelected)="onUnzipSelected()"
         (clearSelection)="onSelectAll(false)"
         (previousPage)="onPreviousPage()"
         (nextPage)="onNextPage()"
@@ -182,7 +183,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       (itemsDroppedOnFolder)="onDragDropMove($event)">
               </app-file-grid>
           }
@@ -203,7 +204,7 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+                      (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
                       (sortChange)="onSortChange($event)"
@@ -998,16 +999,32 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
       maxHeight: '900px',
       panelClass: 'file-viewer-dialog-container',
       data: {
-        documentId: item.id,
-        fileName: item.name,
-        contentType: item.contentType || '',
-        fileSize: item.size
+        ...this.toViewerItem(item),
+        siblings: this.previewableImages()
       }
     });
 
     dialogRef.afterClosed().subscribe(() => {
       this.onSelectAll(false);
     });
+  }
+
+  private toViewerItem(item: FileItem): FileViewerItem {
+    return {
+      documentId: item.id,
+      fileName: item.name,
+      contentType: item.contentType || '',
+      fileSize: item.size
+    };
+  }
+
+  /** Images of the listed page the viewer can step through with its previous / next arrows. */
+  private previewableImages(): FileViewerItem[] {
+    return this.items
+      .filter(i => i.type !== 'FOLDER'
+        && determineViewerMode(i.name, i.contentType) === 'image'
+        && !this.isFileTooLargeForPreview(i))
+      .map(i => this.toViewerItem(i));
   }
 
   private isFileTooLargeForPreview(item: FileItem): boolean {
@@ -1265,6 +1282,11 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.performMoveWithRetry(item, targetFolderId);
       }
     });
+  }
+
+  /** The explorer lists the ZIP's own folder: the unzip dialog's "current folder" is this one. */
+  protected override unzipCurrentFolder(): { name?: string; writable?: boolean } {
+    return { name: this.currentFolder?.name };
   }
 
   override onCopyItem(item: FileItem) {

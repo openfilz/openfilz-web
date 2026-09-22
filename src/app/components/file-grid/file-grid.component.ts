@@ -15,6 +15,7 @@ import { SettingsService } from '../../services/settings.service';
 import { SignatureAccessService } from '../../services/signature-access.service';
 import { WorkflowAccessService } from '../../services/workflow-access.service';
 import { PdfToolsAccessService } from '../../services/pdf-tools-access.service';
+import { UnzipAccessService } from '../../services/unzip-access.service';
 import { AiOrganizeAccessService } from '../../services/ai-organize-access.service';
 import { PdfToolActionId } from '../../models/pdf-tools.models';
 import { FileIconService } from '../../services/file-icon.service';
@@ -69,6 +70,7 @@ export class FileGridComponent {
   @Output() viewProperties = new EventEmitter<FileItem>();
   @Output() requestSignature = new EventEmitter<FileItem>();
   @Output() startWorkflow = new EventEmitter<FileItem>();
+  @Output() unzip = new EventEmitter<FileItem>();
   @Output() pdfTool = new EventEmitter<{ item: FileItem; action: PdfToolActionId }>();
   @Output() organizeWithAi = new EventEmitter<FileItem>();
   @Output() itemsDroppedOnFolder = new EventEmitter<DropEvent>();
@@ -84,6 +86,7 @@ export class FileGridComponent {
   private signatureAccess = inject(SignatureAccessService);
   private workflowAccess = inject(WorkflowAccessService);
   private pdfToolsAccess = inject(PdfToolsAccessService);
+  private unzipAccess = inject(UnzipAccessService);
   private aiOrganizeAccess = inject(AiOrganizeAccessService);
   private touchDetectionService = inject(TouchDetectionService);
 
@@ -134,11 +137,13 @@ export class FileGridComponent {
     const item = this.menuItem;
     const signAllowed = this.signatureAccess.canRequestSignature && !!item && isPdfItem(item);
     const pdfToolsAllowed = this.pdfToolsAccess.enabled && !!item && isPdfItem(item);
+    const unzipAllowed = this.unzipAccess.canUnzip(item);
     const organizeAllowed = this.aiOrganizeAccess.enabled && !!item && isFolderItem(item);
     const workflowAllowed = this.workflowAccess.canStart && !!item && !isFolderItem(item);
     return this.itemActions.filter(a => (a.id !== 'requestSignature' || signAllowed)
       && (a.id !== 'startWorkflow' || workflowAllowed)
       && (!isPdfToolsAction(a.id) || pdfToolsAllowed)
+      && (a.id !== 'unzip' || unzipAllowed)
       && (a.id !== 'organizeWithAi' || organizeAllowed));
   }
   contextMenuPosition = { x: 0, y: 0 };
@@ -195,6 +200,9 @@ export class FileGridComponent {
         break;
       case 'organizeWithAi':
         this.organizeWithAi.emit(item);
+        break;
+      case 'unzip':
+        this.unzip.emit(item);
         break;
       case 'delete':
         this.delete.emit(item);

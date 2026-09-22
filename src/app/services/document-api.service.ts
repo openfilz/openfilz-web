@@ -18,6 +18,8 @@ import {
   MoveRequest,
   RecentFileInfo,
   RenameRequest,
+  UnzipRequest,
+  UnzipResponse,
   SearchByMetadataRequest,
   UploadResponse,
   MultipleUploadFileParameter,
@@ -494,6 +496,11 @@ export class DocumentApiService {
     return this.http.post<any[]>(`${this.baseUrl}/files/copy`, request);
   }
 
+  /** Extracts a ZIP document server-side (see {@link UnzipRequest} for the destination rules). */
+  unzipFile(fileId: string, request: UnzipRequest): Observable<UnzipResponse> {
+    return this.http.post<UnzipResponse>(`${this.baseUrl}/files/${fileId}/unzip`, request);
+  }
+
   deleteFiles(request: DeleteRequest): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/files`, {
       body: request
@@ -510,8 +517,14 @@ export class DocumentApiService {
     });
   }
 
-  downloadDocument(documentId: string): Observable<Blob> {
+  /**
+   * `open` = the content is fetched to be shown in the app (viewer, PDF tools), not saved as a
+   * file: the server then audits an OPEN_DOCUMENT instead of a DOWNLOAD_DOCUMENT.
+   */
+  downloadDocument(documentId: string, open = false): Observable<Blob> {
+    const params = open ? new HttpParams().set('open', 'true') : undefined;
     return this.http.get(`${this.baseUrl}/documents/${documentId}/download`, {
+      params,
       responseType: 'blob'
     });
   }
