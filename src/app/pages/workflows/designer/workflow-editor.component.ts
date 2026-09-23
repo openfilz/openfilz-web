@@ -59,8 +59,9 @@ interface EditableState {
 
 /**
  * The workflow editor (`/workflows/definitions/new?template=…` and `/workflows/definitions/:id`):
- * one card per status (label, kind, colour, assignees, due delay, parallel review, transitions, on-enter actions),
- * the live diagram on the right, problems inline. Saves through the API's validation.
+ * the general settings, a strip of statuses to pick from, then one card for the selected status (label, kind,
+ * colour, assignees, due delay, parallel review, transitions, on-enter actions) split into titled groups so a
+ * single status reads at a glance; the live diagram on the right, problems inline. Saves through the API's validation.
  */
 @Component({
   selector: 'app-workflow-editor',
@@ -191,7 +192,7 @@ export class WorkflowEditorComponent implements OnInit {
 
   select(i: number): void {
     this.selectedIndex = i;
-    setTimeout(() => document.getElementById('state-card-' + i)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+    setTimeout(() => document.getElementById('state-detail')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
   }
 
   onDiagramClick(key: string): void {
@@ -324,6 +325,10 @@ export class WorkflowEditorComponent implements OnInit {
 
   otherProblems(i: number): WorkflowProblem[] {
     return this.problemsFor(i).filter(p => !p.path.includes('.review'));
+  }
+
+  actionIcon(type: WorkflowActionType): string {
+    return type === 'MOVE_TO_FOLDER' ? 'drive_file_move' : type === 'SET_METADATA' ? 'label' : 'mail';
   }
 
   addAction(s: EditableState, type: WorkflowActionType): void {
