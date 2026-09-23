@@ -24,33 +24,52 @@
     <div class="cards">
       @for (def of definitions; track trackDef($index, def)) {
         <article class="card" [class.inactive]="!def.active">
-          <div class="card-head">
+          <!-- Name, what it is for, and whether people can start it -->
+          <header class="card-head">
             <div class="card-title">
               <h3>{{ def.name }}</h3>
               @if (def.description) { <p class="desc">{{ def.description }}</p> }
-              <div class="facts">
-                <span class="badge" [class.on]="def.active">{{ (def.active ? 'workflow.designer.active' : 'workflow.designer.inactive') | translate }}</span>
-                <span>{{ 'workflow.designer.statesCount' | translate: { count: def.spec.states.length } }}</span>
-                <span>{{ 'workflow.designer.runningCount' | translate: { count: def.runningCount } }}</span>
-                @if (def.triggerFolderIds.length) { <span><mat-icon class="mini">folder_special</mat-icon>{{ 'workflow.designer.hotFolders' | translate: { count: def.triggerFolderIds.length } }}</span> }
-                <span class="dim">v{{ def.version }} · {{ def.updatedAt | localDate:'mediumDate' }}</span>
-                @if (!def.canEdit) { <span class="owner"><mat-icon class="mini">person</mat-icon>{{ 'workflow.designer.ownedBy' | translate: { who: def.createdBy } }}</span> }
-              </div>
+            </div>
+            @if (busy.has(def.id)) {
+              <mat-spinner diameter="22"></mat-spinner>
+            } @else {
+              <mat-slide-toggle class="active-toggle" [checked]="def.active" (change)="toggleActive(def, $event)" [disabled]="!def.canEdit"
+                [matTooltip]="(def.canEdit ? 'workflow.editor.active' : 'workflow.designer.notYours') | translate">
+                {{ (def.active ? 'workflow.designer.active' : 'workflow.designer.inactive') | translate }}
+              </mat-slide-toggle>
+            }
+          </header>
+
+          <button type="button" class="diagram-box" (click)="edit(def)"
+            [attr.aria-label]="((def.canEdit ? 'workflow.designer.edit' : 'workflow.designer.view') | translate) + ' — ' + def.name">
+            <app-workflow-diagram [spec]="def.spec" [compact]="true"></app-workflow-diagram>
+          </button>
+
+          <!-- Facts, then the actions -->
+          <footer class="card-foot">
+            <div class="facts">
+              <span><mat-icon>linear_scale</mat-icon>{{ 'workflow.designer.statesCount' | translate: { count: def.spec.states.length } }}</span>
+              <span [class.running]="def.runningCount > 0"><mat-icon>play_circle_outline</mat-icon>{{ 'workflow.designer.runningCount' | translate: { count: def.runningCount } }}</span>
+              @if (def.triggerFolderIds.length) {
+                <span><mat-icon>folder_special</mat-icon>{{ 'workflow.designer.hotFolders' | translate: { count: def.triggerFolderIds.length } }}</span>
+              }
+              <span class="dim"><mat-icon>history</mat-icon>v{{ def.version }} · {{ def.updatedAt | localDate:'mediumDate' }}</span>
+              @if (!def.canEdit) { <span class="dim"><mat-icon>person_outline</mat-icon>{{ 'workflow.designer.ownedBy' | translate: { who: def.createdBy } }}</span> }
             </div>
             <div class="card-actions">
-              @if (busy.has(def.id)) { <mat-spinner diameter="22"></mat-spinner> } @else {
-                <button mat-icon-button (click)="edit(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.edit' : 'workflow.designer.readOnly') | translate" class="tint-blue"><mat-icon>{{ def.canEdit ? 'edit' : 'visibility' }}</mat-icon></button>
-                <button mat-icon-button (click)="toggleActive(def)" [disabled]="!def.canEdit"
-                  [matTooltip]="(!def.canEdit ? 'workflow.designer.notYours' : def.active ? 'workflow.designer.deactivate' : 'workflow.designer.activate') | translate" class="tint-amber">
-                  <mat-icon>{{ def.active ? 'pause_circle' : 'play_circle' }}</mat-icon>
-                </button>
-                <button mat-icon-button (click)="remove(def)" [matTooltip]="(def.canEdit ? 'workflow.designer.delete' : 'workflow.designer.notYours') | translate" class="tint-red" [disabled]="def.runningCount > 0 || !def.canEdit"><mat-icon>delete</mat-icon></button>
+              @if (def.canEdit) {
+                <!-- A disabled button shows no tooltip: the wrapper carries the reason. -->
+                <span [matTooltip]="def.runningCount > 0 ? ('workflow.designer.cantDeleteRunning' | translate) : ''">
+                  <button mat-button class="delete-btn" (click)="remove(def)" [disabled]="def.runningCount > 0 || busy.has(def.id)">
+                    <mat-icon>delete_outline</mat-icon>{{ 'workflow.designer.delete' | translate }}
+                  </button>
+                </span>
               }
+              <button mat-stroked-button class="edit-btn" (click)="edit(def)">
+                <mat-icon>{{ def.canEdit ? 'edit' : 'visibility' }}</mat-icon>{{ (def.canEdit ? 'workflow.designer.edit' : 'workflow.designer.view') | translate }}
+              </button>
             </div>
-          </div>
-          <div class="diagram-box" (click)="edit(def)">
-            <app-workflow-diagram [spec]="def.spec" [compact]="true"></app-workflow-diagram>
-          </div>
+          </footer>
         </article>
       }
     </div>
