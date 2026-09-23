@@ -44,6 +44,9 @@ export interface RequestSignatureDialogData {
 
 type DragMode = 'place' | 'move' | 'resize';
 
+/** Palette group "Signature": the fields that make the signature itself. */
+const PALETTE_SIGNING = new Set<SignatureFieldType>(['SIGNATURE', 'INITIALS', 'DATE_SIGNED', 'STAMP']);
+
 interface DragState {
   mode: DragMode;
   /** Field type being placed (mode = place). */
@@ -106,6 +109,11 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
 
   readonly fieldTypes = SIGNATURE_FIELD_TYPES;
   readonly fieldIcons = FIELD_TYPE_ICONS;
+  /** The palette, split into what makes the signature and what the recipient fills in. */
+  readonly paletteGroups: { key: string; types: SignatureFieldType[] }[] = [
+    { key: 'paletteSigning', types: SIGNATURE_FIELD_TYPES.filter(t => PALETTE_SIGNING.has(t)) },
+    { key: 'paletteFill', types: SIGNATURE_FIELD_TYPES.filter(t => !PALETTE_SIGNING.has(t)) }
+  ];
   readonly roles: SignatureRecipientRole[] = ['SIGNER', 'CC'];
   /** Filtered by what the server advertises on /settings — never offer an undeliverable channel. */
   readonly authMethods: SignatureAuthMethod[] =
@@ -212,6 +220,27 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
   }
 
   fieldCount(r: RecipientRow): number { return r.fields.length; }
+
+  /** Second line of a folded recipient card: "email · role" (the email is the title when there is no name). */
+  recipientSub(r: RecipientRow): string {
+    const role = this.translate.instant('signature.request.role' + r.role);
+    const email = r.email?.trim();
+    return r.name?.trim() && email ? `${email} · ${role}` : role;
+  }
+
+  /** Avatar letter: first letter of the name (or email), else the signer number. */
+  initial(r: RecipientRow, i: number): string {
+    return (r.name?.trim() || r.email?.trim() || '').charAt(0).toUpperCase() || String(i + 1);
+  }
+
+  /** Every recipient has an email (step 1 "done" mark; the full check stays in validateDraft). */
+  get recipientsReady(): boolean {
+    return this.recipients.length > 0 && this.recipients.every(r => !!r.email?.trim());
+  }
+
+  get totalFields(): number {
+    return this.recipients.reduce((n, r) => n + r.fields.length, 0);
+  }
 
   // ── Templates ───────────────────────────────────────────────────────────
 
