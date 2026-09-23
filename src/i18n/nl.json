@@ -1032,7 +1032,19 @@
       "resend": "Link opnieuw verzenden",
       "resent": "Ondertekenlink opnieuw verzonden.",
       "resendError": "Kan de ondertekenlink niet opnieuw verzenden.",
-      "sendNow": "Nu verzenden"
+      "sendNow": "Nu verzenden",
+      "all": "Alle",
+      "fromWho": "van {{who}}",
+      "createdOn": "aangemaakt op {{date}}",
+      "expiresOn": "verloopt op {{date}}",
+      "signedOf": "{{count}} ondertekend",
+      "waitingOn": "wacht op {{who}}",
+      "download": "Downloaden",
+      "fieldsCount": "{{count}} veld(en)",
+      "updatedOn": "gewijzigd op {{date}}",
+      "remindersCount": "{{count}} herinnering(en)",
+      "viewedOn": "bekeken op {{date}}",
+      "signedOn": "ondertekend op {{date}}"
     },
     "templates": {
       "tab": "Sjablonen",

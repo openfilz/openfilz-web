@@ -3,7 +3,6 @@ import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -25,8 +24,9 @@ import { recipientColor } from '../../utils/signature-envelope';
 import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
 
 /**
- * e-Sign hub: envelopes waiting for my signature, envelopes I sent (with a detail
- * drawer: recipients + audit events), and my reusable templates.
+ * e-Sign hub: envelopes waiting for my signature, envelopes I sent (status chips as the filter,
+ * one row per envelope with its progress and who it waits for, and a detail drawer: facts,
+ * one card per recipient, audit events), and my reusable templates.
  */
 @Component({
   selector: 'app-signatures',
@@ -34,7 +34,7 @@ import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.co
   templateUrl: './signatures.component.html',
   styleUrls: ['./signatures.component.css'],
   imports: [
-    LocalDatePipe, CommonModule, MatTabsModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
+    LocalDatePipe, CommonModule, MatTabsModule, MatButtonModule, MatIconModule, MatDialogModule,
     MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, TranslatePipe,
     SealNoticeComponent
   ]
@@ -68,11 +68,6 @@ export class SignaturesComponent implements OnInit {
   detailEvents: SignatureEventDTO[] = [];
   loadingDetail = false;
   busy = new Set<string>();
-
-  sentColumns = ['title', 'recipients', 'status', 'created', 'expires', 'actions'];
-  toSignColumns = ['title', 'from', 'status', 'expires', 'actions'];
-  templateColumns = ['name', 'roles', 'fields', 'updated', 'actions'];
-  recipientColumns = ['order', 'recipient', 'role', 'auth', 'status', 'viewed', 'signed', 'reminders', 'fields', 'actions'];
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
@@ -143,6 +138,16 @@ export class SignaturesComponent implements OnInit {
     return s.length ? Math.round(100 * s.filter(r => r.status === 'SIGNED').length / s.length) : 0;
   }
 
+  /**
+   * Who a sent envelope waits for: the signer whose turn it is (sequential), else every signer who
+   * has not signed yet. Null when nobody is expected.
+   */
+  waitingOn(e: SignatureEnvelopeDTO): string | null {
+    const open = this.signers(e).filter(r => r.status !== 'SIGNED' && r.status !== 'DECLINED'
+      && (!e.sequential || r.orderIndex === e.currentOrder));
+    return open.length ? open.map(r => r.name || r.email).join(', ') : null;
+  }
+
   canCancel(e: SignatureEnvelopeDTO): boolean {
     return e.status === 'SENT' || e.status === 'DRAFT';
   }
@@ -170,6 +175,10 @@ export class SignaturesComponent implements OnInit {
     this.detail = e;
     this.detailEvents = [];
     this.loadingDetail = true;
+    // Below 1100px the drawer stacks under the list: bring it into view.
+    if (window.matchMedia?.('(max-width: 1100px)')?.matches) {
+      setTimeout(() => document.getElementById('signature-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
     this.api.events(e.id).subscribe({
       next: (ev) => { this.detailEvents = ev ?? []; this.loadingDetail = false; },
       error: () => { this.loadingDetail = false; }

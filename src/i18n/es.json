@@ -1032,7 +1032,19 @@
       "resend": "Reenviar enlace",
       "resent": "Enlace de firma reenviado.",
       "resendError": "No se pudo reenviar el enlace de firma.",
-      "sendNow": "Enviar ahora"
+      "sendNow": "Enviar ahora",
+      "all": "Todos",
+      "fromWho": "de {{who}}",
+      "createdOn": "creado el {{date}}",
+      "expiresOn": "caduca el {{date}}",
+      "signedOf": "{{count}} firmados",
+      "waitingOn": "espera a {{who}}",
+      "download": "Descargar",
+      "fieldsCount": "{{count}} campo(s)",
+      "updatedOn": "modificado el {{date}}",
+      "remindersCount": "{{count}} recordatorio(s)",
+      "viewedOn": "visto el {{date}}",
+      "signedOn": "firmado el {{date}}"
     },
     "templates": {
       "tab": "Plantillas",
