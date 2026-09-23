@@ -1738,7 +1738,18 @@
       "commentOptional": "Kommentar (optional)",
       "reassignTitle": "Diese Aufgabe jemand anderem übergeben",
       "emails": "E-Mail-Adressen",
-      "emailsHint": "Mehrere Adressen durch Kommas trennen"
+      "emailsHint": "Mehrere Adressen durch Kommas trennen",
+      "atState": "Status: {{state}}",
+      "requiredIntro": "Begründen Sie Ihre Wahl: Für „{{action}}“ ist ein Kommentar erforderlich. Er bleibt im Verlauf des Workflows, sichtbar für alle Beteiligten.",
+      "optionalIntro": "Sie können eine Notiz hinzufügen: Sie begleitet Ihre Entscheidung im Verlauf des Workflows.",
+      "reviewIntro": "Ihr Votum und Ihr Kommentar sind für die anderen Prüfer sichtbar.",
+      "reassignIntro": "Die unten eingetragenen Personen ersetzen diejenigen, die die Aufgabe derzeit bearbeiten können.",
+      "currently": "Derzeit",
+      "newPeople": "Übernehmen die Aufgabe",
+      "commentPlaceholder": "Ihr Kommentar…",
+      "reassignPlaceholder": "Warum abgeben? (optional)",
+      "enterKey": "Eingabe",
+      "toConfirm": "zum Bestätigen"
     },
     "panel": {
       "title": "Workflow",

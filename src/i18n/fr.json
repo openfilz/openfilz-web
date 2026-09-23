@@ -1738,7 +1738,18 @@
       "commentOptional": "Commentaire (facultatif)",
       "reassignTitle": "Confier cette tâche à quelqu’un d’autre",
       "emails": "Adresses e-mail",
-      "emailsHint": "Séparez plusieurs adresses par des virgules"
+      "emailsHint": "Séparez plusieurs adresses par des virgules",
+      "atState": "Étape : {{state}}",
+      "requiredIntro": "Expliquez votre choix : un commentaire est obligatoire pour « {{action}} ». Il reste dans l’historique du workflow, visible par ses participants.",
+      "optionalIntro": "Vous pouvez ajouter une note : elle accompagne votre décision dans l’historique du workflow.",
+      "reviewIntro": "Votre avis et votre commentaire sont visibles par les autres relecteurs.",
+      "reassignIntro": "Les personnes indiquées ci-dessous remplacent celles qui peuvent traiter la tâche aujourd’hui.",
+      "currently": "Actuellement",
+      "newPeople": "Traiteront la tâche",
+      "commentPlaceholder": "Votre commentaire…",
+      "reassignPlaceholder": "Pourquoi la confier ? (facultatif)",
+      "enterKey": "Entrée",
+      "toConfirm": "pour valider"
     },
     "panel": {
       "title": "Workflow",

@@ -187,7 +187,7 @@ export function defaultApproveTransition(transitions: WorkflowTransition[]): str
 }
 
 /** Icon of a transition button, from its style: approve, reject, send back, or move on. */
-export function transitionIcon(t: WorkflowTransition): string {
+export function transitionIcon(t: Pick<WorkflowTransition, 'style'>): string {
   switch (t.style) {
     case 'SUCCESS': return 'check';
     case 'DANGER': return 'close';
