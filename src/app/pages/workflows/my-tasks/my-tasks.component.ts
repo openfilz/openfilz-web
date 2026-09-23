@@ -105,7 +105,10 @@ export class MyTasksComponent implements OnInit, OnChanges {
     import('../../../dialogs/workflow-decision-dialog/workflow-decision-dialog.component').then(m => {
       this.dialog.open(m.WorkflowDecisionDialogComponent, {
         width: '520px', maxWidth: '96vw', autoFocus: false,
-        data: { title: t.label, subtitle: task.documentName, mode: 'comment', commentRequired: !!t.requireComment, confirmLabel: t.label, danger: t.style === 'DANGER' }
+        data: {
+          title: t.label, subtitle: task.documentName, stateLabel: task.stateLabel, mode: 'comment', commentRequired: !!t.requireComment,
+          confirmLabel: t.label, style: t.style, review: !!task.review
+        }
       }).afterClosed().subscribe(result => {
         if (result) this.complete(task, t, result.comment);
       });
