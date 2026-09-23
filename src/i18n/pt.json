@@ -1032,7 +1032,19 @@
       "resend": "Reenviar ligação",
       "resent": "Ligação de assinatura reenviada.",
       "resendError": "Não foi possível reenviar a ligação de assinatura.",
-      "sendNow": "Enviar agora"
+      "sendNow": "Enviar agora",
+      "all": "Todos",
+      "fromWho": "de {{who}}",
+      "createdOn": "criado a {{date}}",
+      "expiresOn": "expira a {{date}}",
+      "signedOf": "{{count}} assinados",
+      "waitingOn": "aguarda {{who}}",
+      "download": "Transferir",
+      "fieldsCount": "{{count}} campo(s)",
+      "updatedOn": "alterado a {{date}}",
+      "remindersCount": "{{count}} lembrete(s)",
+      "viewedOn": "visto a {{date}}",
+      "signedOn": "assinado a {{date}}"
     },
     "templates": {
       "tab": "Modelos",

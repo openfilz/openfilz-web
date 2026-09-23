@@ -1032,7 +1032,19 @@
       "resend": "إعادة إرسال الرابط",
       "resent": "أُعيد إرسال رابط التوقيع.",
       "resendError": "تعذر إعادة إرسال رابط التوقيع.",
-      "sendNow": "إرسال الآن"
+      "sendNow": "إرسال الآن",
+      "all": "الكل",
+      "fromWho": "من {{who}}",
+      "createdOn": "أُنشئ في {{date}}",
+      "expiresOn": "ينتهي في {{date}}",
+      "signedOf": "{{count}} موقَّع",
+      "waitingOn": "بانتظار {{who}}",
+      "download": "تنزيل",
+      "fieldsCount": "{{count}} حقل",
+      "updatedOn": "عُدّل في {{date}}",
+      "remindersCount": "{{count}} تذكير",
+      "viewedOn": "اطُّلع عليه في {{date}}",
+      "signedOn": "وُقّع في {{date}}"
     },
     "templates": {
       "tab": "القوالب",

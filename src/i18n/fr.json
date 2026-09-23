@@ -1032,7 +1032,19 @@
       "resend": "Renvoyer le lien",
       "resent": "Lien de signature renvoyé.",
       "resendError": "Impossible de renvoyer le lien de signature.",
-      "sendNow": "Envoyer maintenant"
+      "sendNow": "Envoyer maintenant",
+      "all": "Tous",
+      "fromWho": "de {{who}}",
+      "createdOn": "créé le {{date}}",
+      "expiresOn": "expire le {{date}}",
+      "signedOf": "{{count}} signés",
+      "waitingOn": "attend {{who}}",
+      "download": "Télécharger",
+      "fieldsCount": "{{count}} champ(s)",
+      "updatedOn": "modifié le {{date}}",
+      "remindersCount": "{{count}} rappel(s)",
+      "viewedOn": "consulté le {{date}}",
+      "signedOn": "signé le {{date}}"
     },
     "templates": {
       "tab": "Modèles",
