@@ -41,7 +41,7 @@
             @if (task.dueAt) {
               <span class="due" [class.late]="task.overdue">
                 <mat-icon>{{ task.overdue ? 'warning' : 'event' }}</mat-icon>
-                {{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}
+                {{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | localDate:'mediumDate') } }}
               </span>
             }
             <button mat-icon-button class="more" [matMenuTriggerFor]="menu" [disabled]="busy.has(task.id)" [attr.aria-label]="'toolbar.moreActions' | translate">
@@ -76,7 +76,7 @@
           <!-- Who / since when, then the decision -->
           <footer class="card-foot">
             <div class="meta">
-              <span><mat-icon>schedule</mat-icon>{{ 'workflow.tasks.waitingSince' | translate: { date: (task.createdAt | date:'medium') } }}</span>
+              <span><mat-icon>schedule</mat-icon>{{ 'workflow.tasks.waitingSince' | translate: { date: (task.createdAt | localDate:'medium') } }}</span>
               @if (!task.previousComment) {
                 <span><mat-icon>person_outline</mat-icon>{{ 'workflow.tasks.from' | translate: { who: task.previousActor || task.startedBy } }}</span>
               }

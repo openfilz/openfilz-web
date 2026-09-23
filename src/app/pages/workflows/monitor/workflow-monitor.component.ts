@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../../i18n/local-date.pipe';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +30,7 @@ import { WorkflowReviewProgressComponent } from '../../../components/workflow-re
 @Component({
   selector: 'app-workflow-monitor',
   standalone: true,
-  imports: [DatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule,
+  imports: [LocalDatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule,
     MatSelectModule, MatSlideToggleModule, MatTableModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
     WorkflowReviewProgressComponent],
   templateUrl: './workflow-monitor.component.html',

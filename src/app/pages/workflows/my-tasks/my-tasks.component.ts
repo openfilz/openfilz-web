@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../../i18n/local-date.pipe';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,7 +25,7 @@ import { WorkflowReviewProgressComponent } from '../../../components/workflow-re
 @Component({
   selector: 'app-workflow-my-tasks',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe,
+  imports: [LocalDatePipe, MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe,
     WorkflowReviewProgressComponent],
   templateUrl: './my-tasks.component.html',
   styleUrls: ['./my-tasks.component.css']

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../../i18n/local-date.pipe';
 import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -23,7 +23,7 @@ import { WorkflowReviewProgressComponent } from '../../workflow-review-progress/
 @Component({
   selector: 'app-document-workflow',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowReviewProgressComponent],
+  imports: [LocalDatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowReviewProgressComponent],
   templateUrl: './document-workflow.component.html',
   styleUrls: ['./document-workflow.component.css']
 })

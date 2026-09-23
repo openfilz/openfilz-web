@@ -81,7 +81,7 @@
           </ng-container>
           <ng-container matColumnDef="updated">
             <th mat-header-cell *matHeaderCellDef>{{ 'workflow.monitor.updated' | translate }}</th>
-            <td mat-cell *matCellDef="let i">{{ i.updatedAt | date:'medium' }}</td>
+            <td mat-cell *matCellDef="let i">{{ i.updatedAt | localDate:'medium' }}</td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="columns"></tr>
           <tr mat-row *matRowDef="let i; columns: columns" [class.selected]="detail?.instance?.id === i.id" (click)="open(i.id)"></tr>
@@ -111,13 +111,13 @@
         <dt>{{ 'workflow.monitor.status' | translate }}</dt>
         <dd><span class="badge" [class]="'s-' + d.instance.status">{{ 'workflow.status.' + d.instance.status | translate }}</span>
           <span class="chip" [style.--chip]="d.instance.currentStateColor || '#94a3b8'">{{ d.instance.currentStateLabel }}</span></dd>
-        <dt>{{ 'workflow.monitor.startedBy' | translate }}</dt><dd>{{ d.instance.startedBy }} · {{ d.instance.startedAt | date:'medium' }}</dd>
-        @if (d.instance.completedAt) { <dt>{{ 'workflow.monitor.ended' | translate }}</dt><dd>{{ d.instance.completedAt | date:'medium' }}</dd> }
+        <dt>{{ 'workflow.monitor.startedBy' | translate }}</dt><dd>{{ d.instance.startedBy }} · {{ d.instance.startedAt | localDate:'medium' }}</dd>
+        @if (d.instance.completedAt) { <dt>{{ 'workflow.monitor.ended' | translate }}</dt><dd>{{ d.instance.completedAt | localDate:'medium' }}</dd> }
         @if (d.instance.currentTask; as task) {
           <dt>{{ 'workflow.monitor.waitingFor' | translate }}</dt>
           <dd>
             <span [class.late]="task.overdue">{{ waitingFor(d.instance) }}</span>
-            @if (task.dueAt) { <div class="sub" [class.late]="task.overdue">{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</div> }
+            @if (task.dueAt) { <div class="sub" [class.late]="task.overdue">{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | localDate:'mediumDate') } }}</div> }
           </dd>
         }
       </dl>
@@ -141,7 +141,7 @@
             <span class="ev-dot"><mat-icon>{{ eventIcon(e.type) }}</mat-icon></span>
             <div class="ev-text">{{ eventText(e, d) }}</div>
             @if (reviewTally(e); as tally) { <div class="ev-tally">{{ tally }}</div> }
-            <div class="ev-meta">{{ e.createdAt | date:'medium' }}@if (e.actor && e.type !== 'REVIEWED') { · {{ e.actor }} }</div>
+            <div class="ev-meta">{{ e.createdAt | localDate:'medium' }}@if (e.actor && e.type !== 'REVIEWED') { · {{ e.actor }} }</div>
             @if (e.comment) { <blockquote class="note">{{ e.comment }}</blockquote> }
           </li>
         }

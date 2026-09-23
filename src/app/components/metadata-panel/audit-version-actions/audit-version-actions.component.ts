@@ -13,6 +13,7 @@ import { DocumentVersionInfo, RestoreVersionResponse } from '../../../models/doc
 import { DocumentVersionsService } from '../../../services/document-versions.service';
 import { RoleService } from '../../../services/role.service';
 import { isPreviewableVersion } from '../../../utils/viewer-mode.util';
+import { appLocale } from '../../../i18n/app-locale';
 
 /**
  * View / Download / Restore actions for one version-creating audit entry
@@ -70,7 +71,7 @@ export class AuditVersionActionsComponent {
 
   get versionDate(): string {
     const version = this.version;
-    return version ? new Date(version.lastModified).toLocaleString() : '';
+    return version ? new Date(version.lastModified).toLocaleString(appLocale(this.translate.getCurrentLang())) : '';
   }
 
   /** 1-based version number, oldest = v1 (position in the ascending version history) */

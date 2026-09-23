@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ interface Segment {
 @Component({
   selector: 'app-workflow-review-progress',
   standalone: true,
-  imports: [DatePipe, MatIconModule, MatTooltipModule, TranslatePipe],
+  imports: [LocalDatePipe, MatIconModule, MatTooltipModule, TranslatePipe],
   templateUrl: './workflow-review-progress.component.html',
   styleUrls: ['./workflow-review-progress.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

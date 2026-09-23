@@ -25,7 +25,7 @@
             {{ 'workflow.panel.waitingFor' | translate }}
             <b>{{ task.review ? waitingFor : task.mine ? ('workflow.panel.you' | translate) : waitingFor }}</b>
             @if (task.dueAt) {
-              <span class="due" [class.overdue]="task.overdue">· {{ (task.overdue ? 'workflow.panel.overdue' : 'workflow.panel.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</span>
+              <span class="due" [class.overdue]="task.overdue">· {{ (task.overdue ? 'workflow.panel.overdue' : 'workflow.panel.due') | translate: { date: (task.dueAt | localDate:'mediumDate') } }}</span>
             }
           </span>
         </div>
@@ -43,7 +43,7 @@
           </div>
         }
       }
-      <div class="meta">{{ 'workflow.panel.since' | translate: { who: instance.startedBy, date: (instance.startedAt | date:'mediumDate') } }}</div>
+      <div class="meta">{{ 'workflow.panel.since' | translate: { who: instance.startedBy, date: (instance.startedAt | localDate:'mediumDate') } }}</div>
     </div>
   } @else if (canStart) {
     <button mat-stroked-button class="start-btn" (click)="start()">

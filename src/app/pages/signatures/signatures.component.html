@@ -36,7 +36,7 @@
               </ng-container>
               <ng-container matColumnDef="expires">
                 <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.expires' | translate }}</th>
-                <td mat-cell *matCellDef="let e">{{ e.expiresAt | date:'medium' }}</td>
+                <td mat-cell *matCellDef="let e">{{ e.expiresAt | localDate:'medium' }}</td>
               </ng-container>
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
@@ -110,11 +110,11 @@
               </ng-container>
               <ng-container matColumnDef="created">
                 <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.created' | translate }}</th>
-                <td mat-cell *matCellDef="let e">{{ e.createdAt | date:'medium' }}</td>
+                <td mat-cell *matCellDef="let e">{{ e.createdAt | localDate:'medium' }}</td>
               </ng-container>
               <ng-container matColumnDef="expires">
                 <th mat-header-cell *matHeaderCellDef>{{ 'signature.list.expires' | translate }}</th>
-                <td mat-cell *matCellDef="let e">{{ e.expiresAt | date:'mediumDate' }}</td>
+                <td mat-cell *matCellDef="let e">{{ e.expiresAt | localDate:'mediumDate' }}</td>
               </ng-container>
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
@@ -196,7 +196,7 @@
               </ng-container>
               <ng-container matColumnDef="updated">
                 <th mat-header-cell *matHeaderCellDef>{{ 'signature.templates.updated' | translate }}</th>
-                <td mat-cell *matCellDef="let t">{{ t.updatedAt | date:'medium' }}</td>
+                <td mat-cell *matCellDef="let t">{{ t.updatedAt | localDate:'medium' }}</td>
               </ng-container>
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
@@ -241,10 +241,10 @@
       </div>
 
       <dl class="meta">
-        <dt>{{ 'signature.list.created' | translate }}</dt><dd>{{ d.createdAt | date:'medium' }}</dd>
-        @if (d.sentAt) { <dt>{{ 'signature.list.sentAt' | translate }}</dt><dd>{{ d.sentAt | date:'medium' }}</dd> }
-        <dt>{{ 'signature.list.expires' | translate }}</dt><dd>{{ d.expiresAt | date:'medium' }}</dd>
-        @if (d.completedAt) { <dt>{{ 'signature.list.completedAt' | translate }}</dt><dd>{{ d.completedAt | date:'medium' }}</dd> }
+        <dt>{{ 'signature.list.created' | translate }}</dt><dd>{{ d.createdAt | localDate:'medium' }}</dd>
+        @if (d.sentAt) { <dt>{{ 'signature.list.sentAt' | translate }}</dt><dd>{{ d.sentAt | localDate:'medium' }}</dd> }
+        <dt>{{ 'signature.list.expires' | translate }}</dt><dd>{{ d.expiresAt | localDate:'medium' }}</dd>
+        @if (d.completedAt) { <dt>{{ 'signature.list.completedAt' | translate }}</dt><dd>{{ d.completedAt | localDate:'medium' }}</dd> }
         <dt>{{ 'signature.request.sequential' | translate }}</dt><dd>{{ (d.sequential ? 'common.yes' : 'common.no') | translate }}</dd>
         @if (d.reminderDays) { <dt>{{ 'signature.request.reminderDays' | translate }}</dt><dd>{{ d.reminderDays }}</dd> }
         @if (d.sealProvider) { <dt>{{ 'signature.list.seal' | translate }}</dt><dd>{{ d.sealProvider }}</dd> }
@@ -296,8 +296,8 @@
                 <td>{{ 'signature.request.role' + r.role | translate }}</td>
                 <td>{{ 'signature.authMethods.' + r.authMethod | translate }}</td>
                 <td><span class="badge r-{{ r.status }}">{{ 'signature.recipientStatus.' + r.status | translate }}</span></td>
-                <td>{{ r.viewedAt ? (r.viewedAt | date:'short') : '—' }}</td>
-                <td>{{ r.signedAt ? (r.signedAt | date:'short') : '—' }}</td>
+                <td>{{ r.viewedAt ? (r.viewedAt | localDate:'short') : '—' }}</td>
+                <td>{{ r.signedAt ? (r.signedAt | localDate:'short') : '—' }}</td>
                 <td>{{ r.reminderCount }}</td>
                 <td>{{ r.fields.length || 0 }}</td>
                 <td class="row-actions">
@@ -329,7 +329,7 @@
               <div class="ev-body">
                 <div class="ev-title">{{ 'signature.events.' + ev.type | translate }}</div>
                 <div class="sub">
-                  {{ ev.createdAt | date:'medium' }}
+                  {{ ev.createdAt | localDate:'medium' }}
                   @if (ev.actor) { · {{ ev.actor }} }
                   @if (ev.signerIp) { · {{ ev.signerIp }} }
                 </div>

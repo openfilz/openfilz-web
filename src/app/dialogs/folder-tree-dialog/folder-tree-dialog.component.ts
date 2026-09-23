@@ -1,5 +1,5 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, Subscription, debounceTime } from 'rxjs';
 
@@ -58,7 +58,7 @@ interface BreadcrumbItem {
     MatPaginatorModule,
     MatMenuModule,
     MatTooltipModule,
-    DatePipe,
+    LocalDatePipe,
     TranslatePipe
 ]
 })
