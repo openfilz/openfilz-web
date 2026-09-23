@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -55,7 +56,7 @@ export interface BatchConflictDialogResult {
   templateUrl: './batch-conflict-dialog.component.html',
   styleUrls: ['./batch-conflict-dialog.component.css'],
   imports: [
-    CommonModule,
+    LocalDatePipe, CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatButtonToggleModule,

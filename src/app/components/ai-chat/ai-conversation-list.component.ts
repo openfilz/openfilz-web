@@ -4,9 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiChatService } from '../../services/ai-chat.service';
 import { AiConversation } from '../../models/ai-chat.models';
+import { appLocale } from '../../i18n/app-locale';
 
 @Component({
   selector: 'app-ai-conversation-list',
@@ -26,6 +27,7 @@ export class AiConversationListComponent implements OnInit, OnDestroy {
   @Output() newConversation = new EventEmitter<void>();
 
   chatService = inject(AiChatService);
+  private translate = inject(TranslateService);
   conversations: AiConversation[] = [];
   loading = false;
   private subscriptions: Subscription[] = [];
@@ -63,10 +65,10 @@ export class AiConversationListComponent implements OnInit, OnDestroy {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+    if (diffMins < 1) return this.translate.instant('audit.time.justNow');
+    if (diffMins < 60) return this.translate.instant(diffMins === 1 ? 'audit.time.minAgo' : 'audit.time.minsAgo', { count: diffMins });
+    if (diffHours < 24) return this.translate.instant(diffHours === 1 ? 'audit.time.hourAgo' : 'audit.time.hoursAgo', { count: diffHours });
+    if (diffDays < 7) return this.translate.instant(diffDays === 1 ? 'audit.time.dayAgo' : 'audit.time.daysAgo', { count: diffDays });
+    return date.toLocaleDateString(appLocale(this.translate.getCurrentLang()));
   }
 }

@@ -28,7 +28,7 @@
             <mat-icon class="vote-icon" [class.ok]="isApproval(v)">{{ isApproval(v) ? 'check_circle' : 'rate_review' }}</mat-icon>
             <span class="who">{{ v.reviewer }}</span>
             <span [class]="'pill ' + styleOf(v.transitionKey)">{{ labelOf(v.transitionKey) }}</span>
-            <span class="at">{{ v.at | date:'short' }}</span>
+            <span class="at">{{ v.at | localDate:'short' }}</span>
           </div>
           @if (v.comment) { <blockquote class="note">{{ v.comment }}</blockquote> }
         </li>

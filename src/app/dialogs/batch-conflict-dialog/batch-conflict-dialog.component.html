@@ -40,7 +40,7 @@
             <span class="meta-existing">
               {{ 'duplicateResolution.existing' | translate }}: {{ formatSize(conflict.existingSize) }}
               @if (conflict.existingUpdatedAt) {
-                · {{ conflict.existingUpdatedAt | date: 'mediumDate' }}
+                · {{ conflict.existingUpdatedAt | localDate: 'mediumDate' }}
               }
             </span>
             <mat-icon class="meta-arrow">arrow_forward</mat-icon>

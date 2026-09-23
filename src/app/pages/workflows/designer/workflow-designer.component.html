@@ -33,7 +33,7 @@
                 <span>{{ 'workflow.designer.statesCount' | translate: { count: def.spec.states.length } }}</span>
                 <span>{{ 'workflow.designer.runningCount' | translate: { count: def.runningCount } }}</span>
                 @if (def.triggerFolderIds.length) { <span><mat-icon class="mini">folder_special</mat-icon>{{ 'workflow.designer.hotFolders' | translate: { count: def.triggerFolderIds.length } }}</span> }
-                <span class="dim">v{{ def.version }} · {{ def.updatedAt | date:'mediumDate' }}</span>
+                <span class="dim">v{{ def.version }} · {{ def.updatedAt | localDate:'mediumDate' }}</span>
                 @if (!def.canEdit) { <span class="owner"><mat-icon class="mini">person</mat-icon>{{ 'workflow.designer.ownedBy' | translate: { who: def.createdBy } }}</span> }
               </div>
             </div>

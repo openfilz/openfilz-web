@@ -88,7 +88,7 @@
             <mat-icon class="folder-icon">folder</mat-icon>
             <span class="folder-name">{{ folder.name }}</span>
             @if (sortBy !== 'name' && folder[sortBy]) {
-              <span class="folder-date">{{ folder[sortBy] | date: 'mediumDate' }}</span>
+              <span class="folder-date">{{ folder[sortBy] | localDate: 'mediumDate' }}</span>
             }
             <button mat-icon-button class="enter-folder-btn"
                     (click)="enterFolder(folder); $event.stopPropagation()"

@@ -19,6 +19,7 @@ import { SettingsService } from './app/services/settings.service';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { providePaginatorIntl } from './app/i18n/paginator-intl';
+import { registerAppLocales } from './app/i18n/app-locale';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 
 @Component({
@@ -47,6 +48,9 @@ function isPublicSignPage(): boolean {
   const path = window.location.pathname.replace(/\/+$/, '');
   return path === '/sign' || path.endsWith('/sign');
 }
+
+// Date formats of every UI language (`localDate` pipe) — Angular only bundles en-US.
+registerAppLocales();
 
 bootstrapApplication(App, {
   providers: [

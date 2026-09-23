@@ -84,11 +84,11 @@
               }
               @if (insights.fileCreatedAt) {
                 <dt>{{ 'insights.fileCreatedAt' | translate }}</dt>
-                <dd>{{ insights.fileCreatedAt | date:'medium' }}</dd>
+                <dd>{{ insights.fileCreatedAt | localDate:'medium' }}</dd>
               }
               @if (insights.fileModifiedAt) {
                 <dt>{{ 'insights.fileModifiedAt' | translate }}</dt>
-                <dd>{{ insights.fileModifiedAt | date:'medium' }}</dd>
+                <dd>{{ insights.fileModifiedAt | localDate:'medium' }}</dd>
               }
             </dl>
           }
