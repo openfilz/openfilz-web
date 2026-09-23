@@ -1032,7 +1032,19 @@
       "resend": "Resend link",
       "resent": "Signing link resent.",
       "resendError": "Could not resend the signing link.",
-      "sendNow": "Send now"
+      "sendNow": "Send now",
+      "all": "All",
+      "fromWho": "from {{who}}",
+      "createdOn": "created {{date}}",
+      "expiresOn": "expires {{date}}",
+      "signedOf": "{{count}} signed",
+      "waitingOn": "waiting for {{who}}",
+      "download": "Download",
+      "fieldsCount": "{{count}} field(s)",
+      "updatedOn": "updated {{date}}",
+      "remindersCount": "{{count}} reminder(s)",
+      "viewedOn": "viewed {{date}}",
+      "signedOn": "signed {{date}}"
     },
     "templates": {
       "tab": "Templates",

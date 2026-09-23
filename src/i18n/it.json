@@ -1032,7 +1032,19 @@
       "resend": "Reinvia link",
       "resent": "Link di firma reinviato.",
       "resendError": "Impossibile reinviare il link di firma.",
-      "sendNow": "Invia ora"
+      "sendNow": "Invia ora",
+      "all": "Tutti",
+      "fromWho": "da {{who}}",
+      "createdOn": "creato il {{date}}",
+      "expiresOn": "scade il {{date}}",
+      "signedOf": "{{count}} firmati",
+      "waitingOn": "in attesa di {{who}}",
+      "download": "Scarica",
+      "fieldsCount": "{{count}} campo/i",
+      "updatedOn": "modificato il {{date}}",
+      "remindersCount": "{{count}} promemoria",
+      "viewedOn": "visto il {{date}}",
+      "signedOn": "firmato il {{date}}"
     },
     "templates": {
       "tab": "Modelli",

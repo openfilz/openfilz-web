@@ -1032,7 +1032,19 @@
       "resend": "Link erneut senden",
       "resent": "Signaturlink erneut gesendet.",
       "resendError": "Der Signaturlink konnte nicht erneut gesendet werden.",
-      "sendNow": "Jetzt senden"
+      "sendNow": "Jetzt senden",
+      "all": "Alle",
+      "fromWho": "von {{who}}",
+      "createdOn": "erstellt am {{date}}",
+      "expiresOn": "läuft ab am {{date}}",
+      "signedOf": "{{count}} unterschrieben",
+      "waitingOn": "wartet auf {{who}}",
+      "download": "Herunterladen",
+      "fieldsCount": "{{count}} Feld(er)",
+      "updatedOn": "geändert am {{date}}",
+      "remindersCount": "{{count}} Erinnerung(en)",
+      "viewedOn": "angesehen am {{date}}",
+      "signedOn": "unterschrieben am {{date}}"
     },
     "templates": {
       "tab": "Vorlagen",
