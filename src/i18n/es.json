@@ -1744,8 +1744,6 @@
       "title": "Flujo de trabajo",
       "waitingFor": "Esperando a",
       "you": "usted",
-      "due": "vence {{date}}",
-      "overdue": "atrasada desde {{date}}",
       "since": "Iniciado por {{who}} el {{date}}",
       "start": "Iniciar un flujo",
       "openMonitor": "Abrir en el seguimiento",

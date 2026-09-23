@@ -1744,8 +1744,6 @@
       "title": "Workflow",
       "waitingFor": "Wacht op",
       "you": "u",
-      "due": "deadline {{date}}",
-      "overdue": "te laat sinds {{date}}",
       "since": "Gestart door {{who}} op {{date}}",
       "start": "Een workflow starten",
       "openMonitor": "Openen in het overzicht",
