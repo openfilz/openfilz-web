@@ -1545,12 +1545,13 @@
         "parallel-review": "Relecture parallèle"
       },
       "templateHints": {
-        "approval": "Brouillon → En attente d’approbation → Approuvé / Rejeté",
-        "review-archive": "Brouillon → En relecture → Approuvé → Archivé",
-        "two-step": "Deux approbateurs successifs",
-        "blank": "Partir de zéro",
-        "parallel-review": "Plusieurs relecteurs en parallèle, chacun commente"
+        "approval": "Une personne approuve ou rejette le document.",
+        "review-archive": "Relu, approuvé puis archivé ; le relecteur peut demander des modifications.",
+        "two-step": "Deux personnes approuvent l’une après l’autre.",
+        "blank": "Partez de zéro et construisez vos propres statuts.",
+        "parallel-review": "Plusieurs relecteurs donnent leur avis en même temps, chacun peut commenter."
       },
+      "toName": "À désigner au lancement :",
       "labels": {
         "draft": "Brouillon",
         "submit": "Soumettre pour approbation",

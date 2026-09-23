@@ -32,12 +32,16 @@ interface PreviewChip {
 interface TemplateCard extends WorkflowTemplateInfo {
   /** Statuses by diagram column (left to right), each column top to bottom. */
   columns: PreviewChip[][];
+  /** Number of statuses. */
+  statuses: number;
+  /** `workflow.designer.labels.*` keys of the people the starter names ("chosen at start"). */
+  toName: string[];
 }
 
 /**
- * The "New workflow" template cards: coloured icon tile, name, one-line hint and a mini preview of
- * the flow (status chips column by column, a parallel review drawn as parallel lanes), plus a
- * distinct "Blank" card. Shared by the designer's empty state and the template dialog so both look
+ * The "New workflow" template cards: coloured icon tile, name, what the template is for, its facts
+ * (number of statuses, who the starter names) and a mini preview of the flow (status chips column
+ * by column, a parallel review drawn as parallel lanes), plus a "Blank" strip spanning the grid. Shared by the designer's empty state and the template dialog so both look
  * alike. Arrow keys move between cards. Dedicated file for the enterprise fork.
  */
 @Component({
@@ -56,7 +60,16 @@ export class WorkflowTemplatePickerComponent {
   private host = inject(ElementRef<HTMLElement>);
 
   // Labels stay i18n keys (identity `t`): the preview translates them for its tooltips.
-  readonly cards: TemplateCard[] = WORKFLOW_TEMPLATES.map(t => ({ ...t, columns: t.id === 'blank' ? [] : previewColumns(t.id) }));
+  readonly cards: TemplateCard[] = WORKFLOW_TEMPLATES.map(t => {
+    if (t.id === 'blank') return { ...t, columns: [], statuses: 0, toName: [] };
+    const spec = templateSpec(t.id, key => key);
+    return {
+      ...t,
+      columns: previewColumns(t.id),
+      statuses: spec.states.length,
+      toName: spec.states.filter(s => s.assignees?.type === 'CHOSEN_AT_START' && s.assignees.label).map(s => s.assignees!.label!)
+    };
+  });
 
   /** Grid navigation: arrows move the focus to the previous / next card (left/right follow the reading direction). */
   onKey(event: KeyboardEvent): void {
