@@ -1744,8 +1744,6 @@
       "title": "Flusso di lavoro",
       "waitingFor": "In attesa di",
       "you": "te",
-      "due": "scadenza {{date}}",
-      "overdue": "in ritardo dal {{date}}",
       "since": "Avviato da {{who}} il {{date}}",
       "start": "Avvia un flusso",
       "openMonitor": "Apri nel monitoraggio",

@@ -13,6 +13,7 @@ import { WorkflowService } from '../../../services/workflow.service';
 import { WorkflowTaskDTO, WorkflowTransition } from '../../../models/workflow.models';
 import { FileIconService } from '../../../services/file-icon.service';
 import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
+import { transitionIcon } from '../../../utils/workflow-spec';
 
 /**
  * "My tasks": one card per open task the user may act on, overdue first — the document and where it
@@ -162,15 +163,7 @@ export class MyTasksComponent implements OnInit, OnChanges {
     return (who ?? '?').trim().charAt(0) || '?';
   }
 
-  /** An icon that says what the button does: approve, reject, send back, or move on. */
-  actionIcon(t: WorkflowTransition): string {
-    switch (t.style) {
-      case 'SUCCESS': return 'check';
-      case 'DANGER': return 'close';
-      case 'NEUTRAL': return 'undo';
-      default: return 'arrow_forward';
-    }
-  }
+  readonly actionIcon = transitionIcon;
 
   styleClass(t: WorkflowTransition): string {
     return 'style-' + (t.style ?? 'PRIMARY').toLowerCase();
