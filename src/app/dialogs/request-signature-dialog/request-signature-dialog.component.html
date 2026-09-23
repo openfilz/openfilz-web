@@ -1,8 +1,8 @@
 <div class="dialog-header">
-  <mat-icon class="header-icon" aria-hidden="true">draw</mat-icon>
+  <span class="header-icon" aria-hidden="true"><mat-icon>draw</mat-icon></span>
   <div class="header-text">
     <h2>{{ 'signature.request.title' | translate }}</h2>
-    <p class="subtitle">{{ data.documentName }}</p>
+    <p class="subtitle"><mat-icon aria-hidden="true">picture_as_pdf</mat-icon><span>{{ data.documentName }}</span></p>
   </div>
   <button mat-icon-button class="close-btn" type="button" (click)="cancel()"
           [attr.aria-label]="'common.close' | translate">
@@ -12,11 +12,12 @@
 
 <div mat-dialog-content class="dialog-content" #dialogContent>
   <div class="grid">
-    <!-- ── Left: envelope + recipients ─────────────────────────────────── -->
-    <div class="left-col">
-      <!-- Templates -->
-      <div class="template-row">
-        <mat-form-field appearance="outline" class="ff full">
+    <!-- ── 1. Recipients ────────────────────────────────────────────────── -->
+    <section class="step area-recipients">
+      <!-- Templates: pre-fill recipients + fields in one go -->
+      <div class="template-bar">
+        <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+          <mat-icon matPrefix aria-hidden="true">bookmarks</mat-icon>
           <mat-label>{{ 'signature.templates.load' | translate }}</mat-label>
           <mat-select [value]="selectedTemplateId" (selectionChange)="applyTemplate($event.value)"
                       [attr.aria-label]="'signature.templates.load' | translate">
@@ -26,273 +27,323 @@
             }
           </mat-select>
         </mat-form-field>
-        <button mat-stroked-button type="button" class="tpl-save" (click)="saveAsTemplate()"
-                [disabled]="savingTemplate" [matTooltip]="'signature.templates.saveHint' | translate">
+        <button mat-stroked-button type="button" class="soft-btn tpl-save" (click)="saveAsTemplate()"
+                [disabled]="savingTemplate" [matTooltip]="'signature.templates.saveHint' | translate"
+                [attr.aria-label]="'signature.templates.saveAs' | translate">
           <mat-icon aria-hidden="true">bookmark_add</mat-icon>
-          <span>{{ 'signature.templates.saveAs' | translate }}</span>
         </button>
       </div>
 
-      <mat-form-field appearance="outline" class="ff full">
+      <div class="step-head">
+        <span class="step-num" [class.done]="recipientsReady">1</span>
+        <div class="step-title">
+          <h3>{{ 'signature.request.recipients' | translate }}</h3>
+          <p>{{ 'signature.request.stepRecipientsHint' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="recipient-list">
+        @for (r of recipients; track r; let i = $index) {
+          <div class="recipient" [class.active]="activeRecipient === i" [class.invalid]="hasProblem(i)"
+               [style.--rc]="color(i)" (click)="activeRecipient = i" role="group"
+               [attr.aria-label]="recipientLabel(r, i)">
+            <div class="recipient-head">
+              <span class="avatar" [class.cc]="r.role === 'CC' && !sequential" aria-hidden="true">
+                @if (sequential) { {{ i + 1 }} } @else if (r.role === 'CC') { <mat-icon>forward_to_inbox</mat-icon> } @else { {{ initial(r, i) }} }
+              </span>
+              <button type="button" class="recipient-summary" (click)="activeRecipient = i"
+                      [attr.aria-expanded]="activeRecipient === i">
+                <span class="recipient-name">{{ recipientLabel(r, i) }}</span>
+                <span class="recipient-sub">{{ recipientSub(r) }}</span>
+              </button>
+              @if (r.role !== 'CC') {
+                <span class="count" [class.placed]="r.fields.length > 0">
+                  <mat-icon aria-hidden="true">{{ r.fields.length ? 'check_circle' : 'pending' }}</mat-icon>
+                  {{ 'signature.request.fieldCount' | translate: { count: r.fields.length } }}
+                </span>
+              }
+              <div class="head-actions">
+                @if (sequential && recipients.length > 1) {
+                  <button mat-icon-button type="button" class="mini" (click)="moveRecipient(i, -1); $event.stopPropagation()"
+                          [disabled]="i === 0" [attr.aria-label]="'signature.request.moveUp' | translate"
+                          [matTooltip]="'signature.request.moveUp' | translate">
+                    <mat-icon aria-hidden="true">arrow_upward</mat-icon>
+                  </button>
+                  <button mat-icon-button type="button" class="mini" (click)="moveRecipient(i, 1); $event.stopPropagation()"
+                          [disabled]="i === recipients.length - 1" [attr.aria-label]="'signature.request.moveDown' | translate"
+                          [matTooltip]="'signature.request.moveDown' | translate">
+                    <mat-icon aria-hidden="true">arrow_downward</mat-icon>
+                  </button>
+                }
+                <button mat-icon-button type="button" class="mini danger" (click)="removeRecipient(i); $event.stopPropagation()"
+                        [disabled]="recipients.length === 1" [attr.aria-label]="'common.delete' | translate"
+                        [matTooltip]="'common.delete' | translate">
+                  <mat-icon aria-hidden="true">delete_outline</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Only the recipient being edited shows its form: the others fold to their summary line. -->
+            @if (activeRecipient === i) {
+              <div class="recipient-body">
+                <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                  <mat-label>{{ 'signature.request.recipientName' | translate }}</mat-label>
+                  <input matInput [(ngModel)]="r.name" (click)="$event.stopPropagation()" maxlength="255">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                  <mat-label>{{ 'signature.request.recipientEmail' | translate }}</mat-label>
+                  <input matInput type="email" [(ngModel)]="r.email" (click)="$event.stopPropagation()"
+                         maxlength="255" required>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                  <mat-label>{{ 'signature.request.role' | translate }}</mat-label>
+                  <mat-select [(ngModel)]="r.role" (selectionChange)="onRoleChange(r)" (click)="$event.stopPropagation()">
+                    @for (role of roles; track role) {
+                      <mat-option [value]="role">{{ 'signature.request.role' + role | translate }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                  <mat-label>{{ 'signature.request.authMethod' | translate }}</mat-label>
+                  <mat-select [(ngModel)]="r.authMethod" (click)="$event.stopPropagation()">
+                    @for (m of authMethods; track m) {
+                      <mat-option [value]="m">{{ 'signature.authMethods.' + m | translate }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                @if (r.authMethod === 'SMS_OTP') {
+                  <mat-form-field appearance="outline" class="ff wide" subscriptSizing="dynamic">
+                    <mat-icon matPrefix aria-hidden="true">smartphone</mat-icon>
+                    <mat-label>{{ 'signature.request.phone' | translate }}</mat-label>
+                    <input matInput type="tel" [(ngModel)]="r.phone" (click)="$event.stopPropagation()"
+                           maxlength="32" placeholder="+33612345678" required>
+                  </mat-form-field>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <button mat-stroked-button type="button" class="add-btn" (click)="addRecipient()">
+        <mat-icon aria-hidden="true">person_add</mat-icon>
+        <span>{{ 'signature.request.addRecipient' | translate }}</span>
+      </button>
+
+      <div class="switch-row">
+        <mat-slide-toggle [(ngModel)]="sequential">{{ 'signature.request.sequential' | translate }}</mat-slide-toggle>
+        <p>{{ 'signature.request.sequentialHint' | translate }}</p>
+      </div>
+    </section>
+
+    <!-- ── 2. Fields on the document ────────────────────────────────────── -->
+    <section class="step area-fields">
+      <div class="step-head">
+        <span class="step-num" [class.done]="totalFields > 0">2</span>
+        <div class="step-title">
+          <h3>{{ 'signature.request.stepFields' | translate }}</h3>
+          <p>{{ 'signature.request.placeHint' | translate }}</p>
+        </div>
+      </div>
+
+      @if (loadingPdf) {
+        <div class="pdf-state"><mat-spinner diameter="36"></mat-spinner></div>
+      } @else if (pdfError) {
+        <div class="pdf-state error"><mat-icon aria-hidden="true">error_outline</mat-icon>{{ 'signature.request.pdfError' | translate }}</div>
+      } @else {
+        <!-- Field palette: drag a chip onto the page (or press Enter/Space to drop it centred). -->
+        <div class="palette" role="toolbar" [attr.aria-label]="'signature.request.palette' | translate"
+             [style.--rc]="color(activeRecipient)" [class.disabled]="recipients[activeRecipient]?.role === 'CC'">
+          <div class="for-row">
+            <span class="for-label">{{ 'signature.request.fieldsFor' | translate }}</span>
+            @for (r of recipients; track r; let i = $index) {
+              @if (r.role !== 'CC') {
+                <button type="button" class="for-pill" [class.on]="activeRecipient === i" [style.--rc]="color(i)"
+                        (click)="activeRecipient = i" [attr.aria-pressed]="activeRecipient === i">
+                  <span class="dot" aria-hidden="true"></span><span class="for-name">{{ recipientLabel(r, i) }}</span>
+                </button>
+              }
+            }
+          </div>
+          @if (recipients[activeRecipient]?.role === 'CC') {
+            <p class="cc-note"><mat-icon aria-hidden="true">info_outline</mat-icon>{{ 'signature.request.errors.ccHasFieldsShort' | translate }}</p>
+          }
+          @for (g of paletteGroups; track g.key) {
+            <div class="palette-group">
+              <span class="group-label">{{ 'signature.request.' + g.key | translate }}</span>
+              <div class="palette-chips">
+                @for (t of g.types; track t) {
+                  <button type="button" class="palette-chip" (pointerdown)="startPlace(t, $event)"
+                          (keydown.enter)="placeAtCenter(t)" (keydown.space)="placeAtCenter(t); $event.preventDefault()"
+                          [matTooltip]="'signature.fieldHints.' + t | translate"
+                          [attr.aria-label]="'signature.fieldTypes.' + t | translate">
+                    <mat-icon aria-hidden="true">{{ fieldIcons[t] }}</mat-icon>
+                    <span>{{ 'signature.fieldTypes.' + t | translate }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="viewer">
+          <div class="pdf-toolbar">
+            <button mat-icon-button type="button" class="mini" (click)="prevPage()" [disabled]="currentPage === 1"
+                    [attr.aria-label]="'signature.request.prevPage' | translate">
+              <mat-icon aria-hidden="true" class="rtl-flip">chevron_left</mat-icon>
+            </button>
+            <span class="page-indicator">
+              <input class="page-input" type="number" min="1" [max]="totalPages" [value]="currentPage"
+                     (change)="goToPage(+$any($event.target).value)" [attr.aria-label]="'signature.request.page' | translate">
+              <span>/ {{ totalPages }}</span>
+            </span>
+            <button mat-icon-button type="button" class="mini" (click)="nextPage()" [disabled]="currentPage === totalPages"
+                    [attr.aria-label]="'signature.request.nextPage' | translate">
+              <mat-icon aria-hidden="true" class="rtl-flip">chevron_right</mat-icon>
+            </button>
+            <span class="spacer"></span>
+            <button mat-icon-button type="button" class="mini" (click)="zoomOut()" [disabled]="!canZoomOut"
+                    [attr.aria-label]="'signature.request.zoomOut' | translate">
+              <mat-icon aria-hidden="true">zoom_out</mat-icon>
+            </button>
+            <span class="zoom-label">{{ zoom * 100 | number:'1.0-0' }}%</span>
+            <button mat-icon-button type="button" class="mini" (click)="zoomIn()" [disabled]="!canZoomIn"
+                    [attr.aria-label]="'signature.request.zoomIn' | translate">
+              <mat-icon aria-hidden="true">zoom_in</mat-icon>
+            </button>
+          </div>
+
+          <div class="pdf-stage" #pdfStage>
+            <div class="pdf-rel" [class.drop-active]="drag?.mode === 'place'">
+              <canvas #pdfCanvas></canvas>
+
+              @for (r of recipients; track r; let ri = $index) {
+                @for (f of r.fields; track f.localId) {
+                  <div class="marker" [ngStyle]="fieldStyle(f, ri)"
+                       [class.active]="activeRecipient === ri"
+                       [class.selected]="selectedField === f"
+                       [class.optional]="!f.required"
+                       (pointerdown)="startMove(ri, f, $event)"
+                       tabindex="0" role="button"
+                       [attr.aria-label]="('signature.fieldTypes.' + f.type | translate) + ' — ' + recipientLabel(r, ri)"
+                       (keydown.enter)="selectField(f)" (keydown.delete)="removeField(r, f)">
+                    <mat-icon class="marker-icon" aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
+                    <span class="marker-label">{{ f.label || ('signature.fieldTypes.' + f.type | translate) }}</span>
+                    <button type="button" class="marker-del" (pointerdown)="$event.stopPropagation()"
+                            (click)="removeField(r, f, $event)" [attr.aria-label]="'common.delete' | translate">
+                      <mat-icon aria-hidden="true">close</mat-icon>
+                    </button>
+                    <span class="marker-resize" (pointerdown)="startResize(ri, f, $event)" aria-hidden="true"></span>
+                  </div>
+                }
+              }
+
+              <!-- Property popover for the selected field -->
+              @if (selectedField; as sf) {
+                @if (sf.page === currentPage - 1) {
+                  <div class="field-popover" [ngStyle]="popoverStyle(sf)" [style.--rc]="color(selectedOwner)"
+                       (pointerdown)="$event.stopPropagation()" role="dialog"
+                       [attr.aria-label]="'signature.request.fieldProperties' | translate">
+                    <div class="popover-head">
+                      <span class="popover-icon"><mat-icon aria-hidden="true">{{ fieldIcons[sf.type] }}</mat-icon></span>
+                      <span class="popover-title">
+                        <span>{{ 'signature.fieldTypes.' + sf.type | translate }}</span>
+                        @if (selectedOwner >= 0) { <small>{{ recipientLabel(recipients[selectedOwner], selectedOwner) }}</small> }
+                      </span>
+                      <button mat-icon-button type="button" class="mini" (click)="selectField(null)"
+                              [attr.aria-label]="'common.close' | translate">
+                        <mat-icon aria-hidden="true">close</mat-icon>
+                      </button>
+                    </div>
+                    <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                      <mat-label>{{ 'signature.request.fieldLabel' | translate }}</mat-label>
+                      <input matInput [(ngModel)]="sf.label" maxlength="255">
+                    </mat-form-field>
+                    @if (sf.type !== 'DATE_SIGNED') {
+                      <mat-slide-toggle [(ngModel)]="sf.required">{{ 'signature.request.required' | translate }}</mat-slide-toggle>
+                    } @else {
+                      <p class="auto-note"><mat-icon aria-hidden="true">auto_awesome</mat-icon><span>{{ 'signature.request.autoFilled' | translate }}</span></p>
+                    }
+                    @if (isChoice(sf.type)) {
+                      <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
+                        <mat-label>{{ 'signature.request.choices' | translate }}</mat-label>
+                        <textarea matInput rows="3" [(ngModel)]="choicesText" (ngModelChange)="onChoicesChange()"
+                                  [placeholder]="'signature.request.choicesPlaceholder' | translate"></textarea>
+                      </mat-form-field>
+                    }
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- ── 3. Message + options ─────────────────────────────────────────── -->
+    <section class="step area-message">
+      <div class="step-head">
+        <span class="step-num" [class.done]="!!title.trim()">3</span>
+        <div class="step-title"><h3>{{ 'signature.request.stepMessage' | translate }}</h3></div>
+      </div>
+
+      <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
         <mat-label>{{ 'signature.request.envelopeTitle' | translate }}</mat-label>
         <input matInput [(ngModel)]="title" maxlength="255" required>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="ff full">
+      <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
         <mat-label>{{ 'signature.request.message' | translate }}</mat-label>
-        <textarea matInput [(ngModel)]="message" rows="2" maxlength="2000"></textarea>
+        <textarea matInput [(ngModel)]="message" rows="3" maxlength="2000"></textarea>
       </mat-form-field>
 
       <div class="options-row">
-        <mat-form-field appearance="outline" class="ff small">
+        <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
           <mat-label>{{ 'signature.request.expiresInDays' | translate }}</mat-label>
           <input matInput type="number" min="1" max="365" [(ngModel)]="expiresInDays">
         </mat-form-field>
         <!-- Only where something actually sends the reminders: the core stores the cadence but
              has no scheduler, so offering the field there would record a setting that never fires. -->
         @if (remindersActive) {
-          <mat-form-field appearance="outline" class="ff small">
+          <mat-form-field appearance="outline" class="ff" subscriptSizing="dynamic">
             <mat-label>{{ 'signature.request.reminderDays' | translate }}</mat-label>
             <input matInput type="number" min="1" max="90" [(ngModel)]="reminderDays"
                    [placeholder]="'signature.request.noReminder' | translate">
           </mat-form-field>
         }
-        <mat-slide-toggle class="seq-toggle" [(ngModel)]="sequential"
-                          [matTooltip]="'signature.request.sequentialHint' | translate">
-          {{ 'signature.request.sequential' | translate }}
-        </mat-slide-toggle>
       </div>
-
-      <!-- Recipients -->
-      <div class="recipients">
-        <div class="recipients-head">
-          <span>{{ 'signature.request.recipients' | translate }}</span>
-          <button mat-stroked-button type="button" (click)="addRecipient()">
-            <mat-icon aria-hidden="true">person_add</mat-icon>
-            <span>{{ 'signature.request.addRecipient' | translate }}</span>
-          </button>
-        </div>
-
-        @for (r of recipients; track r; let i = $index) {
-          <div class="recipient-row" [class.active]="activeRecipient === i" [class.invalid]="hasProblem(i)"
-               [style.--rc]="color(i)" (click)="activeRecipient = i" role="group"
-               [attr.aria-label]="recipientLabel(r, i)">
-            <div class="recipient-top">
-              <span class="color-dot" aria-hidden="true"></span>
-              @if (sequential) {
-                <span class="order-badge" [attr.aria-label]="'signature.request.order' | translate">{{ i + 1 }}</span>
-                <button mat-icon-button type="button" class="mini" (click)="moveRecipient(i, -1); $event.stopPropagation()"
-                        [disabled]="i === 0" [attr.aria-label]="'signature.request.moveUp' | translate">
-                  <mat-icon aria-hidden="true">arrow_upward</mat-icon>
-                </button>
-                <button mat-icon-button type="button" class="mini" (click)="moveRecipient(i, 1); $event.stopPropagation()"
-                        [disabled]="i === recipients.length - 1" [attr.aria-label]="'signature.request.moveDown' | translate">
-                  <mat-icon aria-hidden="true">arrow_downward</mat-icon>
-                </button>
-              }
-              <span class="recipient-title">{{ recipientLabel(r, i) }}</span>
-              <span class="chip" [class.placed]="r.role === 'CC' || r.fields.length > 0">
-                @if (r.role === 'CC') {
-                  {{ 'signature.request.roleCC' | translate }}
-                } @else {
-                  {{ 'signature.request.fieldCount' | translate: { count: r.fields.length } }}
-                }
-              </span>
-              <button mat-icon-button type="button" (click)="removeRecipient(i); $event.stopPropagation()"
-                      [disabled]="recipients.length === 1"
-                      [attr.aria-label]="'common.delete' | translate">
-                <mat-icon aria-hidden="true">delete</mat-icon>
-              </button>
-            </div>
-
-            <div class="recipient-fields">
-              <mat-form-field appearance="outline" class="ff">
-                <mat-label>{{ 'signature.request.recipientName' | translate }}</mat-label>
-                <input matInput [(ngModel)]="r.name" (click)="$event.stopPropagation()" maxlength="255">
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="ff">
-                <mat-label>{{ 'signature.request.recipientEmail' | translate }}</mat-label>
-                <input matInput type="email" [(ngModel)]="r.email" (click)="$event.stopPropagation()"
-                       maxlength="255" required>
-              </mat-form-field>
-            </div>
-            <div class="recipient-fields">
-              <mat-form-field appearance="outline" class="ff">
-                <mat-label>{{ 'signature.request.role' | translate }}</mat-label>
-                <mat-select [(ngModel)]="r.role" (selectionChange)="onRoleChange(r)" (click)="$event.stopPropagation()">
-                  @for (role of roles; track role) {
-                    <mat-option [value]="role">{{ 'signature.request.role' + role | translate }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="ff">
-                <mat-label>{{ 'signature.request.authMethod' | translate }}</mat-label>
-                <mat-select [(ngModel)]="r.authMethod" (click)="$event.stopPropagation()">
-                  @for (m of authMethods; track m) {
-                    <mat-option [value]="m">{{ 'signature.authMethods.' + m | translate }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-              @if (r.authMethod === 'SMS_OTP') {
-                <mat-form-field appearance="outline" class="ff">
-                  <mat-label>{{ 'signature.request.phone' | translate }}</mat-label>
-                  <input matInput type="tel" [(ngModel)]="r.phone" (click)="$event.stopPropagation()"
-                         maxlength="32" placeholder="+33612345678" required>
-                </mat-form-field>
-              }
-            </div>
-          </div>
-        }
-
-        @if (showProblems && problems.length) {
-          <ul class="problems" role="alert">
-            @for (p of problems; track $index) {
-              <li>{{ p.key | translate: p.params }}</li>
-            }
-          </ul>
-        }
-
-        <div class="hint info">
-          <mat-icon aria-hidden="true">info</mat-icon>
-          <span>{{ 'signature.request.placeHint' | translate }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Right: PDF + field palette ──────────────────────────────────── -->
-    <div class="right-col">
-      @if (loadingPdf) {
-        <div class="pdf-state"><mat-spinner diameter="36"></mat-spinner></div>
-      } @else if (pdfError) {
-        <div class="pdf-state error">{{ 'signature.request.pdfError' | translate }}</div>
-      } @else {
-        <!-- Field palette: drag a chip onto the page (or press Enter/Space to drop it centred). -->
-        <div class="palette" role="toolbar" [attr.aria-label]="'signature.request.palette' | translate"
-             [style.--rc]="color(activeRecipient)">
-          <span class="palette-for">
-            <span class="color-dot" aria-hidden="true"></span>
-            {{ 'signature.request.placingFor' | translate: { who: recipientLabel(recipients[activeRecipient], activeRecipient) } }}
-          </span>
-          <div class="palette-chips">
-            @for (t of fieldTypes; track t) {
-              <button type="button" class="palette-chip" (pointerdown)="startPlace(t, $event)"
-                      (keydown.enter)="placeAtCenter(t)" (keydown.space)="placeAtCenter(t); $event.preventDefault()"
-                      [matTooltip]="'signature.fieldHints.' + t | translate"
-                      [attr.aria-label]="'signature.fieldTypes.' + t | translate">
-                <mat-icon aria-hidden="true">{{ fieldIcons[t] }}</mat-icon>
-                <span>{{ 'signature.fieldTypes.' + t | translate }}</span>
-              </button>
-            }
-          </div>
-        </div>
-
-        <div class="pdf-toolbar">
-          <button mat-icon-button type="button" (click)="prevPage()" [disabled]="currentPage === 1"
-                  [attr.aria-label]="'signature.request.prevPage' | translate">
-            <mat-icon aria-hidden="true">chevron_left</mat-icon>
-          </button>
-          <span class="page-indicator">
-            <input class="page-input" type="number" min="1" [max]="totalPages" [value]="currentPage"
-                   (change)="goToPage(+$any($event.target).value)" [attr.aria-label]="'signature.request.page' | translate">
-            / {{ totalPages }}
-          </span>
-          <button mat-icon-button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages"
-                  [attr.aria-label]="'signature.request.nextPage' | translate">
-            <mat-icon aria-hidden="true">chevron_right</mat-icon>
-          </button>
-          <span class="spacer"></span>
-          <button mat-icon-button type="button" (click)="zoomOut()" [disabled]="!canZoomOut"
-                  [attr.aria-label]="'signature.request.zoomOut' | translate">
-            <mat-icon aria-hidden="true">zoom_out</mat-icon>
-          </button>
-          <span class="zoom-label">{{ zoom * 100 | number:'1.0-0' }}%</span>
-          <button mat-icon-button type="button" (click)="zoomIn()" [disabled]="!canZoomIn"
-                  [attr.aria-label]="'signature.request.zoomIn' | translate">
-            <mat-icon aria-hidden="true">zoom_in</mat-icon>
-          </button>
-        </div>
-
-        <div class="pdf-stage" #pdfStage>
-          <div class="pdf-rel" [class.drop-active]="drag?.mode === 'place'">
-            <canvas #pdfCanvas></canvas>
-
-            @for (r of recipients; track r; let ri = $index) {
-              @for (f of r.fields; track f.localId) {
-                <div class="marker" [ngStyle]="fieldStyle(f, ri)"
-                     [class.active]="activeRecipient === ri"
-                     [class.selected]="selectedField === f"
-                     [class.optional]="!f.required"
-                     (pointerdown)="startMove(ri, f, $event)"
-                     tabindex="0" role="button"
-                     [attr.aria-label]="('signature.fieldTypes.' + f.type | translate) + ' — ' + recipientLabel(r, ri)"
-                     (keydown.enter)="selectField(f)" (keydown.delete)="removeField(r, f)">
-                  <mat-icon class="marker-icon" aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
-                  <span class="marker-label">{{ f.label || ('signature.fieldTypes.' + f.type | translate) }}</span>
-                  <button type="button" class="marker-del" (pointerdown)="$event.stopPropagation()"
-                          (click)="removeField(r, f, $event)" [attr.aria-label]="'common.delete' | translate">
-                    <mat-icon aria-hidden="true">close</mat-icon>
-                  </button>
-                  <span class="marker-resize" (pointerdown)="startResize(ri, f, $event)" aria-hidden="true"></span>
-                </div>
-              }
-            }
-
-            <!-- Property popover for the selected field -->
-            @if (selectedField; as sf) {
-              @if (sf.page === currentPage - 1) {
-                <div class="field-popover" [ngStyle]="popoverStyle(sf)" [style.--rc]="color(selectedOwner)"
-                     (pointerdown)="$event.stopPropagation()" role="dialog"
-                     [attr.aria-label]="'signature.request.fieldProperties' | translate">
-                  <div class="popover-head">
-                    <mat-icon aria-hidden="true">{{ fieldIcons[sf.type] }}</mat-icon>
-                    <span>{{ 'signature.fieldTypes.' + sf.type | translate }}</span>
-                    <button mat-icon-button type="button" class="mini" (click)="selectField(null)"
-                            [attr.aria-label]="'common.close' | translate">
-                      <mat-icon aria-hidden="true">close</mat-icon>
-                    </button>
-                  </div>
-                  <mat-form-field appearance="outline" class="ff full dense">
-                    <mat-label>{{ 'signature.request.fieldLabel' | translate }}</mat-label>
-                    <input matInput [(ngModel)]="sf.label" maxlength="255">
-                  </mat-form-field>
-                  @if (sf.type !== 'DATE_SIGNED') {
-                    <mat-slide-toggle [(ngModel)]="sf.required">{{ 'signature.request.required' | translate }}</mat-slide-toggle>
-                  } @else {
-                    <p class="auto-note">{{ 'signature.request.autoFilled' | translate }}</p>
-                  }
-                  @if (isChoice(sf.type)) {
-                    <mat-form-field appearance="outline" class="ff full dense">
-                      <mat-label>{{ 'signature.request.choices' | translate }}</mat-label>
-                      <textarea matInput rows="3" [(ngModel)]="choicesText" (ngModelChange)="onChoicesChange()"
-                                [placeholder]="'signature.request.choicesPlaceholder' | translate"></textarea>
-                    </mat-form-field>
-                  }
-                </div>
-              }
-            }
-          </div>
-        </div>
-      }
-    </div>
+    </section>
   </div>
 </div>
 
 <app-seal-notice class="dialog-seal-notice"></app-seal-notice>
 
 <div mat-dialog-actions class="dialog-actions">
-  <button mat-stroked-button type="button" class="cancel-btn" (click)="cancel()">
-    <mat-icon aria-hidden="true">close</mat-icon>
-    <span>{{ 'common.cancel' | translate }}</span>
-  </button>
-  <button mat-raised-button color="primary" type="button" class="primary-btn"
-          [disabled]="sending" (click)="send()">
-    @if (sending) {
-      <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
-    } @else {
-      <mat-icon aria-hidden="true">send</mat-icon>
-    }
-    <span>{{ 'signature.request.send' | translate }}</span>
-  </button>
+  @if (showProblems && problems.length) {
+    <ul class="problems" role="alert">
+      @for (p of problems; track $index) {
+        <li><mat-icon aria-hidden="true">error_outline</mat-icon><span>{{ p.key | translate: p.params }}</span></li>
+      }
+    </ul>
+  }
+  <div class="action-row">
+    <span class="summary">
+      <mat-icon aria-hidden="true">group</mat-icon>
+      <span>{{ 'signature.request.summary' | translate: { recipients: recipients.length, fields: totalFields } }}</span>
+    </span>
+    <span class="spacer"></span>
+    <button mat-stroked-button type="button" class="cancel-btn" (click)="cancel()">
+      <span>{{ 'common.cancel' | translate }}</span>
+    </button>
+    <button mat-raised-button type="button" class="primary-btn" [disabled]="sending" (click)="send()">
+      @if (sending) {
+        <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+      } @else {
+        <mat-icon aria-hidden="true">send</mat-icon>
+      }
+      <span>{{ 'signature.request.send' | translate }}</span>
+    </button>
+  </div>
 </div>
 
 <!-- Floating drag-ghost following the finger/cursor while placing a field (touch + mouse). -->
