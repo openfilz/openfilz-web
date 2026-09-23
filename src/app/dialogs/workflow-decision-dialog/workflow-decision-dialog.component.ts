@@ -6,7 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
-import { validEmail } from '../../utils/workflow-spec';
+import { transitionIcon, validEmail } from '../../utils/workflow-spec';
+import { WorkflowTransitionStyle } from '../../models/workflow.models';
 
 export interface WorkflowDecisionDialogData {
   /** Dialog title (already translated). */
@@ -18,6 +19,13 @@ export interface WorkflowDecisionDialogData {
   confirmLabel: string;
   confirmIcon?: string;
   danger?: boolean;
+  /** Style of the transition being taken: colours the header and the confirm button like the card's button. */
+  style?: WorkflowTransitionStyle;
+  /** Status the document is in, shown under the title. */
+  stateLabel?: string;
+  /** A parallel review vote: the note is shared with the other reviewers. */
+  review?: boolean;
+  /** 'emails' mode: the people the task is with now (shown, and pre-filled). */
   initialEmails?: string[];
 }
 
@@ -28,7 +36,9 @@ export interface WorkflowDecisionDialogResult {
 
 /**
  * The small prompt behind a transition that needs (or offers) a comment, and behind
- * "Reassign" (people + optional note). Returns null when dismissed.
+ * "Reassign" (people + optional note): coloured like the button that opened it, it says what the
+ * note is for and who reads it, and for a reassignment shows who has the task now and the
+ * addresses it understood. Returns null when dismissed.
  */
 @Component({
   selector: 'app-workflow-decision-dialog',
@@ -43,6 +53,30 @@ export class WorkflowDecisionDialogComponent {
 
   comment = '';
   emailsText = (this.data.initialEmails ?? []).join(', ');
+
+  /** Colour family of the header and confirm button. */
+  get tone(): 'primary' | 'success' | 'danger' | 'neutral' {
+    if (this.data.danger || this.data.style === 'DANGER') return 'danger';
+    if (this.data.style === 'SUCCESS') return 'success';
+    if (this.data.style === 'NEUTRAL') return 'neutral';
+    return 'primary';
+  }
+
+  get icon(): string {
+    if (this.data.confirmIcon) return this.data.confirmIcon;
+    if (this.data.mode === 'emails') return 'group';
+    return transitionIcon({ style: this.data.style ?? (this.data.danger ? 'DANGER' : 'PRIMARY') });
+  }
+
+  /** The sentence above the note: required or not, and who will read it. */
+  get introKey(): string {
+    if (this.data.review) return 'workflow.decision.reviewIntro';
+    return this.data.commentRequired ? 'workflow.decision.requiredIntro' : 'workflow.decision.optionalIntro';
+  }
+
+  isValid(email: string): boolean {
+    return validEmail(email);
+  }
 
   get emails(): string[] {
     return this.emailsText.split(/[,;\s]+/).map(e => e.trim().toLowerCase()).filter(e => e);

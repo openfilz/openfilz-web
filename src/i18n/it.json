@@ -1738,7 +1738,18 @@
       "commentOptional": "Commento (facoltativo)",
       "reassignTitle": "Affida questa attività a qualcun altro",
       "emails": "Indirizzi e-mail",
-      "emailsHint": "Separa più indirizzi con virgole"
+      "emailsHint": "Separa più indirizzi con virgole",
+      "atState": "Stato: {{state}}",
+      "requiredIntro": "Motiva la tua scelta: per «{{action}}» è obbligatorio un commento. Resta nella cronologia del flusso, visibile ai partecipanti.",
+      "optionalIntro": "Puoi aggiungere una nota: accompagna la tua decisione nella cronologia del flusso.",
+      "reviewIntro": "Il tuo voto e il tuo commento sono visibili agli altri revisori.",
+      "reassignIntro": "Le persone indicate qui sotto sostituiscono quelle che possono gestire l’attività ora.",
+      "currently": "Attualmente",
+      "newPeople": "Gestiranno l’attività",
+      "commentPlaceholder": "Il tuo commento…",
+      "reassignPlaceholder": "Perché affidarla? (facoltativo)",
+      "enterKey": "Invio",
+      "toConfirm": "per confermare"
     },
     "panel": {
       "title": "Flusso di lavoro",

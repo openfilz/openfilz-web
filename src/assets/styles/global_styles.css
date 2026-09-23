@@ -692,6 +692,12 @@ select:focus-visible,
   outline-offset: 2px !important;
 }
 
+/* A Material form field already shows focus with its own outline: a second ring on the inner
+   input drew a box inside the field. */
+.mat-mdc-form-field .mat-mdc-input-element:focus-visible {
+  outline: none !important;
+}
+
 /* Focus for Material form fields */
 .mat-mdc-form-field:focus-within {
   --mdc-outlined-text-field-focus-outline-color: var(--primary);

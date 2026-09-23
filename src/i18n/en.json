@@ -1738,7 +1738,18 @@
       "commentOptional": "Comment (optional)",
       "reassignTitle": "Hand this task to someone else",
       "emails": "E-mail addresses",
-      "emailsHint": "Separate several addresses with commas"
+      "emailsHint": "Separate several addresses with commas",
+      "atState": "Status: {{state}}",
+      "requiredIntro": "Explain your choice: a comment is required to “{{action}}”. It stays in the workflow history, visible to its participants.",
+      "optionalIntro": "You can add a note: it goes with your decision into the workflow history.",
+      "reviewIntro": "Your vote and your comment are visible to the other reviewers.",
+      "reassignIntro": "The people you enter below replace those who can handle the task now.",
+      "currently": "Currently",
+      "newPeople": "Will handle the task",
+      "commentPlaceholder": "Your comment…",
+      "reassignPlaceholder": "Why hand it over? (optional)",
+      "enterKey": "Enter",
+      "toConfirm": "to confirm"
     },
     "panel": {
       "title": "Workflow",

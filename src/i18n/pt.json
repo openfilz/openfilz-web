@@ -1738,7 +1738,18 @@
       "commentOptional": "Comentário (opcional)",
       "reassignTitle": "Entregar esta tarefa a outra pessoa",
       "emails": "Endereços de e-mail",
-      "emailsHint": "Separe vários endereços por vírgulas"
+      "emailsHint": "Separe vários endereços por vírgulas",
+      "atState": "Estado: {{state}}",
+      "requiredIntro": "Justifique a sua escolha: é obrigatório um comentário para «{{action}}». Fica no histórico do fluxo, visível para os participantes.",
+      "optionalIntro": "Pode adicionar uma nota: acompanha a sua decisão no histórico do fluxo.",
+      "reviewIntro": "O seu voto e o seu comentário ficam visíveis para os outros revisores.",
+      "reassignIntro": "As pessoas que indicar abaixo substituem as que podem tratar a tarefa agora.",
+      "currently": "Atualmente",
+      "newPeople": "Vão tratar a tarefa",
+      "commentPlaceholder": "O seu comentário…",
+      "reassignPlaceholder": "Porque a entrega? (opcional)",
+      "enterKey": "Enter",
+      "toConfirm": "para confirmar"
     },
     "panel": {
       "title": "Fluxo de trabalho",

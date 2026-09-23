@@ -1,11 +1,10 @@
-<div class="dialog-header">
+<div class="dialog-header" [class]="'dialog-header tone-' + tone">
   <div class="header-content">
-    <div class="icon-wrapper" [class.danger]="data.danger">
-      <mat-icon>{{ data.confirmIcon || (data.mode === 'emails' ? 'group' : 'rate_review') }}</mat-icon>
-    </div>
+    <div class="icon-wrapper"><mat-icon>{{ icon }}</mat-icon></div>
     <div class="header-text">
       <h2 class="dialog-title">{{ data.title }}</h2>
-      @if (data.subtitle) { <p class="dialog-subtitle">{{ data.subtitle }}</p> }
+      @if (data.subtitle) { <p class="dialog-subtitle"><mat-icon>description</mat-icon><span>{{ data.subtitle }}</span></p> }
+      @if (data.stateLabel) { <p class="dialog-state">{{ 'workflow.decision.atState' | translate: { state: data.stateLabel } }}</p> }
     </div>
   </div>
   <button mat-icon-button class="close-btn" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
@@ -15,28 +14,56 @@
 
 <div mat-dialog-content class="dialog-content">
   @if (data.mode === 'emails') {
-    <mat-form-field appearance="outline" class="field">
+    <p class="intro">{{ 'workflow.decision.reassignIntro' | translate }}</p>
+
+    @if (data.initialEmails?.length) {
+      <div class="people current">
+        <span class="people-label">{{ 'workflow.decision.currently' | translate }}</span>
+        @for (e of data.initialEmails; track e) { <span class="person"><mat-icon>person_outline</mat-icon>{{ e }}</span> }
+      </div>
+    }
+
+    <mat-form-field appearance="outline" class="field" subscriptSizing="dynamic">
       <mat-label>{{ 'workflow.decision.emails' | translate }}</mat-label>
       <input matInput [(ngModel)]="emailsText" cdkFocusInitial autocomplete="off">
+      <mat-icon matSuffix>group</mat-icon>
       <mat-hint>{{ 'workflow.decision.emailsHint' | translate }}</mat-hint>
     </mat-form-field>
+    @if (emails.length) {
+      <div class="people">
+        <span class="people-label">{{ 'workflow.decision.newPeople' | translate }}</span>
+        @for (e of emails; track e) {
+          <span class="person" [class.bad]="!isValid(e)"><mat-icon>{{ isValid(e) ? 'person_outline' : 'error_outline' }}</mat-icon>{{ e }}</span>
+        }
+      </div>
+    }
     @if (invalidEmail) {
       <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: invalidEmail } }}</span></div>
     }
+  } @else {
+    <p class="intro">
+      <mat-icon>{{ data.review ? 'groups' : data.commentRequired ? 'priority_high' : 'chat_bubble_outline' }}</mat-icon>
+      <span>{{ introKey | translate: { action: data.confirmLabel } }}</span>
+    </p>
   }
-  <mat-form-field appearance="outline" class="field">
+
+  <mat-form-field appearance="outline" class="field" subscriptSizing="dynamic">
     <mat-label>{{ (data.commentRequired ? 'workflow.decision.commentRequired' : 'workflow.decision.commentOptional') | translate }}</mat-label>
-    <textarea matInput rows="4" [(ngModel)]="comment" maxlength="2000" [attr.cdkFocusInitial]="data.mode === 'comment' ? '' : null"
+    <textarea matInput [rows]="data.mode === 'emails' ? 3 : 5" [(ngModel)]="comment" maxlength="2000" [attr.cdkFocusInitial]="data.mode === 'comment' ? '' : null"
+      [placeholder]="(data.mode === 'emails' ? 'workflow.decision.reassignPlaceholder' : 'workflow.decision.commentPlaceholder') | translate"
       (keydown.control.enter)="confirm()" (keydown.meta.enter)="confirm()"></textarea>
-    <mat-hint align="end">{{ comment.length }} / 2000</mat-hint>
   </mat-form-field>
+  <div class="field-foot">
+    <span class="shortcut"><kbd>Ctrl</kbd> + <kbd>{{ 'workflow.decision.enterKey' | translate }}</kbd> {{ 'workflow.decision.toConfirm' | translate }}</span>
+    <span class="count" [class.near]="comment.length > 1800">{{ comment.length }} / 2000</span>
+  </div>
 </div>
 
 <div mat-dialog-actions class="dialog-actions">
   <button mat-stroked-button class="cancel-btn" (click)="cancel()">
     <mat-icon>close</mat-icon><span>{{ 'common.cancel' | translate }}</span>
   </button>
-  <button mat-raised-button color="primary" class="primary-btn" [class.danger]="data.danger" (click)="confirm()" [disabled]="!canConfirm">
-    <mat-icon>{{ data.confirmIcon || 'check' }}</mat-icon><span>{{ data.confirmLabel }}</span>
+  <button mat-raised-button color="primary" class="primary-btn" [class]="'primary-btn tone-' + tone" (click)="confirm()" [disabled]="!canConfirm">
+    <mat-icon>{{ icon }}</mat-icon><span>{{ data.confirmLabel }}</span>
   </button>
 </div>

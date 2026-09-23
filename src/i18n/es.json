@@ -1738,7 +1738,18 @@
       "commentOptional": "Comentario (opcional)",
       "reassignTitle": "Pasar esta tarea a otra persona",
       "emails": "Direcciones de correo",
-      "emailsHint": "Separe varias direcciones con comas"
+      "emailsHint": "Separe varias direcciones con comas",
+      "atState": "Estado: {{state}}",
+      "requiredIntro": "Explique su elección: se requiere un comentario para «{{action}}». Queda en el historial del flujo, visible para sus participantes.",
+      "optionalIntro": "Puede añadir una nota: acompaña su decisión en el historial del flujo.",
+      "reviewIntro": "Su voto y su comentario son visibles para los demás revisores.",
+      "reassignIntro": "Las personas que indique abajo sustituyen a las que pueden tratar la tarea ahora.",
+      "currently": "Actualmente",
+      "newPeople": "Tratarán la tarea",
+      "commentPlaceholder": "Su comentario…",
+      "reassignPlaceholder": "¿Por qué la cede? (opcional)",
+      "enterKey": "Intro",
+      "toConfirm": "para confirmar"
     },
     "panel": {
       "title": "Flujo de trabajo",
