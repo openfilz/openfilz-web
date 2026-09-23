@@ -15,8 +15,9 @@ import { FileIconService } from '../../../services/file-icon.service';
 import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
 
 /**
- * "My tasks": one card per open task the user may act on, overdue first, with the transition
- * buttons right on the card. A transition that requires a comment (or the "Add a note" link)
+ * "My tasks": one card per open task the user may act on, overdue first — the document and where it
+ * stands on top, the previous person's note, then who / since when and the transition buttons in
+ * the card's foot. A transition that requires a comment (or the "Add a note" link)
  * opens the decision dialog. Done tasks leave the list and the badge follows. A parallel review
  * task shows the round's progress and the other reviewers' comments, and every vote asks for an
  * (optional) comment of its own.
@@ -154,6 +155,21 @@ export class MyTasksComponent implements OnInit, OnChanges {
         this.reload();
       }
     });
+  }
+
+  /** First letter of an e-mail, for the note's avatar. */
+  initial(who: string | null): string {
+    return (who ?? '?').trim().charAt(0) || '?';
+  }
+
+  /** An icon that says what the button does: approve, reject, send back, or move on. */
+  actionIcon(t: WorkflowTransition): string {
+    switch (t.style) {
+      case 'SUCCESS': return 'check';
+      case 'DANGER': return 'close';
+      case 'NEUTRAL': return 'undo';
+      default: return 'arrow_forward';
+    }
   }
 
   styleClass(t: WorkflowTransition): string {

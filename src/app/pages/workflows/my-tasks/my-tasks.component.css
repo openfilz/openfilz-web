@@ -1,56 +1,111 @@
 :host { display: block; }
 /* 4px side padding: the 48px touch target of the icon button at the right edge would otherwise overflow the tab body */
-.tasks { padding: 14px 4px; }
-.bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; color: var(--text-secondary); font-size: 13px; }
+.tasks { padding: 18px 4px; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .bar button { color: var(--text-secondary); }
-.overdue-pill { margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, #ef4444 16%, transparent); color: #ef4444; font-weight: 600; font-size: 12px; }
+.summary { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.count { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.overdue-pill {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, #ef4444 16%, transparent); color: #ef4444; font-weight: 600; font-size: 12px;
+}
+.overdue-pill mat-icon { font-size: 15px; width: 15px; height: 15px; }
 
 .state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 48px 0; color: var(--text-secondary); }
 .state.empty mat-icon { font-size: 44px; width: 44px; height: 44px; opacity: .5; color: #10b981; }
 .state.empty p { margin: 0; font-size: 14px; }
 .state.empty .sub { font-size: 12.5px; }
 
-.cards { display: flex; flex-direction: column; gap: 12px; }
+.cards { display: flex; flex-direction: column; gap: 16px; }
 .card {
   --chip: #94a3b8;
-  display: flex; gap: 16px; align-items: stretch; padding: 14px 16px; border-radius: 14px;
-  background: var(--bg-secondary); border: 1px solid var(--border-light); border-left: 5px solid var(--chip);
+  display: flex; flex-direction: column; gap: 16px; padding: 18px 20px 16px; border-radius: 16px;
+  background: var(--bg-secondary); border: 1px solid var(--border-light); border-inline-start: 5px solid var(--chip);
   transition: box-shadow .2s ease, border-color .2s ease;
 }
 .card:hover { box-shadow: var(--shadow-md, 0 4px 14px rgba(0, 0, 0, .08)); }
 .card.highlight { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent); }
-.card.overdue { border-left-color: #ef4444; }
-.card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-.doc { display: inline-flex; align-items: center; gap: 8px; background: none; border: none; padding: 0; cursor: pointer; color: var(--text-primary); font: inherit; text-align: left; max-width: 100%; }
-.doc:hover .doc-name { text-decoration: underline; }
-.doc-icon { color: var(--primary); }
-.doc-name { font-weight: 600; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.line { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; }
-.line.meta { color: var(--text-secondary); font-size: 12.5px; }
-.line.meta span { display: inline-flex; align-items: center; gap: 4px; }
-.line.meta mat-icon { font-size: 15px; width: 15px; height: 15px; }
-.chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--text-primary); background: color-mix(in srgb, var(--chip) 22%, transparent); }
-.wf { color: var(--text-secondary); cursor: pointer; }
-.wf:hover { color: var(--primary); text-decoration: underline; }
-.who { display: inline-flex; align-items: center; gap: 4px; color: var(--text-secondary); font-size: 12px; }
-.who mat-icon { font-size: 15px; width: 15px; height: 15px; }
-.due.late { color: #ef4444; font-weight: 600; }
-.note { margin: 2px 0 0; padding: 8px 12px; border-left: 3px solid var(--border-color); background: var(--bg-tertiary); border-radius: 6px; font-size: 13px; white-space: pre-wrap; color: var(--text-primary); }
+.card.overdue { border-inline-start-color: #ef4444; }
 
-.card-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-self: center; }
+/* ── Head: document + workflow › status ──────────────────────────────── */
+.card-head { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
+.doc-tile {
+  display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px;
+  background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary);
+}
+.head-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.doc {
+  display: block; max-width: 100%; padding: 0; border: none; background: none; cursor: pointer; text-align: start; font: inherit;
+  font-size: 16px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc:hover { color: var(--primary); text-decoration: underline; }
+/* The global 44px touch-target floor would push the context line far below the name: text links
+   only need it on touch screens. */
+@media (pointer: fine) { .doc, .wf { min-height: 0; } }
+.doc { line-height: 1.35; }
+.doc:focus-visible, .wf:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+.context { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 13px; }
+.wf { padding: 0; border: none; background: none; cursor: pointer; font: inherit; color: var(--text-secondary); }
+.wf:hover { color: var(--primary); text-decoration: underline; }
+.sep { font-size: 17px; width: 17px; height: 17px; color: var(--text-tertiary); }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+  color: var(--text-primary); background: color-mix(in srgb, var(--chip) 20%, transparent);
+}
+.chip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--chip); }
+.review-tag {
+  display: inline-flex; align-items: center; gap: 4px; margin-inline-start: 4px; padding: 2px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; color: #8b5cf6; background: color-mix(in srgb, #8b5cf6 14%, transparent);
+}
+.review-tag mat-icon { font-size: 15px; width: 15px; height: 15px; }
+.due {
+  display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; margin-top: 2px; padding: 4px 10px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; white-space: nowrap; color: var(--text-secondary); background: var(--bg-tertiary);
+}
+.due mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.due.late { color: #ef4444; background: color-mix(in srgb, #ef4444 14%, transparent); }
+.more { color: var(--text-secondary); flex-shrink: 0; margin: -6px -8px 0 -4px; }
+
+/* ── Note from the previous person ───────────────────────────────────── */
+.note { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 12px; background: var(--bg-primary); border: 1px solid var(--border-light); }
+.note-head { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-secondary); min-width: 0; word-break: break-word; }
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; color: #fff; background: var(--primary);
+}
+.note-text { margin: 0; padding-inline-start: 30px; font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; color: var(--text-primary); }
+
+/* ── Foot: who / since when, then the decision ───────────────────────── */
+.card-foot {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px;
+  padding-top: 14px; border-top: 1px solid var(--border-light);
+}
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 12.5px; color: var(--text-secondary); min-width: 0; }
+.meta span { display: inline-flex; align-items: center; gap: 5px; }
+.meta mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.decide { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-inline-start: auto; }
+.decide-label { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); margin-inline-end: 4px; }
+/* mat-flat-button = the *filled* token family. */
 .act-btn {
   --mat-button-filled-container-color: var(--primary);
   --mat-button-filled-label-text-color: #fff;
   --mat-button-filled-state-layer-color: #fff;
-  border-radius: 10px; height: 38px; font-weight: 600;
+  border-radius: 10px; height: 40px; padding: 0 16px; font-weight: 600; letter-spacing: 0;
 }
+.act-btn mat-icon { font-size: 18px; width: 18px; height: 18px; margin-inline-end: 6px; margin-inline-start: -2px; }
 .act-btn.style-success { --mat-button-filled-container-color: #10b981; }
 .act-btn.style-danger { --mat-button-filled-container-color: #ef4444; }
 .act-btn.style-neutral { --mat-button-filled-container-color: #64748b; }
-.more { color: var(--text-secondary); }
 
 @media (max-width: 760px) {
-  .card { flex-direction: column; }
-  .card-actions { align-self: stretch; justify-content: flex-start; }
+  .card { padding: 16px 14px 14px; }
+  /* Name and menu on the first row, the due date under the name. */
+  .card-head { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; column-gap: 12px; row-gap: 8px; }
+  .doc-tile { grid-column: 1; grid-row: 1; }
+  .head-text { grid-column: 2; grid-row: 1; }
+  .more { grid-column: 3; grid-row: 1; }
+  .due { grid-column: 2 / 4; grid-row: 2; justify-self: start; margin: 0; }
+  .decide { margin-inline-start: 0; width: 100%; }
+  .decide-label { width: 100%; }
+  .act-btn { flex: 1 1 auto; }
 }
-.review-tag { color: #8b5cf6; font-weight: 600; }
