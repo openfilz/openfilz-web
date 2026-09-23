@@ -1545,12 +1545,13 @@
         "parallel-review": "Parallel review"
       },
       "templateHints": {
-        "approval": "Draft → Pending approval → Approved / Rejected",
-        "review-archive": "Draft → In review → Approved → Archived",
-        "two-step": "Two approvers in a row",
-        "blank": "Start from scratch",
-        "parallel-review": "Several reviewers in parallel, each one comments"
+        "approval": "One person approves or rejects the document.",
+        "review-archive": "Reviewed, approved, then archived; the reviewer can ask for changes.",
+        "two-step": "Two people approve one after the other.",
+        "blank": "Start from scratch and build your own statuses.",
+        "parallel-review": "Several reviewers give their opinion at the same time, and each can comment."
       },
+      "toName": "To name at start:",
       "labels": {
         "draft": "Draft",
         "submit": "Submit for approval",
