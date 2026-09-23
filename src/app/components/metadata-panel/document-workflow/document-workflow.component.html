@@ -13,44 +13,64 @@
   @if (loading) {
     <div class="loading"><mat-spinner diameter="20"></mat-spinner></div>
   } @else if (instance) {
-    <div class="card">
-      <div class="row">
-        <span class="chip" [style.--chip]="instance.currentStateColor || '#94a3b8'">{{ instance.currentStateLabel }}</span>
+    <div class="card" [class.overdue]="instance.currentTask?.overdue" [style.--chip]="instance.currentStateColor || '#94a3b8'">
+      <!-- Where the document stands -->
+      <div class="head">
+        <span class="chip"><span class="chip-dot"></span>{{ instance.currentStateLabel }}</span>
         <span class="wf-name">{{ instance.definitionName }}</span>
       </div>
+
       @if (instance.currentTask; as task) {
-        <div class="sub">
-          <mat-icon>{{ task.review ? 'groups' : task.mine ? 'person' : 'hourglass_top' }}</mat-icon>
-          <span>
-            {{ 'workflow.panel.waitingFor' | translate }}
-            <b>{{ task.review ? waitingFor : task.mine ? ('workflow.panel.you' | translate) : waitingFor }}</b>
+        <!-- Who it waits for, and by when -->
+        <div class="fact" [class.late]="task.overdue">
+          <span class="fact-icon"><mat-icon>{{ task.overdue ? 'warning' : task.review ? 'groups' : task.mine ? 'person' : 'hourglass_top' }}</mat-icon></span>
+          <div class="fact-text">
+            <span class="fact-label">{{ 'workflow.panel.waitingFor' | translate }}</span>
+            <span class="fact-value">{{ task.mine && !task.review ? ('workflow.panel.you' | translate) : waitingFor }}</span>
             @if (task.dueAt) {
-              <span class="due" [class.overdue]="task.overdue">· {{ (task.overdue ? 'workflow.panel.overdue' : 'workflow.panel.due') | translate: { date: (task.dueAt | localDate:'mediumDate') } }}</span>
+              <span class="fact-due">{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | localDate:'mediumDate') } }}</span>
             }
-          </span>
+          </div>
         </div>
+
         @if (task.previousComment) {
-          <blockquote class="note">{{ task.previousComment }}</blockquote>
+          <div class="note">
+            <div class="note-head">
+              <span class="avatar">{{ initial(task.previousActor || instance.startedBy) }}</span>
+              <span>{{ 'workflow.tasks.noteFrom' | translate: { who: task.previousActor || instance.startedBy } }}</span>
+            </div>
+            <p class="note-text">{{ task.previousComment }}</p>
+          </div>
         }
         @if (task.review) {
           <app-workflow-review-progress [review]="task.review" [transitions]="task.transitions" [compact]="true"></app-workflow-review-progress>
         }
+
+        <!-- My turn: the decision buttons -->
         @if (task.mine) {
-          <div class="actions">
-            @for (t of task.transitions; track t.key) {
-              <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(t)" [disabled]="busy">{{ t.label }}</button>
-            }
+          <div class="decide">
+            <span class="decide-label"><mat-icon>how_to_reg</mat-icon>{{ 'workflow.tasks.decide' | translate }}</span>
+            <div class="actions">
+              @for (t of task.transitions; track t.key) {
+                <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(t)" [disabled]="busy">
+                  <mat-icon>{{ actionIcon(t) }}</mat-icon>{{ t.label }}
+                </button>
+              }
+            </div>
           </div>
         }
       }
-      <div class="meta">{{ 'workflow.panel.since' | translate: { who: instance.startedBy, date: (instance.startedAt | localDate:'mediumDate') } }}</div>
+      <div class="meta"><mat-icon>play_arrow</mat-icon>{{ 'workflow.panel.since' | translate: { who: instance.startedBy, date: (instance.startedAt | localDate:'mediumDate') } }}</div>
     </div>
-  } @else if (canStart) {
-    <button mat-stroked-button class="start-btn" (click)="start()">
-      <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.panel.start' | translate }}</span>
-    </button>
   } @else {
-    <p class="none">{{ 'workflow.panel.noWorkflow' | translate }}</p>
+    <div class="empty">
+      <p>{{ 'workflow.panel.noWorkflow' | translate }}</p>
+      @if (canStart) {
+        <button mat-stroked-button class="start-btn" (click)="start()">
+          <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.panel.start' | translate }}</span>
+        </button>
+      }
+    </div>
   }
 </div>
 }

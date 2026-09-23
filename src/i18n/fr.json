@@ -1744,8 +1744,6 @@
       "title": "Workflow",
       "waitingFor": "En attente de",
       "you": "vous",
-      "due": "échéance {{date}}",
-      "overdue": "en retard depuis le {{date}}",
       "since": "Lancé par {{who}} le {{date}}",
       "start": "Lancer un workflow",
       "openMonitor": "Ouvrir dans le suivi",

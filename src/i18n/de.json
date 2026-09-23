@@ -1744,8 +1744,6 @@
       "title": "Workflow",
       "waitingFor": "Wartet auf",
       "you": "Sie",
-      "due": "fällig am {{date}}",
-      "overdue": "überfällig seit {{date}}",
       "since": "Gestartet von {{who}} am {{date}}",
       "start": "Workflow starten",
       "openMonitor": "In der Überwachung öffnen",

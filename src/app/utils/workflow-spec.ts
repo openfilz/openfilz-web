@@ -186,6 +186,16 @@ export function defaultApproveTransition(transitions: WorkflowTransition[]): str
   return (transitions.find(t => t.style === 'SUCCESS') ?? transitions[0])?.key ?? '';
 }
 
+/** Icon of a transition button, from its style: approve, reject, send back, or move on. */
+export function transitionIcon(t: WorkflowTransition): string {
+  switch (t.style) {
+    case 'SUCCESS': return 'check';
+    case 'DANGER': return 'close';
+    case 'NEUTRAL': return 'undo';
+    default: return 'arrow_forward';
+  }
+}
+
 function validateAction(a: WorkflowAction, p: string, problems: WorkflowProblem[]): void {
   switch (a?.type) {
     case 'MOVE_TO_FOLDER':

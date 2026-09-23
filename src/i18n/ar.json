@@ -1744,8 +1744,6 @@
       "title": "سير العمل",
       "waitingFor": "بانتظار",
       "you": "أنت",
-      "due": "الموعد {{date}}",
-      "overdue": "متأخرة منذ {{date}}",
       "since": "بدأه {{who}} في {{date}}",
       "start": "بدء سير عمل",
       "openMonitor": "فتح في المتابعة",

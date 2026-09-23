@@ -12,12 +12,13 @@ import { WorkflowService } from '../../../services/workflow.service';
 import { WorkflowAccessService } from '../../../services/workflow-access.service';
 import { WorkflowInstanceDTO, WorkflowTransition } from '../../../models/workflow.models';
 import { WorkflowReviewProgressComponent } from '../../workflow-review-progress/workflow-review-progress.component';
+import { transitionIcon } from '../../../utils/workflow-spec';
 
 /**
- * "Workflow" section of the details panel for FILE documents: the running instance (status
- * chip, who it waits for, my transition buttons when I am a candidate, the progress of a parallel
- * review, link to the monitor),
- * or a "Start workflow" button when there is none. Hidden when the feature is off.
+ * "Workflow" section of the details panel for FILE documents: the running instance (status chip
+ * and workflow, who it waits for and by when, the previous person's note, the progress of a
+ * parallel review, "Your decision" with my transition buttons when I am a candidate, link to the
+ * monitor), or a short "no workflow" note with a "Start workflow" button when there is none. Hidden when the feature is off.
  * Dedicated file for the enterprise fork; the panel only hosts the element.
  */
 @Component({
@@ -142,6 +143,13 @@ export class DocumentWorkflowComponent implements OnChanges {
     if (this.instance) {
       this.router.navigate(['/workflows'], { queryParams: { tab: 'monitor', instance: this.instance.id } });
     }
+  }
+
+  readonly actionIcon = transitionIcon;
+
+  /** First letter of an e-mail, for the note's avatar. */
+  initial(who: string | null): string {
+    return (who ?? '?').trim().charAt(0) || '?';
   }
 
   styleClass(t: WorkflowTransition): string {
