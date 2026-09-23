@@ -1759,7 +1759,11 @@
       "since": "Lancé par {{who}} le {{date}}",
       "start": "Lancer un workflow",
       "openMonitor": "Ouvrir dans le suivi",
-      "noWorkflow": "Aucun workflow en cours sur ce document."
+      "noWorkflow": "Aucun workflow en cours sur ce document.",
+      "history": "Workflows passés",
+      "historyMeta": "{{from}} → {{to}} · par {{who}}",
+      "historyMore": "{{count}} plus ancien(s) non affiché(s)",
+      "historyEmpty": "Aucun workflow passé sur ce document."
     },
     "errors": {
       "generic": "Une erreur est survenue.",

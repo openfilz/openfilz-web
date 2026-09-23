@@ -72,5 +72,49 @@
       }
     </div>
   }
+
+  <!-- Past workflows of the document: folded; fetched on first unfold only -->
+  @if (!loading) {
+    <div class="history">
+      <button type="button" class="history-head" (click)="toggleHistory()" [attr.aria-expanded]="historyOpen" aria-controls="wf-history-list">
+        <mat-icon>history</mat-icon><span>{{ 'workflow.panel.history' | translate }}</span>
+        @if (history && history.length) { <span class="history-count">{{ history.length + historyHidden }}</span> }
+        <mat-icon class="fold" [class.open]="historyOpen">expand_more</mat-icon>
+      </button>
+      @if (historyOpen) {
+        <div id="wf-history-list" class="history-body">
+          @if (historyLoading) {
+            <div class="loading"><mat-spinner diameter="18"></mat-spinner></div>
+          } @else if (!history?.length) {
+            <p class="h-more">{{ 'workflow.panel.historyEmpty' | translate }}</p>
+          } @else {
+            <ul class="history-list">
+              @for (h of history; track h.id) {
+                <li>
+                  <button type="button" class="h-row" [style.--chip]="h.currentStateColor || '#94a3b8'" (click)="openMonitor(h)"
+                    [matTooltip]="'workflow.panel.openMonitor' | translate">
+                    <span class="h-icon" [class.cancelled]="h.status === 'CANCELLED'"><mat-icon>{{ h.status === 'CANCELLED' ? 'block' : 'flag' }}</mat-icon></span>
+                    <span class="h-text">
+                      <span class="h-line">
+                        <span class="h-name">{{ h.definitionName }}</span>
+                        @if (h.status === 'CANCELLED') {
+                          <span class="h-badge">{{ 'workflow.status.CANCELLED' | translate }}</span>
+                        } @else {
+                          <span class="chip small"><span class="chip-dot"></span>{{ h.currentStateLabel }}</span>
+                        }
+                      </span>
+                      <span class="h-meta">{{ 'workflow.panel.historyMeta' | translate: { who: h.startedBy, from: (h.startedAt | localDate:'mediumDate'), to: ((h.completedAt || h.updatedAt) | localDate:'mediumDate') } }}</span>
+                    </span>
+                    <mat-icon class="h-go rtl-flip">chevron_right</mat-icon>
+                  </button>
+                </li>
+              }
+            </ul>
+            @if (historyHidden) { <p class="h-more">{{ 'workflow.panel.historyMore' | translate: { count: historyHidden } }}</p> }
+          }
+        </div>
+      }
+    </div>
+  }
 </div>
 }

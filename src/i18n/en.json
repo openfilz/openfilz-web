@@ -1759,7 +1759,11 @@
       "since": "Started by {{who}} on {{date}}",
       "start": "Start a workflow",
       "openMonitor": "Open in the monitor",
-      "noWorkflow": "No workflow running on this document."
+      "noWorkflow": "No workflow running on this document.",
+      "history": "Past workflows",
+      "historyMeta": "{{from}} → {{to}} · by {{who}}",
+      "historyMore": "{{count}} older not shown",
+      "historyEmpty": "No past workflow on this document."
     },
     "errors": {
       "generic": "Something went wrong.",
