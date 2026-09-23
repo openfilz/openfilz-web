@@ -39,13 +39,18 @@
 
 .dialog-actions { padding: 12px 26px 22px !important; display: flex; justify-content: flex-end; gap: 10px; }
 .cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
+/* mat-raised-button paints from the *protected* tokens (not *filled*): driving the wrong family left
+   the confirm button transparent, i.e. white text on the dialog background. */
 .primary-btn {
-  --mat-button-filled-container-color: var(--primary);
-  --mat-button-filled-label-text-color: #fff;
-  --mat-button-filled-state-layer-color: #fff;
-  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
-  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
-  border-radius: 10px; height: 44px; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+  --btn: var(--primary);
+  --mat-button-protected-container-color: var(--btn);
+  --mat-button-protected-label-text-color: #fff;
+  --mat-button-protected-state-layer-color: #fff;
+  --mat-button-protected-disabled-container-color: var(--bg-tertiary);
+  --mat-button-protected-disabled-label-text-color: var(--text-tertiary);
+  color: #fff;
+  border-radius: 10px; height: 44px; box-shadow: 0 2px 8px color-mix(in srgb, var(--btn) 30%, transparent);
 }
-.primary-btn.danger { --mat-button-filled-container-color: #ef4444; box-shadow: 0 2px 8px rgba(239, 68, 68, .3); }
+.primary-btn[disabled] { box-shadow: none; color: var(--text-tertiary); }
+.primary-btn.danger { --btn: #ef4444; }
 .cancel-btn mat-icon, .primary-btn mat-icon { margin-right: 6px; }

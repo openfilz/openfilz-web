@@ -2,8 +2,8 @@
   <div class="bar">
     <span class="summary">
       @if (!loading) {
-        {{ 'workflow.tasks.count' | translate: { count: tasks.length } }}
-        @if (overdueCount > 0) { <span class="overdue-pill">{{ 'workflow.tasks.overdueCount' | translate: { count: overdueCount } }}</span> }
+        <span class="count">{{ 'workflow.tasks.count' | translate: { count: tasks.length } }}</span>
+        @if (overdueCount > 0) { <span class="overdue-pill"><mat-icon>warning</mat-icon>{{ 'workflow.tasks.overdueCount' | translate: { count: overdueCount } }}</span> }
       }
     </span>
     <button mat-icon-button (click)="reload()" [matTooltip]="'workflow.tasks.refresh' | translate" [attr.aria-label]="'workflow.tasks.refresh' | translate">
@@ -24,59 +24,80 @@
       @for (task of tasks; track trackTask($index, task)) {
         <article class="card" [id]="'task-' + task.id" [class.highlight]="task.id === highlightTaskId" [class.overdue]="task.overdue"
           [style.--chip]="task.stateColor || '#94a3b8'">
-          <div class="card-main">
-            <button type="button" class="doc" (click)="openDocument(task)" [matTooltip]="'workflow.tasks.openDocument' | translate">
-              <mat-icon class="doc-icon">{{ icon(task) }}</mat-icon>
-              <span class="doc-name">{{ task.documentName }}</span>
+          <!-- What: the document, and where it stands -->
+          <header class="card-head">
+            <span class="doc-tile"><mat-icon>{{ icon(task) }}</mat-icon></span>
+            <div class="head-text">
+              <button type="button" class="doc" (click)="openDocument(task)" [matTooltip]="'workflow.tasks.openDocument' | translate">{{ task.documentName }}</button>
+              <div class="context">
+                <button type="button" class="wf" (click)="openInstance(task)" [matTooltip]="'workflow.tasks.openInstance' | translate">{{ task.definitionName }}</button>
+                <mat-icon class="sep rtl-flip">chevron_right</mat-icon>
+                <span class="chip"><span class="chip-dot"></span>{{ task.stateLabel }}</span>
+                @if (task.review) {
+                  <span class="review-tag"><mat-icon>groups</mat-icon>{{ 'workflow.review.title' | translate }}</span>
+                }
+              </div>
+            </div>
+            @if (task.dueAt) {
+              <span class="due" [class.late]="task.overdue">
+                <mat-icon>{{ task.overdue ? 'warning' : 'event' }}</mat-icon>
+                {{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}
+              </span>
+            }
+            <button mat-icon-button class="more" [matMenuTriggerFor]="menu" [disabled]="busy.has(task.id)" [attr.aria-label]="'toolbar.moreActions' | translate">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <div class="line">
-              <span class="chip">{{ task.stateLabel }}</span>
-              <span class="wf" (click)="openInstance(task)" role="link" tabindex="0" (keydown.enter)="openInstance(task)">{{ task.definitionName }}</span>
-              @if (task.review) {
-                <span class="who review-tag"><mat-icon>groups</mat-icon>{{ 'workflow.review.title' | translate }}</span>
-              } @else if (task.candidateRole || task.candidates.length > 1) {
-                <span class="who" [matTooltip]="waitingFor(task)"><mat-icon>group</mat-icon>{{ task.candidateRole ? ('workflow.monitor.anyoneWith' | translate: { role: task.candidateRole }) : ('workflow.tasks.sharedWith' | translate: { count: task.candidates.length - 1 }) }}</span>
-              }
-            </div>
-            <div class="line meta">
-              <span><mat-icon>schedule</mat-icon>{{ 'workflow.tasks.waitingSince' | translate: { date: (task.createdAt | date:'medium') } }}</span>
-              @if (task.dueAt) {
-                <span class="due" [class.late]="task.overdue"><mat-icon>{{ task.overdue ? 'warning' : 'event' }}</mat-icon>{{ (task.overdue ? 'workflow.tasks.overdue' : 'workflow.tasks.due') | translate: { date: (task.dueAt | date:'mediumDate') } }}</span>
-              }
-              <span><mat-icon>person</mat-icon>{{ 'workflow.tasks.from' | translate: { who: task.previousActor || task.startedBy } }}</span>
-            </div>
-            @if (task.previousComment) {
-              <blockquote class="note">{{ task.previousComment }}</blockquote>
-            }
-            @if (task.review) {
-              <app-workflow-review-progress [review]="task.review" [transitions]="task.transitions"></app-workflow-review-progress>
-            }
-          </div>
-          <div class="card-actions">
-            @if (busy.has(task.id)) {
-              <mat-spinner diameter="24"></mat-spinner>
-            } @else {
+            <mat-menu #menu="matMenu" xPosition="before">
               @for (t of task.transitions; track t.key) {
-                <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(task, t)"
-                  [matTooltip]="t.requireComment ? ('workflow.decision.commentRequired' | translate) : ''">
-                  {{ t.label }}
+                <button mat-menu-item (click)="actWithDialog(task, t)">
+                  <mat-icon>rate_review</mat-icon><span>{{ 'workflow.tasks.withNote' | translate: { transition: t.label } }}</span>
                 </button>
               }
-              <button mat-icon-button class="more" [matMenuTriggerFor]="menu" [attr.aria-label]="'toolbar.moreActions' | translate">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="reassign(task)"><mat-icon>group</mat-icon><span>{{ 'workflow.tasks.reassign' | translate }}</span></button>
+              <button mat-menu-item (click)="openInstance(task)"><mat-icon>monitoring</mat-icon><span>{{ 'workflow.tasks.openInstance' | translate }}</span></button>
+              <button mat-menu-item (click)="openDocument(task)"><mat-icon>folder_open</mat-icon><span>{{ 'workflow.tasks.openDocument' | translate }}</span></button>
+            </mat-menu>
+          </header>
+
+          <!-- Context from the previous person, and the review round -->
+          @if (task.previousComment) {
+            <div class="note">
+              <div class="note-head">
+                <span class="avatar">{{ initial(task.previousActor || task.startedBy) }}</span>
+                <span>{{ 'workflow.tasks.noteFrom' | translate: { who: task.previousActor || task.startedBy } }}</span>
+              </div>
+              <p class="note-text">{{ task.previousComment }}</p>
+            </div>
+          }
+          @if (task.review) {
+            <app-workflow-review-progress [review]="task.review" [transitions]="task.transitions"></app-workflow-review-progress>
+          }
+
+          <!-- Who / since when, then the decision -->
+          <footer class="card-foot">
+            <div class="meta">
+              <span><mat-icon>schedule</mat-icon>{{ 'workflow.tasks.waitingSince' | translate: { date: (task.createdAt | date:'medium') } }}</span>
+              @if (!task.previousComment) {
+                <span><mat-icon>person_outline</mat-icon>{{ 'workflow.tasks.from' | translate: { who: task.previousActor || task.startedBy } }}</span>
+              }
+              @if (!task.review && (task.candidateRole || task.candidates.length > 1)) {
+                <span [matTooltip]="waitingFor(task)"><mat-icon>group</mat-icon>{{ task.candidateRole ? ('workflow.monitor.anyoneWith' | translate: { role: task.candidateRole }) : ('workflow.tasks.sharedWith' | translate: { count: task.candidates.length - 1 }) }}</span>
+              }
+            </div>
+            <div class="decide">
+              @if (busy.has(task.id)) {
+                <mat-spinner diameter="24"></mat-spinner>
+              } @else {
+                <span class="decide-label">{{ 'workflow.tasks.decide' | translate }}</span>
                 @for (t of task.transitions; track t.key) {
-                  <button mat-menu-item (click)="actWithDialog(task, t)">
-                    <mat-icon>rate_review</mat-icon><span>{{ 'workflow.tasks.withNote' | translate: { transition: t.label } }}</span>
+                  <button mat-flat-button class="act-btn" [class]="styleClass(t)" (click)="act(task, t)"
+                    [matTooltip]="t.requireComment ? ('workflow.decision.commentRequired' | translate) : ''">
+                    <mat-icon>{{ actionIcon(t) }}</mat-icon>{{ t.label }}
                   </button>
                 }
-                <button mat-menu-item (click)="reassign(task)"><mat-icon>group</mat-icon><span>{{ 'workflow.tasks.reassign' | translate }}</span></button>
-                <button mat-menu-item (click)="openInstance(task)"><mat-icon>monitoring</mat-icon><span>{{ 'workflow.tasks.openInstance' | translate }}</span></button>
-                <button mat-menu-item (click)="openDocument(task)"><mat-icon>folder_open</mat-icon><span>{{ 'workflow.tasks.openDocument' | translate }}</span></button>
-              </mat-menu>
-            }
-          </div>
+              }
+            </div>
+          </footer>
         </article>
       }
     </div>
