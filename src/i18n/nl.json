@@ -360,7 +360,7 @@
       "uploadCount": "{{count}} {{type}} uploaden"
     },
     "folderTree": {
-      "root": "Root",
+      "root": "Hoofdmap",
       "noFoldersAvailable": "Geen mappen beschikbaar",
       "selectPage": "Selecteer pagina",
       "moveSubtitle": "Selecteer een doelmap om de items naar te verplaatsen",
@@ -763,9 +763,9 @@
     "gz": "GZip-archief",
     "tar": "TAR-archief",
     "unknown": "Onbekend",
-    "imageType": "{{type}} Afbeelding",
-    "videoType": "{{type}} Video",
-    "audioType": "{{type}} Audio"
+    "imageType": "{{type}}-afbeelding",
+    "videoType": "{{type}}-video",
+    "audioType": "{{type}}-audio"
   },
   "fileViewer": {
     "pageInfo": "Pagina {{current}} van {{total}}",
