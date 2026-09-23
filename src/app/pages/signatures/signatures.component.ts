@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -33,7 +34,7 @@ import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.co
   templateUrl: './signatures.component.html',
   styleUrls: ['./signatures.component.css'],
   imports: [
-    CommonModule, MatTabsModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
+    LocalDatePipe, CommonModule, MatTabsModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
     MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, TranslatePipe,
     SealNoticeComponent
   ]

@@ -22,6 +22,7 @@ import { DragDropService } from '../../services/drag-drop.service';
 import { AuditLog, DocumentInfo, DocumentType } from '../../models/document.models';
 import { DocumentVersionInfo } from '../../models/document-versions.models';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
+import { appLocale } from '../../i18n/app-locale';
 import { FileIconService } from '../../services/file-icon.service';
 
 /** A single metadata key/value shown in the inline editor */
@@ -734,6 +735,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (diffHours < 24) return { key: diffHours === 1 ? 'audit.time.hourAgo' : 'audit.time.hoursAgo', params: { count: diffHours } };
     if (diffDays < 7) return { key: diffDays === 1 ? 'audit.time.dayAgo' : 'audit.time.daysAgo', params: { count: diffDays } };
 
-    return { key: date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const locale = appLocale(this.translate.getCurrentLang());
+    return { key: date.toLocaleDateString(locale) + ' ' + date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) };
   }
 }

@@ -79,12 +79,12 @@
             <div class="cloud-meta">
               <div class="cloud-meta-item">
                 <mat-icon aria-hidden="true">event_repeat</mat-icon>
-                <span>{{ 'settings.cloudSigning.resetsOn' | translate:{ date: (sub.periodEnd | date:'mediumDate') } }}</span>
+                <span>{{ 'settings.cloudSigning.resetsOn' | translate:{ date: (sub.periodEnd | localDate:'mediumDate') } }}</span>
               </div>
               @if (sub.memberSince) {
                 <div class="cloud-meta-item">
                   <mat-icon aria-hidden="true">workspace_premium</mat-icon>
-                  <span>{{ 'settings.cloudSigning.memberSince' | translate:{ date: (sub.memberSince | date:'mediumDate') } }}</span>
+                  <span>{{ 'settings.cloudSigning.memberSince' | translate:{ date: (sub.memberSince | localDate:'mediumDate') } }}</span>
                 </div>
               }
             </div>

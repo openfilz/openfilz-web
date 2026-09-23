@@ -17,6 +17,7 @@ import { FileIconService } from '../../services/file-icon.service';
 import { OnlyOfficeService } from '../../services/onlyoffice.service';
 import { DocumentType, ElementInfo, FileItem } from '../../models/document.models';
 import { environment } from '../../../environments/environment';
+import { appLocale } from '../../i18n/app-locale';
 
 export interface DashboardFileItem extends FileItem {
   owner: string;
@@ -238,7 +239,7 @@ export class DashboardComponent implements OnInit {
     if (diffDays < 7) return this.translate.instant('audit.time.dayAgo', { count: diffDays });
 
     // Fallback to localized date
-    return date.toLocaleDateString(this.translate.currentLang || 'en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(appLocale(this.translate.getCurrentLang()), { month: 'short', day: 'numeric' });
   }
 
 
@@ -324,11 +325,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  private formatDate(dateString: string): string {
-    // Format the date to match the design (e.g., "Jun 12")
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  }
 
   // File Actions
   onOpenFile(file: RecentFile) {

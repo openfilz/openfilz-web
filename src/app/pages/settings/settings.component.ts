@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LocalDatePipe } from '../../i18n/local-date.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,7 +20,7 @@ import { IS_ENTERPRISE } from '../../edition';
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent, AiMaintenanceComponent],
+  imports: [LocalDatePipe, CommonModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule, TranslatePipe, AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent, AiMaintenanceComponent],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })

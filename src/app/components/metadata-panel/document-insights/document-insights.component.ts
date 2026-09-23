@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
+import { LocalDatePipe } from '../../../i18n/local-date.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -22,7 +23,7 @@ import { DocumentInsights, FilingOutcome } from '../../../models/smart-filing.mo
 @Component({
   selector: 'app-document-insights',
   standalone: true,
-  imports: [DatePipe, NgTemplateOutlet, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
+  imports: [LocalDatePipe, NgTemplateOutlet, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe],
   templateUrl: './document-insights.component.html',
   styleUrls: ['./document-insights.component.css']
 })
