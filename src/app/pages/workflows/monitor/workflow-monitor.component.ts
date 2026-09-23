@@ -11,10 +11,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { WorkflowService } from '../../../services/workflow.service';
+import { FileIconService } from '../../../services/file-icon.service';
 import {
   WorkflowDefinitionDTO, WorkflowEventDTO, WorkflowInstanceDTO, WorkflowInstanceDetailDTO, WorkflowInstanceStatus, WorkflowSummaryDTO
 } from '../../../models/workflow.models';
@@ -23,15 +23,16 @@ import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-
 import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
 
 /**
- * "Monitor": counters, filters, the instance table and a side drawer with the diagram (current
- * status highlighted, taken transitions bold), the open task (or the progress of a parallel
- * review), the timeline and the reassign / cancel actions.
+ * "Monitor": status tabs with their counts (they are the status filter), the workflow / "mine"
+ * filters, one row per instance (document and context, current status, who it waits for) and a
+ * side drawer with the diagram (current status highlighted, taken transitions bold), the open task
+ * (or the progress of a parallel review), the timeline and the reassign / cancel actions.
  */
 @Component({
   selector: 'app-workflow-monitor',
   standalone: true,
   imports: [LocalDatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule,
-    MatSelectModule, MatSlideToggleModule, MatTableModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
+    MatSelectModule, MatSlideToggleModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
     WorkflowReviewProgressComponent],
   templateUrl: './workflow-monitor.component.html',
   styleUrls: ['./workflow-monitor.component.css']
@@ -44,6 +45,7 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
+  private fileIcons = inject(FileIconService);
 
   summary: WorkflowSummaryDTO | null = null;
   definitions: WorkflowDefinitionDTO[] = [];
@@ -55,7 +57,12 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
   filterDefinition: string | null = null;
   filterStatus: WorkflowInstanceStatus | null = 'RUNNING';
   filterMine = false;
-  columns = ['document', 'workflow', 'state', 'waitingFor', 'startedBy', 'updated'];
+  readonly statusTabs: { value: WorkflowInstanceStatus | null; label: string }[] = [
+    { value: 'RUNNING', label: 'workflow.monitor.running' },
+    { value: 'COMPLETED', label: 'workflow.monitor.completed' },
+    { value: 'CANCELLED', label: 'workflow.monitor.cancelledCount' },
+    { value: null, label: 'workflow.monitor.all' }
+  ];
 
   detail: WorkflowInstanceDetailDTO | null = null;
   detailLoading = false;
@@ -84,6 +91,28 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
     });
   }
 
+  setStatus(status: WorkflowInstanceStatus | null): void {
+    if (this.filterStatus === status) return;
+    this.filterStatus = status;
+    this.onFilterChange();
+  }
+
+  /** Count shown on a status tab; "all" adds the three. */
+  countOf(status: WorkflowInstanceStatus | null): number {
+    const s = this.summary;
+    if (!s) return 0;
+    switch (status) {
+      case 'RUNNING': return s.running;
+      case 'COMPLETED': return s.completed;
+      case 'CANCELLED': return s.cancelled;
+      default: return s.running + s.completed + s.cancelled;
+    }
+  }
+
+  icon(i: WorkflowInstanceDTO): string {
+    return this.fileIcons.getFileIcon(i.documentName, 'FILE') || 'description';
+  }
+
   onFilterChange(): void {
     this.page = 0;
     this.reload();
@@ -98,7 +127,14 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
   open(id: string): void {
     this.detailLoading = true;
     this.workflows.getInstance(id).subscribe({
-      next: d => { this.detail = d; this.detailLoading = false; },
+      next: d => {
+        this.detail = d;
+        this.detailLoading = false;
+        // Below 1100px the drawer stacks under the list: bring it into view.
+        if (window.matchMedia('(max-width: 1100px)').matches) {
+          setTimeout(() => document.getElementById('monitor-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        }
+      },
       error: err => { this.detailLoading = false; this.toastError(err, 'workflow.errors.notFound'); }
     });
   }
