@@ -1759,7 +1759,11 @@
       "since": "Avviato da {{who}} il {{date}}",
       "start": "Avvia un flusso",
       "openMonitor": "Apri nel monitoraggio",
-      "noWorkflow": "Nessun flusso in corso su questo documento."
+      "noWorkflow": "Nessun flusso in corso su questo documento.",
+      "history": "Flussi precedenti",
+      "historyMeta": "{{from}} → {{to}} · da {{who}}",
+      "historyMore": "{{count}} più vecchi non mostrati",
+      "historyEmpty": "Nessun flusso precedente su questo documento."
     },
     "errors": {
       "generic": "Qualcosa è andato storto.",

@@ -84,3 +84,42 @@
 }
 .start-btn:hover { --mat-button-outlined-outline-color: var(--primary); }
 .start-btn mat-icon { margin-inline-end: 6px; color: var(--primary); }
+
+/* ── History: the document's past workflows ─────────────────────────── */
+.history { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.history-head {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 4px; border: none; border-radius: 8px; background: none;
+  cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); text-align: start;
+}
+.history-head:hover { color: var(--text-primary); background: var(--bg-secondary); }
+.history-head:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.history-head .fold { margin-inline-start: auto; transition: transform .15s ease; }
+.history-head .fold.open { transform: rotate(180deg); }
+.history-head mat-icon { font-size: 17px; width: 17px; height: 17px; }
+.history-count { padding: 0 7px; border-radius: 999px; font-size: 11px; font-weight: 700; background: var(--bg-tertiary); color: var(--text-primary); }
+.history-body { display: flex; flex-direction: column; gap: 8px; }
+.history-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.h-row {
+  --chip: #94a3b8;
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 8px 8px 10px; cursor: pointer; text-align: start; font: inherit;
+  color: var(--text-primary); background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 10px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.h-row:hover { border-color: var(--border-color); }
+.h-row:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.h-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 8px;
+  background: color-mix(in srgb, var(--chip) 18%, transparent); color: var(--chip);
+}
+.h-icon.cancelled { background: var(--bg-tertiary); color: var(--text-tertiary); }
+.h-icon mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.h-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.h-line { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
+.h-name { font-size: 13px; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip.small { padding: 1px 8px; font-size: 11.5px; }
+.chip.small .chip-dot { width: 7px; height: 7px; }
+.h-badge { padding: 1px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); }
+.h-meta { font-size: 11.5px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.h-go { flex-shrink: 0; font-size: 18px; width: 18px; height: 18px; color: var(--text-tertiary); }
+.h-row:hover .h-go { color: var(--primary); }
+.h-more { margin: 0; font-size: 11.5px; color: var(--text-tertiary); }

@@ -1759,7 +1759,11 @@
       "since": "Gestart door {{who}} op {{date}}",
       "start": "Een workflow starten",
       "openMonitor": "Openen in het overzicht",
-      "noWorkflow": "Geen lopende workflow op dit document."
+      "noWorkflow": "Geen lopende workflow op dit document.",
+      "history": "Eerdere workflows",
+      "historyMeta": "{{from}} → {{to}} · door {{who}}",
+      "historyMore": "{{count}} oudere niet getoond",
+      "historyEmpty": "Geen eerdere workflow op dit document."
     },
     "errors": {
       "generic": "Er is iets misgegaan.",

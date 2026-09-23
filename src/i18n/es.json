@@ -1759,7 +1759,11 @@
       "since": "Iniciado por {{who}} el {{date}}",
       "start": "Iniciar un flujo",
       "openMonitor": "Abrir en el seguimiento",
-      "noWorkflow": "Ningún flujo en curso en este documento."
+      "noWorkflow": "Ningún flujo en curso en este documento.",
+      "history": "Flujos anteriores",
+      "historyMeta": "{{from}} → {{to}} · por {{who}}",
+      "historyMore": "{{count}} más antiguo(s) no mostrado(s)",
+      "historyEmpty": "Ningún flujo anterior en este documento."
     },
     "errors": {
       "generic": "Algo salió mal.",
