@@ -20,35 +20,74 @@
 .icon-wrapper mat-icon { color: #fff; }
 .header-text { flex: 1; min-width: 0; }
 .dialog-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
-.dialog-subtitle { margin: 4px 0 0; font-size: 13px; color: var(--text-secondary); word-break: break-word; }
+.dialog-subtitle { display: flex; align-items: center; gap: 5px; margin: 4px 0 0; font-size: 13px; color: var(--text-secondary); min-width: 0; }
+.dialog-subtitle mat-icon { font-size: 16px; width: 16px; height: 16px; flex-shrink: 0; }
+.dialog-subtitle span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .close-btn { color: var(--text-secondary); }
 
-.dialog-content { padding: 18px 26px 4px !important; min-width: min(640px, 92vw); max-height: 70dvh; }
-.section { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; }
+.dialog-content {
+  padding: 22px 26px 8px !important; min-width: min(640px, 92vw); max-height: 70dvh;
+  display: flex; flex-direction: column; gap: 26px;
+}
 
 .state { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 36px 0; color: var(--text-secondary); }
 .state.empty mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: .5; }
 .state.empty p { margin: 0; font-size: 14px; }
 .state.empty .sub { font-size: 12.5px; }
 
-.def-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+/* ── Numbered steps ───────────────────────────────────────────────────── */
+.step { display: flex; flex-direction: column; gap: 14px; }
+.step-head { display: flex; align-items: flex-start; gap: 12px; }
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%;
+  font-size: 13px; font-weight: 700; background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--primary);
+  transition: background .15s ease, color .15s ease;
+}
+.step-num.done { background: var(--primary); color: #fff; }
+.step-num.optional { background: var(--bg-tertiary); color: var(--text-secondary); }
+.step-head h3 { margin: 3px 0 0; font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.step-title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.step-title p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); }
+
+/* ── Workflow cards ───────────────────────────────────────────────────── */
+.def-list { display: flex; flex-direction: column; gap: 10px; }
 .def-card {
-  display: flex; align-items: flex-start; gap: 10px; text-align: left; width: 100%; padding: 12px 14px; cursor: pointer;
-  background: var(--bg-secondary); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 12px; font: inherit;
+  display: flex; align-items: flex-start; justify-content: flex-start; gap: 12px; width: 100%; padding: 14px 16px; cursor: pointer; text-align: start;
+  background: var(--bg-secondary); color: var(--text-primary); border: 2px solid var(--border-light); border-radius: 12px; font: inherit;
   transition: border-color .15s ease, background .15s ease;
 }
-.def-card:hover { background: var(--bg-tertiary); }
+.def-card:hover { border-color: var(--border-color); }
+.def-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .def-card.selected { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary)); }
-.def-card .radio { color: var(--text-secondary); margin-top: 1px; }
+.def-card .radio { color: var(--text-tertiary); margin-top: 1px; flex-shrink: 0; }
 .def-card.selected .radio { color: var(--primary); }
-.def-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.def-name { font-weight: 600; font-size: 14px; }
-.def-desc { font-size: 12.5px; color: var(--text-secondary); }
-.def-steps { font-size: 12px; color: var(--text-secondary); display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 3px; }
-.sep { opacity: .6; margin: 0 2px; }
+.def-text { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.def-name { font-weight: 600; font-size: 14.5px; }
+.def-desc { font-size: 13px; line-height: 1.45; color: var(--text-secondary); }
+.def-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; margin-top: 2px; font-size: 12px; color: var(--text-secondary); }
+.def-step { display: inline-flex; align-items: center; white-space: nowrap; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-inline-end: 5px; flex-shrink: 0; }
+.sep { font-size: 16px; width: 16px; height: 16px; color: var(--text-tertiary); }
 
-.preview { padding: 10px 6px; margin-bottom: 12px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-light); overflow-x: auto; }
+.preview {
+  display: flex; flex-direction: column; gap: 6px; padding: 12px 14px 10px;
+  background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-light); overflow-x: auto;
+}
+.preview-label { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--text-tertiary); }
+
+/* ── People to name ───────────────────────────────────────────────────── */
+.person {
+  display: flex; flex-direction: column; gap: 10px; padding: 14px 16px 12px;
+  background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 12px;
+}
+.person-state { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; min-width: 0; }
+.person-state .dot { width: 10px; height: 10px; margin-inline-end: 8px; }
+.person-state-name { font-size: 13.5px; font-weight: 600; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; margin-inline-start: 10px; padding: 2px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 600; background: color-mix(in srgb, #8b5cf6 14%, transparent); color: #8b5cf6;
+}
+.tag mat-icon { font-size: 15px; width: 15px; height: 15px; }
 
 .field { width: 100%; }
 .field ::ng-deep .mat-mdc-text-field-wrapper { background-color: var(--bg-tertiary); border-radius: 10px; }
@@ -59,26 +98,54 @@
 .field ::ng-deep .mdc-notched-outline__leading, .field ::ng-deep .mdc-notched-outline__trailing, .field ::ng-deep .mdc-notched-outline__notch { border-color: var(--border-color) !important; }
 .field ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading, .field ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing, .field ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch { border-color: var(--primary) !important; border-width: 2px !important; }
 
-.hint { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; color: var(--text-primary); margin: -8px 0 12px; }
-.hint mat-icon { font-size: 18px; width: 18px; height: 18px; }
-.hint.err { background: rgba(239, 68, 68, .08); border-left: 3px solid #ef4444; }
+.hint { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; color: var(--text-primary); }
+.hint mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+.hint.err { background: rgba(239, 68, 68, .08); border-inline-start: 3px solid #ef4444; }
 
-.dialog-actions { padding: 12px 26px 22px !important; display: flex; flex-wrap: wrap; gap: 10px; }
-.spacer { flex: 1; }
-.cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
-.start-btn.plain { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
-.primary-btn {
-  --mat-button-filled-container-color: var(--primary);
-  --mat-button-filled-label-text-color: #fff;
-  --mat-button-filled-state-layer-color: #fff;
-  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
-  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
-  border-radius: 10px; height: 44px; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.dialog-actions {
+  padding: 14px 26px 22px !important; display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+  border-top: 1px solid var(--border-light);
 }
-.primary-btn.style-success { --mat-button-filled-container-color: #10b981; }
-.primary-btn.style-danger { --mat-button-filled-container-color: #ef4444; }
-.primary-btn.style-neutral { --mat-button-filled-container-color: #64748b; }
-.cancel-btn mat-icon, .start-btn mat-icon { margin-right: 6px; }
-.start-btn mat-spinner { display: inline-block; margin-right: 8px; }
-/* A review field carries a hint line under it: leave room before the next field / error. */
-.review-field { margin-bottom: 8px; }
+.start-hint { display: flex; align-items: flex-start; gap: 8px; margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); }
+.start-hint mat-icon { font-size: 17px; width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; }
+.action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+/* The row's gap spaces the buttons: drop the margin mat-dialog-actions adds between them. */
+.action-row > button { margin: 0 !important; }
+.spacer { flex: 1; }
+.cancel-btn, .start-btn { height: 44px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0; }
+.cancel-btn, .start-btn.plain {
+  --mat-button-outlined-outline-color: var(--border-color);
+  --mat-button-outlined-outline-width: 2px;
+  --mat-button-outlined-label-text-color: var(--text-primary);
+  --mat-button-outlined-state-layer-color: var(--text-primary);
+  --mat-button-outlined-disabled-label-text-color: var(--text-tertiary);
+  background: var(--bg-primary);
+}
+/* mat-raised-button paints from the *protected* tokens (not *filled*): driving the wrong family left
+   the container transparent, i.e. white text on the dialog background. */
+.primary-btn {
+  --btn: var(--primary);
+  --mat-button-protected-container-color: var(--btn);
+  --mat-button-protected-label-text-color: #fff;
+  --mat-button-protected-state-layer-color: #fff;
+  --mat-button-protected-disabled-container-color: var(--bg-tertiary);
+  --mat-button-protected-disabled-label-text-color: var(--text-tertiary);
+  color: #fff;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--btn) 32%, transparent);
+}
+.primary-btn[disabled] { box-shadow: none; color: var(--text-tertiary); }
+.primary-btn.style-success { --btn: #10b981; }
+.primary-btn.style-danger { --btn: #ef4444; }
+.primary-btn.style-neutral { --btn: #64748b; }
+.cancel-btn mat-icon, .start-btn mat-icon { margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px; }
+.start-btn mat-spinner { display: inline-block; margin-inline-end: 8px; --mat-progress-spinner-active-indicator-color: currentColor; }
+
+@media (max-width: 600px) {
+  .dialog-header { padding: 18px 18px 14px; }
+  .dialog-content { padding: 18px 18px 8px !important; gap: 22px; }
+  .dialog-actions { padding: 12px 18px 18px !important; }
+  .action-row > button { flex: 1 1 100%; }
+  .action-row > .primary-btn { order: -1; }
+  .action-row .spacer { display: none; }
+}

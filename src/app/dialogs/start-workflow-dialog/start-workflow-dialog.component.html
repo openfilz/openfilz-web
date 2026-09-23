@@ -3,7 +3,7 @@
     <div class="icon-wrapper"><mat-icon>account_tree</mat-icon></div>
     <div class="header-text">
       <h2 class="dialog-title">{{ 'workflow.start.title' | translate }}</h2>
-      <p class="dialog-subtitle">{{ data.documentName }}</p>
+      <p class="dialog-subtitle"><mat-icon>description</mat-icon><span>{{ data.documentName }}</span></p>
     </div>
   </div>
   <button mat-icon-button class="close-btn" (click)="cancel()" [attr.aria-label]="'common.close' | translate">
@@ -21,70 +21,110 @@
       <p class="sub">{{ 'workflow.start.noDefinitionsHint' | translate }}</p>
     </div>
   } @else {
-    <h3 class="section">{{ 'workflow.start.chooseWorkflow' | translate }}</h3>
-    <div class="def-list" role="radiogroup">
-      @for (def of definitions; track def.id) {
-        <button type="button" class="def-card" [class.selected]="selected?.id === def.id" role="radio"
-          [attr.aria-checked]="selected?.id === def.id" (click)="select(def)">
-          <mat-icon class="radio">{{ selected?.id === def.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
-          <span class="def-text">
-            <span class="def-name">{{ def.name }}</span>
-            @if (def.description) { <span class="def-desc">{{ def.description }}</span> }
-            <span class="def-steps">
-              @for (s of def.spec.states; track s.key; let last = $last) {
-                <span class="dot" [style.background]="s.color || '#94a3b8'"></span>{{ s.label }}@if (!last) { <span class="sep">›</span> }
-              }
+    <!-- 1. Which workflow -->
+    <section class="step">
+      <div class="step-head">
+        <span class="step-num" [class.done]="!!selected">1</span>
+        <h3 id="choose-label">{{ 'workflow.start.chooseWorkflow' | translate }}</h3>
+      </div>
+      <div class="def-list" role="radiogroup" aria-labelledby="choose-label">
+        @for (def of definitions; track def.id) {
+          <button type="button" class="def-card" [class.selected]="selected?.id === def.id" role="radio"
+            [attr.aria-checked]="selected?.id === def.id" (click)="select(def)">
+            <mat-icon class="radio">{{ selected?.id === def.id ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+            <span class="def-text">
+              <span class="def-name">{{ def.name }}</span>
+              @if (def.description) { <span class="def-desc">{{ def.description }}</span> }
+              <span class="def-steps">
+                @for (s of def.spec.states; track s.key; let last = $last) {
+                  <span class="def-step"><span class="dot" [style.background]="s.color || '#94a3b8'"></span>{{ s.label }}</span>
+                  @if (!last) { <mat-icon class="sep rtl-flip">chevron_right</mat-icon> }
+                }
+              </span>
             </span>
-          </span>
-        </button>
-      }
-    </div>
-
-    @if (selected) {
-      <div class="preview">
-        <app-workflow-diagram [spec]="selected.spec" [currentStateKey]="startState?.key ?? null" [compact]="true"></app-workflow-diagram>
+          </button>
+        }
       </div>
 
-      @for (s of chosenStates; track s.key) {
-        <mat-form-field appearance="outline" class="field" [class.review-field]="isReview(s)">
-          <mat-label>{{ s.assignees?.label || ((isReview(s) ? 'workflow.start.reviewers' : 'workflow.start.who') | translate: { state: s.label }) }}</mat-label>
-          <input matInput [(ngModel)]="assignments[s.key]" autocomplete="off" [placeholder]="'workflow.decision.emailsHint' | translate">
-          <mat-icon matSuffix>{{ isReview(s) ? 'groups' : 'group' }}</mat-icon>
-          @if (isReview(s)) {
-            <mat-hint>{{ 'workflow.start.reviewersHint' | translate: { count: minPeople(s), done: emailsOf(s.key).length } }}</mat-hint>
+      @if (selected) {
+        <div class="preview">
+          <span class="preview-label">{{ 'workflow.start.route' | translate }}</span>
+          <app-workflow-diagram [spec]="selected.spec" [currentStateKey]="startState?.key ?? null" [compact]="true"></app-workflow-diagram>
+        </div>
+      }
+    </section>
+
+    @if (selected) {
+      <!-- 2. The people this workflow asks for (only when it asks) -->
+      @if (chosenStates.length) {
+        <section class="step">
+          <div class="step-head">
+            <span class="step-num" [class.done]="assignmentsComplete">2</span>
+            <div class="step-title">
+              <h3>{{ 'workflow.start.people' | translate }}</h3>
+              <p>{{ 'workflow.start.peopleHint' | translate }}</p>
+            </div>
+          </div>
+          @for (s of chosenStates; track s.key) {
+            <div class="person">
+              <div class="person-state">
+                <span class="dot" [style.background]="s.color || '#94a3b8'"></span>
+                <span class="person-state-name">{{ s.label }}</span>
+                @if (isReview(s)) { <span class="tag"><mat-icon>groups</mat-icon>{{ 'workflow.review.title' | translate }}</span> }
+              </div>
+              <mat-form-field appearance="outline" class="field" [subscriptSizing]="isReview(s) ? 'fixed' : 'dynamic'">
+                <mat-label>{{ s.assignees?.label || ((isReview(s) ? 'workflow.start.reviewers' : 'workflow.start.who') | translate: { state: s.label }) }}</mat-label>
+                <input matInput [(ngModel)]="assignments[s.key]" autocomplete="off" [placeholder]="'workflow.decision.emailsHint' | translate">
+                <mat-icon matSuffix>{{ isReview(s) ? 'groups' : 'person_outline' }}</mat-icon>
+                @if (isReview(s)) {
+                  <mat-hint>{{ 'workflow.start.reviewersHint' | translate: { count: minPeople(s), done: emailsOf(s.key).length } }}</mat-hint>
+                }
+              </mat-form-field>
+              @if (invalidEmailOf(s.key); as bad) {
+                <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: bad } }}</span></div>
+              } @else if (tooFew(s); as min) {
+                <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.start.tooFewReviewers' | translate: { count: min } }}</span></div>
+              }
+            </div>
           }
-        </mat-form-field>
-        @if (invalidEmailOf(s.key); as bad) {
-          <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.editor.badEmail' | translate: { email: bad } }}</span></div>
-        } @else if (tooFew(s); as min) {
-          <div class="hint err"><mat-icon>error_outline</mat-icon><span>{{ 'workflow.start.tooFewReviewers' | translate: { count: min } }}</span></div>
-        }
+        </section>
       }
 
-      <mat-form-field appearance="outline" class="field">
-        <mat-label>{{ 'workflow.start.comment' | translate }}</mat-label>
-        <textarea matInput rows="2" [(ngModel)]="comment" maxlength="2000"></textarea>
-      </mat-form-field>
+      <!-- Last. An optional note -->
+      <section class="step">
+        <div class="step-head">
+          <span class="step-num optional">{{ chosenStates.length ? 3 : 2 }}</span>
+          <h3>{{ 'workflow.start.note' | translate }}</h3>
+        </div>
+        <mat-form-field appearance="outline" class="field" subscriptSizing="dynamic">
+          <mat-label>{{ 'workflow.start.comment' | translate }}</mat-label>
+          <textarea matInput rows="2" [(ngModel)]="comment" maxlength="2000"></textarea>
+        </mat-form-field>
+      </section>
     }
   }
 </div>
 
 <div mat-dialog-actions class="dialog-actions">
-  <button mat-stroked-button class="cancel-btn" (click)="cancel()">
-    <mat-icon>close</mat-icon><span>{{ 'common.cancel' | translate }}</span>
-  </button>
-  <span class="spacer"></span>
-  @if (selected) {
-    <button mat-stroked-button class="start-btn plain" (click)="start(null)" [disabled]="!canStart(null)"
-      [matTooltip]="'workflow.start.startHint' | translate: { state: startState?.label }">
-      <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.start.start' | translate }}</span>
-    </button>
-    @for (t of startTransitions; track t.key) {
-      <button mat-raised-button color="primary" class="start-btn primary-btn" [class]="styleClass(t)" (click)="start(t)" [disabled]="!canStart(t)"
-        [matTooltip]="needsComment(t) ? ('workflow.decision.commentRequired' | translate) : ''">
-        @if (starting) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon>send</mat-icon> }
-        <span>{{ 'workflow.start.startAnd' | translate: { transition: t.label } }}</span>
-      </button>
-    }
+  @if (selected && startState) {
+    <p class="start-hint"><mat-icon>info_outline</mat-icon><span>{{ 'workflow.start.startHint' | translate: { state: startState.label } }}</span></p>
   }
+  <div class="action-row">
+    <button mat-stroked-button class="cancel-btn" (click)="cancel()">
+      <mat-icon>close</mat-icon><span>{{ 'common.cancel' | translate }}</span>
+    </button>
+    <span class="spacer"></span>
+    @if (selected) {
+      <button mat-stroked-button class="start-btn plain" (click)="start(null)" [disabled]="!canStart(null)">
+        <mat-icon>play_arrow</mat-icon><span>{{ 'workflow.start.start' | translate }}</span>
+      </button>
+      @for (t of startTransitions; track t.key) {
+        <button mat-raised-button color="primary" class="start-btn primary-btn" [class]="styleClass(t)" (click)="start(t)" [disabled]="!canStart(t)"
+          [matTooltip]="needsComment(t) ? ('workflow.decision.commentRequired' | translate) : ''">
+          @if (starting) { <mat-spinner diameter="18"></mat-spinner> } @else { <mat-icon class="rtl-flip">send</mat-icon> }
+          <span>{{ 'workflow.start.startAnd' | translate: { transition: t.label } }}</span>
+        </button>
+      }
+    }
+  </div>
 </div>
