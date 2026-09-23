@@ -1759,7 +1759,11 @@
       "since": "Gestartet von {{who}} am {{date}}",
       "start": "Workflow starten",
       "openMonitor": "In der Überwachung öffnen",
-      "noWorkflow": "Kein laufender Workflow für dieses Dokument."
+      "noWorkflow": "Kein laufender Workflow für dieses Dokument.",
+      "history": "Frühere Workflows",
+      "historyMeta": "{{from}} → {{to}} · von {{who}}",
+      "historyMore": "{{count}} ältere nicht angezeigt",
+      "historyEmpty": "Kein früherer Workflow für dieses Dokument."
     },
     "errors": {
       "generic": "Etwas ist schiefgelaufen.",

@@ -18,7 +18,10 @@ import { transitionIcon } from '../../../utils/workflow-spec';
  * "Workflow" section of the details panel for FILE documents: the running instance (status chip
  * and workflow, who it waits for and by when, the previous person's note, the progress of a
  * parallel review, "Your decision" with my transition buttons when I am a candidate, link to the
- * monitor), or a short "no workflow" note with a "Start workflow" button when there is none. Hidden when the feature is off.
+ * monitor), or a short "no workflow" note with a "Start workflow" button when there is none; then
+ * a folded "Past workflows" section: the document's completed / cancelled workflows, newest first,
+ * each opening in the monitor. They are only asked for when the user unfolds it — opening the
+ * panel costs no extra request. Hidden when the feature is off.
  * Dedicated file for the enterprise fork; the panel only hosts the element.
  */
 @Component({
@@ -44,6 +47,14 @@ export class DocumentWorkflowComponent implements OnChanges {
 
   loading = false;
   instance: WorkflowInstanceDTO | null = null;
+  /** Past workflows unfolded by the user. */
+  historyOpen = false;
+  historyLoading = false;
+  /** Finished workflows of the document, newest first (at most HISTORY_SIZE); null until first unfolded. */
+  history: WorkflowInstanceDTO[] | null = null;
+  /** Older finished workflows not listed. */
+  historyHidden = 0;
+  private static readonly HISTORY_SIZE = 10;
   busy = false;
   private requestId = 0;
 
@@ -64,6 +75,11 @@ export class DocumentWorkflowComponent implements OnChanges {
   load(): void {
     const requestId = ++this.requestId;
     this.instance = null;
+    // Another document: fold its history back and forget the previous one's.
+    this.historyOpen = false;
+    this.historyLoading = false;
+    this.history = null;
+    this.historyHidden = 0;
     if (!this.enabled) return;
     this.loading = true;
     this.workflows.runningInstanceOf(this.documentId!).subscribe({
@@ -74,6 +90,38 @@ export class DocumentWorkflowComponent implements OnChanges {
       },
       error: () => {
         if (requestId === this.requestId) this.loading = false;
+      }
+    });
+  }
+
+  /** Unfolds / folds "Past workflows"; the first unfolding of a document fetches them. */
+  toggleHistory(): void {
+    this.historyOpen = !this.historyOpen;
+    if (this.historyOpen && this.history === null && !this.historyLoading) this.loadHistory();
+  }
+
+  /** Every instance of the document (any status), keeping the finished ones. */
+  private loadHistory(): void {
+    const requestId = this.requestId;
+    this.historyLoading = true;
+    // Over-fetch by one: the running instance, if any, is in the same page.
+    const size = DocumentWorkflowComponent.HISTORY_SIZE + 1;
+    this.workflows.listInstances({ documentId: this.documentId!, status: null, page: 0, size }).subscribe({
+      next: page => {
+        if (requestId !== this.requestId) return;
+        this.historyLoading = false;
+        const running = page.items.filter(i => i.status === 'RUNNING').length;
+        const finished = page.items
+          .filter(i => i.status !== 'RUNNING')
+          .sort((a, b) => (b.completedAt ?? b.updatedAt).localeCompare(a.completedAt ?? a.updatedAt));
+        this.history = finished.slice(0, DocumentWorkflowComponent.HISTORY_SIZE);
+        this.historyHidden = Math.max(0, page.total - running - this.history.length);
+      },
+      // The history is a convenience: the running workflow above still works without it.
+      error: () => {
+        if (requestId !== this.requestId) return;
+        this.historyLoading = false;
+        this.history = [];
       }
     });
   }
@@ -110,6 +158,8 @@ export class DocumentWorkflowComponent implements OnChanges {
         next: instance => {
           this.busy = false;
           this.instance = instance.status === 'RUNNING' ? instance : null;
+          // A workflow that just ended joins the history — refreshed only if the user already asked for it.
+          if (!this.instance && this.history !== null) this.loadHistory();
           const stillInReview = !!task.review && instance.status === 'RUNNING' && instance.currentStateKey === task.stateKey;
           this.snackBar.open(stillInReview
               ? this.translate.instant('workflow.review.voted')
@@ -139,9 +189,9 @@ export class DocumentWorkflowComponent implements OnChanges {
     });
   }
 
-  openMonitor(): void {
-    if (this.instance) {
-      this.router.navigate(['/workflows'], { queryParams: { tab: 'monitor', instance: this.instance.id } });
+  openMonitor(i: WorkflowInstanceDTO | null = this.instance): void {
+    if (i) {
+      this.router.navigate(['/workflows'], { queryParams: { tab: 'monitor', instance: i.id } });
     }
   }
 
