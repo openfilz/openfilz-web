@@ -29,7 +29,6 @@
   border-radius: 8px; background: rgba(255, 255, 255, .22);
 }
 .new-btn-icon mat-icon { margin: 0; font-size: 20px; width: 20px; height: 20px; line-height: 20px; color: #fff; }
-.owner { display: inline-flex; align-items: center; gap: 3px; color: var(--text-tertiary); }
 
 .state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 40px 0; color: var(--text-secondary); }
 .state.empty mat-icon { font-size: 44px; width: 44px; height: 44px; opacity: .5; }
@@ -37,30 +36,55 @@
 .state.empty .sub { font-size: 12.5px; }
 .tpl-cards { margin-top: 18px; max-width: 980px; color: var(--text-primary); }
 
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 14px; }
-.card { background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
-.card.inactive { opacity: .7; }
-.card-head { display: flex; align-items: flex-start; gap: 10px; }
-.card-title { flex: 1; min-width: 0; }
-.card-title h3 { margin: 0 0 2px; font-size: 16px; }
-.desc { margin: 0 0 6px; font-size: 12.5px; color: var(--text-secondary); }
-.facts { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--text-secondary); align-items: center; }
-.facts span { display: inline-flex; align-items: center; gap: 3px; }
-.facts .mini { font-size: 14px; width: 14px; height: 14px; }
-.dim { opacity: .8; }
-.badge { padding: 2px 8px; border-radius: 999px; background: var(--bg-tertiary); color: var(--text-secondary); font-weight: 600; }
-.badge.on { background: color-mix(in srgb, #10b981 18%, transparent); color: #10b981; }
-.card-actions { display: inline-flex; align-items: center; gap: 2px; }
-button[class*="tint-"] { --tint: var(--text-secondary); }
-button[class*="tint-"] mat-icon { color: var(--tint); }
-button[class*="tint-"][disabled] mat-icon { opacity: .35; }
-button.tint-blue { --tint: #3b82f6; }
-button.tint-amber { --tint: #f59e0b; }
-button.tint-red { --tint: #ef4444; }
-.diagram-box { padding: 8px; background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; cursor: pointer; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); gap: 18px; }
+.card {
+  display: flex; flex-direction: column; gap: 14px; padding: 18px 20px 14px;
+  background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 16px;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover { border-color: var(--border-color); box-shadow: var(--shadow-md, 0 4px 14px rgba(0, 0, 0, .08)); }
+
+.card-head { display: flex; align-items: flex-start; gap: 14px; }
+.card-title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.card-title h3 { margin: 0; font-size: 16.5px; font-weight: 600; line-height: 1.3; word-break: break-word; }
+.desc { margin: 0; font-size: 13px; line-height: 1.45; color: var(--text-secondary); }
+.active-toggle { flex-shrink: 0; margin-top: 1px; font-size: 13px; font-weight: 600; }
+
+/* The picture fills the card's middle: every card gets the same room, whatever its workflow. */
+.diagram-box {
+  flex: 1; display: flex; align-items: center; justify-content: center; min-height: 150px; width: 100%; padding: 10px; font: inherit;
+  background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; overflow-x: auto; cursor: pointer;
+  transition: border-color .15s ease, opacity .15s ease;
+}
+.diagram-box:hover { border-color: var(--primary); }
+.diagram-box:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.diagram-box app-workflow-diagram { width: 100%; }
+/* Inactive: only the picture fades — the name, facts and actions stay readable. */
+.card.inactive .diagram-box { opacity: .5; }
+.card.inactive .diagram-box:hover { opacity: .8; }
+
+.card-foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; padding-top: 12px; border-top: 1px solid var(--border-light); }
+.facts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 12.5px; color: var(--text-secondary); min-width: 0; }
+.facts span { display: inline-flex; align-items: center; gap: 4px; }
+.facts mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.facts .running { color: var(--text-primary); font-weight: 600; }
+.facts .running mat-icon { color: #10b981; }
+.dim { color: var(--text-tertiary); }
+.card-actions { display: flex; align-items: center; gap: 6px; margin-inline-start: auto; }
+.card-actions button { height: 38px; border-radius: 10px; font-weight: 600; letter-spacing: 0; }
+.card-actions button mat-icon { margin-inline-end: 6px; font-size: 18px; width: 18px; height: 18px; }
+.edit-btn {
+  --mat-button-outlined-outline-color: var(--border-color);
+  --mat-button-outlined-label-text-color: var(--text-primary);
+}
+.edit-btn:hover { --mat-button-outlined-outline-color: var(--primary); }
+.delete-btn { --mat-button-text-label-text-color: var(--text-secondary); }
+.delete-btn:not([disabled]):hover { --mat-button-text-label-text-color: #ef4444; }
+.delete-btn[disabled] { opacity: .45; }
 
 @media (max-width: 760px) {
   .cards { grid-template-columns: 1fr; }
+  .card { padding: 16px 14px 12px; }
 }
 @media (max-width: 600px) {
   .new-btn { width: 100%; justify-content: center; }

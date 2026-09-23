@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -16,14 +17,15 @@ import { WorkflowTemplateId } from '../../../utils/workflow-spec';
 import { WorkflowTemplatePickerComponent } from '../../../components/workflow-template-picker/workflow-template-picker.component';
 
 /**
- * "Designer": the definition cards (with their diagram) and the "New workflow" template picker —
+ * "Designer": one card per definition — name and description with an "Active" switch, its diagram,
+ * then the facts and the labelled Delete / Edit actions — and the "New workflow" template picker:
  * the template cards inline when there is no workflow yet, in a dialog (a bottom sheet on a phone)
  * behind the "New workflow" button otherwise.
  */
 @Component({
   selector: 'app-workflow-designer',
   standalone: true,
-  imports: [LocalDatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
+  imports: [LocalDatePipe, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSlideToggleModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
     WorkflowTemplatePickerComponent],
   templateUrl: './workflow-designer.component.html',
   styleUrls: ['./workflow-designer.component.css']
@@ -76,13 +78,18 @@ export class WorkflowDesignerComponent implements OnInit {
     this.router.navigate(['/workflows/definitions', def.id]);
   }
 
-  toggleActive(def: WorkflowDefinitionDTO): void {
+  toggleActive(def: WorkflowDefinitionDTO, change?: MatSlideToggleChange): void {
     this.busy.add(def.id);
     this.workflows.updateDefinition(def.id, {
       name: def.name, description: def.description, active: !def.active, spec: def.spec, triggerFolderIds: def.triggerFolderIds
     }).subscribe({
       next: updated => { this.busy.delete(def.id); Object.assign(def, updated); },
-      error: err => { this.busy.delete(def.id); this.toastError(err, 'workflow.editor.saveError'); }
+      error: err => {
+        this.busy.delete(def.id);
+        // The switch already moved: put it back where the definition really is.
+        if (change) change.source.checked = def.active;
+        this.toastError(err, 'workflow.editor.saveError');
+      }
     });
   }
 
