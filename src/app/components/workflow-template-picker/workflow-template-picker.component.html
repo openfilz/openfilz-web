@@ -8,6 +8,17 @@
           <span class="hint">{{ 'workflow.designer.templateHints.' + c.id | translate }}</span>
         </span>
       </span>
+      @if (c.id !== 'blank') {
+        <span class="facts">
+          <span class="fact"><mat-icon>linear_scale</mat-icon>{{ 'workflow.designer.statesCount' | translate: { count: c.statuses } }}</span>
+          @if (c.toName.length) {
+            <!-- Names on one line: template whitespace would put a space before each comma. -->
+            <span class="fact"><mat-icon>person_add_alt</mat-icon>{{ 'workflow.designer.toName' | translate }}
+              <span>@for (who of c.toName; track who; let last = $last) {<b>{{ 'workflow.designer.labels.' + who | translate }}</b>@if (!last) {<span>, </span>}}</span>
+            </span>
+          }
+        </span>
+      }
 
       @if (c.id === 'blank') {
         <span class="flow ghost" aria-hidden="true">

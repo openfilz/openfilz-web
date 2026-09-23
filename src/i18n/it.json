@@ -1545,12 +1545,13 @@
         "parallel-review": "Revisione in parallelo"
       },
       "templateHints": {
-        "approval": "Bozza → In attesa di approvazione → Approvato / Rifiutato",
-        "review-archive": "Bozza → In revisione → Approvato → Archiviato",
-        "two-step": "Due approvatori in sequenza",
-        "blank": "Parti da zero",
-        "parallel-review": "Più revisori in parallelo, ognuno commenta"
+        "approval": "Una persona approva o rifiuta il documento.",
+        "review-archive": "Revisionato, approvato e poi archiviato; il revisore può chiedere modifiche.",
+        "two-step": "Due persone approvano una dopo l’altra.",
+        "blank": "Parti da zero e crea i tuoi stati.",
+        "parallel-review": "Più revisori danno il loro parere contemporaneamente, ognuno può commentare."
       },
+      "toName": "Da indicare all’avvio:",
       "labels": {
         "draft": "Bozza",
         "submit": "Invia per approvazione",

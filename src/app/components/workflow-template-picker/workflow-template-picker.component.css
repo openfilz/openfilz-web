@@ -1,10 +1,11 @@
 :host { display: block; width: 100%; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+/* Two roomy columns: the four templates make a 2 × 2 block, the Blank strip spans below. */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
 .grid.dense { gap: 12px; }
 
 .tpl {
   --tone: var(--primary);
-  position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 16px; min-height: 168px;
+  position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 18px 16px 16px; min-height: 190px;
   text-align: start; font: inherit; color: var(--text-primary); cursor: pointer; overflow: hidden;
   background: var(--bg-secondary); border: 2px solid var(--border-light); border-radius: 16px;
   transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
@@ -18,6 +19,8 @@
 .tpl:focus-visible { outline: 3px solid color-mix(in srgb, var(--tone) 55%, transparent); outline-offset: 2px; border-color: var(--tone); }
 .tpl:active { transform: none; }
 
+/* A <button> centres its content: every row spans the card instead. */
+.top, .facts, .flow { width: 100%; }
 .top { display: flex; align-items: flex-start; gap: 12px; }
 .tile {
   display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px;
@@ -26,7 +29,12 @@
 .tile mat-icon { font-size: 24px; width: 24px; height: 24px; }
 .text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .name { font-size: 15px; font-weight: 700; line-height: 1.25; }
-.hint { font-size: 12.5px; line-height: 1.4; color: var(--text-secondary); }
+.hint { font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); }
+
+.facts { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.fact { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0 5px; }
+.fact mat-icon { font-size: 15px; width: 15px; height: 15px; color: var(--tone); }
+.fact b { font-weight: 600; color: var(--text-primary); }
 
 /* ── mini flow preview ─────────────────────────────────────────────────── */
 .flow {
@@ -54,8 +62,13 @@
   border-block: 4px solid transparent; border-inline-start: 5px solid var(--border-color);
 }
 
-/* ── the Blank card: dashed, no accent, hollow preview ────────────────── */
-.tpl.blank { background: transparent; border-style: dashed; border-color: var(--border-color); }
+/* ── the Blank card: a dashed strip across the grid, hollow preview ───── */
+.tpl.blank {
+  grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 0; padding: 14px 16px;
+  background: transparent; border-style: dashed; border-color: var(--border-color);
+}
+.tpl.blank .top { flex: 1; width: auto; align-items: center; }
+.tpl.blank .flow { width: auto; flex: 0 0 auto; margin-top: 0; }
 .tpl.blank::before { display: none; }
 .tpl.blank:hover { border-color: var(--primary); }
 .ghost { background: transparent; border-style: dashed; }
@@ -66,6 +79,7 @@
 @media (max-width: 600px) {
   .grid { grid-template-columns: 1fr; gap: 10px; }
   .tpl { min-height: 0; padding: 14px 14px 12px; gap: 10px; }
+  .tpl.blank .flow { display: none; }
   .tpl:hover { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {

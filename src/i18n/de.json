@@ -1545,12 +1545,13 @@
         "parallel-review": "Parallele Prüfung"
       },
       "templateHints": {
-        "approval": "Entwurf → Genehmigung ausstehend → Genehmigt / Abgelehnt",
-        "review-archive": "Entwurf → In Prüfung → Genehmigt → Archiviert",
-        "two-step": "Zwei Genehmiger nacheinander",
-        "blank": "Von Grund auf neu",
-        "parallel-review": "Mehrere Prüfer gleichzeitig, jeder kommentiert"
+        "approval": "Eine Person genehmigt oder lehnt das Dokument ab.",
+        "review-archive": "Geprüft, genehmigt, dann archiviert; der Prüfer kann Änderungen anfordern.",
+        "two-step": "Zwei Personen genehmigen nacheinander.",
+        "blank": "Von vorn beginnen und eigene Status anlegen.",
+        "parallel-review": "Mehrere Prüfer geben gleichzeitig ihre Meinung ab, jeder kann kommentieren."
       },
+      "toName": "Beim Start zu benennen:",
       "labels": {
         "draft": "Entwurf",
         "submit": "Zur Genehmigung einreichen",

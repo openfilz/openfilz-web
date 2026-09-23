@@ -1545,12 +1545,13 @@
         "parallel-review": "Parallelle beoordeling"
       },
       "templateHints": {
-        "approval": "Concept → Wacht op goedkeuring → Goedgekeurd / Afgewezen",
-        "review-archive": "Concept → In beoordeling → Goedgekeurd → Gearchiveerd",
-        "two-step": "Twee goedkeurders na elkaar",
-        "blank": "Vanaf nul beginnen",
-        "parallel-review": "Meerdere beoordelaars tegelijk, ieder geeft commentaar"
+        "approval": "Eén persoon keurt het document goed of af.",
+        "review-archive": "Beoordeeld, goedgekeurd en daarna gearchiveerd; de beoordelaar kan wijzigingen vragen.",
+        "two-step": "Twee personen keuren na elkaar goed.",
+        "blank": "Begin vanaf nul en maak uw eigen statussen.",
+        "parallel-review": "Meerdere beoordelaars geven tegelijk hun mening, elk kan opmerkingen plaatsen."
       },
+      "toName": "Aan te wijzen bij de start:",
       "labels": {
         "draft": "Concept",
         "submit": "Indienen ter goedkeuring",
