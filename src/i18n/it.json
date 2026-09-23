@@ -567,19 +567,19 @@
     },
     "mcp": {
       "title": "Server MCP",
-      "description": "Collegate un agente IA esterno — Claude, Cursor, n8n — ai vostri documenti. L'agente vede esattamente ciò che siete autorizzati a vedere, e nulla di più.",
+      "description": "Collega un agente IA esterno — Claude, Cursor, n8n — ai tuoi documenti. L'agente vede esattamente ciò che sei autorizzato a vedere, e nulla di più.",
       "serverUrl": "Indirizzo del server",
       "clientId": "ID client OAuth",
-      "clientIdHint": "Necessario per gli strumenti che non possono registrarsi da soli, come Claude Desktop: scegliete «Use your own OAuth client» e inserite questo ID, senza secret.",
+      "clientIdHint": "Necessario per gli strumenti che non possono registrarsi da soli, come Claude Desktop: scegli «Use your own OAuth client» e inserisci questo ID, senza secret.",
       "mode": "Permessi concessi agli agenti",
       "modes": {
         "READ_ONLY": "Sola lettura",
         "READ_WRITE": "Lettura e scrittura"
       },
-      "modeReadOnlyHint": "Gli agenti possono cercare e leggere i vostri documenti. Creazione, spostamento e rinomina sono disattivati su questa installazione.",
-      "modeReadWriteHint": "Gli agenti possono anche creare, spostare e rinominare documenti — sempre nei limiti dei vostri permessi.",
+      "modeReadOnlyHint": "Gli agenti possono cercare e leggere i tuoi documenti. Creazione, spostamento e rinomina sono disattivati su questa installazione.",
+      "modeReadWriteHint": "Gli agenti possono anche creare, spostare e rinominare documenti — sempre nei limiti dei tuoi permessi.",
       "configureClient": "Configura il mio strumento IA",
-      "unavailable": "Il server MCP è attivo ma questa installazione non pubblica alcun indirizzo pubblico. Chiedete all'amministratore di impostare l'URL pubblico dell'API.",
+      "unavailable": "Il server MCP è attivo ma questa installazione non pubblica alcun indirizzo pubblico. Chiedi all'amministratore di impostare l'URL pubblico dell'API.",
       "copy": "Copia",
       "copied": "Copiato negli appunti",
       "copyFailed": "Copia non riuscita",
@@ -594,7 +594,7 @@
         "geminiCli": "Gemini CLI",
         "n8n": "n8n"
       },
-      "oauthNote": "Keycloak non consente agli strumenti IA di registrarsi da soli. In Claude Desktop e claude.ai scegliete «Use your own OAuth client» e inserite l'ID client {{clientId}}, lasciando vuoto il secret.",
+      "oauthNote": "Keycloak non consente agli strumenti IA di registrarsi da soli. In Claude Desktop e claude.ai scegli «Use your own OAuth client» e inserisci l'ID client {{clientId}}, lasciando vuoto il secret.",
       "fullDoc": "Documentazione completa"
     },
     "discoverEe": {
@@ -1399,7 +1399,7 @@
       "undoFailed": "Impossibile riportare i documenti al loro posto."
     },
     "recap": {
-      "title": "Dove sono finiti i suoi documenti",
+      "title": "Dove sono finiti i tuoi documenti",
       "summary": "{{filed}} archiviato/i · {{left}} lasciato/i dov’era",
       "leftInPlace": "Lasciati dov’erano",
       "movedBack": "Rimesso al suo posto",

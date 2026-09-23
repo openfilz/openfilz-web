@@ -541,9 +541,12 @@ export class DocumentApiService {
    */
   uploadDocument(file: File, parentFolderId?: string, metadata?: string, allowDuplicateFileNames?: boolean, autoFile?: boolean): Observable<UploadResponse> {
     const formData = new FormData();
-    formData.append('file', file);
     if (parentFolderId) formData.append('parentFolderId', parentFolderId);
     if (metadata) formData.append('metadata', metadata);
+    // The file part must stay LAST: Spring WebFlux's DefaultPartHttpMessageReader silently drops a
+    // zero-byte part that is followed by another part, so an empty file sent first came back as
+    // 400 "Required request part 'file' is not present".
+    formData.append('file', file);
 
     let params = new HttpParams();
     if (allowDuplicateFileNames !== undefined) {
@@ -560,20 +563,19 @@ export class DocumentApiService {
 
   uploadMultipleDocuments(files: File[], parentFolderId?: string, allowDuplicateFileNames?: boolean, metadata?: { [key: string]: any }, autoFile?: boolean): Observable<HttpResponse<UploadResponse[]>> {
     const formData = new FormData();
-    const parametersByFilename: MultipleUploadFileParameter[] = [];
-    files.forEach(file => {
-      formData.append('file', file, file.name);
-      parametersByFilename.push({
+    if (parentFolderId || metadata) {
+      const parametersByFilename: MultipleUploadFileParameter[] = files.map(file => ({
         filename: file.name,
         fileAttributes: {
           parentFolderId: parentFolderId,
           metadata: metadata
         }
-      });
-    });
-    if (parentFolderId || metadata) {
+      }));
       formData.append('parametersByFilename', new Blob([JSON.stringify(parametersByFilename)], { type: 'application/json' }));
     }
+    // File parts go LAST (see uploadDocument): the server's multipart reader drops a zero-byte part
+    // that is followed by another part, so only the final file of the batch may be empty.
+    files.forEach(file => formData.append('file', file, file.name));
 
 
     let params = new HttpParams();
