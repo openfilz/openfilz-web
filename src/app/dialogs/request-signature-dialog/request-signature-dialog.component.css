@@ -67,7 +67,7 @@
   .grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "recipients" "fields" "message"; }
 }
 
-/* ── Numbered steps ──────────────────────────────────────────────────── */
+/* ── Steps (icon badge, filled once the step is complete) ──────────────────────────────────────────────────── */
 .step { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .step-head { display: flex; align-items: flex-start; gap: 12px; }
 .step-num {
@@ -76,6 +76,7 @@
   transition: background .15s ease, color .15s ease;
 }
 .step-num.done { background: var(--primary); color: #fff; }
+.step-num mat-icon { font-size: 16px; width: 16px; height: 16px; }
 .step-title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .step-title h3 { margin: 3px 0 0; font-size: 15px; font-weight: 600; color: var(--text-primary); }
 .step-title p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); }

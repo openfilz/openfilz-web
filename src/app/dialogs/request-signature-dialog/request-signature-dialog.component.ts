@@ -193,6 +193,7 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
     if (this.recipients.length === 1) return;
     if (this.selectedField && this.recipients[i].fields.includes(this.selectedField)) this.selectedField = null;
     this.recipients.splice(i, 1);
+    if (this.recipients.length === 1) this.sequential = false; // the toggle is hidden with a single recipient
     if (this.activeRecipient >= this.recipients.length) {
       this.activeRecipient = Math.max(0, this.recipients.length - 1);
     }
