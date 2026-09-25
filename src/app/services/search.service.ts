@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from "../../environments/environment";
 import { DocumentSearchResult, Suggestion, SearchFilters, FilterInput } from "../models/document.models";
 import { DocumentApiService } from "./document-api.service";
@@ -18,6 +18,10 @@ export class SearchService {
 
   private sortSubject = new BehaviorSubject<{ sortBy: string, sortOrder: 'ASC' | 'DESC' }>({ sortBy: 'name', sortOrder: 'ASC' });
   public sort$ = this.sortSubject.asObservable();
+
+  /** Asks the header to open its advanced filters panel (e.g. "All filters" on the results page). */
+  private advancedFiltersRequests = new Subject<void>();
+  public advancedFiltersRequested$ = this.advancedFiltersRequests.asObservable();
 
   private http = inject(HttpClient);
   private documentApi = inject(DocumentApiService);
@@ -52,13 +56,33 @@ export class SearchService {
     return this.http.get<Suggestion[]>(this.suggestionsUrl, { params });
   }
 
-  searchDocuments(query: string): Observable<DocumentSearchResult> {
-    const currentFilters = this.filtersSubject.value;
-    const currentSort = this.sortSubject.value;
-    const sortInput = {
-      field: currentSort.sortBy,
-      order: currentSort.sortOrder
-    };
-    return this.documentApi.searchDocuments(query, currentFilters, sortInput);
+  requestAdvancedFilters(): void {
+    this.advancedFiltersRequests.next();
   }
+
+  /**
+   * Full-text search. Without options: first page, current filters and sort. The results page
+   * passes its own page, filters and sort (`sort: null` = relevance order).
+   */
+  searchDocuments(query: string, options?: SearchPageOptions): Observable<DocumentSearchResult> {
+    const filters = options?.filters ?? this.filtersSubject.value;
+    let sortInput: { field: string; order: 'ASC' | 'DESC' } | null;
+    if (options && options.sort !== undefined) {
+      sortInput = options.sort;
+    } else {
+      const currentSort = this.sortSubject.value;
+      sortInput = { field: currentSort.sortBy, order: currentSort.sortOrder };
+    }
+    return this.documentApi.searchDocuments(query, filters, sortInput, options?.page ?? 1, options?.size ?? 20);
+  }
+}
+
+export interface SearchPageOptions {
+  /** 1-based page number. */
+  page?: number;
+  size?: number;
+  /** Explicit sort; `null` keeps the search engine's relevance order. */
+  sort?: { field: string; order: 'ASC' | 'DESC' } | null;
+  /** Filters to send instead of the current ones. */
+  filters?: SearchFilters;
 }

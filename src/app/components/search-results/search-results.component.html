@@ -1,125 +1,200 @@
 <div class="search-results-container">
-  <app-toolbar
-    [viewMode]="viewMode"
-    [totalItems]="totalItems"
-    [isSearchResultsPage]="true"
-    [hasSelection]="hasSelectedItems"
-    [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [unzipAvailable]="canUnzipSelection"
-    [sortBy]="sortBy"
-    [sortOrder]="sortOrder"
-    (viewModeChange)="onViewModeChange($event)"
-    (sortChange)="onSortChange($event)"
-    (renameSelected)="onRenameSelected()"
-    (downloadSelected)="onDownloadSelected()"
-    (moveSelected)="onMoveSelected()"
-    (copySelected)="onCopySelected()"
-    (deleteSelected)="onDeleteSelected()"
-    (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" (unzipSelected)="onUnzipSelected()" [organizeWithAiAvailable]="canOrganizeSelectionWithAi" (organizeWithAiSelected)="onOrganizeWithAiSelected()"
-    (clearSelection)="onSelectAll(false)"
-  >
-  </app-toolbar>
+  <!-- Contextual actions: only while items are selected -->
+  @if (hasSelectedItems) {
+    <app-toolbar
+      class="selection-toolbar"
+      [viewMode]="viewMode"
+      [totalItems]="0"
+      [isSearchResultsPage]="true"
+      [hasSelection]="hasSelectedItems"
+      [selectionCount]="selectedItems.length" [canRequestSignature]="canRequestSignatureForSelection" [startWorkflowAvailable]="canStartWorkflowForSelection" [pdfToolsAvailable]="canUsePdfToolsForSelection" [unzipAvailable]="canUnzipSelection"
+      [sortBy]="sortBy"
+      [sortOrder]="sortOrder"
+      (viewModeChange)="onViewModeChange($event)"
+      (renameSelected)="onRenameSelected()"
+      (downloadSelected)="onDownloadSelected()"
+      (moveSelected)="onMoveSelected()"
+      (copySelected)="onCopySelected()"
+      (deleteSelected)="onDeleteSelected()"
+      (detailsSelected)="onDetailsSelected()" (requestSignatureSelected)="onRequestSignatureSelected()" (startWorkflowSelected)="onStartWorkflowSelected()" (pdfToolSelected)="onPdfToolSelected($event)" (unzipSelected)="onUnzipSelected()" [organizeWithAiAvailable]="canOrganizeSelectionWithAi" (organizeWithAiSelected)="onOrganizeWithAiSelected()"
+      (clearSelection)="onSelectAll(false)"
+    >
+    </app-toolbar>
+  }
 
-  <main class="search-results-content" role="main" [attr.aria-label]="'a11y.searchResults' | translate">
-    <div class="search-header">
-      <h1 class="search-title">
-        @if (scopeMode) {
-          {{ "searchResults.filterResultsTitle" | translate }}
-          <button class="clear-filters-btn" (click)="onClearFilters()"
-            [matTooltip]="'searchResults.clearFilters' | translate">
-            <mat-icon>filter_list_off</mat-icon>
-          </button>
-        } @else {
-          {{ "searchResults.title" | translate: { query: searchQuery } }}
-          @if (hasActiveFilters) {
-            <button class="clear-filters-btn" (click)="onClearFilters()"
-              [matTooltip]="'searchResults.clearFilters' | translate">
-              <mat-icon>filter_list_off</mat-icon>
-            </button>
+  <main #scroller class="search-results-content" role="main" [attr.aria-label]="'a11y.searchResults' | translate">
+    <!-- Title + count -->
+    <header class="results-header">
+      @if (scopeMode && !searchQuery) {
+        <button mat-icon-button class="back-btn" (click)="backToFolder()"
+          [matTooltip]="'searchResults.backToFolder' | translate" [attr.aria-label]="'searchResults.backToFolder' | translate">
+          <mat-icon class="rtl-flip" aria-hidden="true">arrow_back</mat-icon>
+        </button>
+      }
+      <div class="results-heading">
+        <h1 class="results-title">
+          @if (searchQuery) {
+            <span class="title-prefix">{{ 'searchResults.resultsFor' | translate }}</span>
+            <span class="title-query">“{{ searchQuery }}”</span>
+          } @else if (scopeMode) {
+            {{ (scopeMode === 'ALL' || !scopeFolderId ? 'searchResults.allFilesTitle' : 'searchResults.folderAndSubfoldersTitle') | translate }}
+          } @else {
+            {{ 'searchResults.filterResultsTitle' | translate }}
           }
-        }
-      </h1>
-      <!-- Document insights facets in force (kind / language), removable one by one -->
-      <app-insight-facet-chips [filters]="currentFilters" (remove)="onRemoveFacet($event)"></app-insight-facet-chips>
-      @if (!loading && items.length > 0) {
-        <p
-          class="search-count"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {{
-            (totalItems === 1
-              ? "searchResults.foundResult"
-              : "searchResults.foundResults"
-            ) | translate: { count: totalItems }
-          }}
+        </h1>
+        <p class="results-summary" role="status" aria-live="polite" aria-atomic="true">
+          @if (loading) {
+            <span>{{ (searchQuery ? 'searchResults.searchingFor' : 'searchResults.filtering') | translate: { query: searchQuery } }}</span>
+          } @else if (!loadError && (isTextSearch || scopeMode)) {
+            @if (totalCount !== undefined) {
+              <span>{{ (totalCount === 1 ? 'searchResults.foundResult' : 'searchResults.foundResults') | translate: { count: totalCount } }}</span>
+            } @else {
+              <span>{{ (items.length === 1 ? 'searchResults.foundResult' : 'searchResults.foundResults') | translate: { count: items.length + (hasMore ? '+' : '') } }}</span>
+            }
+            @if (searchTimeMs !== undefined) {
+              <span class="summary-time">{{ 'searchResults.inSeconds' | translate: { seconds: (searchTimeMs / 1000).toFixed(2) } }}</span>
+            }
+          }
         </p>
-      }
-    </div>
-    @if (!loading) {
-      @if (items.length === 0) {
-        <div class="empty-state" role="status" aria-live="polite">
-          <mat-icon aria-hidden="true">search_off</mat-icon>
-          <h2>{{ "searchResults.noResults" | translate }}</h2>
-          <p>{{ "searchResults.noResultsMessage" | translate }}</p>
-        </div>
-      }
-      @if (viewMode === "grid" && items.length > 0) {
-        <app-file-grid
-          [items]="items"
-          [selectionCount]="selectedItems.length"
-          (itemClick)="onItemClick($event)"
-          (itemDoubleClick)="onItemDoubleClick($event)"
-          (selectionChange)="onSelectionChange($event)"
-          (rename)="onRenameItem($event)"
-          (download)="onDownloadItem($event)"
-          (move)="onMoveItem($event)"
-          (copy)="onCopyItem($event)"
-          (delete)="onDeleteItem($event)"
-          (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
-        >
-        </app-file-grid>
-      }
-      @if (viewMode === "list" && items.length > 0) {
-        <app-file-list
-          [items]="items"
-          [selectionCount]="selectedItems.length"
+      </div>
+    </header>
+
+    <!-- Filters, sort, view: sticks to the top while scrolling -->
+    @if (isTextSearch || scopeMode) {
+      <div class="refine-sticky">
+        <app-search-refine-bar
+          [filters]="currentFilters"
           [sortBy]="sortBy"
           [sortOrder]="sortOrder"
-          (itemClick)="onItemClick($event)"
-          (itemDoubleClick)="onItemDoubleClick($event)"
-          (selectionChange)="onSelectionChange($event)"
-          (selectAll)="onSelectAll($event)"
-          (sortChange)="onSortChange($event)"
-          (rename)="onRenameItem($event)"
-          (download)="onDownloadItem($event)"
-          (move)="onMoveItem($event)"
-          (copy)="onCopyItem($event)"
-          (delete)="onDeleteItem($event)"
-          (toggleFavorite)="onToggleFavorite($event)"
-          (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
-        >
-        </app-file-list>
-      }
-    } @else {
-      <div
-        class="loading-container"
-        role="status"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <mat-spinner aria-hidden="true"></mat-spinner>
-        <p>
-          @if (scopeMode) {
-            {{ "searchResults.filtering" | translate }}
-          } @else {
-            {{ "searchResults.searchingFor" | translate: { query: searchQuery } }}
-          }
-        </p>
-        <span class="sr-only">{{ "searchResults.loading" | translate }}</span>
+          [relevanceAvailable]="relevanceAvailable"
+          [viewMode]="viewMode"
+          (filtersChange)="onRefineFiltersChange($event)"
+          (sortChange)="onSearchSortChange($event)"
+          (viewModeChange)="onViewModeChange($event)"
+          (openAdvanced)="onOpenAdvancedFilters()"
+          (clearAll)="onClearFilters()">
+        </app-search-refine-bar>
       </div>
     }
+
+    <section class="results-body">
+      @if (loading) {
+        <!-- Skeleton while the first page loads -->
+        <div class="skeleton-list" aria-hidden="true" [class.grid]="viewMode === 'grid'">
+          @for (row of skeletonRows; track row) {
+            <div class="skeleton-row">
+              <span class="sk sk-icon"></span>
+              <span class="sk-lines">
+                <span class="sk sk-line wide"></span>
+                <span class="sk sk-line"></span>
+              </span>
+            </div>
+          }
+        </div>
+        <span class="sr-only">{{ 'searchResults.loading' | translate }}</span>
+      } @else if (loadError && items.length === 0) {
+        <div class="empty-state" role="alert">
+          <span class="empty-icon error"><mat-icon aria-hidden="true">cloud_off</mat-icon></span>
+          <h2>{{ 'searchResults.errorTitle' | translate }}</h2>
+          <p>{{ 'searchResults.errorMessage' | translate }}</p>
+          <button mat-flat-button color="primary" (click)="retry()">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+            {{ 'common.retry' | translate }}
+          </button>
+        </div>
+      } @else if (!isTextSearch && !scopeMode) {
+        <div class="empty-state">
+          <span class="empty-icon"><mat-icon aria-hidden="true">search</mat-icon></span>
+          <h2>{{ 'searchResults.startTitle' | translate }}</h2>
+          <p>{{ 'searchResults.startMessage' | translate }}</p>
+        </div>
+      } @else if (items.length === 0 && !hasMore) {
+        <div class="empty-state" role="status" aria-live="polite">
+          <span class="empty-icon"><mat-icon aria-hidden="true">search_off</mat-icon></span>
+          <h2>
+            @if (searchQuery) {
+              {{ 'searchResults.noResultsFor' | translate: { query: searchQuery } }}
+            } @else {
+              {{ 'searchResults.noResults' | translate }}
+            }
+          </h2>
+          <p>{{ (hasActiveFilters ? 'searchResults.noResultsWithFilters' : 'searchResults.noResultsMessage') | translate }}</p>
+          @if (hasActiveFilters) {
+            <button mat-stroked-button color="primary" (click)="onClearFilters()">
+              <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
+              {{ 'searchResults.clearFilters' | translate }}
+            </button>
+          }
+          @if (searchQuery) {
+            <ul class="empty-tips">
+              <li>{{ 'searchResults.tips.spelling' | translate }}</li>
+              <li>{{ 'searchResults.tips.fewerWords' | translate }}</li>
+              <li>{{ 'searchResults.tips.partial' | translate }}</li>
+            </ul>
+          }
+        </div>
+      } @else {
+        @if (viewMode === 'grid') {
+          <app-file-grid
+            [items]="items"
+            [selectionCount]="selectedItems.length"
+            (itemClick)="onItemClick($event)"
+            (itemDoubleClick)="onItemDoubleClick($event)"
+            (selectionChange)="onSelectionChange($event)"
+            (rename)="onRenameItem($event)"
+            (download)="onDownloadItem($event)"
+            (move)="onMoveItem($event)"
+            (copy)="onCopyItem($event)"
+            (delete)="onDeleteItem($event)"
+            (toggleFavorite)="onToggleFavorite($event)"
+            (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+          >
+          </app-file-grid>
+        } @else {
+          <app-search-result-list
+            [items]="items"
+            [query]="searchQuery"
+            [selectionCount]="selectedItems.length"
+            (itemClick)="onItemClick($event)"
+            (itemDoubleClick)="onItemDoubleClick($event)"
+            (selectionChange)="onSelectionChange($event)"
+            (selectAll)="onSelectAll($event)"
+            (rename)="onRenameItem($event)"
+            (download)="onDownloadItem($event)"
+            (move)="onMoveItem($event)"
+            (copy)="onCopyItem($event)"
+            (delete)="onDeleteItem($event)"
+            (toggleFavorite)="onToggleFavorite($event)"
+            (showInFolder)="onShowInFolder($event)"
+            (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
+          >
+          </app-search-result-list>
+        }
+
+        <!-- Infinite scroll -->
+        <div class="results-footer">
+          <div #sentinel class="scroll-sentinel" aria-hidden="true"></div>
+          @if (loadingMore) {
+            <div class="loading-more" role="status" aria-live="polite">
+              <mat-spinner diameter="22" aria-hidden="true"></mat-spinner>
+              <span>{{ 'searchResults.loadingMore' | translate }}</span>
+            </div>
+          } @else if (loadError) {
+            <button mat-stroked-button (click)="retry()">
+              <mat-icon aria-hidden="true">refresh</mat-icon>
+              {{ 'common.retry' | translate }}
+            </button>
+          } @else if (hasMore) {
+            <button mat-stroked-button color="primary" (click)="loadMore()">
+              <mat-icon aria-hidden="true">expand_more</mat-icon>
+              {{ 'searchResults.loadMore' | translate }}
+            </button>
+          } @else if (items.length > 0) {
+            <p class="footer-note end">{{ 'searchResults.endOfResults' | translate }}</p>
+          }
+        </div>
+      }
+    </section>
   </main>
 
   <!-- Metadata Panel -->

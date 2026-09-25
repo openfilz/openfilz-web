@@ -1,0 +1,124 @@
+<div class="result-list" role="list" [class.selection-mode]="selectionMode"
+  [attr.aria-label]="'a11y.searchResults' | translate">
+
+  <!-- Select all (desktop) -->
+  <div class="list-head">
+    <mat-checkbox class="head-checkbox" [checked]="allSelected" [indeterminate]="someSelected && !allSelected"
+      (change)="selectAll.emit($event.checked)" [attr.aria-label]="'fileList.selectAll' | translate">
+    </mat-checkbox>
+    <span class="head-label">{{ 'common.name' | translate }}</span>
+  </div>
+
+  @for (item of items; track item.id; let i = $index) {
+    <div class="result-row" role="listitem" [class.selected]="item.selected"
+      [attr.tabindex]="i === focusedIndex ? 0 : -1" [attr.data-file-id]="item.id"
+      [attr.aria-selected]="!!item.selected"
+      [attr.aria-label]="item.type === 'FOLDER' ? ('fileList.folderDetail' | translate:{name: item.name}) : ('fileList.fileDetail' | translate:{name: item.name})"
+      (click)="onRowClick(item, i)" (dblclick)="onRowDoubleClick(item)"
+      (keydown)="onRowKeydown($event, item, i)" (contextmenu)="onContextMenu($event, item)">
+
+      <div class="row-select" (click)="$event.stopPropagation()">
+        <mat-checkbox [checked]="!!item.selected" (change)="onCheckbox(item, $event.checked)"
+          [attr.aria-label]="'fileList.selectItem' | translate:{name: item.name}">
+        </mat-checkbox>
+      </div>
+
+      <div class="row-visual" aria-hidden="true">
+        @if (item.thumbnailUrl && item.type === 'FILE') {
+          <img class="row-thumb" [authSrc]="item.thumbnailUrl" [alt]="item.name" loading="lazy"
+            (error)="onThumbnailError(item)" />
+        } @else {
+          <span class="row-icon" [style.color]="color(item)" [style.background-color]="color(item) + '1a'">
+            <mat-icon>{{ icon(item) }}</mat-icon>
+          </span>
+        }
+      </div>
+
+      <div class="row-main">
+        <div class="row-title">
+          <span class="row-name" [innerHTML]="highlightedName(item)" [title]="item.name"></span>
+          @if (item.favorite) {
+            <mat-icon class="row-fav-badge" aria-hidden="true">favorite</mat-icon>
+          }
+          @if (categoryLabel(item); as category) {
+            <span class="row-badge">{{ category }}</span>
+          }
+        </div>
+        <div class="row-meta">
+          <span class="meta-type">{{ typeLabel(item) }}</span>
+          @if (size(item); as fileSize) {
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <span>{{ fileSize }}</span>
+          }
+          @if (modifiedLabel(item); as modified) {
+            <span class="meta-sep" aria-hidden="true">·</span>
+            <span [title]="fullDate(item.updatedAt || item.createdAt)">{{ modified }}</span>
+          }
+          @if (item.createdBy) {
+            <span class="meta-sep meta-owner-sep" aria-hidden="true">·</span>
+            <span class="meta-owner">
+              <mat-icon aria-hidden="true">person</mat-icon>
+              <span>{{ item.createdBy }}</span>
+            </span>
+          }
+        </div>
+        @if (item.contentSnippet) {
+          <p class="row-snippet" [innerHTML]="snippet(item)"></p>
+        }
+      </div>
+
+      <div class="row-actions" (click)="$event.stopPropagation()" (dblclick)="$event.stopPropagation()">
+        <!-- Full-text hits do not say whether they are favorites: no toggle that could guess wrong -->
+        @if (item.favorite !== undefined) {
+          <button mat-icon-button class="row-action hover-action" (click)="onFavorite($event, item)"
+            [matTooltip]="(item.favorite ? 'fileList.removeFromFavorites' : 'fileList.addToFavorites') | translate"
+            [attr.aria-label]="(item.favorite ? 'fileList.removeFromFavorites' : 'fileList.addToFavorites') | translate">
+            <mat-icon [class.favorited]="item.favorite" aria-hidden="true">{{ item.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+          </button>
+        }
+        <button mat-icon-button class="row-action hover-action" (click)="onShowInFolder($event, item)"
+          [matTooltip]="'searchResults.showInFolder' | translate" [attr.aria-label]="'searchResults.showInFolder' | translate">
+          <mat-icon aria-hidden="true">drive_file_move_outline</mat-icon>
+        </button>
+        @if (showItemMenu) {
+          <button mat-icon-button class="row-action" [matMenuTriggerFor]="itemActionsMenu"
+            (click)="onKebabClick($event, item)" [matTooltip]="'common.actions' | translate"
+            aria-haspopup="menu" [attr.aria-label]="('common.actions' | translate) + ': ' + item.name">
+            <mat-icon aria-hidden="true">more_vert</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Invisible anchor that positions the shared menu at the cursor on right-click -->
+  <div class="context-menu-anchor" [style.left.px]="contextMenuPosition.x" [style.top.px]="contextMenuPosition.y"
+    [matMenuTriggerFor]="itemActionsMenu" #contextMenuTrigger="matMenuTrigger" aria-hidden="true"></div>
+
+  <mat-menu #itemActionsMenu="matMenu" class="item-actions-menu">
+    <ng-template matMenuContent>
+      @if (menuItem && isTouch) {
+        <button mat-menu-item (click)="selectionChange.emit({ item: menuItem, selected: !menuItem.selected })">
+          <mat-icon aria-hidden="true">{{ menuItem.selected ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+          <span>{{ 'searchResults.select' | translate }}</span>
+        </button>
+      }
+      @if (menuItem) {
+        <button mat-menu-item (click)="showInFolder.emit(menuItem)">
+          <mat-icon aria-hidden="true">drive_file_move_outline</mat-icon>
+          <span>{{ 'searchResults.showInFolder' | translate }}</span>
+        </button>
+        <mat-divider></mat-divider>
+      }
+      @for (action of visibleItemActions; track action.id) {
+        @if (action.danger) {
+          <mat-divider></mat-divider>
+        }
+        <button mat-menu-item [class.danger-menu-item]="action.danger" (click)="onMenuAction(action.id)">
+          <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+          <span>{{ action.labelKey | translate }}</span>
+        </button>
+      }
+    </ng-template>
+  </mat-menu>
+</div>
