@@ -83,3 +83,40 @@ export function defaultFieldSize(type: SignatureFieldType): { w: number; h: numb
 
 /** Minimum normalized size a field can be resized to. */
 export const MIN_FIELD_SIZE = { w: 0.02, h: 0.015 };
+
+/** Viewport-rect subset the drag auto-scroll needs (a DOMRect satisfies it). */
+export interface ViewportRect { top: number; bottom: number; left: number; right: number; }
+
+/**
+ * Scroll step (px) for the dialog body while a palette field is dragged.
+ *
+ * The body scrolls only so a page below/above the fold can be reached: when the pointer is
+ * in the scroller's edge band (or past it, over the header / action bar) AND heading that way
+ * from where the drag started. Never while the pointer is over the visible part of the page —
+ * the user is aiming at a drop spot there, and scrolling the page away under the pointer made
+ * the field land somewhere else (the page often reaches into the bottom band on desktop).
+ */
+export function dragAutoScrollStep(
+  pointer: { x: number; y: number }, startY: number, scroller: ViewportRect,
+  /** The page area the user can see (page ∩ its stage ∩ the scroller), null when off-screen. */
+  visiblePage: ViewportRect | null,
+  edge = 40, step = 14
+): number {
+  if (visiblePage
+      && pointer.x >= visiblePage.left && pointer.x <= visiblePage.right
+      && pointer.y >= visiblePage.top && pointer.y <= visiblePage.bottom) {
+    return 0;
+  }
+  if (pointer.y > scroller.bottom - edge && pointer.y > startY) return step;
+  if (pointer.y < scroller.top + edge && pointer.y < startY) return -step;
+  return 0;
+}
+
+/** Intersection of viewport rects, or null when they do not overlap. */
+export function intersectRects(...rects: ViewportRect[]): ViewportRect | null {
+  const r = {
+    top: Math.max(...rects.map(x => x.top)), bottom: Math.min(...rects.map(x => x.bottom)),
+    left: Math.max(...rects.map(x => x.left)), right: Math.min(...rects.map(x => x.right))
+  };
+  return r.top < r.bottom && r.left < r.right ? r : null;
+}

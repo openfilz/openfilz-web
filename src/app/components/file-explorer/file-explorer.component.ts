@@ -204,7 +204,6 @@ type FolderConflictItem = BatchConflictItem & { parentId?: string };
                       (copy)="onCopyItem($event)"
                       (delete)="onDeleteItem($event)"
                       (toggleFavorite)="onToggleFavorite($event)"
-                      (toggleFavorite)="onToggleFavorite($event)"
                       (viewProperties)="onViewProperties($event)" (requestSignature)="onRequestSignature($event)" (startWorkflow)="onStartWorkflow($event)" (pdfTool)="onPdfToolItem($event)" (unzip)="onUnzipItem($event)" (organizeWithAi)="onOrganizeWithAi($event)"
                       [sortBy]="sortBy"
                       [sortOrder]="sortOrder"
