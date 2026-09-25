@@ -153,13 +153,13 @@
   text-transform: none;
   border-radius: 10px;
   padding: 0 24px;
-  height: 44px;
+  height: 40px;
   font-size: 14px;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cancel-btn {
-  border: 2px solid var(--border-color) !important;
+  border: 1px solid var(--border-color) !important;
   color: var(--text-primary);
   background-color: var(--bg-primary);
 }
@@ -167,7 +167,6 @@
 .cancel-btn:hover {
   background-color: var(--bg-tertiary);
   border-color: var(--text-secondary) !important;
-  transform: translateY(-1px);
 }
 
 .cancel-btn i {
@@ -181,7 +180,6 @@
 }
 
 .create-btn:hover:not([disabled]) {
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 

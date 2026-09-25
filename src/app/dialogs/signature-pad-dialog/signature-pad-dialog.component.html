@@ -10,7 +10,7 @@
 </div>
 
 <div mat-dialog-content class="dialog-content">
-  <mat-tab-group (selectedIndexChange)="onTabChange($event)" animationDuration="0ms" class="modes">
+  <mat-tab-group appSwipeTabs [swipeTabsLockAxis]="false" (selectedIndexChange)="onTabChange($event)" animationDuration="0ms" class="modes">
     @for (m of modes; track m) {
       <mat-tab>
         <ng-template mat-tab-label>

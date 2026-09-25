@@ -18,7 +18,7 @@
    mat-flat-button). Painting the wrong family leaves the container transparent, which is how
    Save ended up as white-on-white. */
 .head .cancel-btn, .head .primary-btn {
-  height: 42px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0;
+  height: 40px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0;
 }
 .head .cancel-btn mat-icon, .head .primary-btn mat-icon {
   margin-inline-end: 6px; margin-inline-start: -4px; font-size: 19px; width: 19px; height: 19px;
@@ -100,7 +100,7 @@
 .add-btn:hover { border-color: var(--primary); color: var(--primary); background: color-mix(in srgb, var(--primary) 6%, transparent); }
 .add-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
-.small-btn { border: 2px solid var(--border-color); color: var(--text-primary); border-radius: 999px; height: 36px; font-size: 13px; }
+.small-btn { border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 999px; height: 36px; font-size: 13px; }
 .small-btn mat-icon { margin-inline-end: 4px; font-size: 18px; width: 18px; height: 18px; }
 
 /* ── Status strip ─────────────────────────────────────────────────────── */

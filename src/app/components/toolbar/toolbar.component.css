@@ -1198,14 +1198,14 @@
 .mobile-actions-button {
   min-width: 48px !important;
   width: 48px !important;
-  height: 48px !important;
+  height: 40px !important;
   border-radius: 12px !important;
   font-weight: 600;
   gap: 0;
   padding: 0 !important;
   font-size: 14px;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 40%, transparent), 0 0 0 1px color-mix(in srgb, var(--primary) 20%, transparent);
   transition: all 200ms ease;
 }
@@ -1479,7 +1479,7 @@
   /* Mobile actions button styling */
   .mobile-actions-button {
     width: 44px !important;
-    height: 44px !important;
+    height: 40px !important;
     min-width: 44px !important;
     padding: 0 !important;
     border-radius: 10px !important;

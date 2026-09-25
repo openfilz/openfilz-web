@@ -16,7 +16,7 @@
   </button>
 </div>
 
-<div mat-dialog-content class="dialog-content">
+<div mat-dialog-content class="dialog-content" appSwipeNav (swipeNext)="select(activeIndex + 1)" (swipePrev)="select(activeIndex - 1)">
   <div class="mcp-tabs" role="tablist" [attr.aria-label]="'settings.mcp.dialogTitle' | translate">
     @for (snippet of snippets; track snippet.id; let i = $index) {
       <button type="button"

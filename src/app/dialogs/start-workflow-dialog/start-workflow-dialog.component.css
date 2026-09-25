@@ -113,7 +113,7 @@
 /* The row's gap spaces the buttons: drop the margin mat-dialog-actions adds between them. */
 .action-row > button { margin: 0 !important; }
 .spacer { flex: 1; }
-.cancel-btn, .start-btn { height: 44px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0; }
+.cancel-btn, .start-btn { height: 40px; border-radius: 10px; padding: 0 18px; font-weight: 600; letter-spacing: 0; }
 .cancel-btn, .start-btn.plain {
   --mat-button-outlined-outline-color: var(--border-color);
   --mat-button-outlined-outline-width: 2px;
