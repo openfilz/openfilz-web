@@ -77,7 +77,19 @@
     "open": "فتح",
     "language": "اللغة",
     "settings": "الإعدادات",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "closeSearch": "إغلاق البحث",
+    "shortcutHint": "اضغط / للبحث",
+    "searchSuggestions": "اقتراحات البحث",
+    "recentSearches": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح",
+    "removeRecent": "إزالة من عمليات البحث الأخيرة",
+    "searchFor": "البحث عن «{{query}}»",
+    "searchForHint": "أسماء كل مستنداتك ومحتواها",
+    "quickMatches": "تطابقات سريعة",
+    "kbdNavigate": "للتنقل",
+    "kbdOpen": "للفتح",
+    "kbdClose": "للإغلاق"
   },
   "breadcrumb": {
     "navigation": "مسار التنقل",
@@ -208,7 +220,42 @@
     "loading": "جاري تحميل نتائج البحث",
     "filterResultsTitle": "نتائج التصفية",
     "filtering": "جارٍ التصفية...",
-    "clearFilters": "مسح الفلاتر"
+    "clearFilters": "مسح الفلاتر",
+    "resultsFor": "نتائج البحث عن",
+    "allFilesTitle": "كل الملفات",
+    "folderAndSubfoldersTitle": "هذا المجلد ومجلداته الفرعية",
+    "backToFolder": "العودة إلى المجلد",
+    "refinedCount": "{{count}} مطابقة للمرشحات من أصل {{loaded}} محمّلة",
+    "inSeconds": "في {{seconds}} ث",
+    "errorTitle": "تعذّر إكمال البحث",
+    "errorMessage": "تحقّق من اتصالك ثم أعد المحاولة.",
+    "startTitle": "ابحث في مستنداتك",
+    "startMessage": "اكتب في مربع البحث أعلاه كلمة من اسم ملف أو من محتواه.",
+    "noResultsFor": "لا توجد نتائج عن «{{query}}»",
+    "noResultsWithFilters": "لا يوجد مستند يطابق البحث والمرشحات النشطة معًا.",
+    "tips": {
+      "spelling": "تحقّق من إملاء الكلمات المفتاحية",
+      "fewerWords": "جرّب كلمات أقل أو أعم",
+      "partial": "ابحث عن بداية الكلمة، مثل «عق» لكلمة «عقد»"
+    },
+    "loadingMore": "جارٍ تحميل المزيد من النتائج…",
+    "loadMore": "تحميل المزيد من النتائج",
+    "noMatchYet": "لا تطابق أيٌّ من أول {{loaded}} نتيجة المرشحات.",
+    "endOfResults": "نهاية النتائج",
+    "showInFolder": "إظهار في المجلد",
+    "modifiedAgo": "عُدّل {{when}}",
+    "modifiedOn": "عُدّل في {{date}}",
+    "sort": {
+      "relevance": "الأكثر صلة"
+    },
+    "refine": {
+      "label": "تحسين النتائج",
+      "filters": "مرشحات سريعة",
+      "allFilters": "كل المرشحات",
+      "clearAll": "مسح الكل",
+      "metadataCount": "البيانات الوصفية ({{count}})"
+    },
+    "select": "تحديد"
   },
   "searchFilters": {
     "title": "فلاتر البحث",
@@ -252,7 +299,8 @@
     "anyLanguage": "كل اللغات",
     "facetsWholeLibrary": "يبحث النوع واللغة في المكتبة بأكملها.",
     "activeFacets": "فلاتر المستندات النشطة",
-    "removeFilter": "إزالة الفلتر"
+    "removeFilter": "إزالة الفلتر",
+    "reset": "إعادة تعيين"
   },
   "metadataPanel": {
     "title": "الخصائص",

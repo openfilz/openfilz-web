@@ -1,202 +1,473 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, DestroyRef, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, map, skip, take } from 'rxjs';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { SearchService } from '../../services/search.service';
-import { DocumentApiService } from '../../services/document-api.service';
 import { FileIconService } from '../../services/file-icon.service';
 
-import { FileListComponent } from '../file-list/file-list.component';
 import { FileGridComponent } from '../file-grid/file-grid.component';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { MetadataPanelComponent } from '../metadata-panel/metadata-panel.component';
 import { FileOperationsComponent } from '../base/file-operations.component';
+import { SearchRefineBarComponent } from '../search-refine-bar/search-refine-bar.component';
+import { SearchResultListComponent } from '../search-result-list/search-result-list.component';
 import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file-viewer-dialog.component';
 import { ImageGallery, ImageGalleryService, inMemoryImageGallery } from '../../services/image-gallery.service';
-import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, ListFolderAndCountResponse, SearchFilters, SearchScope } from '../../models/document.models';
-import { InsightFacetChipsComponent, InsightFacetField } from '../insight-facet-chips/insight-facet-chips.component';
+import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, SearchFilters, SearchScope } from '../../models/document.models';
+import {
+  RELEVANCE_SORT, SortOrder, countActiveFilters, findSortOption, hasSearchRefinements,
+  matchesSearchRefinements, serverSideSearchFilters
+} from '../../models/search-refine';
 
-import { UserPreferencesService } from '../../services/user-preferences.service';
+/** Hits fetched per request; more are loaded as the user scrolls. */
+const SEARCH_PAGE_SIZE = 30;
+/**
+ * Pages fetched in a row without the user scrolling, when the browser-side filters hide most
+ * of the hits (e.g. "PDFs only" on a query that mostly matches images).
+ */
+const MAX_AUTO_PAGES = 6;
+const VIEW_MODE_KEY = 'openfilz.searchViewMode';
+
+interface ResultPage {
+  items: FileItem[];
+  /** Total across every page, when the back-end says (undefined: count it separately). */
+  total?: number;
+  hasMore: boolean;
+}
 
 @Component({
   selector: 'app-search-results',
   standalone: true,
   imports: [
-    FileListComponent,
     FileGridComponent,
     ToolbarComponent,
     MetadataPanelComponent,
+    SearchRefineBarComponent,
+    SearchResultListComponent,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
     MatIconModule,
+    MatButtonModule,
     MatTooltipModule,
-    TranslateModule,
-    InsightFacetChipsComponent
-],
+    TranslateModule
+  ],
   templateUrl: './search-results.component.html',
   styleUrls: ['./search-results.component.css']
 })
-export class SearchResultsComponent extends FileOperationsComponent implements OnInit {
+export class SearchResultsComponent extends FileOperationsComponent implements OnInit, OnDestroy {
   searchQuery = '';
 
   // Scope-based filter search (not text search)
   scopeMode?: SearchScope;
   scopeFolderId?: string;
 
-  // Remember the original search query so we can restore it after clearing filters
-  private originalSearchQuery = '';
+  /** Every hit fetched so far, in the back-end's order; `items` holds the ones the refinements let through. */
+  private loadedItems: FileItem[] = [];
+  private nextPage = 1;
+  hasMore = false;
+  loadingMore = false;
+  loadError = false;
+  /** Total number of hits (undefined while unknown). */
+  totalCount?: number;
+  /** How long the first page took, shown next to the count. */
+  searchTimeMs?: number;
+  /** Bumped on every new search so late answers of a previous one are dropped. */
+  private requestSeq = 0;
+  private autoPages = 0;
+  /** The filters the loaded hits were fetched with — a change of anything else is applied locally. */
+  private fetchedWithFilters = '';
+
+  readonly skeletonRows = Array.from({ length: 8 }, (_, i) => i);
 
   private route = inject(ActivatedRoute);
   private imageGallery = inject(ImageGalleryService);
   private searchService = inject(SearchService);
   private fileIconService = inject(FileIconService);
+  private destroyRefLocal = inject(DestroyRef);
+
+  @ViewChild('scroller', { static: true }) private scroller?: ElementRef<HTMLElement>;
+  private observer?: IntersectionObserver;
+  private sentinelEl?: HTMLElement;
+
+  /** The "load more" marker at the bottom: loading starts as it scrolls into view. */
+  @ViewChild('sentinel') set sentinel(ref: ElementRef<HTMLElement> | undefined) {
+    if (this.sentinelEl) {
+      this.observer?.unobserve(this.sentinelEl);
+    }
+    this.sentinelEl = ref?.nativeElement;
+    if (this.sentinelEl) {
+      this.ensureObserver()?.observe(this.sentinelEl);
+    }
+  }
 
   constructor() {
     super();
+    this.viewMode = this.loadViewMode();
   }
 
   override ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.searchQuery = params['q'] || '';
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRefLocal)).subscribe(params => {
+      this.searchQuery = (params['q'] || '').trim();
       this.scopeMode = params['scope'] as SearchScope | undefined;
       this.scopeFolderId = params['folderId'];
-      // Remember the search query so we can restore it after clearing filters
-      if (this.searchQuery) {
-        this.originalSearchQuery = this.searchQuery;
+      this.applySortParams(params['sort'], params['order']);
+      this.reloadData();
+    });
+
+    // The current value was just used by the first load: react to changes only
+    this.searchService.filters$.pipe(skip(1), takeUntilDestroyed(this.destroyRefLocal)).subscribe(filters => {
+      if (filters.scope === 'CURRENT_ONLY' && this.scopeMode && !this.searchQuery) {
+        // User switched back to current folder only — go back to file explorer
+        this.backToFolder();
+        return;
+      }
+      if (!this.searchQuery && (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS')) {
+        this.scopeMode = filters.scope;
+      }
+      if (this.isTextSearch && this.loadedItems.length > 0 && this.serverFiltersKey(filters) === this.fetchedWithFilters) {
+        // Only browser-side refinements changed: no new request
+        this.loadedItems.forEach(item => item.selected = false);
+        this.resetSelectionMode();
+        this.applyRefinements();
+        this.scrollToTop();
+        this.autoPages = 0;
+        this.maybeAutoLoad();
+        return;
       }
       this.reloadData();
     });
 
-    this.searchService.filters$.subscribe(filters => {
-      if (filters.scope === 'CURRENT_ONLY' && this.scopeMode) {
-        // User switched back to current folder only — go back to file explorer
-        const queryParams: any = {};
-        if (this.scopeFolderId) {
-          queryParams.folderId = this.scopeFolderId;
-        }
-        this.router.navigate(['/my-folder'], { queryParams });
-        return;
-      }
-      if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
-        // Update scope mode from filters and reload
-        this.scopeMode = filters.scope;
-        this.reloadData();
-      } else if (this.scopeMode) {
-        // In scope mode, react to other filter changes (metadata, type, etc.)
-        this.reloadData();
-      } else if (this.searchQuery) {
-        this.reloadData();
-      }
-    });
-
-    this.searchService.sort$.subscribe(sort => {
-      this.sortBy = sort.sortBy;
-      this.sortOrder = sort.sortOrder;
-      if (this.searchQuery || this.scopeMode) {
-        this.reloadData();
-      }
-    });
+    // A PDF tool run from the viewer creates / replaces documents
+    this.pdfTools.documentsChanged$.pipe(takeUntilDestroyed(this.destroyRefLocal)).subscribe(() => this.reloadData());
   }
 
-  override onSortChange(event: { sortBy: string, sortOrder: 'ASC' | 'DESC' }): void {
-    this.searchService.updateSort(event.sortBy, event.sortOrder);
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
   }
 
-  override loadItems() {
-    this.reloadData();
+  // ===== State =====
+
+  /** Full-text path: a query, or a document-insights facet (only the search index knows those). */
+  get isTextSearch(): boolean {
+    return !!this.searchQuery || this.hasFacetFilter;
   }
 
-  /** The filters as the search service holds them (the facet chips render from here). */
+  /** The filters as the search service holds them. */
   get currentFilters(): SearchFilters {
     return this.searchService.getCurrentFilters();
   }
 
-  /** A document-insights facet (kind / language) is set: only the search index knows those. */
+  /** A document-insights facet (kind / language) is set. */
   get hasFacetFilter(): boolean {
     const filters = this.currentFilters;
     return !!filters.category || !!filters.language;
   }
 
-  /** "x" on a facet chip: drop that facet, keep everything else. */
-  onRemoveFacet(field: InsightFacetField): void {
-    this.searchService.updateFilters({ ...this.currentFilters, [field]: undefined });
+  get hasActiveFilters(): boolean {
+    return countActiveFilters(this.currentFilters) > 0;
   }
 
-  override reloadData(): void {
-    if (this.searchQuery || this.hasFacetFilter) {
-      // When a search query is typed, always use searchDocuments()
-      // which properly ANDs the query text with all active filters.
-      // A kind / language facet lives in the search index only, so it takes the same path
-      // (whole library, the scope is pinned to ALL by the filter panel).
-      this.reloadSearchData();
-    } else if (this.scopeMode) {
-      // Filter-only mode (no query text): use scope-based search
-      this.reloadScopeData();
+  /** Browser-side refinements hide some of the loaded hits. */
+  get isRefined(): boolean {
+    return this.isTextSearch && hasSearchRefinements(this.currentFilters);
+  }
+
+  get loadedCount(): number {
+    return this.loadedItems.length;
+  }
+
+  get relevanceAvailable(): boolean {
+    return !!this.searchQuery;
+  }
+
+  // ===== Sorting =====
+
+  private applySortParams(sort: string | undefined, order: string | undefined): void {
+    const option = findSortOption(sort);
+    if (option && (option.value !== RELEVANCE_SORT || this.searchQuery)) {
+      this.sortBy = option.value;
+      this.sortOrder = order === 'ASC' || order === 'DESC' ? order : option.defaultOrder;
+      return;
+    }
+    if (this.searchQuery) {
+      // A text query ranks its hits: best match first
+      this.sortBy = RELEVANCE_SORT;
+      this.sortOrder = 'DESC';
+      return;
+    }
+    const prefs = this.userPreferencesService.getPreferences();
+    const fallback = findSortOption(prefs.sortBy);
+    this.sortBy = fallback && fallback.value !== RELEVANCE_SORT ? fallback.value : 'name';
+    this.sortOrder = fallback ? prefs.sortOrder : 'ASC';
+  }
+
+  /** The sort lives in the URL: shareable, and Back restores it. */
+  onSearchSortChange(event: { sortBy: string; sortOrder: SortOrder }): void {
+    const relevance = event.sortBy === RELEVANCE_SORT;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sort: event.sortBy, order: relevance ? null : event.sortOrder },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
+  override onSortChange(event: { sortBy: string, sortOrder: 'ASC' | 'DESC' }): void {
+    this.onSearchSortChange(event);
+  }
+
+  override onViewModeChange(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+    try {
+      localStorage.setItem(VIEW_MODE_KEY, mode);
+    } catch {
+      // preference only
     }
   }
 
-  private reloadSearchData(): void {
+  private loadViewMode(): 'grid' | 'list' {
+    try {
+      const saved = localStorage.getItem(VIEW_MODE_KEY);
+      return saved === 'grid' ? 'grid' : 'list';
+    } catch {
+      return 'list';
+    }
+  }
+
+  // ===== Filters =====
+
+  onRefineFiltersChange(filters: SearchFilters): void {
+    this.searchService.updateFilters(filters);
+  }
+
+  onOpenAdvancedFilters(): void {
+    this.searchService.requestAdvancedFilters();
+  }
+
+  private resetFilters(): void {
+    const scope = this.currentFilters.scope;
+    this.searchService.updateFilters({
+      type: undefined,
+      dateModified: 'any',
+      owner: '',
+      fileType: 'any',
+      metadata: [],
+      category: undefined,
+      language: undefined,
+      scope: this.searchQuery ? undefined : scope
+    });
+  }
+
+  onClearFilters(): void {
+    this.resetFilters();
+  }
+
+  /** Leave the filter-only listing for the folder it was started from. */
+  backToFolder(): void {
+    const queryParams: any = {};
+    if (this.scopeFolderId) {
+      queryParams.folderId = this.scopeFolderId;
+    }
+    this.router.navigate(['/my-folder'], { queryParams });
+  }
+
+  // ===== Loading =====
+
+  override loadItems() {
+    this.reloadData();
+  }
+
+  override reloadData(): void {
+    this.requestSeq++;
+    this.loadedItems = [];
+    this.items = [];
+    this.nextPage = 1;
+    this.hasMore = false;
+    this.loadingMore = false;
+    this.loadError = false;
+    this.totalCount = undefined;
+    this.searchTimeMs = undefined;
+    this.autoPages = 0;
+    this.resetSelectionMode();
+    this.scrollToTop();
+
+    if (!this.isTextSearch && !this.scopeMode) {
+      this.loading = false;
+      return;
+    }
     this.loading = true;
-    this.searchService.searchDocuments(this.searchQuery).subscribe({
-      next: (result) => {
-        this.totalItems = result.totalHits;
-        this.items = result.documents.map(doc => this.transformToFileItem(doc));
-        this.resetSelectionMode();
+    this.fetchedWithFilters = this.serverFiltersKey(this.currentFilters);
+    this.fetchPage();
+  }
+
+  /** Next page (the sentinel scrolled into view, or "Load more"). */
+  loadMore(fromUser = true): void {
+    if (!this.hasMore || this.loading || this.loadingMore) {
+      return;
+    }
+    if (fromUser) {
+      this.autoPages = 0;
+    }
+    this.loadingMore = true;
+    this.fetchPage();
+  }
+
+  retry(): void {
+    if (this.loadedItems.length === 0) {
+      this.reloadData();
+    } else {
+      this.loadMore();
+    }
+  }
+
+  private fetchPage(): void {
+    const seq = this.requestSeq;
+    const page = this.nextPage;
+    const started = performance.now();
+    this.loadError = false;
+
+    if (page === 1 && !this.isTextSearch && this.isAllFoldersScope) {
+      // listAllFolder does not count: ask for the total alongside the first page
+      this.documentApi.countAllFolder(this.currentFilters).pipe(take(1)).subscribe({
+        next: count => {
+          if (seq === this.requestSeq) {
+            this.totalCount = count;
+          }
+        },
+        error: () => { /* the count is informative only */ }
+      });
+    }
+
+    this.requestPage(page).subscribe({
+      next: result => {
+        if (seq !== this.requestSeq) {
+          return;
+        }
+        if (page === 1) {
+          this.searchTimeMs = Math.round(performance.now() - started);
+        }
+        const known = new Set(this.loadedItems.map(i => i.id));
+        this.loadedItems = [...this.loadedItems, ...result.items.filter(i => !known.has(i.id))];
+        if (result.total !== undefined) {
+          this.totalCount = result.total;
+        }
+        this.hasMore = result.hasMore;
+        this.nextPage = page + 1;
         this.loading = false;
+        this.loadingMore = false;
+        this.applyRefinements();
+        this.maybeAutoLoad();
       },
-      error: (err) => {
+      error: err => {
+        if (seq !== this.requestSeq) {
+          return;
+        }
         console.error('Search failed', err);
+        this.loadError = true;
         this.loading = false;
+        this.loadingMore = false;
       }
     });
   }
 
-  private reloadScopeData(): void {
-    this.loading = true;
-    const currentFilters = this.searchService.getCurrentFilters();
-
-    if (this.scopeMode === 'ALL' || (this.scopeMode === 'CURRENT_AND_SUBFOLDERS' && !this.scopeFolderId)) {
-      // ALL scope, or CURRENT_AND_SUBFOLDERS at root level (no folder) → search all files
-      this.documentApi.listAllFolderAndCount(
-        this.pageIndex + 1, this.pageSize, currentFilters, this.sortBy, this.sortOrder
-      ).subscribe({
-        next: (result: ListFolderAndCountResponse) => {
-          this.totalItems = result.count;
-          this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
-          this.resetSelectionMode();
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Scope search failed', err);
-          this.loading = false;
-        }
-      });
-    } else if (this.scopeMode === 'CURRENT_AND_SUBFOLDERS') {
-      // Use listFolderAndCount with recursive: true (inside a specific folder)
-      const filtersWithRecursive = { ...currentFilters, scope: 'CURRENT_AND_SUBFOLDERS' as SearchScope };
-      this.documentApi.listFolderAndCount(
-        this.scopeFolderId, this.pageIndex + 1, this.pageSize, filtersWithRecursive, this.sortBy, this.sortOrder
-      ).subscribe({
-        next: (result: ListFolderAndCountResponse) => {
-          this.totalItems = result.count;
-          this.items = result.listFolder.map(item => this.transformElementToFileItem(item));
-          this.resetSelectionMode();
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Scope search failed', err);
-          this.loading = false;
-        }
-      });
-    }
+  private get isAllFoldersScope(): boolean {
+    return this.scopeMode === 'ALL' || (this.scopeMode === 'CURRENT_AND_SUBFOLDERS' && !this.scopeFolderId);
   }
+
+  private requestPage(page: number): Observable<ResultPage> {
+    const filters = this.currentFilters;
+    if (this.isTextSearch) {
+      const sort = this.sortBy === RELEVANCE_SORT ? null : { field: this.sortBy, order: this.sortOrder };
+      return this.searchService.searchDocuments(this.searchQuery, {
+        page,
+        size: SEARCH_PAGE_SIZE,
+        sort,
+        filters: serverSideSearchFilters(filters)
+      }).pipe(take(1), map(result => ({
+        items: (result?.documents ?? []).map(doc => this.transformToFileItem(doc)),
+        total: result?.totalHits ?? 0,
+        hasMore: (result?.documents?.length ?? 0) > 0 && page * SEARCH_PAGE_SIZE < (result?.totalHits ?? 0)
+      })));
+    }
+    if (this.isAllFoldersScope) {
+      return this.documentApi.listAllFolderAndCount(page, SEARCH_PAGE_SIZE, filters, this.sortBy, this.sortOrder)
+        .pipe(take(1), map(result => ({
+          items: result.listFolder.map(item => this.transformElementToFileItem(item)),
+          hasMore: result.listFolder.length === SEARCH_PAGE_SIZE
+        })));
+    }
+    // Inside a specific folder, sub-folders included (take(1): Apollo watch queries never complete)
+    const filtersWithRecursive = { ...filters, scope: 'CURRENT_AND_SUBFOLDERS' as SearchScope };
+    return this.documentApi.listFolderAndCount(
+      this.scopeFolderId, page, SEARCH_PAGE_SIZE, filtersWithRecursive, this.sortBy, this.sortOrder
+    ).pipe(take(1), map(result => ({
+      items: result.listFolder.map(item => this.transformElementToFileItem(item)),
+      total: result.count,
+      hasMore: page * SEARCH_PAGE_SIZE < result.count
+    })));
+  }
+
+  /** The key of what the back-end filtered on (browser-side refinements left out). */
+  private serverFiltersKey(filters: SearchFilters): string {
+    return JSON.stringify(serverSideSearchFilters(filters));
+  }
+
+  private applyRefinements(): void {
+    const filters = this.currentFilters;
+    const now = new Date();
+    this.items = this.isTextSearch
+      ? this.loadedItems.filter(item => matchesSearchRefinements(item, filters, now))
+      : this.loadedItems;
+    this.totalItems = this.items.length;
+  }
+
+  /** Keep loading while the bottom marker is on screen (few visible hits after refinement). */
+  private maybeAutoLoad(): void {
+    setTimeout(() => {
+      if (this.hasMore && !this.loading && !this.loadingMore && this.autoPages < MAX_AUTO_PAGES && this.sentinelVisible()) {
+        this.autoPages++;
+        this.loadMore(false);
+      }
+    });
+  }
+
+  private sentinelVisible(): boolean {
+    const container = this.scroller?.nativeElement;
+    if (!this.sentinelEl || !container) {
+      return false;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const rect = this.sentinelEl.getBoundingClientRect();
+    return rect.top <= containerRect.bottom + 400;
+  }
+
+  private ensureObserver(): IntersectionObserver | undefined {
+    if (this.observer || typeof IntersectionObserver === 'undefined') {
+      return this.observer;
+    }
+    this.observer = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) {
+        this.loadMore(true);
+      }
+    }, { root: this.scroller?.nativeElement ?? null, rootMargin: '0px 0px 400px 0px' });
+    return this.observer;
+  }
+
+  private scrollToTop(): void {
+    this.scroller?.nativeElement.scrollTo?.({ top: 0 });
+  }
+
+  // ===== Items =====
 
   private transformElementToFileItem(item: ElementInfo): FileItem {
     return {
@@ -208,6 +479,9 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       icon: this.fileIconService.getFileIcon(item.name, item.type as DocumentType),
       thumbnailUrl: item.thumbnailUrl,
       favorite: item.favorite,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+      createdBy: item.createdBy,
       selected: false
     };
   }
@@ -222,51 +496,14 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       size: doc.size,
       icon: this.fileIconService.getFileIcon(doc.name, fileType),
       thumbnailUrl: doc.thumbnailUrl,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      createdBy: doc.createdBy,
+      parentId: doc.parentId ?? null,
+      contentSnippet: doc.contentSnippet,
+      category: doc.category,
       selected: false
     };
-  }
-
-  get hasActiveFilters(): boolean {
-    const filters = this.searchService.getCurrentFilters();
-    return !!(
-      filters.type ||
-      (filters.dateModified && filters.dateModified !== 'any') ||
-      filters.owner ||
-      (filters.fileType && filters.fileType !== 'any') ||
-      (filters.metadata && filters.metadata.length > 0) ||
-      filters.category || filters.language
-    );
-  }
-
-  private resetFilters(): void {
-    this.searchService.updateFilters({
-      type: undefined,
-      dateModified: 'any',
-      owner: '',
-      fileType: 'any',
-      metadata: [],
-      scope: undefined
-    });
-  }
-
-  onClearFilters(): void {
-    // Reset local scope state
-    this.scopeMode = undefined;
-
-    if (this.originalSearchQuery) {
-      // Had a search query: restore query, reset filters (which triggers reload via filters$ subscription)
-      this.searchQuery = this.originalSearchQuery;
-      this.resetFilters();
-      // The filters$ subscription will detect searchQuery is set and call reloadSearchData()
-    } else {
-      // Filter-only mode: reset filters and navigate back to My Folder
-      this.resetFilters();
-      const queryParams: any = {};
-      if (this.scopeFolderId) {
-        queryParams.folderId = this.scopeFolderId;
-      }
-      this.router.navigate(['/my-folder'], { queryParams });
-    }
   }
 
   onToggleFavorite(item: FileItem) {
@@ -280,6 +517,13 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteError' : 'operations.removeFavoriteError'), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
+  }
+
+  /** Open the item's folder with the item focused. */
+  onShowInFolder(item: FileItem): void {
+    this.cancelPendingItemClick();
+    this.closeMetadataPanel();
+    this.router.navigate(['/my-folder'], { queryParams: { targetFileId: item.id } });
   }
 
   override onItemDoubleClick(item: FileItem) {
@@ -320,14 +564,14 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
 
   /** The images the viewer's previous / next arrows step through: those of the same results as on screen. */
   private resultImages(): ImageGallery | undefined {
-    if (this.searchQuery || this.hasFacetFilter) {
-      // Full-text results are not paged: all of them are already here
+    if (this.isTextSearch) {
+      // The hits loaded so far, as filtered on screen
       return inMemoryImageGallery(this.items.filter(i => i.type !== 'FOLDER').map(i => ({
         documentId: i.id, fileName: i.name, contentType: i.contentType || '', fileSize: i.size
       })));
     }
     const filters = this.currentFilters;
-    if (this.scopeMode === 'ALL' || (this.scopeMode === 'CURRENT_AND_SUBFOLDERS' && !this.scopeFolderId)) {
+    if (this.isAllFoldersScope) {
       return this.imageGallery.allFolders(filters, this.sortBy, this.sortOrder);
     }
     if (this.scopeMode === 'CURRENT_AND_SUBFOLDERS') {

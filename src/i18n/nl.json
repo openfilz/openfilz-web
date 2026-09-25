@@ -77,7 +77,19 @@
     "open": "Openen",
     "language": "Taal",
     "settings": "Instellingen",
-    "logout": "Uitloggen"
+    "logout": "Uitloggen",
+    "closeSearch": "Zoeken sluiten",
+    "shortcutHint": "Druk op / om te zoeken",
+    "searchSuggestions": "Zoeksuggesties",
+    "recentSearches": "Recente zoekopdrachten",
+    "clearRecent": "Wissen",
+    "removeRecent": "Verwijderen uit recente zoekopdrachten",
+    "searchFor": "Zoeken naar ‘{{query}}’",
+    "searchForHint": "Namen en inhoud van al uw documenten",
+    "quickMatches": "Snelle treffers",
+    "kbdNavigate": "navigeren",
+    "kbdOpen": "openen",
+    "kbdClose": "sluiten"
   },
   "breadcrumb": {
     "navigation": "Navigatiepad",
@@ -208,7 +220,42 @@
     "loading": "Zoekresultaten laden",
     "filterResultsTitle": "Filterresultaten",
     "filtering": "Filteren...",
-    "clearFilters": "Filters wissen"
+    "clearFilters": "Filters wissen",
+    "resultsFor": "Resultaten voor",
+    "allFilesTitle": "Alle bestanden",
+    "folderAndSubfoldersTitle": "Deze map en de submappen",
+    "backToFolder": "Terug naar de map",
+    "refinedCount": "{{count}} die aan de filters voldoen, van {{loaded}} geladen",
+    "inSeconds": "in {{seconds}} s",
+    "errorTitle": "De zoekopdracht kon niet worden voltooid",
+    "errorMessage": "Controleer uw verbinding en probeer het opnieuw.",
+    "startTitle": "Doorzoek uw documenten",
+    "startMessage": "Typ in het zoekvak hierboven een woord uit een bestandsnaam of -inhoud.",
+    "noResultsFor": "Geen resultaten voor ‘{{query}}’",
+    "noResultsWithFilters": "Geen enkel document voldoet tegelijk aan de zoekopdracht en aan de actieve filters.",
+    "tips": {
+      "spelling": "Controleer de spelling van uw zoekwoorden",
+      "fewerWords": "Probeer minder of algemenere woorden",
+      "partial": "Zoek op het begin van een woord, bijv. ‘contr’ voor ‘contract’"
+    },
+    "loadingMore": "Meer resultaten laden…",
+    "loadMore": "Meer resultaten laden",
+    "noMatchYet": "Geen van de eerste {{loaded}} resultaten voldoet aan de filters.",
+    "endOfResults": "Einde van de resultaten",
+    "showInFolder": "Tonen in map",
+    "modifiedAgo": "Gewijzigd {{when}}",
+    "modifiedOn": "Gewijzigd op {{date}}",
+    "sort": {
+      "relevance": "Relevantie"
+    },
+    "refine": {
+      "label": "Resultaten verfijnen",
+      "filters": "Snelle filters",
+      "allFilters": "Alle filters",
+      "clearAll": "Alles wissen",
+      "metadataCount": "Metadata ({{count}})"
+    },
+    "select": "Selecteren"
   },
   "searchFilters": {
     "title": "Zoekfilters",
@@ -252,7 +299,8 @@
     "anyLanguage": "Alle talen",
     "facetsWholeLibrary": "Soort en taal doorzoeken de hele bibliotheek.",
     "activeFacets": "Actieve documentfilters",
-    "removeFilter": "Filter verwijderen"
+    "removeFilter": "Filter verwijderen",
+    "reset": "Herstellen"
   },
   "metadataPanel": {
     "title": "Eigenschappen",

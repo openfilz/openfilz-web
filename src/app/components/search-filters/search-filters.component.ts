@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentType, SearchFilters, SearchScope } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES } from '../../models/file-type-filters';
+import { DATE_MODIFIED_OPTIONS, countActiveFilters } from '../../models/search-refine';
 import { InsightFacetsService } from '../../services/insight-facets.service';
 import { InsightFacetCount } from '../../models/smart-filing.models';
 
@@ -106,19 +107,14 @@ export class SearchFiltersComponent implements OnInit {
     { labelKey: 'searchFilters.documentTypes.files', value: DocumentType.FILE }
   ];
 
-  dateOptions = [
-    { labelKey: 'searchFilters.dateOptions.any', value: 'any' },
-    { labelKey: 'searchFilters.dateOptions.today', value: 'today' },
-    { labelKey: 'searchFilters.dateOptions.last7', value: 'last7' },
-    { labelKey: 'searchFilters.dateOptions.last30', value: 'last30' }
-  ];
+  dateOptions = DATE_MODIFIED_OPTIONS;
 
   // File-type options are sourced from the shared category definitions so the advanced
   // dialog and the toolbar quick-filter stay in sync. Values are category ids (e.g. 'word'),
   // resolved to content-type LIKE patterns in DocumentApiService.
   fileTypeOptions = [
-    { labelKey: 'searchFilters.fileTypeOptions.any', value: ANY_FILE_TYPE },
-    ...FILE_TYPE_CATEGORIES.map(c => ({ labelKey: c.labelKey, value: c.id }))
+    { labelKey: 'searchFilters.fileTypeOptions.any', value: ANY_FILE_TYPE, icon: 'apps', color: '' },
+    ...FILE_TYPE_CATEGORIES.map(c => ({ labelKey: c.labelKey, value: c.id, icon: c.icon, color: c.color }))
   ];
 
   scopeOptions: { labelKey: string; value: SearchScope }[] = [
@@ -126,6 +122,41 @@ export class SearchFiltersComponent implements OnInit {
     { labelKey: 'searchFilters.scopeOptions.currentAndSubfolders', value: 'CURRENT_AND_SUBFOLDERS' },
     { labelKey: 'searchFilters.scopeOptions.currentOnly', value: 'CURRENT_ONLY' }
   ];
+
+  /** Filters set in the panel right now (the badge next to the title). */
+  get activeCount(): number {
+    return countActiveFilters({ ...this.filters, metadata: this.metadataFilters });
+  }
+
+  setScope(scope: SearchScope) {
+    if (!this.hasFacetFilter) {
+      this.filters.scope = scope;
+    }
+  }
+
+  setType(type: DocumentType | undefined) {
+    this.filters.type = type;
+    if (type === DocumentType.FOLDER) {
+      // Folders have no file type
+      this.filters.fileType = ANY_FILE_TYPE;
+    }
+  }
+
+  setFileType(fileType: string) {
+    this.filters.fileType = fileType;
+    if (fileType !== ANY_FILE_TYPE && this.filters.type === DocumentType.FOLDER) {
+      this.filters.type = undefined;
+    }
+  }
+
+  setDate(value: string) {
+    this.filters.dateModified = value;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.close.emit();
+  }
 
   addMetadataFilter() {
     this.metadataFilters.push({ key: '', value: '' });

@@ -26,6 +26,7 @@ export interface ElementInfo {
   thumbnailUrl?: string;
   createdAt?: string;
   updatedAt?: string;
+  createdBy?: string;
 }
 
 export interface ListFolderAndCountResponse {
@@ -142,6 +143,12 @@ export interface FileItem extends ElementInfo {
   selected?: boolean;
   modifiedDate?: Date;
   icon?: string;
+  /** Search results only: the parent folder (null at the root) — "Show in folder". */
+  parentId?: string | null;
+  /** Search results only: a highlighted extract of the content (matches in `<mark>`). */
+  contentSnippet?: string;
+  /** Search results only: the document insight's category ("invoice", "contract"...). */
+  category?: string;
 }
 
 export interface MultipleUploadFileParameter {
@@ -166,6 +173,9 @@ export interface DocumentSearchInfo {
     createdBy: string;
     updatedBy: string;
     thumbnailUrl?: string;
+    contentSnippet?: string;
+    category?: string;
+    language?: string;
 }
 
 export interface DocumentSearchResult {

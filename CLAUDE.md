@@ -38,8 +38,10 @@ src/app/
 │   ├── metadata-editor/ Document metadata editor
 │   ├── metadata-panel/  Metadata display
 │   ├── onlyoffice-editor/ OnlyOffice wrapper
-│   ├── search-filters/  Advanced search UI
-│   ├── search-results/  Search results display
+│   ├── search-filters/  Advanced search filter panel
+│   ├── search-refine-bar/ Results page chips, sort, view toggle
+│   ├── search-result-list/ Results list view (rich rows)
+│   ├── search-results/  Search results page
 │   ├── sidebar/         Navigation sidebar
 │   ├── text-editor/     Text file editor
 │   ├── toolbar/         Action toolbar
@@ -211,6 +213,35 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   `case` in toolbar / file-list / file-grid, `(pdfToolSelected)` + `(pdfTool)` bindings on file-explorer,
   favorites and search-results, and an "Edit pages" button in the PDF viewer.
 - i18n block `pdfTools.*` in all 8 locales. Design doc: `openfilz-core/docs/pdf-tools.md`.
+
+## Search (header box, filter panel, results page)
+
+- **Header box** (`components/header/`): `/` or Ctrl/Cmd+K focuses it; ↑/↓/Enter/Esc drive the panel, whose
+  first row always runs the full search, then the `/suggestions` quick matches. Empty box → recent searches
+  (browser `localStorage` `openfilz.recentSearches`, helpers in `models/search-refine.ts`). The box mirrors
+  `?q=` of `/search` and empties once the user leaves the results. Phones: focusing it turns the header into a
+  full-screen search (back arrow, suggestions fill the screen). "All filters" on the results page opens the header's
+  panel through `SearchService.requestAdvancedFilters()`.
+- **Filter panel** (`components/search-filters/`): segmented scope / type, file-type chip grid, date chips, owner,
+  kind / language facets, metadata rows. Desktop popover under the box; bottom sheet (own backdrop) on phones.
+- **Results page** (`components/search-results/`): pages of 30 loaded as the user scrolls (IntersectionObserver
+  sentinel + "Load more"), skeleton / empty / error states, title + count + time. `:host` is a bounded flex column —
+  without it nothing scrolls inside `.main-content.file-explorer-view` (overflow hidden), the old phone bug.
+  - Sort lives in the URL (`?sort=&order=`): *Best match* (`relevance` = no `sort` sent) by default for a text query,
+    else name / modified / created / size — the only fields both back-ends sort on (`SEARCH_SORT_OPTIONS`; the
+    OpenSearch index has no `type`, and `createdBy` is a plain keyword, so sorting on them fails the query).
+  - `components/search-refine-bar/`: quick filter chips (type, file type, date, owner, document kind, language /
+    metadata chips), "All filters", "Clear all", sort menu, list / grid toggle. It edits `SearchService` filters.
+  - `components/search-result-list/`: the list view — highlighted name, type · size · relative date · owner, content
+    snippet, category badge, hover actions (favorite, show in folder) + the standard item menu. Touch: tap opens,
+    long press / menu "Select" picks. The grid view stays `app-file-grid`.
+  - A full-text search sends only metadata / kind / language (`serverSideSearchFilters`); type, file type, date and
+    owner are applied **in the browser** on the loaded hits (`matchesSearchRefinements`) — the OpenSearch generic
+    filter clause cannot evaluate them (it appends `.keyword` to fields that are not mapped that way), so sending
+    them emptied the results. Changing only those re-filters without a request; when they hide most hits, up to 6
+    pages load automatically. Filter-only listings (`?scope=`) still filter server-side (`listAllFolder` +
+    `countAllFolder` for the total).
+- i18n: `searchResults.*` (incl. `refine.*`, `tips.*`, `sort.*`), `searchFilters.reset`, `header.*` search keys.
 
 ## Unzip (ZIP extraction)
 

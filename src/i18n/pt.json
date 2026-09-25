@@ -77,7 +77,19 @@
     "open": "Abrir",
     "language": "Idioma",
     "settings": "Configurações",
-    "logout": "Sair"
+    "logout": "Sair",
+    "closeSearch": "Fechar a pesquisa",
+    "shortcutHint": "Prima / para pesquisar",
+    "searchSuggestions": "Sugestões de pesquisa",
+    "recentSearches": "Pesquisas recentes",
+    "clearRecent": "Limpar",
+    "removeRecent": "Remover das pesquisas recentes",
+    "searchFor": "Pesquisar «{{query}}»",
+    "searchForHint": "Nomes e conteúdo de todos os seus documentos",
+    "quickMatches": "Correspondências rápidas",
+    "kbdNavigate": "navegar",
+    "kbdOpen": "abrir",
+    "kbdClose": "fechar"
   },
   "breadcrumb": {
     "navigation": "Caminho de navegação",
@@ -208,7 +220,42 @@
     "loading": "Carregando resultados da pesquisa",
     "filterResultsTitle": "Resultados do filtro",
     "filtering": "A filtrar...",
-    "clearFilters": "Limpar filtros"
+    "clearFilters": "Limpar filtros",
+    "resultsFor": "Resultados para",
+    "allFilesTitle": "Todos os ficheiros",
+    "folderAndSubfoldersTitle": "Esta pasta e as respetivas subpastas",
+    "backToFolder": "Voltar à pasta",
+    "refinedCount": "{{count}} correspondem aos filtros, de {{loaded}} carregados",
+    "inSeconds": "em {{seconds}} s",
+    "errorTitle": "Não foi possível concluir a pesquisa",
+    "errorMessage": "Verifique a sua ligação e tente novamente.",
+    "startTitle": "Pesquise nos seus documentos",
+    "startMessage": "Escreva na caixa de pesquisa uma palavra do nome ou do conteúdo de um ficheiro.",
+    "noResultsFor": "Sem resultados para «{{query}}»",
+    "noResultsWithFilters": "Nenhum documento corresponde simultaneamente à pesquisa e aos filtros ativos.",
+    "tips": {
+      "spelling": "Verifique a ortografia das palavras-chave",
+      "fewerWords": "Experimente menos palavras ou palavras mais gerais",
+      "partial": "Pesquise o início de uma palavra, p. ex. «contr» para «contrato»"
+    },
+    "loadingMore": "A carregar mais resultados…",
+    "loadMore": "Carregar mais resultados",
+    "noMatchYet": "Nenhum dos primeiros {{loaded}} resultados corresponde aos filtros.",
+    "endOfResults": "Fim dos resultados",
+    "showInFolder": "Mostrar na pasta",
+    "modifiedAgo": "Modificado {{when}}",
+    "modifiedOn": "Modificado a {{date}}",
+    "sort": {
+      "relevance": "Relevância"
+    },
+    "refine": {
+      "label": "Refinar os resultados",
+      "filters": "Filtros rápidos",
+      "allFilters": "Todos os filtros",
+      "clearAll": "Limpar tudo",
+      "metadataCount": "Metadados ({{count}})"
+    },
+    "select": "Selecionar"
   },
   "searchFilters": {
     "title": "Filtros de Pesquisa",
@@ -252,7 +299,8 @@
     "anyLanguage": "Todos os idiomas",
     "facetsWholeLibrary": "O tipo e o idioma pesquisam em toda a biblioteca.",
     "activeFacets": "Filtros de documento ativos",
-    "removeFilter": "Remover filtro"
+    "removeFilter": "Remover filtro",
+    "reset": "Repor"
   },
   "metadataPanel": {
     "title": "Propriedades",

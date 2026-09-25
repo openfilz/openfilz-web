@@ -148,8 +148,16 @@ const SEARCH_DOCUMENTS_QUERY = gql`
         updatedBy
         contentSnippet
         thumbnailUrl
+        category
+        language
       }
     }
+  }
+`;
+
+const COUNT_ALL_FOLDER_QUERY = gql`
+  query countAllFolder($request: ListFolderRequest) {
+    countAllFolder(request: $request)
   }
 `;
 
@@ -429,6 +437,20 @@ export class DocumentApiService {
         listFolder: result.data.listAllFolder,
         count: result.data.listAllFolder?.length ?? 0
       }))
+    );
+  }
+
+  /** Number of items `listAllFolder` would return for these filters, across every page. */
+  countAllFolder(filters?: SearchFilters): Observable<number> {
+    // Count queries carry no pageInfo (see CLAUDE.md: GraphQL count queries)
+    const request = { ...this.mapFiltersToRequest(filters), pageInfo: null };
+    return this.apollo.watchQuery<any>({
+      fetchPolicy: 'no-cache',
+      query: COUNT_ALL_FOLDER_QUERY,
+      variables: { request }
+    }).valueChanges.pipe(
+      filter(result => !result.loading),
+      map(result => result.data?.countAllFolder ?? 0)
     );
   }
 
