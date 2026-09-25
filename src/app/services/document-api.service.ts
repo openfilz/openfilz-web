@@ -773,8 +773,10 @@ export class DocumentApiService {
           filterInputs.push({ field: 'updatedAtAfter', value: date.toISOString() });
         }
       }
-      if (filters.fileType && filters.fileType !== 'any') {
-        filterInputs.push({ field: 'contentType', value: filters.fileType });
+      // A file-type category stands for several content types: exact values or prefixes with '%'
+      const contentTypePatterns = getFileTypePatterns(filters.fileType);
+      if (contentTypePatterns) {
+        filterInputs.push({ field: 'contentType', value: contentTypePatterns.join(',') });
       }
       if (filters.metadata) {
         filters.metadata.forEach(meta => {

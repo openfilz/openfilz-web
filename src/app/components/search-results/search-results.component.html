@@ -46,9 +46,7 @@
           @if (loading) {
             <span>{{ (searchQuery ? 'searchResults.searchingFor' : 'searchResults.filtering') | translate: { query: searchQuery } }}</span>
           } @else if (!loadError && (isTextSearch || scopeMode)) {
-            @if (isRefined) {
-              <span>{{ 'searchResults.refinedCount' | translate: { count: items.length, loaded: loadedCount } }}</span>
-            } @else if (totalCount !== undefined) {
+            @if (totalCount !== undefined) {
               <span>{{ (totalCount === 1 ? 'searchResults.foundResult' : 'searchResults.foundResults') | translate: { count: totalCount } }}</span>
             } @else {
               <span>{{ (items.length === 1 ? 'searchResults.foundResult' : 'searchResults.foundResults') | translate: { count: items.length + (hasMore ? '+' : '') } }}</span>
@@ -187,9 +185,6 @@
               {{ 'common.retry' | translate }}
             </button>
           } @else if (hasMore) {
-            @if (items.length === 0) {
-              <p class="footer-note">{{ 'searchResults.noMatchYet' | translate: { loaded: loadedCount } }}</p>
-            }
             <button mat-stroked-button color="primary" (click)="loadMore()">
               <mat-icon aria-hidden="true">expand_more</mat-icon>
               {{ 'searchResults.loadMore' | translate }}

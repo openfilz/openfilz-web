@@ -235,12 +235,11 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   - `components/search-result-list/`: the list view — highlighted name, type · size · relative date · owner, content
     snippet, category badge, hover actions (favorite, show in folder) + the standard item menu. Touch: tap opens,
     long press / menu "Select" picks. The grid view stays `app-file-grid`.
-  - A full-text search sends only metadata / kind / language (`serverSideSearchFilters`); type, file type, date and
-    owner are applied **in the browser** on the loaded hits (`matchesSearchRefinements`) — the OpenSearch generic
-    filter clause cannot evaluate them (it appends `.keyword` to fields that are not mapped that way), so sending
-    them emptied the results. Changing only those re-filters without a request; when they hide most hits, up to 6
-    pages load automatically. Filter-only listings (`?scope=`) still filter server-side (`listAllFolder` +
-    `countAllFolder` for the total).
+  - Every filter is sent to the API (`DocumentApiService.searchDocuments`: `type`, `contentType` = the file-type
+    category's content-type patterns joined with `,`, `updatedAtAfter`, `createdBy`, `metadata.*`, `category`,
+    `language`), so counts and paging are exact. Needs openfilz-core with the `searchDocuments` filter mapping
+    (openfilz-core `CLAUDE.md` → Document search). Filter-only listings (`?scope=`) use `listAllFolder` +
+    `countAllFolder` for the total.
 - i18n: `searchResults.*` (incl. `refine.*`, `tips.*`, `sort.*`), `searchFilters.reset`, `header.*` search keys.
 
 ## Unzip (ZIP extraction)

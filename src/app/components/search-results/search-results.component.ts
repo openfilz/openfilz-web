@@ -24,16 +24,12 @@ import { FileViewerDialogComponent } from '../../dialogs/file-viewer-dialog/file
 import { ImageGallery, ImageGalleryService, inMemoryImageGallery } from '../../services/image-gallery.service';
 import { DocumentSearchInfo, DocumentType, ElementInfo, FileItem, SearchFilters, SearchScope } from '../../models/document.models';
 import {
-  RELEVANCE_SORT, SortOrder, countActiveFilters, findSortOption, hasSearchRefinements,
-  matchesSearchRefinements, serverSideSearchFilters
+  RELEVANCE_SORT, SortOrder, countActiveFilters, findSortOption
 } from '../../models/search-refine';
 
 /** Hits fetched per request; more are loaded as the user scrolls. */
 const SEARCH_PAGE_SIZE = 30;
-/**
- * Pages fetched in a row without the user scrolling, when the browser-side filters hide most
- * of the hits (e.g. "PDFs only" on a query that mostly matches images).
- */
+/** Pages fetched in a row without the user scrolling, while the results do not fill the screen. */
 const MAX_AUTO_PAGES = 6;
 const VIEW_MODE_KEY = 'openfilz.searchViewMode';
 
@@ -84,8 +80,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   /** Bumped on every new search so late answers of a previous one are dropped. */
   private requestSeq = 0;
   private autoPages = 0;
-  /** The filters the loaded hits were fetched with — a change of anything else is applied locally. */
-  private fetchedWithFilters = '';
 
   readonly skeletonRows = Array.from({ length: 8 }, (_, i) => i);
 
@@ -134,16 +128,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       if (!this.searchQuery && (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS')) {
         this.scopeMode = filters.scope;
       }
-      if (this.isTextSearch && this.loadedItems.length > 0 && this.serverFiltersKey(filters) === this.fetchedWithFilters) {
-        // Only browser-side refinements changed: no new request
-        this.loadedItems.forEach(item => item.selected = false);
-        this.resetSelectionMode();
-        this.applyRefinements();
-        this.scrollToTop();
-        this.autoPages = 0;
-        this.maybeAutoLoad();
-        return;
-      }
       this.reloadData();
     });
 
@@ -175,15 +159,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
 
   get hasActiveFilters(): boolean {
     return countActiveFilters(this.currentFilters) > 0;
-  }
-
-  /** Browser-side refinements hide some of the loaded hits. */
-  get isRefined(): boolean {
-    return this.isTextSearch && hasSearchRefinements(this.currentFilters);
-  }
-
-  get loadedCount(): number {
-    return this.loadedItems.length;
   }
 
   get relevanceAvailable(): boolean {
@@ -306,7 +281,6 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       return;
     }
     this.loading = true;
-    this.fetchedWithFilters = this.serverFiltersKey(this.currentFilters);
     this.fetchPage();
   }
 
@@ -365,7 +339,8 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         this.nextPage = page + 1;
         this.loading = false;
         this.loadingMore = false;
-        this.applyRefinements();
+        this.items = this.loadedItems;
+        this.totalItems = this.items.length;
         this.maybeAutoLoad();
       },
       error: err => {
@@ -392,7 +367,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
         page,
         size: SEARCH_PAGE_SIZE,
         sort,
-        filters: serverSideSearchFilters(filters)
+        filters
       }).pipe(take(1), map(result => ({
         items: (result?.documents ?? []).map(doc => this.transformToFileItem(doc)),
         total: result?.totalHits ?? 0,
@@ -417,21 +392,10 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     })));
   }
 
-  /** The key of what the back-end filtered on (browser-side refinements left out). */
-  private serverFiltersKey(filters: SearchFilters): string {
-    return JSON.stringify(serverSideSearchFilters(filters));
-  }
-
-  private applyRefinements(): void {
-    const filters = this.currentFilters;
-    const now = new Date();
-    this.items = this.isTextSearch
-      ? this.loadedItems.filter(item => matchesSearchRefinements(item, filters, now))
-      : this.loadedItems;
-    this.totalItems = this.items.length;
-  }
-
-  /** Keep loading while the bottom marker is on screen (few visible hits after refinement). */
+  /**
+   * Keep loading while the bottom marker is on screen: the observer only reports changes, so a
+   * page that does not fill a tall screen would otherwise never load the next one.
+   */
   private maybeAutoLoad(): void {
     setTimeout(() => {
       if (this.hasMore && !this.loading && !this.loadingMore && this.autoPages < MAX_AUTO_PAGES && this.sentinelVisible()) {
