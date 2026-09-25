@@ -77,7 +77,19 @@
     "open": "Apri",
     "language": "Lingua",
     "settings": "Impostazioni",
-    "logout": "Esci"
+    "logout": "Esci",
+    "closeSearch": "Chiudi la ricerca",
+    "shortcutHint": "Premi / per cercare",
+    "searchSuggestions": "Suggerimenti di ricerca",
+    "recentSearches": "Ricerche recenti",
+    "clearRecent": "Cancella",
+    "removeRecent": "Rimuovi dalle ricerche recenti",
+    "searchFor": "Cerca «{{query}}»",
+    "searchForHint": "Nomi e contenuto di tutti i tuoi documenti",
+    "quickMatches": "Corrispondenze rapide",
+    "kbdNavigate": "naviga",
+    "kbdOpen": "apri",
+    "kbdClose": "chiudi"
   },
   "breadcrumb": {
     "navigation": "Percorso di navigazione",
@@ -208,7 +220,40 @@
     "loading": "Caricamento risultati di ricerca",
     "filterResultsTitle": "Risultati del filtro",
     "filtering": "Filtraggio in corso...",
-    "clearFilters": "Cancella filtri"
+    "clearFilters": "Cancella filtri",
+    "resultsFor": "Risultati per",
+    "allFilesTitle": "Tutti i file",
+    "folderAndSubfoldersTitle": "Questa cartella e le sue sottocartelle",
+    "backToFolder": "Torna alla cartella",
+    "inSeconds": "in {{seconds}} s",
+    "errorTitle": "Impossibile completare la ricerca",
+    "errorMessage": "Controlla la connessione e riprova.",
+    "startTitle": "Cerca nei tuoi documenti",
+    "startMessage": "Digita nella casella di ricerca una parola del nome o del contenuto di un file.",
+    "noResultsFor": "Nessun risultato per «{{query}}»",
+    "noResultsWithFilters": "Nessun documento corrisponde sia alla ricerca sia ai filtri attivi.",
+    "tips": {
+      "spelling": "Controlla l’ortografia delle parole chiave",
+      "fewerWords": "Prova con meno parole o con parole più generiche",
+      "partial": "Cerca l’inizio di una parola, ad es. «contr» per «contratto»"
+    },
+    "loadingMore": "Caricamento di altri risultati…",
+    "loadMore": "Carica altri risultati",
+    "endOfResults": "Fine dei risultati",
+    "showInFolder": "Mostra nella cartella",
+    "modifiedAgo": "Modificato {{when}}",
+    "modifiedOn": "Modificato il {{date}}",
+    "sort": {
+      "relevance": "Pertinenza"
+    },
+    "refine": {
+      "label": "Affina i risultati",
+      "filters": "Filtri rapidi",
+      "allFilters": "Tutti i filtri",
+      "clearAll": "Cancella tutto",
+      "metadataCount": "Metadati ({{count}})"
+    },
+    "select": "Seleziona"
   },
   "searchFilters": {
     "title": "Filtri di Ricerca",
@@ -252,7 +297,8 @@
     "anyLanguage": "Tutte le lingue",
     "facetsWholeLibrary": "Tipo e lingua cercano in tutta la libreria.",
     "activeFacets": "Filtri documento attivi",
-    "removeFilter": "Rimuovi filtro"
+    "removeFilter": "Rimuovi filtro",
+    "reset": "Reimposta"
   },
   "metadataPanel": {
     "title": "Proprietà",

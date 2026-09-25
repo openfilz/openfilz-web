@@ -1,123 +1,169 @@
-<div class="filters-overlay">
+<!-- Phones: the panel is a bottom sheet over a dimmed backdrop -->
+<div class="filters-backdrop" (click)="close.emit()" aria-hidden="true"></div>
+
+<div class="filters-overlay" role="dialog" aria-modal="false" [attr.aria-label]="'searchFilters.title' | translate">
+  <div class="sheet-handle" aria-hidden="true"></div>
+
   <!-- Header -->
   <div class="filters-header">
     <h3>
-      <mat-icon>tune</mat-icon>
+      <mat-icon aria-hidden="true">tune</mat-icon>
       {{ 'searchFilters.title' | translate }}
+      @if (activeCount > 0) {
+        <span class="title-badge">{{ activeCount }}</span>
+      }
     </h3>
+    <button type="button" class="icon-close" (click)="close.emit()" [attr.aria-label]="'common.close' | translate">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
   </div>
 
   <!-- Scrollable Content -->
   <div class="filters-content">
     <!-- Search Scope -->
-    <div class="filter-section">
-      <label>{{ 'searchFilters.scope' | translate }}</label>
-      <select [(ngModel)]="filters.scope" [disabled]="hasFacetFilter">
-        @for (scope of scopeOptions; track scope) {
-          <option [value]="scope.value">
+    <section class="filter-section">
+      <h4 class="section-label">{{ 'searchFilters.scope' | translate }}</h4>
+      <div class="segmented" role="radiogroup" [attr.aria-label]="'searchFilters.scope' | translate" [class.disabled]="hasFacetFilter">
+        @for (scope of scopeOptions; track scope.value) {
+          <button type="button" role="radio" [attr.aria-checked]="filters.scope === scope.value"
+            [class.selected]="filters.scope === scope.value" [disabled]="hasFacetFilter" (click)="setScope(scope.value)">
             {{ scope.labelKey | translate }}
-          </option>
+          </button>
         }
-      </select>
-      @if (hasFacetFilter) {
-        <p class="filter-hint">{{ 'searchFilters.facetsWholeLibrary' | translate }}</p>
-      }
-    </div>
-
-    <!-- Type Filter -->
-    <div class="filter-section">
-      <label>{{ 'common.type' | translate }}</label>
-      <select [(ngModel)]="filters.type">
-        @for (type of documentTypes; track type) {
-          <option [ngValue]="type.value">
-            {{ type.labelKey | translate }}
-          </option>
-        }
-      </select>
-    </div>
-
-    <!-- Date Modified Filter -->
-    <div class="filter-section">
-      <label>{{ 'common.dateModified' | translate }}</label>
-      <select [(ngModel)]="filters.dateModified">
-        @for (date of dateOptions; track date) {
-          <option [value]="date.value">
-            {{ date.labelKey | translate }}
-          </option>
-        }
-      </select>
-    </div>
-
-    <!-- Owner Filter -->
-    <div class="filter-section">
-      <label>{{ 'common.owner' | translate }}</label>
-      <input type="text" [(ngModel)]="filters.owner" [placeholder]="'searchFilters.ownerPlaceholder' | translate" />
-    </div>
-
-    <!-- File Type Filter (Conditional) -->
-    @if (showFileTypeFilter) {
-      <div class="filter-section">
-        <label>{{ 'searchFilters.fileType' | translate }}</label>
-        <select [(ngModel)]="filters.fileType">
-          @for (ft of fileTypeOptions; track ft) {
-            <option [value]="ft.value">
-              {{ ft.labelKey | translate }}
-            </option>
-          }
-        </select>
       </div>
+      @if (hasFacetFilter) {
+        <p class="filter-hint">
+          <mat-icon aria-hidden="true">info</mat-icon>
+          {{ 'searchFilters.facetsWholeLibrary' | translate }}
+        </p>
+      }
+    </section>
+
+    <!-- Type -->
+    <section class="filter-section">
+      <h4 class="section-label">{{ 'common.type' | translate }}</h4>
+      <div class="segmented" role="radiogroup" [attr.aria-label]="'common.type' | translate">
+        @for (type of documentTypes; track type.labelKey) {
+          <button type="button" role="radio" [attr.aria-checked]="filters.type === type.value"
+            [class.selected]="filters.type === type.value" (click)="setType(type.value)">
+            {{ type.labelKey | translate }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- File type -->
+    @if (showFileTypeFilter) {
+      <section class="filter-section">
+        <h4 class="section-label">{{ 'searchFilters.fileType' | translate }}</h4>
+        <div class="chip-grid" role="radiogroup" [attr.aria-label]="'searchFilters.fileType' | translate">
+          @for (ft of fileTypeOptions; track ft.value) {
+            <button type="button" class="choice-chip" role="radio"
+              [attr.aria-checked]="(filters.fileType || 'any') === ft.value"
+              [class.selected]="(filters.fileType || 'any') === ft.value" (click)="setFileType(ft.value)">
+              <mat-icon aria-hidden="true" [style.color]="ft.color || null">{{ ft.icon }}</mat-icon>
+              <span>{{ ft.labelKey | translate }}</span>
+            </button>
+          }
+        </div>
+      </section>
     }
+
+    <!-- Date modified -->
+    <section class="filter-section">
+      <h4 class="section-label">{{ 'common.dateModified' | translate }}</h4>
+      <div class="chip-row" role="radiogroup" [attr.aria-label]="'common.dateModified' | translate">
+        @for (date of dateOptions; track date.value) {
+          <button type="button" class="choice-chip" role="radio"
+            [attr.aria-checked]="(filters.dateModified || 'any') === date.value"
+            [class.selected]="(filters.dateModified || 'any') === date.value" (click)="setDate(date.value)">
+            {{ date.labelKey | translate }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Owner -->
+    <section class="filter-section">
+      <h4 class="section-label"><label for="filter-owner">{{ 'common.owner' | translate }}</label></h4>
+      <div class="input-wrap">
+        <mat-icon aria-hidden="true">person_search</mat-icon>
+        <input id="filter-owner" type="text" [(ngModel)]="filters.owner" autocomplete="off"
+          [placeholder]="'searchFilters.ownerPlaceholder' | translate" (keydown.enter)="hasChanges && applyFilters()" />
+        @if (filters.owner) {
+          <button type="button" class="input-clear" (click)="filters.owner = ''" [attr.aria-label]="'common.clear' | translate">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        }
+      </div>
+    </section>
 
     <!-- Document insights facets: kind + language (only when the insights are on) -->
     @if (showInsightFacets) {
-      <div class="filter-section">
-        <label>{{ 'searchFilters.documentKind' | translate }}</label>
-        <select [(ngModel)]="filters.category" (ngModelChange)="onFacetChange()">
-          <option [ngValue]="undefined">{{ 'searchFilters.anyKind' | translate }}</option>
-          @for (category of facetCategories; track category) {
-            <option [ngValue]="category">{{ categoryLabel(category) }}</option>
-          }
-        </select>
-      </div>
-
-      @if (facetLanguages.length > 0 || filters.language) {
-        <div class="filter-section">
-          <label>{{ 'searchFilters.language' | translate }}</label>
-          <select [(ngModel)]="filters.language" (ngModelChange)="onFacetChange()">
-            <option [ngValue]="undefined">{{ 'searchFilters.anyLanguage' | translate }}</option>
-            @for (language of facetLanguages; track language.key) {
-              <option [ngValue]="language.key">{{ languageLabel(language.key) }} ({{ language.count }})</option>
-            }
-          </select>
+      <section class="filter-section two-cols">
+        <div>
+          <h4 class="section-label"><label for="filter-kind">{{ 'searchFilters.documentKind' | translate }}</label></h4>
+          <div class="select-wrap">
+            <select id="filter-kind" [(ngModel)]="filters.category" (ngModelChange)="onFacetChange()">
+              <option [ngValue]="undefined">{{ 'searchFilters.anyKind' | translate }}</option>
+              @for (category of facetCategories; track category) {
+                <option [ngValue]="category">{{ categoryLabel(category) }}</option>
+              }
+            </select>
+            <mat-icon aria-hidden="true">expand_more</mat-icon>
+          </div>
         </div>
-      }
+
+        @if (facetLanguages.length > 0 || filters.language) {
+          <div>
+            <h4 class="section-label"><label for="filter-language">{{ 'searchFilters.language' | translate }}</label></h4>
+            <div class="select-wrap">
+              <select id="filter-language" [(ngModel)]="filters.language" (ngModelChange)="onFacetChange()">
+                <option [ngValue]="undefined">{{ 'searchFilters.anyLanguage' | translate }}</option>
+                @for (language of facetLanguages; track language.key) {
+                  <option [ngValue]="language.key">{{ languageLabel(language.key) }} ({{ language.count }})</option>
+                }
+              </select>
+              <mat-icon aria-hidden="true">expand_more</mat-icon>
+            </div>
+          </div>
+        }
+      </section>
     }
 
-    <!-- Metadata Filter -->
-    <div class="filter-section">
-      <label>{{ 'common.metadata' | translate }}</label>
+    <!-- Metadata -->
+    <section class="filter-section">
+      <h4 class="section-label">{{ 'common.metadata' | translate }}</h4>
       <div class="metadata-list">
-        @for (meta of metadataFilters; track meta; let i = $index) {
+        @for (meta of metadataFilters; track $index; let i = $index) {
           <div class="metadata-item">
-            <input type="text" [(ngModel)]="meta.key" [placeholder]="'common.key' | translate" class="meta-input" />
-            <input type="text" [(ngModel)]="meta.value" [placeholder]="'common.value' | translate" class="meta-input" />
-            <button class="btn-remove" (click)="$event.stopPropagation(); removeMetadataFilter(i)"
-              [matTooltip]="'searchFilters.remove' | translate">
-              <mat-icon>close</mat-icon>
+            <input type="text" [(ngModel)]="meta.key" [placeholder]="'common.key' | translate" class="meta-input"
+              [attr.aria-label]="'common.key' | translate" />
+            <span class="meta-eq" aria-hidden="true">=</span>
+            <input type="text" [(ngModel)]="meta.value" [placeholder]="'common.value' | translate" class="meta-input"
+              [attr.aria-label]="'common.value' | translate" />
+            <button type="button" class="btn-remove" (click)="$event.stopPropagation(); removeMetadataFilter(i)"
+              [matTooltip]="'searchFilters.remove' | translate" [attr.aria-label]="'searchFilters.remove' | translate">
+              <mat-icon aria-hidden="true">close</mat-icon>
             </button>
           </div>
         }
-        <button class="btn-add" (click)="addMetadataFilter()">
-          <mat-icon>add</mat-icon>
+        <button type="button" class="btn-add" (click)="addMetadataFilter()">
+          <mat-icon aria-hidden="true">add</mat-icon>
           {{ 'searchFilters.addMetadataFilter' | translate }}
         </button>
       </div>
-    </div>
+    </section>
   </div>
 
   <!-- Footer Actions -->
   <div class="filter-actions">
-    <button class="btn-clear" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
-    <button class="btn-apply" (click)="applyFilters()" [disabled]="!hasChanges">{{ 'searchFilters.applyFilters' | translate }}</button>
+    <button type="button" class="btn-clear" (click)="clearFilters()">
+      <mat-icon aria-hidden="true">restart_alt</mat-icon>
+      {{ 'searchFilters.reset' | translate }}
+    </button>
+    <button type="button" class="btn-apply" (click)="applyFilters()" [disabled]="!hasChanges">
+      {{ 'searchFilters.applyFilters' | translate }}
+    </button>
   </div>
 </div>

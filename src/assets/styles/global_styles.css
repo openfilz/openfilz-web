@@ -943,6 +943,13 @@ a,
   touch-action: pan-y;
 }
 
+/* A flick on the tab header switches tabs too. The header pages with its own arrows and never
+   pans natively, so it claims horizontal gestures — otherwise the browser takes a sideways
+   flick on it for its "back" gesture and leaves the page. */
+.swipe-tabs > .mat-mdc-tab-header {
+  touch-action: pan-y;
+}
+
 /* While the finger is down, the tab being dragged towards has to show: Material
    parks it one panel-width to the side, hidden and clipped away. The wrapper does
    the clipping instead, so the tab appears exactly as it is dragged into view. */
@@ -979,4 +986,156 @@ a,
     transform: scale(0.8);
     pointer-events: none;
   }
+}
+
+/* =============================================================================
+   Buttons — one modern style for every Material button, in every theme.
+   Same cause as the dialog / slide-toggle fixes above: the M3 --mat-sys-* colours
+   are emitted invalid, so filled and raised buttons lost their fill (a primary
+   "Apply" rendered as plain text). Paint the button tokens from the app theme
+   variables instead. Matches the search filter panel: 40px high, 10px corners,
+   semibold label, primary fill with a soft shadow, quiet text buttons.
+   Component styles still win (they set properties, these are tokens).
+   ============================================================================= */
+html {
+  /* The M3 typescale tokens are invalid too: labels fell back to the browser serif font */
+  --app-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --mat-button-filled-label-text-font: var(--app-font);
+  --mat-button-protected-label-text-font: var(--app-font);
+  --mat-button-outlined-label-text-font: var(--app-font);
+  --mat-button-text-label-text-font: var(--app-font);
+  --mat-select-trigger-text-font: var(--app-font);
+  --mat-option-label-text-font: var(--app-font);
+  --mat-option-label-text-tracking: normal;
+
+  /* Filled (mat-flat-button) and raised (mat-raised-button): the primary action */
+  --mat-button-filled-container-shape: 10px;
+  --mat-button-filled-container-height: 40px;
+  --mat-button-filled-horizontal-padding: 18px;
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-label-text-weight: 600;
+  --mat-button-filled-label-text-size: 14px;
+  --mat-button-filled-label-text-tracking: normal;
+  --mat-button-filled-label-text-transform: none;
+  --mat-button-filled-state-layer-color: #ffffff;
+  --mat-button-filled-ripple-color: rgba(255, 255, 255, 0.24);
+  --mat-button-filled-disabled-container-color: var(--bg-tertiary);
+  --mat-button-filled-disabled-label-text-color: var(--text-tertiary);
+  --mat-button-filled-icon-spacing: 8px;
+
+  --mat-button-protected-container-shape: 10px;
+  --mat-button-protected-container-height: 40px;
+  --mat-button-protected-horizontal-padding: 18px;
+  --mat-button-protected-container-color: var(--primary);
+  --mat-button-protected-label-text-color: #ffffff;
+  --mat-button-protected-label-text-weight: 600;
+  --mat-button-protected-label-text-size: 14px;
+  --mat-button-protected-label-text-tracking: normal;
+  --mat-button-protected-label-text-transform: none;
+  --mat-button-protected-state-layer-color: #ffffff;
+  --mat-button-protected-ripple-color: rgba(255, 255, 255, 0.24);
+  --mat-button-protected-disabled-container-color: var(--bg-tertiary);
+  --mat-button-protected-disabled-label-text-color: var(--text-tertiary);
+  --mat-button-protected-container-elevation-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 28%, transparent);
+  --mat-button-protected-hover-container-elevation-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
+  --mat-button-protected-focus-container-elevation-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 28%, transparent);
+  --mat-button-protected-pressed-container-elevation-shadow: 0 1px 4px color-mix(in srgb, var(--primary) 28%, transparent);
+  --mat-button-protected-disabled-container-elevation-shadow: none;
+  --mat-button-protected-icon-spacing: 8px;
+
+  /* Outlined (mat-stroked-button): secondary actions */
+  --mat-button-outlined-container-shape: 10px;
+  --mat-button-outlined-container-height: 40px;
+  --mat-button-outlined-horizontal-padding: 16px;
+  --mat-button-outlined-outline-color: var(--border-color);
+  --mat-button-outlined-outline-width: 1px;
+  --mat-button-outlined-label-text-color: var(--text-primary);
+  --mat-button-outlined-label-text-weight: 600;
+  --mat-button-outlined-label-text-size: 14px;
+  --mat-button-outlined-label-text-tracking: normal;
+  --mat-button-outlined-label-text-transform: none;
+  --mat-button-outlined-state-layer-color: var(--text-primary);
+  --mat-button-outlined-ripple-color: color-mix(in srgb, var(--text-primary) 12%, transparent);
+  --mat-button-outlined-disabled-outline-color: var(--border-light);
+  --mat-button-outlined-disabled-label-text-color: var(--text-tertiary);
+  --mat-button-outlined-icon-spacing: 8px;
+
+  /* Text (mat-button): Cancel, tertiary actions */
+  --mat-button-text-container-shape: 10px;
+  --mat-button-text-container-height: 40px;
+  --mat-button-text-horizontal-padding: 14px;
+  --mat-button-text-label-text-color: var(--text-secondary);
+  --mat-button-text-label-text-weight: 600;
+  --mat-button-text-label-text-size: 14px;
+  --mat-button-text-label-text-tracking: normal;
+  --mat-button-text-label-text-transform: none;
+  --mat-button-text-state-layer-color: var(--text-primary);
+  --mat-button-text-ripple-color: color-mix(in srgb, var(--text-primary) 12%, transparent);
+  --mat-button-text-disabled-label-text-color: var(--text-tertiary);
+  --mat-button-text-icon-spacing: 8px;
+}
+
+/* Filled buttons share the raised buttons' soft primary shadow */
+.mat-mdc-unelevated-button:not(:disabled):not(.mat-mdc-button-disabled) {
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 28%, transparent);
+}
+.mat-mdc-unelevated-button:not(:disabled):not(.mat-mdc-button-disabled):hover {
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
+}
+
+/* color="primary" on text / outlined buttons: primary label */
+.mat-mdc-button.mat-primary {
+  --mat-button-text-label-text-color: var(--primary);
+  --mat-button-text-state-layer-color: var(--primary);
+}
+.mat-mdc-outlined-button.mat-primary {
+  --mat-button-outlined-label-text-color: var(--primary);
+  --mat-button-outlined-outline-color: color-mix(in srgb, var(--primary) 45%, transparent);
+  --mat-button-outlined-state-layer-color: var(--primary);
+}
+
+/* color="warn": destructive actions */
+.mat-mdc-unelevated-button.mat-warn,
+.mat-mdc-raised-button.mat-warn {
+  --mat-button-filled-container-color: #dc2626;
+  --mat-button-protected-container-color: #dc2626;
+  --mat-button-protected-container-elevation-shadow: 0 2px 8px rgba(220, 38, 38, 0.28);
+  --mat-button-protected-hover-container-elevation-shadow: 0 4px 14px rgba(220, 38, 38, 0.34);
+}
+.mat-mdc-unelevated-button.mat-warn:not(:disabled):not(.mat-mdc-button-disabled) {
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.28);
+}
+.mat-mdc-button.mat-warn {
+  --mat-button-text-label-text-color: #dc2626;
+  --mat-button-text-state-layer-color: #dc2626;
+}
+.mat-mdc-outlined-button.mat-warn {
+  --mat-button-outlined-label-text-color: #dc2626;
+  --mat-button-outlined-outline-color: rgba(220, 38, 38, 0.45);
+  --mat-button-outlined-state-layer-color: #dc2626;
+}
+.theme-dark .mat-mdc-button.mat-warn,
+.theme-midnight .mat-mdc-button.mat-warn,
+.theme-dark .mat-mdc-outlined-button.mat-warn,
+.theme-midnight .mat-mdc-outlined-button.mat-warn {
+  --mat-button-text-label-text-color: #f87171;
+  --mat-button-outlined-label-text-color: #f87171;
+}
+
+/* Keyboard focus ring */
+.mat-mdc-button:focus-visible,
+.mat-mdc-unelevated-button:focus-visible,
+.mat-mdc-raised-button:focus-visible,
+.mat-mdc-outlined-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dialog action bars: consistent spacing, buttons never shrink below their label */
+.mat-mdc-dialog-actions {
+  gap: 8px;
+}
+.mat-mdc-dialog-actions .mat-mdc-button-base + .mat-mdc-button-base {
+  margin-inline-start: 0;
 }

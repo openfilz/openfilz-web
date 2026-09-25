@@ -36,12 +36,16 @@ const VELOCITY_WINDOW = 100;
  * any other element out.
  */
 const SELF_HANDLED_CONTROLS =
-  'input, textarea, select, [contenteditable=""], [contenteditable="true"], mat-slider, [data-no-swipe]';
+  'input, textarea, select, canvas, [contenteditable=""], [contenteditable="true"], mat-slider, [data-no-swipe]';
+/** A flick on the tab header must travel this far (px) to switch tabs. */
+const HEADER_FLICK_DISTANCE = 40;
 
 /**
  * Lets the user swipe horizontally to move between the tabs of a `mat-tab-group`,
  * the way native mobile apps do — a must on touch screens, where reaching for a
- * small tab label is far more work than flicking the content sideways.
+ * small tab label is far more work than flicking the content sideways. Works from
+ * the tab content (which follows the finger) and from the tab header (a flick
+ * switches to the neighbouring tab).
  *
  * The tab content follows the finger while dragging and, on release, either snaps
  * back or hands over to Material's own tab transition, so the movement stays
@@ -93,6 +97,9 @@ export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
   private readonly directionality = inject(Directionality, { optional: true });
 
   private wrapper?: HTMLElement;
+  private header?: HTMLElement;
+  /** Start of a gesture on the tab header, or `null` when it is not (or no longer) a candidate. */
+  private headerStart: { x: number; y: number } | null = null;
 
   /** A finger is down and the gesture could still become a swipe. */
   private tracking = false;
@@ -126,6 +133,15 @@ export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    this.header = this.host.nativeElement.querySelector<HTMLElement>(':scope > .mat-mdc-tab-header') ?? undefined;
+    if (this.header) {
+      this.zone.runOutsideAngular(() => {
+        this.header!.addEventListener('touchstart', this.onHeaderTouchStart, { passive: true });
+        this.header!.addEventListener('touchmove', this.onHeaderTouchMove, { passive: true });
+        this.header!.addEventListener('touchend', this.onHeaderTouchEnd);
+      });
+    }
+
     this.wrapper = this.tabGroup._tabBodyWrapper?.nativeElement;
     if (!this.wrapper) {
       return;
@@ -143,11 +159,61 @@ export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.cleanupTimer);
+    this.header?.removeEventListener('touchstart', this.onHeaderTouchStart);
+    this.header?.removeEventListener('touchmove', this.onHeaderTouchMove);
+    this.header?.removeEventListener('touchend', this.onHeaderTouchEnd);
     this.wrapper?.removeEventListener('touchstart', this.onTouchStart);
     this.wrapper?.removeEventListener('touchmove', this.onTouchMove);
     this.wrapper?.removeEventListener('touchend', this.onTouchEnd);
     this.wrapper?.removeEventListener('touchcancel', this.onTouchCancel);
   }
+
+  /* ----- Tab header: a flick switches to the neighbouring tab ----- */
+
+  private readonly onHeaderTouchStart = (event: TouchEvent): void => {
+    this.headerStart = null;
+    if (event.touches.length !== 1 || this.tabCount() < 2) {
+      return;
+    }
+    const touch = event.touches[0];
+    this.headerStart = { x: touch.clientX, y: touch.clientY };
+  };
+
+  private readonly onHeaderTouchMove = (event: TouchEvent): void => {
+    if (!this.headerStart) {
+      return;
+    }
+    if (event.touches.length !== 1) {
+      this.headerStart = null;
+      return;
+    }
+    const touch = event.touches[0];
+    // A mostly vertical move is a page scroll, not a tab swipe.
+    if (Math.abs(touch.clientY - this.headerStart.y) > START_THRESHOLD * 2 &&
+        Math.abs(touch.clientY - this.headerStart.y) > Math.abs(touch.clientX - this.headerStart.x)) {
+      this.headerStart = null;
+    }
+  };
+
+  private readonly onHeaderTouchEnd = (event: TouchEvent): void => {
+    const start = this.headerStart;
+    this.headerStart = null;
+    const touch = event.changedTouches[0];
+    if (!start || !touch) {
+      return;
+    }
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    if (Math.abs(deltaX) < HEADER_FLICK_DISTANCE || Math.abs(deltaX) < Math.abs(deltaY) * DIRECTION_RATIO) {
+      return;
+    }
+    const target = this.targetIndex(deltaX);
+    if (target !== null) {
+      this.zone.run(() => (this.tabGroup.selectedIndex = target));
+    }
+  };
+
+  /* ----- Tab content: the panel follows the finger ----- */
 
   private readonly onTouchStart = (event: TouchEvent): void => {
     this.tracking = false;
@@ -195,6 +261,11 @@ export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
       if (Math.abs(deltaX) < START_THRESHOLD || Math.abs(deltaX) < Math.abs(deltaY) * DIRECTION_RATIO) {
+        return;
+      }
+      // Tabs nested inside this one (appSwipeNav) take the flick while they can go that way.
+      if (this.nestedTabsTake(event.target as HTMLElement | null, deltaX)) {
+        this.tracking = false;
         return;
       }
       // Something under the finger can still scroll sideways — let it.
@@ -395,6 +466,16 @@ export class SwipeTabsDirective implements OnInit, AfterViewInit, OnDestroy {
       return 500;
     }
     return duration.endsWith('s') && !duration.endsWith('ms') ? value * 1000 : value;
+  }
+
+  /** Whether an `appSwipeNav` tab strip inside this tab group can move in the direction of the drag. */
+  private nestedTabsTake(element: HTMLElement | null, deltaX: number): boolean {
+    const nav = element?.closest<HTMLElement>('[data-swipe-nav]');
+    if (!nav || !this.wrapper?.contains(nav)) {
+      return false;
+    }
+    const next = (deltaX < 0) !== this.isRtl();
+    return nav.hasAttribute(next ? 'data-swipe-next' : 'data-swipe-prev');
   }
 
   /**

@@ -10,6 +10,7 @@ import { WorkflowAccessService } from '../../services/workflow-access.service';
 import { MyTasksComponent } from './my-tasks/my-tasks.component';
 import { WorkflowMonitorComponent } from './monitor/workflow-monitor.component';
 import { WorkflowDesignerComponent } from './designer/workflow-designer.component';
+import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 
 /**
  * The Workflows page: three tabs — My tasks, Monitor, Designer (the last one only for users who
@@ -19,7 +20,7 @@ import { WorkflowDesignerComponent } from './designer/workflow-designer.componen
 @Component({
   selector: 'app-workflows',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatTabsModule, TranslatePipe, MyTasksComponent, WorkflowMonitorComponent, WorkflowDesignerComponent],
+  imports: [SwipeTabsDirective, AsyncPipe, MatIconModule, MatTabsModule, TranslatePipe, MyTasksComponent, WorkflowMonitorComponent, WorkflowDesignerComponent],
   templateUrl: './workflows.component.html',
   styleUrls: ['./workflows.component.css']
 })

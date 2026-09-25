@@ -1,0 +1,224 @@
+<div class="refine-bar" role="region" [attr.aria-label]="'searchResults.refine.label' | translate">
+  <!-- Quick filters: one chip per filter, a horizontal scroller on phones -->
+  <div class="refine-chips" role="toolbar" [attr.aria-label]="'searchResults.refine.filters' | translate">
+    <!-- Type -->
+    <button type="button" class="chip" [class.active]="!!filters.type" [matMenuTriggerFor]="typeMenu" aria-haspopup="menu">
+      <mat-icon aria-hidden="true">{{ filters.type === DocumentType.FOLDER ? 'folder' : (filters.type === DocumentType.FILE ? 'draft' : 'category') }}</mat-icon>
+      <span>
+        @if (filters.type === DocumentType.FOLDER) {
+          {{ 'searchFilters.documentTypes.folders' | translate }}
+        } @else if (filters.type === DocumentType.FILE) {
+          {{ 'searchFilters.documentTypes.files' | translate }}
+        } @else {
+          {{ 'common.type' | translate }}
+        }
+      </span>
+      <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+    </button>
+
+    <!-- File type -->
+    @if (filters.type !== DocumentType.FOLDER) {
+      <button type="button" class="chip" [class.active]="hasFileType" [matMenuTriggerFor]="fileTypeMenu" aria-haspopup="menu">
+        @if (activeCategory) {
+          <mat-icon aria-hidden="true" [style.color]="activeCategory.color">{{ activeCategory.icon }}</mat-icon>
+          <span>{{ activeCategory.labelKey | translate }}</span>
+        } @else {
+          <mat-icon aria-hidden="true">description</mat-icon>
+          <span>{{ 'searchFilters.fileType' | translate }}</span>
+        }
+        <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+      </button>
+    }
+
+    <!-- Date modified -->
+    <button type="button" class="chip" [class.active]="hasDate" [matMenuTriggerFor]="dateMenu" aria-haspopup="menu">
+      <mat-icon aria-hidden="true">schedule</mat-icon>
+      <span>{{ hasDate ? (dateLabelKey | translate) : ('common.dateModified' | translate) }}</span>
+      <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+    </button>
+
+    <!-- Owner -->
+    <button type="button" class="chip" [class.active]="hasOwner" [matMenuTriggerFor]="ownerMenu"
+      #ownerTrigger="matMenuTrigger" (menuOpened)="prepareOwnerDraft()" aria-haspopup="menu">
+      <mat-icon aria-hidden="true">person</mat-icon>
+      <span class="chip-text">{{ hasOwner ? filters.owner : ('common.owner' | translate) }}</span>
+      <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+    </button>
+
+    <!-- Document kind (AI insights) -->
+    @if (showKindFilter) {
+      <button type="button" class="chip" [class.active]="!!filters.category" [matMenuTriggerFor]="kindMenu" aria-haspopup="menu">
+        <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+        <span class="chip-text">{{ filters.category ? categoryLabel(filters.category) : ('searchFilters.documentKind' | translate) }}</span>
+        <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+      </button>
+    }
+
+    <!-- Filters only the advanced panel sets: shown as removable chips -->
+    @if (filters.language) {
+      <span class="chip active removable">
+        <mat-icon aria-hidden="true">translate</mat-icon>
+        <span class="chip-text">{{ languageLabel(filters.language) }}</span>
+        <button type="button" class="chip-remove" (click)="clearLanguage()"
+          [attr.aria-label]="('searchFilters.removeFilter' | translate) + ': ' + languageLabel(filters.language)">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </span>
+    }
+    @if (metadataCount > 0) {
+      <span class="chip active removable">
+        <mat-icon aria-hidden="true">sell</mat-icon>
+        <span class="chip-text">{{ 'searchResults.refine.metadataCount' | translate: { count: metadataCount } }}</span>
+        <button type="button" class="chip-remove" (click)="clearMetadata()"
+          [attr.aria-label]="('searchFilters.removeFilter' | translate) + ': ' + ('common.metadata' | translate)">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </span>
+    }
+
+    <ng-content select="[refineChips]"></ng-content>
+
+    <span class="chips-divider" aria-hidden="true"></span>
+
+    <button type="button" class="chip chip-ghost" (click)="openAdvanced.emit()">
+      <mat-icon aria-hidden="true">tune</mat-icon>
+      <span>{{ 'searchResults.refine.allFilters' | translate }}</span>
+      @if (activeCount > 0) {
+        <span class="chip-badge">{{ activeCount }}</span>
+      }
+    </button>
+
+    @if (activeCount > 0) {
+      <button type="button" class="chip chip-link" (click)="clearAll.emit()">
+        {{ 'searchResults.refine.clearAll' | translate }}
+      </button>
+    }
+  </div>
+
+  <!-- Sort + view -->
+  <div class="refine-actions">
+    <button type="button" class="sort-btn" [matMenuTriggerFor]="sortMenu" aria-haspopup="menu"
+      [attr.aria-label]="('toolbar.sortBy' | translate) + ': ' + (activeSort.labelKey | translate)">
+      <mat-icon aria-hidden="true">sort</mat-icon>
+      <span class="sort-label">{{ activeSort.labelKey | translate }}</span>
+      <mat-icon class="chip-caret" aria-hidden="true">expand_more</mat-icon>
+    </button>
+    @if (!isRelevance) {
+      <button type="button" class="icon-btn" (click)="toggleSortOrder()"
+        [matTooltip]="(sortOrder === 'ASC' ? 'toolbar.ascending' : 'toolbar.descending') | translate"
+        [attr.aria-label]="(sortOrder === 'ASC' ? 'toolbar.ascending' : 'toolbar.descending') | translate">
+        <mat-icon aria-hidden="true">{{ sortOrder === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+    }
+    <div class="view-toggle" role="group" [attr.aria-label]="'a11y.viewModeToggle' | translate">
+      <button type="button" [class.active]="viewMode === 'list'" (click)="setView('list')"
+        [matTooltip]="'toolbar.listView' | translate" [attr.aria-label]="'toolbar.listView' | translate"
+        [attr.aria-pressed]="viewMode === 'list'">
+        <mat-icon aria-hidden="true">view_agenda</mat-icon>
+      </button>
+      <button type="button" [class.active]="viewMode === 'grid'" (click)="setView('grid')"
+        [matTooltip]="'toolbar.gridView' | translate" [attr.aria-label]="'toolbar.gridView' | translate"
+        [attr.aria-pressed]="viewMode === 'grid'">
+        <mat-icon aria-hidden="true">grid_view</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Menus ===== -->
+<mat-menu #typeMenu="matMenu" class="refine-menu">
+  <button mat-menu-item (click)="setType(undefined)" [class.active]="!filters.type">
+    <mat-icon aria-hidden="true">apps</mat-icon>
+    <span>{{ 'searchFilters.documentTypes.all' | translate }}</span>
+    @if (!filters.type) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+  </button>
+  <button mat-menu-item (click)="setType(DocumentType.FILE)" [class.active]="filters.type === DocumentType.FILE">
+    <mat-icon aria-hidden="true">draft</mat-icon>
+    <span>{{ 'searchFilters.documentTypes.files' | translate }}</span>
+    @if (filters.type === DocumentType.FILE) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+  </button>
+  <button mat-menu-item (click)="setType(DocumentType.FOLDER)" [class.active]="filters.type === DocumentType.FOLDER">
+    <mat-icon aria-hidden="true">folder</mat-icon>
+    <span>{{ 'searchFilters.documentTypes.folders' | translate }}</span>
+    @if (filters.type === DocumentType.FOLDER) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+  </button>
+</mat-menu>
+
+<mat-menu #fileTypeMenu="matMenu" class="refine-menu">
+  <button mat-menu-item (click)="setFileType(ANY_FILE_TYPE)" [class.active]="!hasFileType">
+    <mat-icon aria-hidden="true">apps</mat-icon>
+    <span>{{ 'searchFilters.fileTypeOptions.any' | translate }}</span>
+    @if (!hasFileType) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+  </button>
+  <mat-divider></mat-divider>
+  @for (cat of fileTypeCategories; track cat.id) {
+    <button mat-menu-item (click)="setFileType(cat.id)" [class.active]="filters.fileType === cat.id">
+      <mat-icon aria-hidden="true" [style.color]="cat.color">{{ cat.icon }}</mat-icon>
+      <span>{{ cat.labelKey | translate }}</span>
+      @if (filters.fileType === cat.id) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+    </button>
+  }
+</mat-menu>
+
+<mat-menu #dateMenu="matMenu" class="refine-menu">
+  @for (option of dateOptions; track option.value) {
+    <button mat-menu-item (click)="setDate(option.value)"
+      [class.active]="(filters.dateModified || 'any') === option.value">
+      <span>{{ option.labelKey | translate }}</span>
+      @if ((filters.dateModified || 'any') === option.value) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+    </button>
+  }
+</mat-menu>
+
+<mat-menu #ownerMenu="matMenu" class="refine-menu owner-menu">
+  <div class="owner-form" (click)="$event.stopPropagation()" (keydown)="stopMenuKeys($event)">
+    <label class="owner-label" for="refine-owner-input">{{ 'common.owner' | translate }}</label>
+    <div class="owner-input-wrap">
+      <mat-icon aria-hidden="true">person_search</mat-icon>
+      <input id="refine-owner-input" type="text" [(ngModel)]="ownerDraft" autocomplete="off"
+        [placeholder]="'searchFilters.ownerPlaceholder' | translate" (keydown.enter)="applyOwner(); ownerTrigger.closeMenu()" />
+    </div>
+    <div class="owner-actions">
+      @if (hasOwner) {
+        <button type="button" class="link-btn" (click)="ownerDraft = ''; applyOwner(); ownerTrigger.closeMenu()">
+          {{ 'common.clear' | translate }}
+        </button>
+      }
+      <button type="button" class="apply-btn" (click)="applyOwner(); ownerTrigger.closeMenu()">
+        {{ 'common.apply' | translate }}
+      </button>
+    </div>
+  </div>
+</mat-menu>
+
+<mat-menu #kindMenu="matMenu" class="refine-menu">
+  <button mat-menu-item (click)="setCategory(undefined)" [class.active]="!filters.category">
+    <span>{{ 'searchFilters.anyKind' | translate }}</span>
+    @if (!filters.category) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+  </button>
+  <mat-divider></mat-divider>
+  @for (category of kindCategories; track category) {
+    <button mat-menu-item (click)="setCategory(category)" [class.active]="filters.category === category">
+      <span>{{ categoryLabel(category) }}</span>
+      @if (filters.category === category) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+    </button>
+  }
+</mat-menu>
+
+<mat-menu #sortMenu="matMenu" class="refine-menu">
+  <div class="menu-section-title">{{ 'toolbar.sortBy' | translate }}</div>
+  @for (option of sortOptions; track option.value) {
+    <button mat-menu-item (click)="selectSort(option)" [class.active]="option.value === sortBy">
+      <mat-icon aria-hidden="true">{{ option.icon }}</mat-icon>
+      <span>{{ option.labelKey | translate }}</span>
+      @if (option.value === sortBy) { <mat-icon class="option-check" aria-hidden="true">check</mat-icon> }
+    </button>
+  }
+  @if (!isRelevance) {
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="toggleSortOrder()">
+      <mat-icon aria-hidden="true">{{ sortOrder === 'ASC' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      <span>{{ (sortOrder === 'ASC' ? 'toolbar.ascending' : 'toolbar.descending') | translate }}</span>
+    </button>
+  }
+</mat-menu>

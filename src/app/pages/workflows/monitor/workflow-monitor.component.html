@@ -1,5 +1,6 @@
 <div class="monitor" [class.has-detail]="!!detail || detailLoading">
-  <div class="main">
+  <div class="main" appSwipeNav (swipeNext)="shiftStatus(1)" (swipePrev)="shiftStatus(-1)"
+    [swipeNavCanNext]="statusIndex < statusTabs.length - 1" [swipeNavCanPrev]="statusIndex > 0">
     <!-- Status filter, with the counts -->
     <div class="top">
       <div class="status-tabs" role="tablist" [attr.aria-label]="'workflow.monitor.status' | translate">

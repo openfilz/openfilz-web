@@ -190,16 +190,15 @@
   text-transform: none;
   border-radius: 10px;
   padding: 0 24px;
-  height: 44px;
+  height: 40px;
   font-size: 14px;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+  background: var(--primary) !important;
   color: white !important;
   box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .close-action-btn:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 

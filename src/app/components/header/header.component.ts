@@ -1,18 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, Output, EventEmitter, inject } from "@angular/core";
+import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, Output, EventEmitter, ViewChild, inject } from "@angular/core";
 import { APP_LANGUAGES, AppLanguage, applyDocumentLanguage, DEFAULT_LANGUAGE, findLanguage } from '../../i18n/languages';
 import { LanguageFlagComponent } from '../../i18n/language-flag.component';
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SearchService } from "../../services/search.service";
-import { debounceTime, distinctUntilChanged, switchMap, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter as rxFilter, switchMap, tap } from "rxjs/operators";
 import { Suggestion, SearchFilters } from "../../models/document.models";
 import { DocumentApiService } from "../../services/document-api.service";
 import { SearchFiltersComponent } from "../search-filters/search-filters.component";
+import { clearRecentSearches, countActiveFilters, highlightTerms, loadRecentSearches, removeRecentSearch, sanitizeSnippet as sanitizeSnippetHtml, saveRecentSearch } from "../../models/search-refine";
+import { isCompactViewport } from "../../utils/layout.util";
 import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +33,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userInitials: string = '';
   currentFilters?: SearchFilters;
   suggestionTimeMs: number = 0;
+
+  // ----- Search box state -----
+  searchFocused = false;
+  /** Suggestions / recent searches panel. */
+  suggestionsOpen = false;
+  /** Phones: the search takes the whole header while it is being used. */
+  searchExpanded = false;
+  /** Keyboard-highlighted option of the panel (-1: none). */
+  activeIndex = -1;
+  recentSearches: string[] = loadRecentSearches();
+
+  @ViewChild('searchInput') private searchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('searchBox') private searchBox?: ElementRef<HTMLElement>;
+  private wasOnSearchPage = false;
+  private subscriptions = new Subscription();
 
   private searchSubject = new Subject<string>();
   private searchSubscription!: Subscription;
@@ -78,6 +95,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.searchService.filters$.subscribe(filters => {
       this.currentFilters = filters;
     });
+
+    // "All filters" on the results page opens this panel. Deferred: the click that asked for it
+    // is still bubbling up to the document listener, which would close it again straight away.
+    this.subscriptions.add(this.searchService.advancedFiltersRequested$.subscribe(() => {
+      setTimeout(() => this.showFilters = true);
+    }));
+
+    // The box mirrors the query of the results page (Back / Forward, links), and empties once
+    // the user leaves the results
+    this.syncQueryWithUrl(this.router.url);
+    this.subscriptions.add(this.router.events.pipe(rxFilter(e => e instanceof NavigationEnd)).subscribe(e => {
+      this.syncQueryWithUrl((e as NavigationEnd).urlAfterRedirects);
+    }));
   }
 
   private initializeLanguage(): void {
@@ -104,6 +134,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    if (this.suggestionsOpen && this.searchBox) {
+      const insideBox = event.composedPath().includes(this.searchBox.nativeElement);
+      if (!insideBox) {
+        this.closeSuggestions();
+      }
+    }
     if (this.showFilters) {
       // composedPath(): a control that re-renders itself on click is detached by now.
       const clickedInside = event.composedPath().includes(this.elementRef.nativeElement);
@@ -113,30 +149,213 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** "/" or Ctrl/Cmd+K anywhere (outside a text field) puts the cursor in the search box. */
+  @HostListener('document:keydown', ['$event'])
+  onGlobalKeydown(event: KeyboardEvent) {
+    const isSlash = event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey;
+    const isCtrlK = (event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k';
+    if (!isSlash && !isCtrlK) {
+      return;
+    }
+    const target = event.target as HTMLElement | null;
+    const typing = !!target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+    if (typing && !isCtrlK) {
+      return;
+    }
+    if (document.querySelector('.cdk-overlay-container .cdk-overlay-pane .mat-mdc-dialog-container')) {
+      return; // a dialog is open: leave its keyboard alone
+    }
+    event.preventDefault();
+    this.focusSearch();
+  }
+
+  focusSearch(): void {
+    this.searchInput?.nativeElement.focus();
+    this.searchInput?.nativeElement.select();
+  }
+
+  /** Items of the panel, in keyboard order. */
+  private get optionCount(): number {
+    if (!this.searchQuery.trim()) {
+      return this.recentSearches.length;
+    }
+    return 1 + this.suggestions.length;
+  }
+
+  get dropdownOpen(): boolean {
+    if (!this.suggestionsOpen || this.showFilters) {
+      return false;
+    }
+    return this.searchQuery.trim() ? true : this.recentSearches.length > 0;
+  }
+
+  get activeOptionId(): string | null {
+    return this.dropdownOpen && this.activeIndex >= 0 ? 'header-search-option-' + this.activeIndex : null;
+  }
+
+  get activeFilterCount(): number {
+    return countActiveFilters(this.currentFilters);
+  }
+
+  onSearchFocus(): void {
+    this.searchFocused = true;
+    this.suggestionsOpen = true;
+    this.activeIndex = -1;
+    this.recentSearches = loadRecentSearches();
+    if (isCompactViewport()) {
+      this.searchExpanded = true;
+    }
+    if (this.searchQuery.trim() && this.suggestions.length === 0) {
+      // A query already in the box (e.g. back on the results page): offer its quick matches
+      this.searchSubject.next(this.searchQuery);
+    }
+  }
+
+  onSearchKeydown(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.suggestionsOpen = true;
+        if (this.optionCount > 0) {
+          this.activeIndex = (this.activeIndex + 1) % this.optionCount;
+        }
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        if (this.optionCount > 0) {
+          this.activeIndex = this.activeIndex <= 0 ? this.optionCount - 1 : this.activeIndex - 1;
+        }
+        break;
+      case 'Enter':
+        event.preventDefault();
+        this.activateOption();
+        break;
+      case 'Escape':
+        if (this.dropdownOpen) {
+          event.preventDefault();
+          event.stopPropagation();
+          this.closeSuggestions();
+        } else {
+          this.collapseSearch();
+        }
+        break;
+      case 'Tab':
+        this.closeSuggestions();
+        break;
+    }
+  }
+
+  /** Enter: the highlighted option, or the full search. */
+  private activateOption(): void {
+    const query = this.searchQuery.trim();
+    if (!query) {
+      const recent = this.recentSearches[this.activeIndex];
+      if (recent) {
+        this.runSearch(recent);
+      }
+      return;
+    }
+    if (this.activeIndex >= 1 && this.suggestions[this.activeIndex - 1]) {
+      this.selectSuggestion(this.suggestions[this.activeIndex - 1]);
+      return;
+    }
+    this.onSearch();
+  }
+
   onSearchInput(): void {
+    this.suggestionsOpen = true;
+    this.activeIndex = -1;
     this.searchSubject.next(this.searchQuery);
   }
 
   clearSearch(): void {
     this.searchQuery = '';
     this.suggestions = [];
+    this.searchSubject.next('');
+    this.activeIndex = -1;
+    this.searchInput?.nativeElement.focus();
   }
 
   onSearch(): void {
-    if (this.searchQuery.trim()) {
-      this.router.navigate(['/search'], { queryParams: { q: this.searchQuery } });
+    this.runSearch(this.searchQuery);
+  }
+
+  runSearch(query: string): void {
+    const value = query.trim();
+    if (!value) {
+      return;
+    }
+    this.searchQuery = value;
+    this.recentSearches = saveRecentSearch(value);
+    this.router.navigate(['/search'], { queryParams: { q: value } });
+    this.suggestions = [];
+    this.closeSuggestions();
+    this.collapseSearch();
+  }
+
+  onRemoveRecent(query: string, event: Event): void {
+    event.stopPropagation();
+    this.recentSearches = removeRecentSearch(query);
+    this.activeIndex = -1;
+  }
+
+  onClearRecent(event: Event): void {
+    event.stopPropagation();
+    clearRecentSearches();
+    this.recentSearches = [];
+  }
+
+  closeSuggestions(): void {
+    this.suggestionsOpen = false;
+    this.activeIndex = -1;
+  }
+
+  /** Phones: back to the normal header. */
+  collapseSearch(): void {
+    this.closeSuggestions();
+    this.searchFocused = false;
+    this.searchExpanded = false;
+    this.searchInput?.nativeElement.blur();
+  }
+
+  @HostListener('focusout', ['$event'])
+  onFocusOut(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    if (this.searchBox && next && this.searchBox.nativeElement.contains(next)) {
+      return;
+    }
+    if (event.target === this.searchInput?.nativeElement) {
+      this.searchFocused = false;
+      if (!isCompactViewport()) {
+        this.searchExpanded = false;
+      }
+    }
+  }
+
+  private syncQueryWithUrl(url: string): void {
+    const onSearchPage = url.startsWith('/search');
+    if (onSearchPage) {
+      this.searchQuery = this.router.parseUrl(url).queryParams['q'] ?? '';
+    } else if (this.wasOnSearchPage) {
+      this.searchQuery = '';
       this.suggestions = [];
     }
+    this.wasOnSearchPage = onSearchPage;
   }
 
   toggleFilters() {
     this.showFilters = !this.showFilters;
+    if (this.showFilters) {
+      this.closeSuggestions();
+    }
+  }
+
+  closeFilters() {
+    this.showFilters = false;
   }
 
   onMobileMenuToggle() {
-    console.log('Header: onMobileMenuToggle called');
     this.mobileMenuToggle.emit();
-    console.log('Header: mobileMenuToggle event emitted');
   }
 
   hasActiveFilters(): boolean {
@@ -153,9 +372,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onFiltersChanged(filters: SearchFilters) {
-    console.log('Filters changed:', filters);
     this.currentFilters = filters;
     this.searchService.updateFilters(filters);
+
+    // A query typed in the box (not yet searched): filters + query = a search
+    const typedQuery = this.searchQuery.trim();
+    if (typedQuery && !this.router.url.startsWith('/search')) {
+      this.recentSearches = saveRecentSearch(typedQuery);
+      this.router.navigate(['/search'], { queryParams: { q: typedQuery } });
+      return;
+    }
 
     // For broad scope searches, navigate to search results page if not already on file-explorer or search
     if (filters.scope === 'ALL' || filters.scope === 'CURRENT_AND_SUBFOLDERS') {
@@ -172,6 +398,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Clear suggestions and search query
     this.suggestions = [];
     this.searchQuery = '';
+    this.collapseSearch();
 
     // ext is undefined/null for folders, string (possibly empty) for files
     const isFolder = suggestion.ext == null;
@@ -193,6 +420,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
+    this.subscriptions.unsubscribe();
   }
 
   getIconForExtension(ext: string | undefined): string {
@@ -254,6 +482,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
 
     this.suggestions = [];
+    this.closeSuggestions();
   }
 
   protected onOpen(suggestion: Suggestion, event: MouseEvent) {
@@ -262,6 +491,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Clear suggestions and search query
     this.suggestions = [];
     this.searchQuery = '';
+    this.collapseSearch();
 
     // ext is undefined/null for folders, string (possibly empty) for files
     const isFolder = suggestion.ext == null;
@@ -296,11 +526,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   sanitizeSnippet(snippet: string): SafeHtml {
-    // Strip everything except <mark> tags, then trust the result
-    const cleaned = this.escapeHtml(snippet)
-      .replace(/&lt;mark&gt;/g, '<mark>')
-      .replace(/&lt;\/mark&gt;/g, '</mark>');
-    return this.sanitizer.bypassSecurityTrustHtml(cleaned);
+    // Everything escaped except the engine's <mark> tags
+    return this.sanitizer.bypassSecurityTrustHtml(sanitizeSnippetHtml(snippet));
   }
 
   getFullName(suggestion: Suggestion): string {
@@ -310,28 +537,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   highlightMatch(suggestion: Suggestion): SafeHtml {
-    const fullName = this.getFullName(suggestion);
-    if (!this.searchQuery || !this.searchQuery.trim()) {
-      return this.sanitizer.bypassSecurityTrustHtml(this.escapeHtml(fullName));
-    }
-
-    const terms = this.searchQuery.trim().split(/\s+/).filter(t => t.length > 0);
-    if (terms.length === 0) {
-      return this.sanitizer.bypassSecurityTrustHtml(this.escapeHtml(fullName));
-    }
-
-    // Build a regex that matches any of the search terms
-    const escapedTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    const regex = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
-
-    const html = this.escapeHtml(fullName).replace(regex, '<mark>$1</mark>');
-    return this.sanitizer.bypassSecurityTrustHtml(html);
-  }
-
-  private escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.appendChild(document.createTextNode(text));
-    return div.innerHTML;
+    // Escaped name, query terms wrapped in <mark>
+    return this.sanitizer.bypassSecurityTrustHtml(highlightTerms(this.getFullName(suggestion), this.searchQuery));
   }
 
   getFileTypeLabel(ext: string | undefined): string {

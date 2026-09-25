@@ -1,47 +1,100 @@
-<div class="header">
+<div class="header" [class.search-expanded]="searchExpanded" [class.overlay-open]="showFilters || dropdownOpen">
     <button class="mobile-menu-button" (click)="onMobileMenuToggle()"
         [attr.aria-label]="'header.toggleMobileMenu' | translate">
         <mat-icon aria-hidden="true">menu</mat-icon>
     </button>
 
+    <!-- Phones: leave the full-screen search -->
+    <button class="search-back-button" (click)="collapseSearch()" [attr.aria-label]="'header.closeSearch' | translate">
+        <mat-icon class="rtl-flip" aria-hidden="true">arrow_back</mat-icon>
+    </button>
+
     <div class="header-left">
-        <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <input type="text" [placeholder]="'header.searchPlaceholder' | translate" [(ngModel)]="searchQuery"
-                (input)="onSearchInput()" (keyup.enter)="onSearch()" [class.has-active-filters]="hasActiveFilters()">
+        <div #searchBox class="search-box" [class.focused]="searchFocused" [class.has-active-filters]="hasActiveFilters()">
+            <mat-icon class="search-icon" aria-hidden="true">search</mat-icon>
+            <input #searchInput type="text" enterkeyhint="search" autocomplete="off" spellcheck="false"
+                [placeholder]="'header.searchPlaceholder' | translate" [(ngModel)]="searchQuery"
+                (input)="onSearchInput()" (focus)="onSearchFocus()" (keydown)="onSearchKeydown($event)"
+                role="combobox" aria-autocomplete="list" aria-controls="header-search-listbox"
+                [attr.aria-expanded]="dropdownOpen" [attr.aria-activedescendant]="activeOptionId"
+                [attr.aria-label]="'header.searchPlaceholder' | translate">
 
             @if (searchQuery) {
             <button class="clear-search-button" (click)="clearSearch()"
                 [attr.aria-label]="'header.clearSearch' | translate">
                 <mat-icon aria-hidden="true">close</mat-icon>
             </button>
+            } @else if (!searchFocused) {
+            <kbd class="shortcut-hint" [matTooltip]="'header.shortcutHint' | translate" aria-hidden="true">/</kbd>
             }
 
             <!-- Filter button for desktop (inside search box) -->
             <button class="filter-button desktop-filter" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
                 [matTooltip]="'header.searchFilters' | translate"
-                [attr.aria-label]="'header.searchFilters' | translate">
+                [attr.aria-label]="'header.searchFilters' | translate" [attr.aria-expanded]="showFilters">
                 <mat-icon aria-hidden="true">tune</mat-icon>
-                @if (hasActiveFilters()) {
-                <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate"></span>
+                @if (activeFilterCount > 0) {
+                <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate">{{ activeFilterCount }}</span>
                 }
             </button>
 
-            <!-- Suggestions Dropdown -->
-            @if (suggestions.length > 0) {
-            <div class="suggestions-dropdown">
+            <!-- Suggestions / recent searches -->
+            @if (dropdownOpen) {
+            <div class="suggestions-dropdown" id="header-search-listbox" role="listbox"
+                [attr.aria-label]="'header.searchSuggestions' | translate">
+                @if (!searchQuery.trim()) {
                 <div class="suggestions-header">
-                    <span>{{ suggestions.length }} {{ 'header.results' | translate }}</span>
-                    @if (suggestionTimeMs > 0) {
-                    <span class="suggestions-timing">{{ 'header.inMs' | translate: { ms: suggestionTimeMs } }}</span>
-                    }
+                    <span>{{ 'header.recentSearches' | translate }}</span>
+                    <button type="button" class="link-button" (click)="onClearRecent($event)">{{ 'header.clearRecent' | translate }}</button>
                 </div>
                 <ul class="suggestions-list">
-                    @for (suggestion of suggestions; track $index) {
-                    <li (click)="selectSuggestion(suggestion)">
+                    @for (recent of recentSearches; track recent; let i = $index) {
+                    <li [id]="'header-search-option-' + i" role="option" [attr.aria-selected]="i === activeIndex"
+                        [class.active]="i === activeIndex" (mousedown)="$event.preventDefault()"
+                        (click)="runSearch(recent)" (mouseenter)="activeIndex = i">
+                        <div class="suggestion-card recent-card">
+                            <div class="suggestion-main">
+                                <mat-icon class="recent-icon" aria-hidden="true">history</mat-icon>
+                                <span class="suggestion-name">{{ recent }}</span>
+                            </div>
+                            <button type="button" class="suggestion-action-btn always" (click)="onRemoveRecent(recent, $event)"
+                                [attr.aria-label]="('header.removeRecent' | translate) + ': ' + recent">
+                                <mat-icon aria-hidden="true">close</mat-icon>
+                            </button>
+                        </div>
+                    </li>
+                    }
+                </ul>
+                }
+                @else {
+                <ul class="suggestions-list">
+                    <!-- Always first: run the full search -->
+                    <li id="header-search-option-0" role="option" [attr.aria-selected]="activeIndex === 0"
+                        [class.active]="activeIndex === 0" (mousedown)="$event.preventDefault()"
+                        (click)="onSearch()" (mouseenter)="activeIndex = 0">
+                        <div class="suggestion-card search-all-card">
+                            <div class="suggestion-main">
+                                <span class="search-all-icon"><mat-icon aria-hidden="true">search</mat-icon></span>
+                                <div class="suggestion-content">
+                                    <span class="suggestion-name">{{ 'header.searchFor' | translate: { query: searchQuery.trim() } }}</span>
+                                    <span class="suggestion-type">{{ 'header.searchForHint' | translate }}</span>
+                                </div>
+                            </div>
+                            <kbd class="enter-hint" aria-hidden="true">↵</kbd>
+                        </div>
+                    </li>
+                    @if (suggestions.length > 0) {
+                    <li class="suggestions-section" role="presentation">
+                        <span>{{ 'header.quickMatches' | translate }}</span>
+                        @if (suggestionTimeMs > 0) {
+                        <span class="suggestions-timing">{{ 'header.inMs' | translate: { ms: suggestionTimeMs } }}</span>
+                        }
+                    </li>
+                    }
+                    @for (suggestion of suggestions; track suggestion.id; let i = $index) {
+                    <li [id]="'header-search-option-' + (i + 1)" role="option" [attr.aria-selected]="activeIndex === i + 1"
+                        [class.active]="activeIndex === i + 1" (mousedown)="$event.preventDefault()"
+                        (click)="selectSuggestion(suggestion)" (mouseenter)="activeIndex = i + 1">
                         <div class="suggestion-card">
                             <div class="suggestion-main">
                                 <i class="suggestion-icon" [ngClass]="getIconForExtension(suggestion.ext)"></i>
@@ -55,24 +108,30 @@
                                 </div>
                             </div>
                             <div class="suggestion-actions">
-                                <button class="suggestion-action-btn" [title]="'common.view' | translate"
-                                    (click)="onOpen(suggestion, $event)">
-                                    <i class="fa-solid fa-eye"></i>
+                                <button type="button" class="suggestion-action-btn" [title]="'common.view' | translate"
+                                    [attr.aria-label]="'common.view' | translate" (click)="onOpen(suggestion, $event)">
+                                    <i class="fa-solid fa-eye" aria-hidden="true"></i>
                                 </button>
-                                <button class="suggestion-action-btn" [title]="'common.download' | translate"
-                                    (click)="onDownload(suggestion, $event)">
-                                    <i class="fa-solid fa-download"></i>
+                                <button type="button" class="suggestion-action-btn" [title]="'common.download' | translate"
+                                    [attr.aria-label]="'common.download' | translate" (click)="onDownload(suggestion, $event)">
+                                    <i class="fa-solid fa-download" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
                     </li>
                     }
                 </ul>
+                }
+                <div class="suggestions-footer" aria-hidden="true">
+                    <span><kbd>↑</kbd><kbd>↓</kbd> {{ 'header.kbdNavigate' | translate }}</span>
+                    <span><kbd>↵</kbd> {{ 'header.kbdOpen' | translate }}</span>
+                    <span><kbd>Esc</kbd> {{ 'header.kbdClose' | translate }}</span>
+                </div>
             </div>
             }
             @if (showFilters) {
             <app-search-filters [initialFilters]="currentFilters" (filtersChanged)="onFiltersChanged($event)"
-                (close)="toggleFilters()">
+                (close)="closeFilters()">
             </app-search-filters>
             }
         </div>
@@ -82,8 +141,8 @@
         <button class="filter-button mobile-filter" [class.active]="showFilters || hasActiveFilters()" (click)="toggleFilters()"
             [attr.aria-label]="'header.searchFilters' | translate">
             <mat-icon aria-hidden="true">tune</mat-icon>
-            @if (hasActiveFilters()) {
-            <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate"></span>
+            @if (activeFilterCount > 0) {
+            <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate">{{ activeFilterCount }}</span>
             }
         </button>
         <!-- Avatar with Menu -->

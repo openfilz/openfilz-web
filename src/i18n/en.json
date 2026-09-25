@@ -77,7 +77,19 @@
     "open": "Open",
     "language": "Language",
     "settings": "Settings",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "closeSearch": "Close search",
+    "shortcutHint": "Press / to search",
+    "searchSuggestions": "Search suggestions",
+    "recentSearches": "Recent searches",
+    "clearRecent": "Clear",
+    "removeRecent": "Remove from recent searches",
+    "searchFor": "Search for “{{query}}”",
+    "searchForHint": "Names and content of all your documents",
+    "quickMatches": "Quick matches",
+    "kbdNavigate": "navigate",
+    "kbdOpen": "open",
+    "kbdClose": "close"
   },
   "breadcrumb": {
     "navigation": "Breadcrumb",
@@ -208,7 +220,40 @@
     "loading": "Loading search results",
     "filterResultsTitle": "Filter results",
     "filtering": "Filtering...",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "resultsFor": "Results for",
+    "allFilesTitle": "All files",
+    "folderAndSubfoldersTitle": "This folder and its subfolders",
+    "backToFolder": "Back to folder",
+    "inSeconds": "in {{seconds}} s",
+    "errorTitle": "The search could not be completed",
+    "errorMessage": "Check your connection and try again.",
+    "startTitle": "Search your documents",
+    "startMessage": "Type a word from a file name or its content in the search box above.",
+    "noResultsFor": "No results for “{{query}}”",
+    "noResultsWithFilters": "No document matches both the search and the active filters.",
+    "tips": {
+      "spelling": "Check the spelling of your keywords",
+      "fewerWords": "Try fewer or more general words",
+      "partial": "Search for the beginning of a word, e.g. “contr” for “contract”"
+    },
+    "loadingMore": "Loading more results…",
+    "loadMore": "Load more results",
+    "endOfResults": "End of results",
+    "showInFolder": "Show in folder",
+    "modifiedAgo": "Modified {{when}}",
+    "modifiedOn": "Modified on {{date}}",
+    "sort": {
+      "relevance": "Best match"
+    },
+    "refine": {
+      "label": "Refine the results",
+      "filters": "Quick filters",
+      "allFilters": "All filters",
+      "clearAll": "Clear all",
+      "metadataCount": "Metadata ({{count}})"
+    },
+    "select": "Select"
   },
   "searchFilters": {
     "title": "Search Filters",
@@ -252,7 +297,8 @@
     "anyLanguage": "Any language",
     "facetsWholeLibrary": "Kind and language search the whole library.",
     "activeFacets": "Active document filters",
-    "removeFilter": "Remove filter"
+    "removeFilter": "Remove filter",
+    "reset": "Reset"
   },
   "metadataPanel": {
     "title": "Properties",

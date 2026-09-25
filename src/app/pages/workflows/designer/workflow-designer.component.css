@@ -14,7 +14,7 @@
   --mat-button-protected-hover-container-elevation-shadow: none;
   --mat-button-protected-pressed-container-elevation-shadow: none;
   color: #fff;
-  border-radius: 12px; height: 44px; padding: 0 18px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: .01em;
+  border-radius: 12px; height: 40px; padding: 0 18px 0 8px; font-size: 14px; font-weight: 700; letter-spacing: .01em;
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 30%, transparent);
   transition: box-shadow .15s ease, filter .15s ease;
 }

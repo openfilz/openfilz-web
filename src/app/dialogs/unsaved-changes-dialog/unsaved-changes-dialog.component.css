@@ -111,13 +111,13 @@
   text-transform: none;
   border-radius: 10px;
   padding: 0 20px;
-  height: 44px;
+  height: 40px;
   font-size: 14px;
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cancel-btn {
-  border: 2px solid var(--border-color, #e5e7eb) !important;
+  border: 1px solid var(--border-color, #e5e7eb) !important;
   color: var(--text-primary, #1f2937);
   background-color: var(--bg-primary, #ffffff);
 }
@@ -125,11 +125,10 @@
 .cancel-btn:hover {
   background-color: var(--bg-tertiary, #f3f4f6);
   border-color: var(--text-secondary, #6b7280) !important;
-  transform: translateY(-1px);
 }
 
 .discard-btn {
-  border: 2px solid rgba(239, 68, 68, 0.4) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
   color: #dc2626;
   background-color: var(--bg-primary, #ffffff);
 }
@@ -137,17 +136,15 @@
 .discard-btn:hover {
   background-color: rgba(239, 68, 68, 0.08);
   border-color: #ef4444 !important;
-  transform: translateY(-1px);
 }
 
 .confirm-btn.warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  background: #f59e0b !important;
   color: white !important;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
 }
 
 .confirm-btn.warning:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
 }
 
