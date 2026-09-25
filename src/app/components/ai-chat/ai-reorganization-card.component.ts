@@ -168,8 +168,10 @@ interface TargetGroup {
       display: flex; align-items: center; gap: 8px; padding: 12px 14px;
     }
     .plan-error { color: #991b1b; }
+    /* Wraps: in the narrow chat panel the status chip drops under the title instead of
+       squeezing the title block to nothing (the title then overflowed under the chip). */
     .plan-header {
-      display: flex; align-items: flex-start; gap: 10px;
+      display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px 10px;
       padding: 12px 14px 8px 14px;
     }
     .plan-icon {
@@ -180,18 +182,18 @@ interface TargetGroup {
       font-size: 20px; width: 20px; height: 20px;
       flex-shrink: 0;
     }
-    .plan-title-block { flex: 1; min-width: 0; }
-    .plan-title { font-weight: 600; font-size: 14px; }
+    .plan-title-block { flex: 1 1 180px; min-width: 0; }
+    .plan-title { font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
     .plan-subtitle {
       display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
       color: var(--text-secondary, #64748b); font-size: 12px; margin-top: 2px;
     }
     .plan-root {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: min(220px, 100%);
     }
     .status-chip {
-      flex-shrink: 0;
+      max-width: 100%; margin-inline-start: auto; box-sizing: border-box;
       font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;
       padding: 3px 8px; border-radius: 999px;
       background: var(--bg-tertiary, #f1f5f9); color: var(--text-secondary, #64748b);
