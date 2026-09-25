@@ -27,7 +27,7 @@ import {
   SignatureTemplateDTO
 } from '../../models/signature.models';
 import {
-  clampBox, cssToPdf, defaultFieldSize, MIN_FIELD_SIZE, pdfToPercentStyle
+  clampBox, cssToPdf, defaultFieldSize, dragAutoScrollStep, intersectRects, MIN_FIELD_SIZE, pdfToPercentStyle
 } from '../../utils/signature-geometry';
 import {
   buildCreateRequest, buildTemplateRequest, EnvelopeDraft, EnvelopeProblem, newRecipient, nextLocalId,
@@ -398,7 +398,7 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
     if (d.mode === 'place') {
       this.ghostX = event.clientX;
       this.ghostY = event.clientY;
-      this.autoScrollNearEdges(event.clientY);
+      this.autoScrollNearEdges(event.clientX, event.clientY, d.startClientY);
       return;
     }
     const rect = this.pageRect();
@@ -522,14 +522,20 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
     return this.recipients[this.activeRecipient];
   }
 
-  /** Auto-scroll the dialog body when dragging near its top/bottom edge (stacked mobile layout). */
-  private autoScrollNearEdges(clientY: number): void {
+  /**
+   * Auto-scroll the dialog body while placing a field, so a page below the fold (stacked
+   * mobile layout) can be reached — but never while the pointer is over the visible page:
+   * see {@link dragAutoScrollStep}.
+   */
+  private autoScrollNearEdges(clientX: number, clientY: number, startY: number): void {
     const sc = this.dialogContent?.nativeElement;
     if (!sc) return;
-    const rect = sc.getBoundingClientRect();
-    const edge = 56;
-    if (clientY > rect.bottom - edge) sc.scrollTop += 14;
-    else if (clientY < rect.top + edge) sc.scrollTop -= 14;
+    const scroller = sc.getBoundingClientRect();
+    const page = this.pdfCanvas?.nativeElement.getBoundingClientRect();
+    const stage = this.pdfStage?.nativeElement.getBoundingClientRect();
+    const visiblePage = page && stage ? intersectRects(page, stage, scroller) : null;
+    const step = dragAutoScrollStep({ x: clientX, y: clientY }, startY, scroller, visiblePage);
+    if (step) sc.scrollTop += step;
   }
 
   // ── Validation + submit ─────────────────────────────────────────────────
