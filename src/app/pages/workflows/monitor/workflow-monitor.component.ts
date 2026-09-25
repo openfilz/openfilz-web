@@ -21,6 +21,7 @@ import {
 import { WorkflowDiagramComponent } from '../../../components/workflow-diagram/workflow-diagram.component';
 import { ConfirmDialogComponent } from '../../../dialogs/confirm-dialog/confirm-dialog.component';
 import { WorkflowReviewProgressComponent } from '../../../components/workflow-review-progress/workflow-review-progress.component';
+import { SwipeNavDirective } from '../../../directives/swipe-nav.directive';
 
 /**
  * "Monitor": status tabs with their counts (they are the status filter), the workflow / "mine"
@@ -33,7 +34,7 @@ import { WorkflowReviewProgressComponent } from '../../../components/workflow-re
   standalone: true,
   imports: [LocalDatePipe, FormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatPaginatorModule, MatProgressSpinnerModule,
     MatSelectModule, MatSlideToggleModule, MatTooltipModule, TranslatePipe, WorkflowDiagramComponent,
-    WorkflowReviewProgressComponent],
+    WorkflowReviewProgressComponent, SwipeNavDirective],
   templateUrl: './workflow-monitor.component.html',
   styleUrls: ['./workflow-monitor.component.css']
 })
@@ -89,6 +90,18 @@ export class WorkflowMonitorComponent implements OnInit, OnChanges {
       next: p => { this.items = p.items; this.total = p.total; this.loading = false; },
       error: err => { this.loading = false; this.toastError(err, 'workflow.errors.generic'); }
     });
+  }
+
+  get statusIndex(): number {
+    return this.statusTabs.findIndex(t => t.value === this.filterStatus);
+  }
+
+  /** Swipe on phones: the next / previous status tab. */
+  shiftStatus(step: number): void {
+    const index = this.statusIndex + step;
+    if (index >= 0 && index < this.statusTabs.length) {
+      this.setStatus(this.statusTabs[index].value);
+    }
   }
 
   setStatus(status: WorkflowInstanceStatus | null): void {

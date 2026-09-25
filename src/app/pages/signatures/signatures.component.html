@@ -7,7 +7,7 @@
 
     <app-seal-notice></app-seal-notice>
 
-    <mat-tab-group animationDuration="150ms" [(selectedIndex)]="selectedTab">
+    <mat-tab-group animationDuration="150ms" appSwipeTabs [swipeTabsLockAxis]="false" [(selectedIndex)]="selectedTab">
       <!-- ── Waiting for my signature ─────────────────────────────────── -->
       <mat-tab [label]="'signature.list.toSignTab' | translate">
         @if (loadingToSign) {

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { McpConnection, McpSnippet, buildMcpSnippets } from '../../models/mcp-settings.models';
+import { SwipeNavDirective } from '../../directives/swipe-nav.directive';
 
 /**
  * "Connect your AI tool" cheat sheet: one tab per MCP host, each holding a short snippet
@@ -20,7 +21,7 @@ import { McpConnection, McpSnippet, buildMcpSnippets } from '../../models/mcp-se
   standalone: true,
   templateUrl: './mcp-setup-dialog.component.html',
   styleUrls: ['./mcp-setup-dialog.component.css'],
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, TranslatePipe]
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, TranslatePipe, SwipeNavDirective]
 })
 export class McpSetupDialogComponent {
 
@@ -39,6 +40,7 @@ export class McpSetupDialogComponent {
   }
 
   select(index: number): void {
+    if (index < 0 || index >= this.snippets.length) return;
     this.activeIndex = index;
   }
 

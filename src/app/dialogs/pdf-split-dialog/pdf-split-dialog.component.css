@@ -187,9 +187,9 @@
 
 .cancel-btn, .primary-btn {
   display: flex; align-items: center; font-weight: 600; text-transform: none;
-  border-radius: 10px; padding: 0 20px; height: 44px; font-size: 14px;
+  border-radius: 10px; padding: 0 20px; height: 40px; font-size: 14px;
 }
-.cancel-btn { border: 2px solid var(--border-color) !important; color: var(--text-primary); background-color: var(--bg-primary); }
+.cancel-btn { border: 1px solid var(--border-color) !important; color: var(--text-primary); background-color: var(--bg-primary); }
 .primary-btn { background: var(--primary) !important; color: white !important; box-shadow: 0 2px 8px color-mix(in srgb, var(--primary) 30%, transparent); }
 .primary-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
 .primary-btn mat-spinner { --mdc-circular-progress-active-indicator-color: #fff; }

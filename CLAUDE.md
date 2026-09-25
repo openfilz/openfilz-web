@@ -166,13 +166,26 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 
 ---
 
+## Buttons
+
+- **One button system for the whole app** — `global_styles.css` ("Buttons — one modern style") sets Angular Material's `--mat-button-*` tokens from the theme variables, in every theme. Use plain Material buttons and let it style them; do **not** restyle buttons per component (no gradients, no hover lift, no 2px borders, no 44px heights).
+  - Primary action: `mat-flat-button` (or `mat-raised-button`) — `var(--primary)` fill, white label, soft primary shadow. `color="warn"` for destructive actions.
+  - Secondary: `mat-stroked-button` — 1px `var(--border-color)` outline, `var(--text-primary)` label.
+  - Cancel / tertiary: `mat-button` — quiet `var(--text-secondary)` label, `var(--bg-tertiary)` on hover.
+  - All: 40px high, 10px corners, 14px semibold label, Inter; `gap: 8px` between footer buttons.
+- **One footer per dialog.** A sub-form inside a dialog gets its own single inline action and a close (×) icon — never a second Cancel / Confirm pair that competes with the dialog's footer.
+- Inputs in new dialogs: the `.field` pattern (44px, 10px corners, `var(--border-color)`, primary focus ring) of `search-filters` rather than boxed `mat-form-field appearance="outline"`.
+
+---
+
 ## Custom Directives
 
 - `auth-image.directive` — add Authorization header to image requests
 - `drag-drop.directive` — file drag-drop zone
 - `file-draggable.directive` — make elements draggable
 - `folder-drop-zone.directive` — drop target for folders
-- `swipe-tabs.directive` — `appSwipeTabs` on a `mat-tab-group`: swipe horizontally to move between tabs on touch screens (used by the metadata panel)
+- `swipe-tabs.directive` — `appSwipeTabs` on a `mat-tab-group`: swipe from the tab content (it follows the finger) or flick the tab header to move between tabs on touch screens. **Every `mat-tab-group` must carry it** (use `[swipeTabsLockAxis]="false"` when a tab holds something that pans sideways). Drawing canvases, inputs and `[data-no-swipe]` elements keep their own gestures.
+- `swipe-nav.directive` — `appSwipeNav` for hand-made tab strips (`role="tablist"` buttons + content): put it on the element holding both and handle `(swipeNext)` / `(swipePrev)`. Nested in an `appSwipeTabs` group, it wins while `[swipeNavCanNext]` / `[swipeNavCanPrev]` are true and hands the flick to the outer tabs at its ends (see the workflow monitor status tabs).
 
 ---
 

@@ -46,8 +46,8 @@
   padding: 14px 24px; padding-bottom: calc(14px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--border-light); background: var(--bg-primary);
 }
-.cancel-btn { border: 2px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 44px; }
-.primary-btn { background: var(--primary); color: #fff; border-radius: 10px; height: 44px; }
+.cancel-btn { border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; height: 40px; }
+.primary-btn { background: var(--primary); color: #fff; border-radius: 10px; height: 40px; }
 .primary-btn[disabled] { opacity: .55; }
 .primary-btn mat-icon { margin-right: 6px; }
 .btn-spinner { display: inline-block; margin-right: 8px; --mdc-circular-progress-active-indicator-color: #fff; }

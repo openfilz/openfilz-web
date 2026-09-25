@@ -22,6 +22,7 @@ import { TemplateNameDialogComponent } from '../../dialogs/request-signature-dia
 import { UseTemplateDialogComponent, UseTemplateDialogData } from '../../dialogs/use-template-dialog/use-template-dialog.component';
 import { recipientColor } from '../../utils/signature-envelope';
 import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
+import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 
 /**
  * e-Sign hub: envelopes waiting for my signature, envelopes I sent (status chips as the filter,
@@ -33,7 +34,7 @@ import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.co
   standalone: true,
   templateUrl: './signatures.component.html',
   styleUrls: ['./signatures.component.css'],
-  imports: [
+  imports: [SwipeTabsDirective, 
     LocalDatePipe, CommonModule, MatTabsModule, MatButtonModule, MatIconModule, MatDialogModule,
     MatProgressSpinnerModule, MatSnackBarModule, MatTooltipModule, MatMenuModule, TranslatePipe,
     SealNoticeComponent

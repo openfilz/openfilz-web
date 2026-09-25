@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SignatureFieldType } from '../../models/signature.models';
+import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 
 export interface SignaturePadDialogData {
   /** SIGNATURE / INITIALS offer draw + type + upload; IMAGE / STAMP offer upload only. */
@@ -42,7 +43,7 @@ export const MAX_UPLOAD_WIDTH = 600;
   standalone: true,
   templateUrl: './signature-pad-dialog.component.html',
   styleUrls: ['./signature-pad-dialog.component.css'],
-  imports: [
+  imports: [SwipeTabsDirective, 
     CommonModule, FormsModule, MatDialogModule, MatButtonModule, MatCheckboxModule, MatFormFieldModule,
     MatIconModule, MatInputModule, MatTabsModule, TranslatePipe
   ]
