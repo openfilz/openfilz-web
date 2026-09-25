@@ -521,6 +521,55 @@
   "settings": {
     "hello": "مرحباً {{name}}",
     "managePreferences": "إدارة تفضيلاتك وإعدادات التطبيق",
+    "searchPlaceholder": "ابحث في الإعدادات…",
+    "noMatch": "لا يوجد إعداد يطابق «{{query}}»",
+    "nav": {
+      "overview": "نظرة سريعة",
+      "storage": "التخزين",
+      "appearance": "المظهر",
+      "ai": "الذكاء الاصطناعي",
+      "integrations": "التطبيقات المتصلة",
+      "signatures": "التوقيعات",
+      "privacy": "الخصوصية"
+    },
+    "navDesc": {
+      "overview": "كل شيء في مكان واحد",
+      "storage": "مساحتك وحدود الرفع",
+      "appearance": "السمة والألوان",
+      "ai": "المساعد، الأرشفة الذكية، الصيانة",
+      "integrations": "وكلاء الذكاء الاصطناعي وتطبيق سطح المكتب",
+      "signatures": "توقيعات إلكترونية موثوقة",
+      "privacy": "ما يمكن للمسؤولين رؤيته"
+    },
+    "keywords": {
+      "overview": "ملخص رئيسية",
+      "storage": "حصة مساحة قرص حجم حد رفع ملف سلة المحذوفات استخدام ممتلئ",
+      "appearance": "سمة داكن فاتح لون مظهر عرض",
+      "ai": "مساعد دردشة نموذج مفتاح byok openai claude gemini أرشفة",
+      "integrations": "mcp وكيل claude cursor n8n سطح المكتب windows مزامنة مستكشف",
+      "signatures": "توقيع وقع سحابة شهادة ختم aatl",
+      "privacy": "webhook مراقبة مسؤول نشاط موافقة"
+    },
+    "overview": {
+      "title": "نظرة سريعة"
+    },
+    "storage": {
+      "yourStorage": "مساحة التخزين الخاصة بك",
+      "usedOf": "{{used}} من {{limit}}",
+      "usedUnlimited": "{{used}} · بلا حد",
+      "ofLimit": "من {{limit}}",
+      "noLimit": "بلا حد",
+      "percent": "{{pct}}٪ مستخدمة",
+      "binHint": "الملفات في سلة المحذوفات لا تُحتسب ضمن مساحتك.",
+      "binCleanup": "تُفرَّغ سلة المحذوفات تلقائيًا بعد {{days}} يومًا.",
+      "nearLimit": "أنت تقترب من حدك: حرّر بعض المساحة أو اطلب المزيد من المسؤول.",
+      "full": "مساحة التخزين ممتلئة: تُرفض عمليات الرفع الجديدة حتى تحرّر مساحة."
+    },
+    "status": {
+      "signaturesLeft": "تبقّى {{count}} توقيعًا هذا الشهر",
+      "monitoringAllowed": "مراقبة المسؤول مسموحة",
+      "monitoringOptedOut": "مخفي عن مراقبة المسؤول"
+    },
     "quotas": {
       "title": "حصص التخزين",
       "fileQuota": "حد رفع الملف",

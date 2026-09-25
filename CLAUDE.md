@@ -308,6 +308,19 @@ as e-Sign / PDF tools so the enterprise fork only mirrors the descriptor + route
 - i18n block `workflow.*` + `sidebar.workflows` + `toolbar.startWorkflow` in all 8 locales. Design doc:
   `openfilz-core/docs/workflows.md`.
 
+## Settings page (`pages/settings/`)
+
+A small settings app, not a long scroll: a profile hero (initials avatar, e-mail, **"Search settings…"** box that filters
+the navigation by translated title / description / `settings.keywords.*`, Enter opens the first match), a category
+navigation (sticky side list ≥ 960 px, sticky scrollable chip bar below, `appSwipeNav` on the pane to swipe between
+categories, arrow keys in the list) and **one category at a time**, deep-linkable with `?section=` (`overview` default,
+`storage`, `appearance`, `ai`, `integrations`, `signatures`; EE adds `privacy`). "At a glance" = one tile per category
+with its live status (`status(id)`: storage used/limit + meter, theme swatches, signatures left…). A category only
+appears when the deployment has content for it (`isVisible`). New settings go into an existing category's pane as a
+`.card` (title with icon + `.card-desc`); a new category = one entry in `allSections` + `isVisible` + a `@case` +
+`settings.nav/navDesc/keywords.<id>` in all 8 locales. The CE "Discover Enterprise" card lives at the bottom of the nav.
+Styles use theme variables only; the CSS is identical in openfilz-web and openfilz-web-ee.
+
 ## Storage quotas (what the user sees)
 
 Backend: openfilz-core `StorageQuotaService` (core `CLAUDE.md` → Quota Management). The user's effective limit is their

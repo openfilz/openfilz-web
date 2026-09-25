@@ -521,6 +521,55 @@
   "settings": {
     "hello": "Hallo {{name}}",
     "managePreferences": "Beheer uw voorkeuren en applicatie-instellingen",
+    "searchPlaceholder": "Instellingen zoeken…",
+    "noMatch": "Geen instelling komt overeen met ‘{{query}}’",
+    "nav": {
+      "overview": "In één oogopslag",
+      "storage": "Opslag",
+      "appearance": "Weergave",
+      "ai": "AI",
+      "integrations": "Gekoppelde apps",
+      "signatures": "Handtekeningen",
+      "privacy": "Privacy"
+    },
+    "navDesc": {
+      "overview": "Alles op één plek",
+      "storage": "Uw ruimte en uploadlimieten",
+      "appearance": "Thema en kleuren",
+      "ai": "Assistent, slim archiveren, onderhoud",
+      "integrations": "AI-agents en de desktop-app",
+      "signatures": "Betrouwbare elektronische handtekeningen",
+      "privacy": "Wat beheerders kunnen zien"
+    },
+    "keywords": {
+      "overview": "overzicht start",
+      "storage": "quotum ruimte schijf grootte limiet upload bestand prullenbak gebruik vol",
+      "appearance": "thema donker licht kleur uiterlijk weergave",
+      "ai": "assistent chat model sleutel byok openai claude gemini archiveren",
+      "integrations": "mcp agent claude cursor n8n desktop windows synchronisatie verkenner",
+      "signatures": "handtekening ondertekenen cloud certificaat zegel aatl",
+      "privacy": "webhook monitoring beheerder activiteit toestemming"
+    },
+    "overview": {
+      "title": "In één oogopslag"
+    },
+    "storage": {
+      "yourStorage": "Uw opslag",
+      "usedOf": "{{used}} van {{limit}}",
+      "usedUnlimited": "{{used}} · geen limiet",
+      "ofLimit": "van {{limit}}",
+      "noLimit": "geen limiet",
+      "percent": "{{pct}} % gebruikt",
+      "binHint": "Bestanden in de prullenbak tellen niet mee voor uw opslag.",
+      "binCleanup": "De prullenbak wordt na {{days}} dagen automatisch geleegd.",
+      "nearLimit": "U nadert uw limiet: maak ruimte vrij of vraag uw beheerder om meer.",
+      "full": "Uw opslag is vol: nieuwe uploads worden geweigerd tot u ruimte vrijmaakt."
+    },
+    "status": {
+      "signaturesLeft": "Nog {{count}} handtekeningen deze maand",
+      "monitoringAllowed": "Beheerdersmonitoring toegestaan",
+      "monitoringOptedOut": "Verborgen voor beheerdersmonitoring"
+    },
     "quotas": {
       "title": "Opslagquota",
       "fileQuota": "Bestandsuploadlimiet",

@@ -521,6 +521,55 @@
   "settings": {
     "hello": "Olá {{name}}",
     "managePreferences": "Gerencie suas preferências e configurações do aplicativo",
+    "searchPlaceholder": "Procurar uma definição…",
+    "noMatch": "Nenhuma definição corresponde a «{{query}}»",
+    "nav": {
+      "overview": "Num relance",
+      "storage": "Armazenamento",
+      "appearance": "Aparência",
+      "ai": "IA",
+      "integrations": "Aplicações ligadas",
+      "signatures": "Assinaturas",
+      "privacy": "Privacidade"
+    },
+    "navDesc": {
+      "overview": "Tudo num só lugar",
+      "storage": "O seu espaço e limites de carregamento",
+      "appearance": "Tema e cores",
+      "ai": "Assistente, arquivo inteligente, manutenção",
+      "integrations": "Agentes de IA e aplicação de ambiente de trabalho",
+      "signatures": "Assinaturas eletrónicas de confiança",
+      "privacy": "O que os administradores podem ver"
+    },
+    "keywords": {
+      "overview": "resumo início",
+      "storage": "quota espaço disco tamanho limite carregamento ficheiro reciclagem uso cheio",
+      "appearance": "tema escuro claro cor aspeto ecrã",
+      "ai": "assistente chat modelo chave byok openai claude gemini arquivo",
+      "integrations": "mcp agente claude cursor n8n desktop windows sincronização explorador",
+      "signatures": "assinatura assinar nuvem certificado selo aatl",
+      "privacy": "webhook monitorização admin atividade consentimento"
+    },
+    "overview": {
+      "title": "Num relance"
+    },
+    "storage": {
+      "yourStorage": "O seu armazenamento",
+      "usedOf": "{{used}} de {{limit}}",
+      "usedUnlimited": "{{used}} · sem limite",
+      "ofLimit": "de {{limit}}",
+      "noLimit": "sem limite",
+      "percent": "{{pct}} % usado",
+      "binHint": "Os ficheiros na reciclagem não contam para o seu armazenamento.",
+      "binCleanup": "A reciclagem é esvaziada automaticamente após {{days}} dias.",
+      "nearLimit": "Está perto do seu limite: liberte espaço ou peça mais ao seu administrador.",
+      "full": "O seu armazenamento está cheio: novos carregamentos são recusados até libertar espaço."
+    },
+    "status": {
+      "signaturesLeft": "{{count}} assinaturas restantes este mês",
+      "monitoringAllowed": "Monitorização admin permitida",
+      "monitoringOptedOut": "Oculto da monitorização admin"
+    },
     "quotas": {
       "title": "Cotas de armazenamento",
       "fileQuota": "Limite de upload de arquivo",
