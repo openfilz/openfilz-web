@@ -526,7 +526,14 @@
       "fileQuota": "حد رفع الملف",
       "fileQuotaDescription": "الحجم الأقصى لكل ملف مرفوع",
       "userQuota": "حد التخزين الكلي",
-      "userQuotaDescription": "الحد الأقصى للتخزين الكلي لحسابك"
+      "userQuotaDescription": "الحد الأقصى للتخزين الكلي لحسابك",
+      "unlimited": "غير محدود",
+      "used": "{{used}} مستخدمة",
+      "source": {
+        "USER": "حدك الخاص",
+        "GROUP": "حد الفريق {{team}}",
+        "DEFAULT": "الحد الافتراضي"
+      }
     },
     "cloudSigning": {
       "title": "التوقيع السحابي",
@@ -758,6 +765,7 @@
     "storage": "التخزين",
     "ofUsed": "من {{total}} مستخدم",
     "used": "مستخدم",
+    "usedNoLimit": "مستخدمة · بلا حد",
     "documents": "المستندات",
     "images": "الصور",
     "videos": "الفيديوهات",
@@ -868,15 +876,16 @@
     "reselectFile": "أعد اختيار الملف لاستئناف الرفع",
     "fileMismatch": "الملف المحدد لا يطابق الرفع الأصلي (الحجم المتوقع: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "حجم الرفع يتجاوز الحد الأقصى المسموح به أو تم تجاوز حصة الملفات",
-      "quotaExceeded": "تم تجاوز حصة تخزين المستخدم",
+      "fileTooLarge": "يتجاوز هذا الملف الحجم الأقصى المسموح به للرفع",
+      "quotaExceeded": "مساحة التخزين الخاصة بك ممتلئة: احذف بعض الملفات (وأفرغ سلة المحذوفات) أو اطلب مساحة إضافية من المسؤول",
+      "instanceQuotaExceeded": "مساحة تخزين الخادم ممتلئة: تواصل مع المسؤول",
       "parentFolderNotFound": "المجلد الأصل غير موجود",
       "duplicateFilename": "اسم ملف مكرر في المجلد الهدف",
       "missingHeaders": "رؤوس أو اسم ملف مطلوبة مفقودة",
       "uploadNotFound": "الرفع غير موجود",
       "offsetMismatch": "عدم تطابق الإزاحة - استئناف من طلب HEAD",
       "uploadNotComplete": "الرفع غير مكتمل",
-      "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
+      "fileSizeExceedsQuota": "يتجاوز هذا الملف الحجم الأقصى المسموح به للرفع",
       "finalizeFailed": "فشل إنهاء الرفع",
       "replaceFailed": "فشل استبدال الملف الموجود"
     }

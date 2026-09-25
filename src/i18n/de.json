@@ -526,7 +526,14 @@
       "fileQuota": "Datei-Upload-Limit",
       "fileQuotaDescription": "Maximale Größe pro Datei-Upload",
       "userQuota": "Gesamtspeicherlimit",
-      "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto"
+      "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto",
+      "unlimited": "Unbegrenzt",
+      "used": "{{used}} belegt",
+      "source": {
+        "USER": "Ihr eigenes Limit",
+        "GROUP": "Limit des Teams {{team}}",
+        "DEFAULT": "Standardlimit"
+      }
     },
     "cloudSigning": {
       "title": "Cloud-Signatur",
@@ -758,6 +765,7 @@
     "storage": "Speicher",
     "ofUsed": "von {{total}} verwendet",
     "used": "verwendet",
+    "usedNoLimit": "belegt · ohne Limit",
     "documents": "Dokumente",
     "images": "Bilder",
     "videos": "Videos",
@@ -868,15 +876,16 @@
     "reselectFile": "Datei erneut auswählen, um den Upload fortzusetzen",
     "fileMismatch": "Die ausgewählte Datei entspricht nicht dem ursprünglichen Upload (erwartete Größe: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "Upload-Größe überschreitet das Maximum oder Datei-Kontingent erschöpft",
-      "quotaExceeded": "Benutzer-Speicherkontingent überschritten",
+      "fileTooLarge": "Diese Datei überschreitet die maximal zulässige Größe für einen Upload",
+      "quotaExceeded": "Ihr Speicherplatz ist voll: Löschen Sie Dateien (und leeren Sie den Papierkorb) oder bitten Sie Ihren Administrator um mehr Speicher",
+      "instanceQuotaExceeded": "Der Speicher des Servers ist voll: Wenden Sie sich an Ihren Administrator",
       "parentFolderNotFound": "Übergeordneter Ordner nicht gefunden",
       "duplicateFilename": "Doppelter Dateiname im Zielordner",
       "missingHeaders": "Fehlende erforderliche Header oder Dateiname",
       "uploadNotFound": "Upload nicht gefunden",
       "offsetMismatch": "Offset-Abweichung - ab HEAD-Anfrage fortsetzen",
       "uploadNotComplete": "Upload ist nicht abgeschlossen",
-      "fileSizeExceedsQuota": "Dateigröße überschreitet das Kontingent",
+      "fileSizeExceedsQuota": "Diese Datei überschreitet die maximal zulässige Größe für einen Upload",
       "finalizeFailed": "Abschluss des Uploads fehlgeschlagen",
       "replaceFailed": "Vorhandene Datei konnte nicht ersetzt werden"
     }

@@ -1,3 +1,4 @@
+import { MyStorageQuota } from './quota.models';
 import { AutoFileInfo } from './smart-filing.models';
 export enum DocumentType {FILE = "FILE", FOLDER = "FOLDER"}
 
@@ -203,6 +204,8 @@ export interface StorageBreakdown {
   totalStorageUsed: number;
   totalStorageAvailable?: number;
   fileTypeBreakdown: FileTypeStats[];
+  /** The caller's own usage and effective limit (the storage ring). */
+  quota?: MyStorageQuota;
 }
 
 export interface DashboardStatistics {

@@ -526,7 +526,14 @@
       "fileQuota": "Limite de upload de arquivo",
       "fileQuotaDescription": "Tamanho máximo por upload de arquivo",
       "userQuota": "Limite de armazenamento total",
-      "userQuotaDescription": "Armazenamento total máximo para sua conta"
+      "userQuotaDescription": "Armazenamento total máximo para sua conta",
+      "unlimited": "Ilimitado",
+      "used": "{{used}} usados",
+      "source": {
+        "USER": "o seu limite próprio",
+        "GROUP": "limite da equipa {{team}}",
+        "DEFAULT": "limite predefinido"
+      }
     },
     "cloudSigning": {
       "title": "Assinatura em nuvem",
@@ -758,6 +765,7 @@
     "storage": "Armazenamento",
     "ofUsed": "de {{total}} usados",
     "used": "usados",
+    "usedNoLimit": "usados · sem limite",
     "documents": "Documentos",
     "images": "Imagens",
     "videos": "Vídeos",
@@ -868,15 +876,16 @@
     "reselectFile": "Selecione novamente o arquivo para retomar o upload",
     "fileMismatch": "O arquivo selecionado não corresponde ao upload original (tamanho esperado: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "O tamanho do upload excede o máximo permitido ou a cota de arquivos foi excedida",
-      "quotaExceeded": "Cota de armazenamento do usuário excedida",
+      "fileTooLarge": "Este ficheiro excede o tamanho máximo permitido para um carregamento",
+      "quotaExceeded": "O seu espaço de armazenamento está cheio: elimine ficheiros (e esvazie a reciclagem) ou peça mais espaço ao seu administrador",
+      "instanceQuotaExceeded": "O armazenamento do servidor está cheio: contacte o seu administrador",
       "parentFolderNotFound": "Pasta pai não encontrada",
       "duplicateFilename": "Nome de arquivo duplicado na pasta de destino",
       "missingHeaders": "Cabeçalhos necessários ou nome de arquivo ausentes",
       "uploadNotFound": "Upload não encontrado",
       "offsetMismatch": "Deslocamento incorreto - retomar a partir da solicitação HEAD",
       "uploadNotComplete": "O upload não está completo",
-      "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
+      "fileSizeExceedsQuota": "Este ficheiro excede o tamanho máximo permitido para um carregamento",
       "finalizeFailed": "Falha ao finalizar o upload",
       "replaceFailed": "Falha ao substituir o arquivo existente"
     }

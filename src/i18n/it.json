@@ -526,7 +526,14 @@
       "fileQuota": "Limite caricamento file",
       "fileQuotaDescription": "Dimensione massima per caricamento file",
       "userQuota": "Limite archiviazione totale",
-      "userQuotaDescription": "Archiviazione totale massima per il tuo account"
+      "userQuotaDescription": "Archiviazione totale massima per il tuo account",
+      "unlimited": "Illimitato",
+      "used": "{{used}} usati",
+      "source": {
+        "USER": "il tuo limite personale",
+        "GROUP": "limite del team {{team}}",
+        "DEFAULT": "limite predefinito"
+      }
     },
     "cloudSigning": {
       "title": "Firma cloud",
@@ -758,6 +765,7 @@
     "storage": "Archiviazione",
     "ofUsed": "di {{total}} utilizzati",
     "used": "utilizzato",
+    "usedNoLimit": "usati · nessun limite",
     "documents": "Documenti",
     "images": "Immagini",
     "videos": "Video",
@@ -868,15 +876,16 @@
     "reselectFile": "Riseleziona il file per riprendere il caricamento",
     "fileMismatch": "Il file selezionato non corrisponde all'upload originale (dimensione prevista: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "La dimensione del caricamento supera il massimo consentito o la quota file è stata superata",
-      "quotaExceeded": "Quota di archiviazione utente superata",
+      "fileTooLarge": "Questo file supera la dimensione massima consentita per un caricamento",
+      "quotaExceeded": "Il tuo spazio di archiviazione è pieno: elimina dei file (e svuota il cestino) o chiedi più spazio al tuo amministratore",
+      "instanceQuotaExceeded": "Lo spazio del server è pieno: contatta il tuo amministratore",
       "parentFolderNotFound": "Cartella principale non trovata",
       "duplicateFilename": "Nome file duplicato nella cartella di destinazione",
       "missingHeaders": "Intestazioni richieste o nome file mancanti",
       "uploadNotFound": "Caricamento non trovato",
       "offsetMismatch": "Mancata corrispondenza dell'offset - riprendi dalla richiesta HEAD",
       "uploadNotComplete": "Il caricamento non è completo",
-      "fileSizeExceedsQuota": "La dimensione del file supera la quota",
+      "fileSizeExceedsQuota": "Questo file supera la dimensione massima consentita per un caricamento",
       "finalizeFailed": "Impossibile finalizzare il caricamento",
       "replaceFailed": "Impossibile sostituire il file esistente"
     }

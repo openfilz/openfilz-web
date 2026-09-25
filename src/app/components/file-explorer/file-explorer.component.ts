@@ -72,6 +72,7 @@ import { environment } from '../../../environments/environment';
  *  folder id, so a "replace as new" / clean upload knows which folder it belongs to. */
 type FolderConflictItem = BatchConflictItem & { parentId?: string };
 
+import { quotaErrorKey } from '../../utils/quota-errors';
 @Component({
   selector: 'app-file-explorer',
   template: `
@@ -1892,10 +1893,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         error: (error) => {
           if (error.status === 409) {
             this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.duplicateFilename');
-          } else if (error.status === 413) {
-            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.fileTooLarge');
-          } else if (error.status === 507) {
-            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.quotaExceeded');
+          } else if (error.status === 413 || error.status === 507) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, quotaErrorKey(error.status, error.error)!);
           } else {
             this.resumableUploadService.failRegularUpload(progress.uploadId, 'errors.uploadFailed');
           }
@@ -2157,10 +2156,8 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
 
           if (error.status === 409) {
             this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.duplicateFilename');
-          } else if (error.status === 413) {
-            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.fileTooLarge');
-          } else if (error.status === 507) {
-            this.resumableUploadService.failRegularUpload(progress.uploadId, 'upload.errors.quotaExceeded');
+          } else if (error.status === 413 || error.status === 507) {
+            this.resumableUploadService.failRegularUpload(progress.uploadId, quotaErrorKey(error.status, error.error)!);
           } else {
             this.resumableUploadService.failRegularUpload(progress.uploadId, 'errors.uploadFailed');
           }
