@@ -64,6 +64,42 @@ export function dateModifiedThreshold(value: string | undefined, now: Date = new
   }
 }
 
+/**
+ * Content type of common extensions — for hits the search index returns without one (entries
+ * indexed before it stored the content type).
+ */
+const EXTENSION_CONTENT_TYPES: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  odt: 'application/vnd.oasis.opendocument.text',
+  rtf: 'application/rtf',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ods: 'application/vnd.oasis.opendocument.spreadsheet',
+  csv: 'text/csv',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  odp: 'application/vnd.oasis.opendocument.presentation',
+  txt: 'text/plain', md: 'text/markdown', log: 'text/plain', html: 'text/html', htm: 'text/html', css: 'text/css',
+  jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp',
+  svg: 'image/svg+xml', tif: 'image/tiff', tiff: 'image/tiff', heic: 'image/heic',
+  mp4: 'video/mp4', mov: 'video/quicktime', avi: 'video/x-msvideo', webm: 'video/webm', mkv: 'video/x-matroska',
+  mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4', flac: 'audio/flac',
+  zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed',
+  tar: 'application/x-tar', gz: 'application/gzip'
+};
+
+/** The item's content type, or the one its extension implies when the index returned none. */
+export function effectiveContentType(item: { name?: string; contentType?: string }): string | undefined {
+  if (item.contentType) {
+    return item.contentType;
+  }
+  const name = item.name || '';
+  const dot = name.lastIndexOf('.');
+  return dot >= 0 ? EXTENSION_CONTENT_TYPES[name.substring(dot + 1).toLowerCase()] : undefined;
+}
+
 /** Whether a content type matches a file-type category's LIKE patterns (`%` = wildcard). */
 export function contentTypeMatchesCategory(contentType: string | undefined, categoryId: string | undefined): boolean {
   const patterns = getFileTypePatterns(categoryId);
@@ -95,7 +131,7 @@ export function matchesSearchRefinements(item: FileItem, filters: SearchFilters 
     return false;
   }
   if (filters.fileType && filters.fileType !== ANY_FILE_TYPE) {
-    if (item.type === DocumentType.FOLDER || !contentTypeMatchesCategory(item.contentType, filters.fileType)) {
+    if (item.type === DocumentType.FOLDER || !contentTypeMatchesCategory(effectiveContentType(item), filters.fileType)) {
       return false;
     }
   }
