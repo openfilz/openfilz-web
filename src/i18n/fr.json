@@ -526,7 +526,14 @@
       "fileQuota": "Limite de téléversement",
       "fileQuotaDescription": "Taille maximale par fichier téléversé",
       "userQuota": "Limite de stockage total",
-      "userQuotaDescription": "Stockage total maximum pour votre compte"
+      "userQuotaDescription": "Stockage total maximum pour votre compte",
+      "unlimited": "Illimité",
+      "used": "{{used}} utilisés",
+      "source": {
+        "USER": "votre limite personnelle",
+        "GROUP": "limite de l'équipe {{team}}",
+        "DEFAULT": "limite par défaut"
+      }
     },
     "cloudSigning": {
       "title": "Signature Cloud",
@@ -758,6 +765,7 @@
     "storage": "Stockage",
     "ofUsed": "sur {{total}} utilisé",
     "used": "utilisé",
+    "usedNoLimit": "utilisés · sans limite",
     "documents": "Documents",
     "images": "Images",
     "videos": "Vidéos",
@@ -868,15 +876,16 @@
     "reselectFile": "Resélectionner le fichier pour reprendre le téléversement",
     "fileMismatch": "Le fichier sélectionné ne correspond pas au téléversement original (taille attendue : {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "La taille du téléversement dépasse le maximum autorisé ou le quota de fichier est dépassé",
-      "quotaExceeded": "Quota de stockage utilisateur dépassé",
+      "fileTooLarge": "Ce fichier dépasse la taille maximale autorisée pour un envoi",
+      "quotaExceeded": "Votre espace de stockage est plein : supprimez des fichiers (et videz la corbeille) ou demandez plus d'espace à votre administrateur",
+      "instanceQuotaExceeded": "Le stockage du serveur est plein : contactez votre administrateur",
       "parentFolderNotFound": "Dossier parent introuvable",
       "duplicateFilename": "Nom de fichier en double dans le dossier cible",
       "missingHeaders": "En-têtes ou nom de fichier requis manquants",
       "uploadNotFound": "Téléversement introuvable",
       "offsetMismatch": "Décalage incorrect - reprendre à partir de la requête HEAD",
       "uploadNotComplete": "Le téléversement n'est pas terminé",
-      "fileSizeExceedsQuota": "La taille du fichier dépasse le quota",
+      "fileSizeExceedsQuota": "Ce fichier dépasse la taille maximale autorisée pour un envoi",
       "finalizeFailed": "Échec de la finalisation du téléversement",
       "replaceFailed": "Échec du remplacement du fichier existant"
     }

@@ -19,6 +19,7 @@ import { FileIconService } from './file-icon.service';
  * Service for handling TUS (resumable) uploads.
  * Uses tus-js-client for chunked, resumable file uploads.
  */
+import { quotaErrorKey } from '../utils/quota-errors';
 @Injectable({
   providedIn: 'root'
 })
@@ -492,6 +493,7 @@ export class ResumableUploadService {
     const detailedError = error as any;
     const status: number | undefined = detailedError.originalResponse?.getStatus?.();
     const method: string | undefined = detailedError.originalRequest?.getMethod?.();
+    const quotaKey = quotaErrorKey(status, detailedError.originalResponse?.getBody?.());
 
     if (status !== undefined && method) {
       // POST /tus — Create upload errors
@@ -500,13 +502,14 @@ export class ResumableUploadService {
           case 400: return 'upload.errors.missingHeaders';
           case 404: return 'upload.errors.parentFolderNotFound';
           case 409: return 'upload.errors.duplicateFilename';
-          case 413: return 'upload.errors.fileTooLarge';
-          case 507: return 'upload.errors.quotaExceeded';
+          case 413:
+          case 507: return quotaKey!;
         }
       }
       // PATCH /tus/{id} — Upload chunk errors
       if (method === 'PATCH') {
         switch (status) {
+          case 413: return quotaKey!;
           case 404: return 'upload.errors.uploadNotFound';
           case 409: return 'upload.errors.offsetMismatch';
         }
@@ -530,8 +533,8 @@ export class ResumableUploadService {
         case 400: return 'upload.errors.uploadNotComplete';
         case 404: return 'upload.errors.uploadNotFound';
         case 409: return 'upload.errors.duplicateFilename';
-        case 413: return 'upload.errors.fileSizeExceedsQuota';
-        case 507: return 'upload.errors.quotaExceeded';
+        case 413:
+        case 507: return quotaErrorKey(status, error?.error)!;
       }
     }
     return 'upload.errors.finalizeFailed';

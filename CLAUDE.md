@@ -308,6 +308,20 @@ as e-Sign / PDF tools so the enterprise fork only mirrors the descriptor + route
 - i18n block `workflow.*` + `sidebar.workflows` + `toolbar.startWorkflow` in all 8 locales. Design doc:
   `openfilz-core/docs/workflows.md`.
 
+## Storage quotas (what the user sees)
+
+Backend: openfilz-core `StorageQuotaService` (core `CLAUDE.md` → Quota Management). The user's effective limit is their
+own, their team's (EE) or the default; 0 / `null` = unlimited — never render "0 MB".
+- `models/quota.models.ts` (`MyStorageQuota`), `services/quota.service.ts` (`GET /quotas/me`),
+  `utils/quota-errors.ts` (`quotaErrorKey(status, body)`: 413 → `upload.errors.fileTooLarge`, 507 →
+  `upload.errors.quotaExceeded`, or `upload.errors.instanceQuotaExceeded` when the body's `error` is
+  `InstanceQuotaExceeded`; parses tus-js-client's text body too). Every upload path uses it: file explorer (files +
+  folders), `resumable-upload.service` (TUS create / PATCH / finalize), `inbox-upload.service`.
+- Dashboard ring = `stats.storage.quota` (the caller's usage vs effective limit; warn ≥ 80 %, full ≥ 100 %; ∞ icon +
+  `dashboard.usedNoLimit` when unlimited). Settings "Storage Quotas" card = `/quotas/me` (file limit, storage limit,
+  "X used · source"), `settings.quotas.unlimited` / `used` / `source.*`.
+- Same files in openfilz-web and openfilz-web-ee (keep them identical).
+
 ## Text editor on touch devices
 
 Monaco has no drag-to-select with a finger: `PointerEventHandler._onMouseDown` bails out when

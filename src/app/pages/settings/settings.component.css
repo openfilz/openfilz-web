@@ -385,3 +385,9 @@
     width: 100%;
   }
 }
+
+.quota-usage {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}

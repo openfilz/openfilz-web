@@ -36,13 +36,19 @@
     <div class="card-content overview-content">
       <!-- Storage ring + amount (left panel) -->
       <div class="overview-storage">
-        <div class="progress-ring">
+        <div class="progress-ring" [class.warn]="storageLevel === 'warn'" [class.full]="storageLevel === 'full'">
           <svg viewBox="0 0 110 110" width="110" height="110">
             <circle class="progress-ring-circle progress-ring-bg" cx="55" cy="55" r="46"></circle>
             <circle class="progress-ring-circle progress-ring-fill" cx="55" cy="55" r="46"
               [attr.stroke-dasharray]="getCircleDashArray()" [attr.stroke-dashoffset]="getCircleDashOffset()"></circle>
           </svg>
-          <div class="progress-percentage">{{ storagePercentage }}%</div>
+          <div class="progress-percentage">
+            @if (storageTotal > 0) {
+            {{ storagePercentage }}%
+            } @else {
+            <mat-icon class="unlimited-icon" aria-hidden="true">all_inclusive</mat-icon>
+            }
+          </div>
         </div>
         <div class="storage-label">
           <span class="storage-amount">{{ formatFileSize(storageUsed) }}</span>
@@ -50,7 +56,7 @@
             @if (storageTotal > 0) {
             {{ 'dashboard.ofUsed' | translate:{ total: formatFileSize(storageTotal) } }}
             } @else {
-            {{ 'dashboard.used' | translate }}
+            {{ 'dashboard.usedNoLimit' | translate }}
             }
           </span>
         </div>

@@ -526,7 +526,14 @@
       "fileQuota": "Límite de carga de archivo",
       "fileQuotaDescription": "Tamaño máximo por archivo subido",
       "userQuota": "Límite de almacenamiento total",
-      "userQuotaDescription": "Almacenamiento total máximo para su cuenta"
+      "userQuotaDescription": "Almacenamiento total máximo para su cuenta",
+      "unlimited": "Ilimitado",
+      "used": "{{used}} usados",
+      "source": {
+        "USER": "su límite propio",
+        "GROUP": "límite del equipo {{team}}",
+        "DEFAULT": "límite por defecto"
+      }
     },
     "cloudSigning": {
       "title": "Firma en la nube",
@@ -758,6 +765,7 @@
     "storage": "Almacenamiento",
     "ofUsed": "de {{total}} usados",
     "used": "usados",
+    "usedNoLimit": "usados · sin límite",
     "documents": "Documentos",
     "images": "Imágenes",
     "videos": "Vídeos",
@@ -868,15 +876,16 @@
     "reselectFile": "Vuelva a seleccionar el archivo para reanudar la subida",
     "fileMismatch": "El archivo seleccionado no coincide con la subida original (tamaño esperado: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "El tamaño de la subida supera el máximo permitido o se ha excedido la cuota de archivos",
-      "quotaExceeded": "Cuota de almacenamiento de usuario excedida",
+      "fileTooLarge": "Este archivo supera el tamaño máximo permitido para una subida",
+      "quotaExceeded": "Su espacio de almacenamiento está lleno: elimine archivos (y vacíe la papelera) o pida más espacio a su administrador",
+      "instanceQuotaExceeded": "El almacenamiento del servidor está lleno: contacte con su administrador",
       "parentFolderNotFound": "Carpeta principal no encontrada",
       "duplicateFilename": "Nombre de archivo duplicado en la carpeta de destino",
       "missingHeaders": "Faltan encabezados requeridos o nombre de archivo",
       "uploadNotFound": "Subida no encontrada",
       "offsetMismatch": "Desajuste de desplazamiento - reanudar desde solicitud HEAD",
       "uploadNotComplete": "La subida no está completa",
-      "fileSizeExceedsQuota": "El tamaño del archivo excede la cuota",
+      "fileSizeExceedsQuota": "Este archivo supera el tamaño máximo permitido para una subida",
       "finalizeFailed": "Error al finalizar la subida",
       "replaceFailed": "Error al reemplazar el archivo existente"
     }

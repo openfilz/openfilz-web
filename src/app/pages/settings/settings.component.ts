@@ -6,6 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ThemeService, Theme } from '../../services/theme.service';
 import { SettingsService, Settings } from '../../services/settings.service';
+import { QuotaService } from '../../services/quota.service';
+import { MyStorageQuota } from '../../models/quota.models';
+import { formatFileSize } from '../../utils/file-size.util';
 import { SignatureService } from '../../services/signature.service';
 import { CloudSignatureSubscription } from '../../models/signature.models';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
@@ -37,6 +40,10 @@ export class SettingsComponent implements OnInit {
 
   private themeService = inject(ThemeService);
   private settingsService = inject(SettingsService);
+  private quotaService = inject(QuotaService);
+  /** The caller's usage and effective limit (GET /quotas/me); null until loaded or when unavailable. */
+  myQuota: MyStorageQuota | null = null;
+  readonly formatBytes = formatFileSize;
   private aiMaintenance = inject(AiMaintenanceService);
   private signatureService = inject(SignatureService);
   private oidcSecurityService = inject(OidcSecurityService);
@@ -45,6 +52,10 @@ export class SettingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.quotaService.myQuota().subscribe({
+      next: quota => this.myQuota = quota,
+      error: () => this.myQuota = null
+    });
     this.availableThemes = this.themeService.availableThemes;
     this.themeService.currentTheme$.subscribe(theme => {
       this.currentTheme = theme;
@@ -105,7 +116,28 @@ export class SettingsComponent implements OnInit {
   }
 
   get hasQuotaInfo(): boolean {
-    return this.settings !== null && (this.settings.fileQuotaMB !== null || this.settings.userQuotaMB !== null);
+    return this.settings !== null;
+  }
+
+  /** 0 / null = no limit ("Unlimited"), never "0 MB". */
+  private limitLabel(bytes: number | null | undefined): string {
+    return bytes && bytes > 0 ? formatFileSize(bytes) : this.translate.instant('settings.quotas.unlimited');
+  }
+
+  get fileLimitLabel(): string {
+    const fromSettings = this.settings?.fileQuotaMB ? this.settings.fileQuotaMB * 1024 * 1024 : null;
+    return this.limitLabel(this.myQuota ? this.myQuota.maxFileSizeBytes : fromSettings);
+  }
+
+  /** The caller's effective limit (their own, their team's or the default). */
+  get storageLimitLabel(): string {
+    const fromSettings = this.settings?.userQuotaMB ? this.settings.userQuotaMB * 1024 * 1024 : null;
+    return this.limitLabel(this.myQuota ? this.myQuota.limitBytes : fromSettings);
+  }
+
+  get quotaSourceLabel(): string {
+    if (!this.myQuota) return '';
+    return this.translate.instant('settings.quotas.source.' + this.myQuota.source, { team: this.myQuota.sourceName ?? '' });
   }
 
   get showCloudSigning(): boolean {
