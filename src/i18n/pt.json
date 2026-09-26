@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Olá {{name}}",
     "managePreferences": "Gerencie suas preferências e configurações do aplicativo",
+    "searchPlaceholder": "Procurar uma definição…",
+    "noMatch": "Nenhuma definição corresponde a «{{query}}»",
+    "nav": {
+      "overview": "Num relance",
+      "storage": "Armazenamento",
+      "appearance": "Aparência",
+      "ai": "IA",
+      "integrations": "Aplicações ligadas",
+      "signatures": "Assinaturas",
+      "privacy": "Privacidade"
+    },
+    "navDesc": {
+      "overview": "Tudo num só lugar",
+      "storage": "O seu espaço e limites de carregamento",
+      "appearance": "Tema e cores",
+      "ai": "Assistente, arquivo inteligente, manutenção",
+      "integrations": "Agentes de IA e aplicação de ambiente de trabalho",
+      "signatures": "Assinaturas eletrónicas de confiança",
+      "privacy": "O que os administradores podem ver"
+    },
+    "keywords": {
+      "overview": "resumo início",
+      "storage": "quota espaço disco tamanho limite carregamento ficheiro reciclagem uso cheio",
+      "appearance": "tema escuro claro cor aspeto ecrã",
+      "ai": "assistente chat modelo chave byok openai claude gemini arquivo",
+      "integrations": "mcp agente claude cursor n8n desktop windows sincronização explorador",
+      "signatures": "assinatura assinar nuvem certificado selo aatl",
+      "privacy": "webhook monitorização admin atividade consentimento"
+    },
+    "overview": {
+      "title": "Num relance"
+    },
+    "storage": {
+      "yourStorage": "O seu armazenamento",
+      "usedOf": "{{used}} de {{limit}}",
+      "usedUnlimited": "{{used}} · sem limite",
+      "ofLimit": "de {{limit}}",
+      "noLimit": "sem limite",
+      "percent": "{{pct}} % usado",
+      "binHint": "Os ficheiros na reciclagem não contam para o seu armazenamento.",
+      "binCleanup": "A reciclagem é esvaziada automaticamente após {{days}} dias.",
+      "nearLimit": "Está perto do seu limite: liberte espaço ou peça mais ao seu administrador.",
+      "full": "O seu armazenamento está cheio: novos carregamentos são recusados até libertar espaço."
+    },
+    "status": {
+      "signaturesLeft": "{{count}} assinaturas restantes este mês",
+      "monitoringAllowed": "Monitorização admin permitida",
+      "monitoringOptedOut": "Oculto da monitorização admin"
+    },
     "quotas": {
       "title": "Cotas de armazenamento",
       "fileQuota": "Limite de upload de arquivo",
       "fileQuotaDescription": "Tamanho máximo por upload de arquivo",
       "userQuota": "Limite de armazenamento total",
-      "userQuotaDescription": "Armazenamento total máximo para sua conta"
+      "userQuotaDescription": "Armazenamento total máximo para sua conta",
+      "unlimited": "Ilimitado",
+      "used": "{{used}} usados",
+      "source": {
+        "USER": "o seu limite próprio",
+        "GROUP": "limite da equipa {{team}}",
+        "DEFAULT": "limite predefinido"
+      }
     },
     "cloudSigning": {
       "title": "Assinatura em nuvem",
@@ -758,6 +814,7 @@
     "storage": "Armazenamento",
     "ofUsed": "de {{total}} usados",
     "used": "usados",
+    "usedNoLimit": "usados · sem limite",
     "documents": "Documentos",
     "images": "Imagens",
     "videos": "Vídeos",
@@ -868,15 +925,16 @@
     "reselectFile": "Selecione novamente o arquivo para retomar o upload",
     "fileMismatch": "O arquivo selecionado não corresponde ao upload original (tamanho esperado: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "O tamanho do upload excede o máximo permitido ou a cota de arquivos foi excedida",
-      "quotaExceeded": "Cota de armazenamento do usuário excedida",
+      "fileTooLarge": "Este ficheiro excede o tamanho máximo permitido para um carregamento",
+      "quotaExceeded": "O seu espaço de armazenamento está cheio: elimine ficheiros (e esvazie a reciclagem) ou peça mais espaço ao seu administrador",
+      "instanceQuotaExceeded": "O armazenamento do servidor está cheio: contacte o seu administrador",
       "parentFolderNotFound": "Pasta pai não encontrada",
       "duplicateFilename": "Nome de arquivo duplicado na pasta de destino",
       "missingHeaders": "Cabeçalhos necessários ou nome de arquivo ausentes",
       "uploadNotFound": "Upload não encontrado",
       "offsetMismatch": "Deslocamento incorreto - retomar a partir da solicitação HEAD",
       "uploadNotComplete": "O upload não está completo",
-      "fileSizeExceedsQuota": "O tamanho do arquivo excede a cota",
+      "fileSizeExceedsQuota": "Este ficheiro excede o tamanho máximo permitido para um carregamento",
       "finalizeFailed": "Falha ao finalizar o upload",
       "replaceFailed": "Falha ao substituir o arquivo existente"
     }

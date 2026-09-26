@@ -856,3 +856,23 @@
     border: 2px solid currentColor;
   }
 }
+
+/* Storage ring: near (80 %) and over (100 %) the user's limit */
+.progress-ring.warn .progress-ring-fill {
+  stroke: #f59e0b;
+}
+
+.progress-ring.full .progress-ring-fill {
+  stroke: #ef4444;
+}
+
+.progress-ring.full .progress-percentage {
+  color: #ef4444;
+}
+
+.progress-percentage .unlimited-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+}

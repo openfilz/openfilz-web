@@ -106,6 +106,12 @@ export class DashboardComponent implements OnInit {
     return Math.round((this.storageUsed / this.storageTotal) * 100);
   }
 
+  /** Ring colour: warn from 80 %, full from 100 %. */
+  get storageLevel(): 'ok' | 'warn' | 'full' {
+    const pct = this.storagePercentage;
+    return this.storageTotal === 0 || pct < 80 ? 'ok' : pct < 100 ? 'warn' : 'full';
+  }
+
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor() { }
@@ -122,8 +128,11 @@ export class DashboardComponent implements OnInit {
     this.documentApi.getDashboardStatistics().subscribe({
       next: (stats) => {
         // Update storage stats
-        this.storageUsed = stats.storage.totalStorageUsed;
-        this.storageTotal = stats.storage.totalStorageAvailable || 0;
+        // The ring is the caller's own storage against their effective limit (their own, their
+        // team's or the default); no limit = no percentage, "no limit" label.
+        const quota = stats.storage.quota;
+        this.storageUsed = quota ? quota.usedBytes : stats.storage.totalStorageUsed;
+        this.storageTotal = quota ? (quota.limitBytes ?? 0) : (stats.storage.totalStorageAvailable || 0);
 
         // Update storage breakdown
         stats.storage.fileTypeBreakdown.forEach(breakdown => {
@@ -428,7 +437,7 @@ export class DashboardComponent implements OnInit {
   getCircleDashOffset(): number {
     const radius = 46;
     const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (this.storagePercentage / 100) * circumference;
+    const offset = circumference - (Math.min(100, this.storagePercentage) / 100) * circumference;
     return offset;
   }
 }

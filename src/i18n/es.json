@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Hola {{name}}",
     "managePreferences": "Gestione sus preferencias y ajustes de la aplicación",
+    "searchPlaceholder": "Buscar un ajuste…",
+    "noMatch": "Ningún ajuste coincide con «{{query}}»",
+    "nav": {
+      "overview": "De un vistazo",
+      "storage": "Almacenamiento",
+      "appearance": "Apariencia",
+      "ai": "IA",
+      "integrations": "Aplicaciones conectadas",
+      "signatures": "Firmas",
+      "privacy": "Privacidad"
+    },
+    "navDesc": {
+      "overview": "Todo en un solo lugar",
+      "storage": "Su espacio y límites de subida",
+      "appearance": "Tema y colores",
+      "ai": "Asistente, archivado inteligente, mantenimiento",
+      "integrations": "Agentes de IA y aplicación de escritorio",
+      "signatures": "Firmas electrónicas de confianza",
+      "privacy": "Lo que ven los administradores"
+    },
+    "keywords": {
+      "overview": "resumen inicio",
+      "storage": "cuota espacio disco tamaño límite subida archivo papelera uso lleno",
+      "appearance": "tema oscuro claro color aspecto pantalla",
+      "ai": "asistente chat modelo clave byok openai claude gemini archivado",
+      "integrations": "mcp agente claude cursor n8n escritorio windows sincronización explorador",
+      "signatures": "firma firmar nube certificado sello aatl",
+      "privacy": "webhook supervisión admin actividad consentimiento"
+    },
+    "overview": {
+      "title": "De un vistazo"
+    },
+    "storage": {
+      "yourStorage": "Su almacenamiento",
+      "usedOf": "{{used}} de {{limit}}",
+      "usedUnlimited": "{{used}} · sin límite",
+      "ofLimit": "de {{limit}}",
+      "noLimit": "sin límite",
+      "percent": "{{pct}} % usado",
+      "binHint": "Los archivos de la papelera no cuentan en su almacenamiento.",
+      "binCleanup": "La papelera se vacía automáticamente tras {{days}} días.",
+      "nearLimit": "Se acerca a su límite: libere espacio o pida más a su administrador.",
+      "full": "Su almacenamiento está lleno: las nuevas subidas se rechazan hasta que libere espacio."
+    },
+    "status": {
+      "signaturesLeft": "Quedan {{count}} firmas este mes",
+      "monitoringAllowed": "Supervisión admin permitida",
+      "monitoringOptedOut": "Oculto de la supervisión admin"
+    },
     "quotas": {
       "title": "Cuotas de almacenamiento",
       "fileQuota": "Límite de carga de archivo",
       "fileQuotaDescription": "Tamaño máximo por archivo subido",
       "userQuota": "Límite de almacenamiento total",
-      "userQuotaDescription": "Almacenamiento total máximo para su cuenta"
+      "userQuotaDescription": "Almacenamiento total máximo para su cuenta",
+      "unlimited": "Ilimitado",
+      "used": "{{used}} usados",
+      "source": {
+        "USER": "su límite propio",
+        "GROUP": "límite del equipo {{team}}",
+        "DEFAULT": "límite por defecto"
+      }
     },
     "cloudSigning": {
       "title": "Firma en la nube",
@@ -758,6 +814,7 @@
     "storage": "Almacenamiento",
     "ofUsed": "de {{total}} usados",
     "used": "usados",
+    "usedNoLimit": "usados · sin límite",
     "documents": "Documentos",
     "images": "Imágenes",
     "videos": "Vídeos",
@@ -868,15 +925,16 @@
     "reselectFile": "Vuelva a seleccionar el archivo para reanudar la subida",
     "fileMismatch": "El archivo seleccionado no coincide con la subida original (tamaño esperado: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "El tamaño de la subida supera el máximo permitido o se ha excedido la cuota de archivos",
-      "quotaExceeded": "Cuota de almacenamiento de usuario excedida",
+      "fileTooLarge": "Este archivo supera el tamaño máximo permitido para una subida",
+      "quotaExceeded": "Su espacio de almacenamiento está lleno: elimine archivos (y vacíe la papelera) o pida más espacio a su administrador",
+      "instanceQuotaExceeded": "El almacenamiento del servidor está lleno: contacte con su administrador",
       "parentFolderNotFound": "Carpeta principal no encontrada",
       "duplicateFilename": "Nombre de archivo duplicado en la carpeta de destino",
       "missingHeaders": "Faltan encabezados requeridos o nombre de archivo",
       "uploadNotFound": "Subida no encontrada",
       "offsetMismatch": "Desajuste de desplazamiento - reanudar desde solicitud HEAD",
       "uploadNotComplete": "La subida no está completa",
-      "fileSizeExceedsQuota": "El tamaño del archivo excede la cuota",
+      "fileSizeExceedsQuota": "Este archivo supera el tamaño máximo permitido para una subida",
       "finalizeFailed": "Error al finalizar la subida",
       "replaceFailed": "Error al reemplazar el archivo existente"
     }

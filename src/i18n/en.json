@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Hello {{name}}",
     "managePreferences": "Manage your preferences and application settings",
+    "searchPlaceholder": "Search settings…",
+    "noMatch": "No setting matches “{{query}}”",
+    "nav": {
+      "overview": "At a glance",
+      "storage": "Storage",
+      "appearance": "Appearance",
+      "ai": "AI",
+      "integrations": "Connected apps",
+      "signatures": "Signatures",
+      "privacy": "Privacy"
+    },
+    "navDesc": {
+      "overview": "Everything in one place",
+      "storage": "Your space and upload limits",
+      "appearance": "Theme and colours",
+      "ai": "Assistant, smart filing, maintenance",
+      "integrations": "AI agents and the desktop app",
+      "signatures": "Trusted electronic signatures",
+      "privacy": "What administrators can see"
+    },
+    "keywords": {
+      "overview": "summary home",
+      "storage": "quota space disk size limit upload file recycle bin usage full",
+      "appearance": "theme dark light colour color look display",
+      "ai": "assistant chat model key byok openai claude gemini filing insights embeddings",
+      "integrations": "mcp agent claude cursor n8n desktop windows sync explorer",
+      "signatures": "signature sign cloud certificate seal aatl esign",
+      "privacy": "webhook monitoring admin activity consent"
+    },
+    "overview": {
+      "title": "At a glance"
+    },
+    "storage": {
+      "yourStorage": "Your storage",
+      "usedOf": "{{used}} of {{limit}}",
+      "usedUnlimited": "{{used}} · no limit",
+      "ofLimit": "of {{limit}}",
+      "noLimit": "no limit",
+      "percent": "{{pct}} % used",
+      "binHint": "Files in the recycle bin do not count towards your storage.",
+      "binCleanup": "The recycle bin is emptied automatically after {{days}} days.",
+      "nearLimit": "You are getting close to your limit: free up some space or ask your administrator for more.",
+      "full": "Your storage is full: new uploads are refused until you free up space."
+    },
+    "status": {
+      "signaturesLeft": "{{count}} signatures left this month",
+      "monitoringAllowed": "Admin monitoring allowed",
+      "monitoringOptedOut": "Hidden from admin monitoring"
+    },
     "quotas": {
       "title": "Storage Quotas",
       "fileQuota": "File Upload Limit",
       "fileQuotaDescription": "Maximum size per file upload",
       "userQuota": "Total Storage Limit",
-      "userQuotaDescription": "Maximum total storage for your account"
+      "userQuotaDescription": "Maximum total storage for your account",
+      "unlimited": "Unlimited",
+      "used": "{{used}} used",
+      "source": {
+        "USER": "your own limit",
+        "GROUP": "limit of team {{team}}",
+        "DEFAULT": "default limit"
+      }
     },
     "cloudSigning": {
       "title": "Cloud Signing",
@@ -758,6 +814,7 @@
     "storage": "Storage",
     "ofUsed": "of {{total}} used",
     "used": "used",
+    "usedNoLimit": "used · no limit",
     "documents": "Documents",
     "images": "Images",
     "videos": "Videos",
@@ -868,15 +925,16 @@
     "reselectFile": "Re-select file to resume upload",
     "fileMismatch": "Selected file does not match the original upload (expected size: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "Upload size exceeds maximum allowed or file quota exceeded",
-      "quotaExceeded": "User storage quota exceeded",
+      "fileTooLarge": "This file is larger than the maximum size allowed for an upload",
+      "quotaExceeded": "Your storage space is full: delete files (and empty the recycle bin) or ask your administrator for more space",
+      "instanceQuotaExceeded": "The server's storage is full: contact your administrator",
       "parentFolderNotFound": "Parent folder not found",
       "duplicateFilename": "Duplicate filename in target folder",
       "missingHeaders": "Missing required headers or filename",
       "uploadNotFound": "Upload not found",
       "offsetMismatch": "Offset mismatch - resume from HEAD request",
       "uploadNotComplete": "Upload is not complete",
-      "fileSizeExceedsQuota": "File size exceeds quota",
+      "fileSizeExceedsQuota": "This file is larger than the maximum size allowed for an upload",
       "finalizeFailed": "Failed to finalize upload",
       "replaceFailed": "Failed to replace existing file"
     }

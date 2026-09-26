@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Hallo {{name}}",
     "managePreferences": "Verwalten Sie Ihre Einstellungen und Anwendungseinstellungen",
+    "searchPlaceholder": "Einstellungen suchen…",
+    "noMatch": "Keine Einstellung passt zu „{{query}}“",
+    "nav": {
+      "overview": "Auf einen Blick",
+      "storage": "Speicher",
+      "appearance": "Darstellung",
+      "ai": "KI",
+      "integrations": "Verbundene Apps",
+      "signatures": "Signaturen",
+      "privacy": "Datenschutz"
+    },
+    "navDesc": {
+      "overview": "Alles an einem Ort",
+      "storage": "Ihr Speicher und Upload-Limits",
+      "appearance": "Design und Farben",
+      "ai": "Assistent, intelligente Ablage, Wartung",
+      "integrations": "KI-Agenten und Desktop-App",
+      "signatures": "Vertrauenswürdige elektronische Signaturen",
+      "privacy": "Was Administratoren sehen können"
+    },
+    "keywords": {
+      "overview": "übersicht start",
+      "storage": "kontingent speicher platz größe limit upload datei papierkorb belegung voll",
+      "appearance": "design dunkel hell farbe aussehen anzeige",
+      "ai": "assistent chat modell schlüssel byok openai claude gemini ablage",
+      "integrations": "mcp agent claude cursor n8n desktop windows synchronisation explorer",
+      "signatures": "signatur unterschreiben cloud zertifikat siegel aatl",
+      "privacy": "webhook überwachung admin aktivität einwilligung"
+    },
+    "overview": {
+      "title": "Auf einen Blick"
+    },
+    "storage": {
+      "yourStorage": "Ihr Speicher",
+      "usedOf": "{{used}} von {{limit}}",
+      "usedUnlimited": "{{used}} · ohne Limit",
+      "ofLimit": "von {{limit}}",
+      "noLimit": "ohne Limit",
+      "percent": "{{pct}} % belegt",
+      "binHint": "Dateien im Papierkorb zählen nicht zu Ihrem Speicher.",
+      "binCleanup": "Der Papierkorb wird nach {{days}} Tagen automatisch geleert.",
+      "nearLimit": "Sie nähern sich Ihrem Limit: Geben Sie Speicher frei oder bitten Sie Ihren Administrator um mehr.",
+      "full": "Ihr Speicher ist voll: Neue Uploads werden abgelehnt, bis Sie Speicher freigeben."
+    },
+    "status": {
+      "signaturesLeft": "Noch {{count}} Signaturen in diesem Monat",
+      "monitoringAllowed": "Admin-Überwachung erlaubt",
+      "monitoringOptedOut": "Von Admin-Überwachung ausgenommen"
+    },
     "quotas": {
       "title": "Speicherkontingente",
       "fileQuota": "Datei-Upload-Limit",
       "fileQuotaDescription": "Maximale Größe pro Datei-Upload",
       "userQuota": "Gesamtspeicherlimit",
-      "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto"
+      "userQuotaDescription": "Maximaler Gesamtspeicher für Ihr Konto",
+      "unlimited": "Unbegrenzt",
+      "used": "{{used}} belegt",
+      "source": {
+        "USER": "Ihr eigenes Limit",
+        "GROUP": "Limit des Teams {{team}}",
+        "DEFAULT": "Standardlimit"
+      }
     },
     "cloudSigning": {
       "title": "Cloud-Signatur",
@@ -758,6 +814,7 @@
     "storage": "Speicher",
     "ofUsed": "von {{total}} verwendet",
     "used": "verwendet",
+    "usedNoLimit": "belegt · ohne Limit",
     "documents": "Dokumente",
     "images": "Bilder",
     "videos": "Videos",
@@ -868,15 +925,16 @@
     "reselectFile": "Datei erneut auswählen, um den Upload fortzusetzen",
     "fileMismatch": "Die ausgewählte Datei entspricht nicht dem ursprünglichen Upload (erwartete Größe: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "Upload-Größe überschreitet das Maximum oder Datei-Kontingent erschöpft",
-      "quotaExceeded": "Benutzer-Speicherkontingent überschritten",
+      "fileTooLarge": "Diese Datei überschreitet die maximal zulässige Größe für einen Upload",
+      "quotaExceeded": "Ihr Speicherplatz ist voll: Löschen Sie Dateien (und leeren Sie den Papierkorb) oder bitten Sie Ihren Administrator um mehr Speicher",
+      "instanceQuotaExceeded": "Der Speicher des Servers ist voll: Wenden Sie sich an Ihren Administrator",
       "parentFolderNotFound": "Übergeordneter Ordner nicht gefunden",
       "duplicateFilename": "Doppelter Dateiname im Zielordner",
       "missingHeaders": "Fehlende erforderliche Header oder Dateiname",
       "uploadNotFound": "Upload nicht gefunden",
       "offsetMismatch": "Offset-Abweichung - ab HEAD-Anfrage fortsetzen",
       "uploadNotComplete": "Upload ist nicht abgeschlossen",
-      "fileSizeExceedsQuota": "Dateigröße überschreitet das Kontingent",
+      "fileSizeExceedsQuota": "Diese Datei überschreitet die maximal zulässige Größe für einen Upload",
       "finalizeFailed": "Abschluss des Uploads fehlgeschlagen",
       "replaceFailed": "Vorhandene Datei konnte nicht ersetzt werden"
     }

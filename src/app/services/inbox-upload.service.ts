@@ -14,6 +14,7 @@ import { TUS_THRESHOLD_BYTES } from '../models/upload.models';
  * toast. Duplicate names are allowed: the Inbox is a transit area, not a destination.
  * Dedicated file for the enterprise fork.
  */
+import { quotaErrorKey } from '../utils/quota-errors';
 @Injectable({ providedIn: 'root' })
 export class InboxUploadService {
   private documentApi = inject(DocumentApiService);
@@ -77,7 +78,7 @@ export class InboxUploadService {
           onFileDone(response.id || undefined, response.autoFile?.jobId);
         },
         error: error => {
-          this.resumableUpload.failRegularUpload(progress.uploadId, this.errorKey(error?.status));
+          this.resumableUpload.failRegularUpload(progress.uploadId, this.errorKey(error?.status, error?.error));
           onFileDone();
         }
       });
@@ -85,12 +86,8 @@ export class InboxUploadService {
     });
   }
 
-  private errorKey(status?: number): string {
-    switch (status) {
-      case 409: return 'upload.errors.duplicateFilename';
-      case 413: return 'upload.errors.fileTooLarge';
-      case 507: return 'upload.errors.quotaExceeded';
-      default: return 'errors.uploadFailed';
-    }
+  private errorKey(status?: number, body?: unknown): string {
+    if (status === 409) return 'upload.errors.duplicateFilename';
+    return quotaErrorKey(status, body) ?? 'errors.uploadFailed';
   }
 }

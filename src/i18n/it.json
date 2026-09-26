@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Ciao {{name}}",
     "managePreferences": "Gestisci le tue preferenze e le impostazioni dell'applicazione",
+    "searchPlaceholder": "Cerca un'impostazione…",
+    "noMatch": "Nessuna impostazione corrisponde a «{{query}}»",
+    "nav": {
+      "overview": "In sintesi",
+      "storage": "Archiviazione",
+      "appearance": "Aspetto",
+      "ai": "IA",
+      "integrations": "App collegate",
+      "signatures": "Firme",
+      "privacy": "Privacy"
+    },
+    "navDesc": {
+      "overview": "Tutto in un unico posto",
+      "storage": "Il tuo spazio e i limiti di caricamento",
+      "appearance": "Tema e colori",
+      "ai": "Assistente, archiviazione intelligente, manutenzione",
+      "integrations": "Agenti IA e app desktop",
+      "signatures": "Firme elettroniche affidabili",
+      "privacy": "Cosa possono vedere gli amministratori"
+    },
+    "keywords": {
+      "overview": "riepilogo home",
+      "storage": "quota spazio disco dimensione limite caricamento file cestino uso pieno",
+      "appearance": "tema scuro chiaro colore aspetto schermo",
+      "ai": "assistente chat modello chiave byok openai claude gemini archiviazione",
+      "integrations": "mcp agente claude cursor n8n desktop windows sincronizzazione esplora",
+      "signatures": "firma firmare cloud certificato sigillo aatl",
+      "privacy": "webhook monitoraggio admin attività consenso"
+    },
+    "overview": {
+      "title": "In sintesi"
+    },
+    "storage": {
+      "yourStorage": "Il tuo spazio",
+      "usedOf": "{{used}} di {{limit}}",
+      "usedUnlimited": "{{used}} · nessun limite",
+      "ofLimit": "di {{limit}}",
+      "noLimit": "nessun limite",
+      "percent": "{{pct}} % usato",
+      "binHint": "I file nel cestino non contano nel tuo spazio.",
+      "binCleanup": "Il cestino viene svuotato automaticamente dopo {{days}} giorni.",
+      "nearLimit": "Ti stai avvicinando al limite: libera spazio o chiedine di più al tuo amministratore.",
+      "full": "Il tuo spazio è pieno: i nuovi caricamenti sono rifiutati finché non liberi spazio."
+    },
+    "status": {
+      "signaturesLeft": "{{count}} firme rimaste questo mese",
+      "monitoringAllowed": "Monitoraggio admin consentito",
+      "monitoringOptedOut": "Escluso dal monitoraggio admin"
+    },
     "quotas": {
       "title": "Quote di archiviazione",
       "fileQuota": "Limite caricamento file",
       "fileQuotaDescription": "Dimensione massima per caricamento file",
       "userQuota": "Limite archiviazione totale",
-      "userQuotaDescription": "Archiviazione totale massima per il tuo account"
+      "userQuotaDescription": "Archiviazione totale massima per il tuo account",
+      "unlimited": "Illimitato",
+      "used": "{{used}} usati",
+      "source": {
+        "USER": "il tuo limite personale",
+        "GROUP": "limite del team {{team}}",
+        "DEFAULT": "limite predefinito"
+      }
     },
     "cloudSigning": {
       "title": "Firma cloud",
@@ -758,6 +814,7 @@
     "storage": "Archiviazione",
     "ofUsed": "di {{total}} utilizzati",
     "used": "utilizzato",
+    "usedNoLimit": "usati · nessun limite",
     "documents": "Documenti",
     "images": "Immagini",
     "videos": "Video",
@@ -868,15 +925,16 @@
     "reselectFile": "Riseleziona il file per riprendere il caricamento",
     "fileMismatch": "Il file selezionato non corrisponde all'upload originale (dimensione prevista: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "La dimensione del caricamento supera il massimo consentito o la quota file è stata superata",
-      "quotaExceeded": "Quota di archiviazione utente superata",
+      "fileTooLarge": "Questo file supera la dimensione massima consentita per un caricamento",
+      "quotaExceeded": "Il tuo spazio di archiviazione è pieno: elimina dei file (e svuota il cestino) o chiedi più spazio al tuo amministratore",
+      "instanceQuotaExceeded": "Lo spazio del server è pieno: contatta il tuo amministratore",
       "parentFolderNotFound": "Cartella principale non trovata",
       "duplicateFilename": "Nome file duplicato nella cartella di destinazione",
       "missingHeaders": "Intestazioni richieste o nome file mancanti",
       "uploadNotFound": "Caricamento non trovato",
       "offsetMismatch": "Mancata corrispondenza dell'offset - riprendi dalla richiesta HEAD",
       "uploadNotComplete": "Il caricamento non è completo",
-      "fileSizeExceedsQuota": "La dimensione del file supera la quota",
+      "fileSizeExceedsQuota": "Questo file supera la dimensione massima consentita per un caricamento",
       "finalizeFailed": "Impossibile finalizzare il caricamento",
       "replaceFailed": "Impossibile sostituire il file esistente"
     }

@@ -521,12 +521,68 @@
   "settings": {
     "hello": "مرحباً {{name}}",
     "managePreferences": "إدارة تفضيلاتك وإعدادات التطبيق",
+    "searchPlaceholder": "ابحث في الإعدادات…",
+    "noMatch": "لا يوجد إعداد يطابق «{{query}}»",
+    "nav": {
+      "overview": "نظرة سريعة",
+      "storage": "التخزين",
+      "appearance": "المظهر",
+      "ai": "الذكاء الاصطناعي",
+      "integrations": "التطبيقات المتصلة",
+      "signatures": "التوقيعات",
+      "privacy": "الخصوصية"
+    },
+    "navDesc": {
+      "overview": "كل شيء في مكان واحد",
+      "storage": "مساحتك وحدود الرفع",
+      "appearance": "السمة والألوان",
+      "ai": "المساعد، الأرشفة الذكية، الصيانة",
+      "integrations": "وكلاء الذكاء الاصطناعي وتطبيق سطح المكتب",
+      "signatures": "توقيعات إلكترونية موثوقة",
+      "privacy": "ما يمكن للمسؤولين رؤيته"
+    },
+    "keywords": {
+      "overview": "ملخص رئيسية",
+      "storage": "حصة مساحة قرص حجم حد رفع ملف سلة المحذوفات استخدام ممتلئ",
+      "appearance": "سمة داكن فاتح لون مظهر عرض",
+      "ai": "مساعد دردشة نموذج مفتاح byok openai claude gemini أرشفة",
+      "integrations": "mcp وكيل claude cursor n8n سطح المكتب windows مزامنة مستكشف",
+      "signatures": "توقيع وقع سحابة شهادة ختم aatl",
+      "privacy": "webhook مراقبة مسؤول نشاط موافقة"
+    },
+    "overview": {
+      "title": "نظرة سريعة"
+    },
+    "storage": {
+      "yourStorage": "مساحة التخزين الخاصة بك",
+      "usedOf": "{{used}} من {{limit}}",
+      "usedUnlimited": "{{used}} · بلا حد",
+      "ofLimit": "من {{limit}}",
+      "noLimit": "بلا حد",
+      "percent": "{{pct}}٪ مستخدمة",
+      "binHint": "الملفات في سلة المحذوفات لا تُحتسب ضمن مساحتك.",
+      "binCleanup": "تُفرَّغ سلة المحذوفات تلقائيًا بعد {{days}} يومًا.",
+      "nearLimit": "أنت تقترب من حدك: حرّر بعض المساحة أو اطلب المزيد من المسؤول.",
+      "full": "مساحة التخزين ممتلئة: تُرفض عمليات الرفع الجديدة حتى تحرّر مساحة."
+    },
+    "status": {
+      "signaturesLeft": "تبقّى {{count}} توقيعًا هذا الشهر",
+      "monitoringAllowed": "مراقبة المسؤول مسموحة",
+      "monitoringOptedOut": "مخفي عن مراقبة المسؤول"
+    },
     "quotas": {
       "title": "حصص التخزين",
       "fileQuota": "حد رفع الملف",
       "fileQuotaDescription": "الحجم الأقصى لكل ملف مرفوع",
       "userQuota": "حد التخزين الكلي",
-      "userQuotaDescription": "الحد الأقصى للتخزين الكلي لحسابك"
+      "userQuotaDescription": "الحد الأقصى للتخزين الكلي لحسابك",
+      "unlimited": "غير محدود",
+      "used": "{{used}} مستخدمة",
+      "source": {
+        "USER": "حدك الخاص",
+        "GROUP": "حد الفريق {{team}}",
+        "DEFAULT": "الحد الافتراضي"
+      }
     },
     "cloudSigning": {
       "title": "التوقيع السحابي",
@@ -758,6 +814,7 @@
     "storage": "التخزين",
     "ofUsed": "من {{total}} مستخدم",
     "used": "مستخدم",
+    "usedNoLimit": "مستخدمة · بلا حد",
     "documents": "المستندات",
     "images": "الصور",
     "videos": "الفيديوهات",
@@ -868,15 +925,16 @@
     "reselectFile": "أعد اختيار الملف لاستئناف الرفع",
     "fileMismatch": "الملف المحدد لا يطابق الرفع الأصلي (الحجم المتوقع: {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "حجم الرفع يتجاوز الحد الأقصى المسموح به أو تم تجاوز حصة الملفات",
-      "quotaExceeded": "تم تجاوز حصة تخزين المستخدم",
+      "fileTooLarge": "يتجاوز هذا الملف الحجم الأقصى المسموح به للرفع",
+      "quotaExceeded": "مساحة التخزين الخاصة بك ممتلئة: احذف بعض الملفات (وأفرغ سلة المحذوفات) أو اطلب مساحة إضافية من المسؤول",
+      "instanceQuotaExceeded": "مساحة تخزين الخادم ممتلئة: تواصل مع المسؤول",
       "parentFolderNotFound": "المجلد الأصل غير موجود",
       "duplicateFilename": "اسم ملف مكرر في المجلد الهدف",
       "missingHeaders": "رؤوس أو اسم ملف مطلوبة مفقودة",
       "uploadNotFound": "الرفع غير موجود",
       "offsetMismatch": "عدم تطابق الإزاحة - استئناف من طلب HEAD",
       "uploadNotComplete": "الرفع غير مكتمل",
-      "fileSizeExceedsQuota": "حجم الملف يتجاوز الحصة",
+      "fileSizeExceedsQuota": "يتجاوز هذا الملف الحجم الأقصى المسموح به للرفع",
       "finalizeFailed": "فشل إنهاء الرفع",
       "replaceFailed": "فشل استبدال الملف الموجود"
     }

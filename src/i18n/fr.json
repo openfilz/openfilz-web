@@ -521,12 +521,68 @@
   "settings": {
     "hello": "Bonjour {{name}}",
     "managePreferences": "Gérez vos préférences et les paramètres de l'application",
+    "searchPlaceholder": "Rechercher un paramètre…",
+    "noMatch": "Aucun paramètre ne correspond à « {{query}} »",
+    "nav": {
+      "overview": "En un coup d'œil",
+      "storage": "Stockage",
+      "appearance": "Apparence",
+      "ai": "IA",
+      "integrations": "Applications connectées",
+      "signatures": "Signatures",
+      "privacy": "Confidentialité"
+    },
+    "navDesc": {
+      "overview": "Tout au même endroit",
+      "storage": "Votre espace et vos limites d'envoi",
+      "appearance": "Thème et couleurs",
+      "ai": "Assistant, classement intelligent, maintenance",
+      "integrations": "Agents IA et application de bureau",
+      "signatures": "Signatures électroniques de confiance",
+      "privacy": "Ce que les administrateurs peuvent voir"
+    },
+    "keywords": {
+      "overview": "résumé accueil",
+      "storage": "quota espace disque taille limite envoi fichier corbeille utilisation plein",
+      "appearance": "thème sombre clair couleur apparence affichage",
+      "ai": "assistant chat modèle clé byok openai claude gemini classement insights",
+      "integrations": "mcp agent claude cursor n8n bureau windows synchronisation explorateur",
+      "signatures": "signature signer cloud certificat sceau aatl",
+      "privacy": "webhook surveillance admin activité consentement confidentialité"
+    },
+    "overview": {
+      "title": "En un coup d'œil"
+    },
+    "storage": {
+      "yourStorage": "Votre stockage",
+      "usedOf": "{{used}} sur {{limit}}",
+      "usedUnlimited": "{{used}} · sans limite",
+      "ofLimit": "sur {{limit}}",
+      "noLimit": "sans limite",
+      "percent": "{{pct}} % utilisés",
+      "binHint": "Les fichiers de la corbeille ne comptent pas dans votre stockage.",
+      "binCleanup": "La corbeille est vidée automatiquement après {{days}} jours.",
+      "nearLimit": "Vous approchez de votre limite : libérez de l'espace ou demandez-en davantage à votre administrateur.",
+      "full": "Votre stockage est plein : les nouveaux envois sont refusés tant que vous n'avez pas libéré d'espace."
+    },
+    "status": {
+      "signaturesLeft": "{{count}} signatures restantes ce mois-ci",
+      "monitoringAllowed": "Surveillance admin autorisée",
+      "monitoringOptedOut": "Masqué de la surveillance admin"
+    },
     "quotas": {
       "title": "Quotas de stockage",
       "fileQuota": "Limite de téléversement",
       "fileQuotaDescription": "Taille maximale par fichier téléversé",
       "userQuota": "Limite de stockage total",
-      "userQuotaDescription": "Stockage total maximum pour votre compte"
+      "userQuotaDescription": "Stockage total maximum pour votre compte",
+      "unlimited": "Illimité",
+      "used": "{{used}} utilisés",
+      "source": {
+        "USER": "votre limite personnelle",
+        "GROUP": "limite de l'équipe {{team}}",
+        "DEFAULT": "limite par défaut"
+      }
     },
     "cloudSigning": {
       "title": "Signature Cloud",
@@ -758,6 +814,7 @@
     "storage": "Stockage",
     "ofUsed": "sur {{total}} utilisé",
     "used": "utilisé",
+    "usedNoLimit": "utilisés · sans limite",
     "documents": "Documents",
     "images": "Images",
     "videos": "Vidéos",
@@ -868,15 +925,16 @@
     "reselectFile": "Resélectionner le fichier pour reprendre le téléversement",
     "fileMismatch": "Le fichier sélectionné ne correspond pas au téléversement original (taille attendue : {{expectedSize}})",
     "errors": {
-      "fileTooLarge": "La taille du téléversement dépasse le maximum autorisé ou le quota de fichier est dépassé",
-      "quotaExceeded": "Quota de stockage utilisateur dépassé",
+      "fileTooLarge": "Ce fichier dépasse la taille maximale autorisée pour un envoi",
+      "quotaExceeded": "Votre espace de stockage est plein : supprimez des fichiers (et videz la corbeille) ou demandez plus d'espace à votre administrateur",
+      "instanceQuotaExceeded": "Le stockage du serveur est plein : contactez votre administrateur",
       "parentFolderNotFound": "Dossier parent introuvable",
       "duplicateFilename": "Nom de fichier en double dans le dossier cible",
       "missingHeaders": "En-têtes ou nom de fichier requis manquants",
       "uploadNotFound": "Téléversement introuvable",
       "offsetMismatch": "Décalage incorrect - reprendre à partir de la requête HEAD",
       "uploadNotComplete": "Le téléversement n'est pas terminé",
-      "fileSizeExceedsQuota": "La taille du fichier dépasse le quota",
+      "fileSizeExceedsQuota": "Ce fichier dépasse la taille maximale autorisée pour un envoi",
       "finalizeFailed": "Échec de la finalisation du téléversement",
       "replaceFailed": "Échec du remplacement du fichier existant"
     }
