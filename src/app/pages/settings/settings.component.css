@@ -1,86 +1,747 @@
-.settings-container {
-  padding: 24px;
-  max-width: 1000px;
+/* ==========================================================================
+   Settings — a small settings app: hero + search, category navigation,
+   one pane at a time. Theme variables only (every theme, light and dark).
+   ========================================================================== */
+
+:host {
+  display: block;
+}
+
+.settings-page {
+  max-width: 1180px;
   margin: 0 auto;
+  padding: 24px 24px 48px;
 }
 
-.settings-header {
-  margin-bottom: 32px;
-}
+/* ---------------------------------------------------------------- hero */
 
-.settings-header h1 {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
-
-.settings-header p {
-  color: var(--text-secondary);
-  font-size: 14px;
-}
-
-.settings-section {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px;
+.settings-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
   margin-bottom: 24px;
+  border-radius: 18px;
+  border: 1px solid var(--border-light);
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--primary) 16%, transparent) 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--primary) 8%, transparent) 0, transparent 50%),
+    var(--bg-primary);
   box-shadow: var(--shadow-sm);
 }
 
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 24px;
+.hero-identity {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
+  min-width: 0;
 }
 
-.section-content {
+.hero-avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.hero-text {
+  min-width: 0;
+}
+
+.hero-text h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hero-text p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.hero-email {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.hero-dot {
+  margin: 0 6px;
+  color: var(--text-tertiary);
+}
+
+.hero-search {
+  position: relative;
+  flex: 0 1 340px;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 12px;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hero-search:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.hero-search mat-icon {
+  color: var(--text-tertiary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.hero-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.hero-search input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.hero-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.hero-search-clear {
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 6px;
+}
+
+.hero-search-clear:hover {
+  background: var(--bg-tertiary);
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+/* ---------------------------------------------------------------- navigation */
+
+.settings-nav {
+  position: sticky;
+  top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-.setting-item {
+.nav-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
 }
 
-.setting-item.full-width {
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
   width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text-primary);
+  transition: background 0.15s ease;
 }
 
-.setting-label {
+.nav-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.nav-item.active {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--primary);
+}
+
+.nav-icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-item.active .nav-icon {
+  background: var(--primary);
+  color: #fff;
+}
+
+.nav-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.nav-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nav-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nav-status {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-empty {
+  margin: 0;
+  padding: 16px 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.nav-promo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--primary) 14%, var(--bg-primary)) 0%,
+    var(--bg-primary) 70%);
+}
+
+.nav-promo mat-icon {
+  color: var(--primary);
+}
+
+.nav-promo strong {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.nav-promo p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.nav-promo a[mat-flat-button] {
+  --mat-button-filled-container-color: var(--primary);
+  --mat-button-filled-label-text-color: #fff;
+  height: auto;
+  min-height: 40px;
+  white-space: normal;
+  line-height: 1.3;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.nav-promo-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.nav-promo-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- pane */
+
+.settings-pane {
+  min-width: 0;
+}
+
+.pane-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pane-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.pane-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pane-header p {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.pane-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: pane-in 0.22s ease-out;
+}
+
+@keyframes pane-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pane-body { animation: none; }
+  .theme-card, .overview-tile { transition: none; }
+}
+
+.card {
+  padding: 20px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.setting-description {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
+.card-title mat-icon {
+  color: var(--primary);
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
 }
 
-/* Theme Grid */
+.card-desc {
+  margin: 0 0 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* Child components (AI, MCP, desktop app, smart filing) keep their own layout; tone down their
+   intro paragraph so it reads as the card's description. */
+.card ::ng-deep .setting-description {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin-top: 0;
+}
+
+/* ---------------------------------------------------------------- overview */
+
+.overview-title {
+  margin: 4px 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.overview-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 18px;
+  text-align: start;
+  font: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.overview-tile.wide {
+  grid-column: span 2;
+}
+
+.overview-tile:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border-light));
+  box-shadow: var(--shadow-md);
+}
+
+.overview-tile:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.tile-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+/* Buttons centre their text by default: every line of a tile / nav item reads from the start */
+.overview-tile span,
+.nav-item span {
+  text-align: start;
+}
+
+.tile-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.tile-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.tile-title {
+  flex: 1;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.tile-chevron {
+  color: var(--text-tertiary);
+  transition: transform 0.15s ease;
+}
+
+.overview-tile:hover .tile-chevron {
+  transform: translateX(3px);
+}
+
+:host-context([dir='rtl']) .tile-chevron {
+  transform: scaleX(-1);
+}
+
+.tile-status {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.tile-big {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.tile-big small {
+  margin-inline-start: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.tile-swatches {
+  display: flex;
+  gap: 6px;
+}
+
+.tile-swatches span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+/* ---------------------------------------------------------------- meters */
+
+.meter {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+}
+
+.meter.large {
+  height: 12px;
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transition: width 0.3s ease;
+}
+
+.meter-fill.warn {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.meter-fill.full {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* ---------------------------------------------------------------- storage */
+
+.usage-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--primary) 10%, transparent) 0, transparent 60%),
+    var(--bg-primary);
+}
+
+.usage-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.usage-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.usage-value {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+.usage-value small {
+  margin-inline-start: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.usage-percent {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.usage-card.warn .usage-percent {
+  color: #d97706;
+}
+
+.usage-card.full .usage-percent {
+  color: #ef4444;
+}
+
+.source-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 8px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.source-chip mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-desc {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+}
+
+/* ---------------------------------------------------------------- hints */
+
+.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.hint mat-icon {
+  flex: none;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.hint.info {
+  background: rgba(59, 130, 246, 0.08);
+  border-inline-start: 3px solid #3b82f6;
+}
+
+.hint.info mat-icon { color: #3b82f6; }
+
+.hint.warn {
+  background: rgba(245, 158, 11, 0.10);
+  border-inline-start: 3px solid #f59e0b;
+}
+
+.hint.warn mat-icon { color: #f59e0b; }
+
+.hint.err {
+  background: rgba(239, 68, 68, 0.08);
+  border-inline-start: 3px solid #ef4444;
+}
+
+.hint.err mat-icon { color: #ef4444; }
+
+/* ---------------------------------------------------------------- appearance */
+
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
 }
 
 .theme-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px;
+  font: inherit;
+  text-align: start;
   cursor: pointer;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .theme-card:hover {
@@ -88,39 +749,92 @@
   box-shadow: var(--shadow-md);
 }
 
+.theme-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .theme-card.active {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px var(--primary-light); /* Ring effect */
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent);
 }
 
-.theme-preview-wrapper {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
+/* A miniature of the app painted with the theme's own variables (the theme class is on .theme-mock) */
+.theme-mock {
+  display: flex;
+  height: 84px;
+  overflow: hidden;
   border-radius: 10px;
-  height: 100%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.mock-side {
+  width: 28%;
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  padding: 8px 6px;
+  background: var(--bg-secondary);
 }
 
-.theme-preview-content {
-  padding: 12px;
+.mock-side span {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--text-tertiary);
+  opacity: 0.55;
 }
 
-.color-preview {
-  height: 60px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
+.mock-side span:first-child {
+  background: var(--primary);
+  opacity: 1;
 }
 
-.theme-info {
+.mock-main {
+  flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+}
+
+.mock-bar {
+  height: 10px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+}
+
+.mock-line {
+  height: 6px;
+  width: 80%;
+  border-radius: 3px;
+  background: var(--text-primary);
+  opacity: 0.7;
+}
+
+.mock-line.short {
+  width: 55%;
+  background: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.mock-btn {
+  margin-top: auto;
+  align-self: flex-end;
+  width: 36%;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--primary);
 }
 
 .theme-name {
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 2px;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
@@ -131,15 +845,47 @@
   height: 20px;
 }
 
-/* Cloud Signing subscription */
+/* ---------------------------------------------------------------- privacy toggle */
+
+.toggle-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.toggle-text {
+  min-width: 0;
+}
+
+.toggle-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 8px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.toggle-state mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.toggle-state.on {
+  background: color-mix(in srgb, #10b981 16%, transparent);
+}
+
+/* ---------------------------------------------------------------- cloud signing */
+
 .cloud-sub {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 16px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
 }
 
 .cloud-plan {
@@ -183,21 +929,6 @@
 .cloud-remaining { color: #10b981; font-weight: 500; }
 .cloud-remaining.low { color: #ef4444; }
 
-.cloud-usage-bar {
-  height: 8px;
-  border-radius: 999px;
-  background-color: var(--bg-tertiary);
-  overflow: hidden;
-}
-
-.cloud-usage-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #10b981;
-  transition: width .2s ease;
-}
-.cloud-usage-fill.warn { background: #f59e0b; }
-
 .cloud-meta {
   display: flex;
   flex-wrap: wrap;
@@ -219,106 +950,24 @@
   color: var(--primary);
 }
 
-.cloud-error {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
 .cloud-loading {
   display: flex;
   justify-content: center;
   padding: 12px 0;
 }
 
-/* Quota Grid */
-.quota-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-.quota-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.quota-card:hover {
-  background-color: var(--bg-tertiary);
-}
-
-.quota-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: var(--primary-light);
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
-.quota-icon mat-icon {
-  color: var(--primary-dark);
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-}
-
-.quota-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.quota-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.quota-value {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.quota-description {
-  font-size: 13px;
-  color: var(--text-tertiary);
-}
-
-/* Upsell cards (Cloud Signing / Discover Enterprise) — informational, not intrusive */
+/* Upsell (Cloud Signing) — informational, not intrusive */
 .upsell-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
   background: linear-gradient(135deg,
-    color-mix(in srgb, var(--primary) 5%, var(--bg-primary)) 0%,
+    color-mix(in srgb, var(--primary) 6%, var(--bg-primary)) 0%,
     var(--bg-primary) 60%);
 }
 
-/* Informational notice (e.g. AI assistant unavailable) — same card, icon beside the text */
-.upsell-card.info-card {
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.info-card-icon {
-  color: var(--primary);
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
+.upsell-card .card-title {
+  margin-bottom: 4px;
 }
 
 .upsell-text {
@@ -344,8 +993,7 @@
   border-radius: 10px;
   text-decoration: none;
   font-weight: 600;
-  /* These labels are full phrases (and longer again in French) — let them wrap inside
-     the button instead of forcing MDC's fixed 40px box */
+  /* Full phrases (longer again in French): let them wrap instead of forcing MDC's 40px box */
   height: auto;
   min-height: 40px;
   padding-top: 8px;
@@ -355,11 +1003,7 @@
   text-align: center;
 }
 
-/* Material paints filled buttons from its own tokens with `:not(:disabled)` — a plain
-   `background` here loses that cascade — and those tokens resolve to mat.theme()'s fixed
-   indigo palette rather than the app's runtime theme. Drive the tokens instead (same
-   approach as sign.component.css). Note `color="primary"` is inert on M3 buttons: it used
-   to make these look filled, which is why the two CTAs had become near-identical. */
+/* Drive Material's button tokens from the runtime theme (a plain `background` loses the cascade) */
 .upsell-actions a[mat-flat-button] {
   --mat-button-filled-container-color: var(--primary);
   --mat-button-filled-label-text-color: #fff;
@@ -370,12 +1014,117 @@
 .upsell-actions a[mat-stroked-button] {
   --mat-button-outlined-label-text-color: var(--text-primary);
   --mat-button-outlined-outline-color: var(--border-color);
-  --mat-button-outlined-outline-width: 2px;
 }
 
-/* Phones: stack them full width. Side by side they shrink to two different widths and
-   wrap mid-phrase, which is what made the pair look mismatched. */
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 960px) {
+  .settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  /* The navigation becomes a sticky, horizontally scrolling chip bar */
+  .settings-nav {
+    top: 0;
+    z-index: 5;
+    margin: 0 -16px;
+    padding: 8px 16px;
+    background: color-mix(in srgb, var(--bg-secondary) 88%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-list {
+    flex-direction: row;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px;
+    border-radius: 14px;
+  }
+
+  .nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    flex: none;
+    width: auto;
+    padding: 6px 12px 6px 6px;
+  }
+
+  .nav-item.active::before {
+    display: none;
+  }
+
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .nav-status {
+    display: none;
+  }
+
+  .nav-promo {
+    display: none;
+  }
+
+  .overview-tile.wide {
+    grid-column: auto;
+  }
+}
+
 @media (max-width: 600px) {
+  .settings-page {
+    padding: 16px 16px 40px;
+  }
+
+  .settings-hero {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .hero-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    font-size: 17px;
+  }
+
+  .hero-search {
+    flex: 1 1 100%;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .usage-value {
+    font-size: 28px;
+  }
+
+  /* Stat cards: icon beside the text instead of above it */
+  .stat {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 2px;
+  }
+
+  .stat-icon {
+    grid-row: span 3;
+    margin-bottom: 0;
+  }
+
+  .theme-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .toggle-card {
+    flex-direction: column;
+  }
+
   .upsell-actions {
     flex-direction: column;
     align-items: stretch;
@@ -384,10 +1133,4 @@
   .upsell-actions a {
     width: 100%;
   }
-}
-
-.quota-usage {
-  font-size: 13px;
-  color: var(--text-primary);
-  font-weight: 500;
 }

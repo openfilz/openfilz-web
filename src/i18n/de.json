@@ -521,6 +521,55 @@
   "settings": {
     "hello": "Hallo {{name}}",
     "managePreferences": "Verwalten Sie Ihre Einstellungen und Anwendungseinstellungen",
+    "searchPlaceholder": "Einstellungen suchen…",
+    "noMatch": "Keine Einstellung passt zu „{{query}}“",
+    "nav": {
+      "overview": "Auf einen Blick",
+      "storage": "Speicher",
+      "appearance": "Darstellung",
+      "ai": "KI",
+      "integrations": "Verbundene Apps",
+      "signatures": "Signaturen",
+      "privacy": "Datenschutz"
+    },
+    "navDesc": {
+      "overview": "Alles an einem Ort",
+      "storage": "Ihr Speicher und Upload-Limits",
+      "appearance": "Design und Farben",
+      "ai": "Assistent, intelligente Ablage, Wartung",
+      "integrations": "KI-Agenten und Desktop-App",
+      "signatures": "Vertrauenswürdige elektronische Signaturen",
+      "privacy": "Was Administratoren sehen können"
+    },
+    "keywords": {
+      "overview": "übersicht start",
+      "storage": "kontingent speicher platz größe limit upload datei papierkorb belegung voll",
+      "appearance": "design dunkel hell farbe aussehen anzeige",
+      "ai": "assistent chat modell schlüssel byok openai claude gemini ablage",
+      "integrations": "mcp agent claude cursor n8n desktop windows synchronisation explorer",
+      "signatures": "signatur unterschreiben cloud zertifikat siegel aatl",
+      "privacy": "webhook überwachung admin aktivität einwilligung"
+    },
+    "overview": {
+      "title": "Auf einen Blick"
+    },
+    "storage": {
+      "yourStorage": "Ihr Speicher",
+      "usedOf": "{{used}} von {{limit}}",
+      "usedUnlimited": "{{used}} · ohne Limit",
+      "ofLimit": "von {{limit}}",
+      "noLimit": "ohne Limit",
+      "percent": "{{pct}} % belegt",
+      "binHint": "Dateien im Papierkorb zählen nicht zu Ihrem Speicher.",
+      "binCleanup": "Der Papierkorb wird nach {{days}} Tagen automatisch geleert.",
+      "nearLimit": "Sie nähern sich Ihrem Limit: Geben Sie Speicher frei oder bitten Sie Ihren Administrator um mehr.",
+      "full": "Ihr Speicher ist voll: Neue Uploads werden abgelehnt, bis Sie Speicher freigeben."
+    },
+    "status": {
+      "signaturesLeft": "Noch {{count}} Signaturen in diesem Monat",
+      "monitoringAllowed": "Admin-Überwachung erlaubt",
+      "monitoringOptedOut": "Von Admin-Überwachung ausgenommen"
+    },
     "quotas": {
       "title": "Speicherkontingente",
       "fileQuota": "Datei-Upload-Limit",

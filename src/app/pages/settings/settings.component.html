@@ -1,271 +1,340 @@
-<div class="settings-container">
-  <div class="settings-header">
-    <h1>{{ 'settings.hello' | translate:{ name: firstName } }}</h1>
-    <p>{{ 'settings.managePreferences' | translate }}</p>
-  </div>
-
-  @if (hasQuotaInfo) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>data_usage</mat-icon>
-        {{ 'settings.quotas.title' | translate }}
-      </div>
-
-      <div class="section-content">
-        <div class="quota-grid">
-          <div class="quota-card">
-            <div class="quota-icon">
-              <mat-icon>insert_drive_file</mat-icon>
-            </div>
-            <div class="quota-info">
-              <span class="quota-label">{{ 'settings.quotas.fileQuota' | translate }}</span>
-              <span class="quota-value">{{ fileLimitLabel }}</span>
-              <span class="quota-description">{{ 'settings.quotas.fileQuotaDescription' | translate }}</span>
-            </div>
-          </div>
-          <div class="quota-card">
-            <div class="quota-icon">
-              <mat-icon>storage</mat-icon>
-            </div>
-            <div class="quota-info">
-              <span class="quota-label">{{ 'settings.quotas.userQuota' | translate }}</span>
-              <span class="quota-value">{{ storageLimitLabel }}</span>
-              @if (myQuota) {
-                <span class="quota-usage">{{ 'settings.quotas.used' | translate:{ used: formatBytes(myQuota.usedBytes) } }} · {{ quotaSourceLabel }}</span>
-              }
-              <span class="quota-description">{{ 'settings.quotas.userQuotaDescription' | translate }}</span>
-            </div>
-          </div>
-        </div>
+<div class="settings-page">
+  <!-- Profile header + search -->
+  <header class="settings-hero">
+    <div class="hero-identity">
+      <div class="hero-avatar" aria-hidden="true">{{ initials }}</div>
+      <div class="hero-text">
+        <h1>{{ 'settings.hello' | translate:{ name: firstName } }}</h1>
+        <p>
+          @if (email) { <span class="hero-email">{{ email }}</span><span class="hero-dot">·</span> }
+          {{ 'settings.managePreferences' | translate }}
+        </p>
       </div>
     </div>
-  }
+    <div class="hero-search" role="search">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input type="search" [(ngModel)]="query" (keydown.enter)="onSearchEnter()" (keydown.escape)="clearSearch()"
+             [placeholder]="'settings.searchPlaceholder' | translate" [attr.aria-label]="'settings.searchPlaceholder' | translate">
+      @if (query) {
+        <button type="button" class="hero-search-clear" (click)="clearSearch()" [attr.aria-label]="'common.clear' | translate">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+  </header>
 
-  @if (showCloudSigning) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>cloud_done</mat-icon>
-        {{ 'settings.cloudSigning.title' | translate }}
-      </div>
-
-      <div class="section-content">
-        @if (cloudSubscription; as sub) {
-          <div class="cloud-sub">
-            <div class="cloud-head">
-              <div class="cloud-plan">
-                <span class="cloud-plan-name">
-                  {{ (sub.billingMode === 'METERED' ? 'settings.cloudSigning.planMetered' : 'settings.cloudSigning.planIncluded') | translate }}
-                </span>
-                <span class="cloud-status st-{{ sub.status }}">{{ 'settings.cloudSigning.status.' + sub.status | translate }}</span>
-              </div>
-              <p class="setting-description cloud-cap-note">
-                {{ (sub.hardCap ? 'settings.cloudSigning.hardCapOn' : 'settings.cloudSigning.hardCapOff') | translate }}
-              </p>
-            </div>
-
-            <div class="cloud-usage">
-              <div class="cloud-usage-labels">
-                <span>{{ 'settings.cloudSigning.used' | translate:{ used: sub.usedThisMonth, quota: sub.monthlyQuota } }}</span>
-                <span class="cloud-remaining" [class.low]="sub.remaining <= 5">
-                  {{ 'settings.cloudSigning.remaining' | translate:{ count: sub.remaining } }}
-                </span>
-              </div>
-              <div class="cloud-usage-bar" role="progressbar" [attr.aria-valuenow]="cloudUsagePct" aria-valuemin="0" aria-valuemax="100">
-                <div class="cloud-usage-fill" [class.warn]="cloudUsagePct >= 80" [style.width.%]="cloudUsagePct"></div>
-              </div>
-            </div>
-
-            <div class="cloud-meta">
-              <div class="cloud-meta-item">
-                <mat-icon aria-hidden="true">event_repeat</mat-icon>
-                <span>{{ 'settings.cloudSigning.resetsOn' | translate:{ date: (sub.periodEnd | localDate:'mediumDate') } }}</span>
-              </div>
-              @if (sub.memberSince) {
-                <div class="cloud-meta-item">
-                  <mat-icon aria-hidden="true">workspace_premium</mat-icon>
-                  <span>{{ 'settings.cloudSigning.memberSince' | translate:{ date: (sub.memberSince | localDate:'mediumDate') } }}</span>
-                </div>
-              }
-            </div>
-          </div>
-        } @else if (cloudSubscriptionError) {
-          <p class="cloud-error">{{ 'settings.cloudSigning.loadError' | translate }}</p>
-        } @else {
-          <div class="cloud-loading"><mat-spinner diameter="26"></mat-spinner></div>
+  <div class="settings-layout">
+    <!-- Navigation: side list on desktop, chip bar on phones -->
+    <nav class="settings-nav" [attr.aria-label]="'sidebar.settings' | translate">
+      <div class="nav-list" role="tablist" aria-orientation="vertical" (keydown)="onNavKeydown($event)">
+        @for (section of navSections; track section.id) {
+          <button type="button" class="nav-item" role="tab"
+                  [class.active]="current === section.id"
+                  [attr.aria-selected]="current === section.id"
+                  [attr.tabindex]="current === section.id ? 0 : -1"
+                  (click)="select(section.id); clearSearch()">
+            <span class="nav-icon"><mat-icon aria-hidden="true">{{ section.icon }}</mat-icon></span>
+            <span class="nav-text">
+              <span class="nav-label">{{ 'settings.nav.' + section.id | translate }}</span>
+              <span class="nav-status">{{ status(section.id) }}</span>
+            </span>
+          </button>
+        } @empty {
+          <p class="nav-empty">{{ 'settings.noMatch' | translate:{ query: query } }}</p>
         }
       </div>
-    </div>
-  }
 
-  @if (showCloudSigningUpsell) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>verified</mat-icon>
-        {{ 'settings.cloudSigning.upsell.title' | translate }}
-      </div>
-
-      <div class="section-content">
-        <div class="upsell-card">
-          <p class="upsell-text">{{ 'settings.cloudSigning.upsell.devSeal' | translate }}</p>
-          @if (isEnterprise) {
-            <!-- EE: Cloud Signing is a license option (+€1/user/month on the subscription),
-                 enabled through the customer portal's self-service upgrade — not the CE
-                 marketing signup. -->
-            <p class="upsell-text">{{ 'settings.cloudSigning.upsell.ee.pitch' | translate }}</p>
-            <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
-            <div class="upsell-actions">
-              <a mat-flat-button [href]="licenseUpgradeUrl" target="_blank" rel="noopener">
-                <mat-icon aria-hidden="true">cloud_done</mat-icon>
-                {{ 'settings.cloudSigning.upsell.ee.enable' | translate }}
-              </a>
-              <a mat-stroked-button [href]="aatlPackUrl" target="_blank" rel="noopener">
-                {{ 'settings.cloudSigning.upsell.aatlPack' | translate }}
-              </a>
-            </div>
-          } @else {
-            <p class="upsell-text">{{ 'settings.cloudSigning.upsell.pitch' | translate }}</p>
-            <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
-            <div class="upsell-actions">
-              <a mat-flat-button [href]="cloudSigningUrl" target="_blank" rel="noopener">
-                <mat-icon aria-hidden="true">cloud_done</mat-icon>
-                {{ 'settings.cloudSigning.upsell.learnMore' | translate }}
-              </a>
-              <a mat-stroked-button [href]="aatlPackUrl" target="_blank" rel="noopener">
-                {{ 'settings.cloudSigning.upsell.aatlPack' | translate }}
-              </a>
-            </div>
-          }
+      @if (showDiscoverEe) {
+        <div class="nav-promo">
+          <mat-icon aria-hidden="true">rocket_launch</mat-icon>
+          <strong>{{ 'settings.discoverEe.title' | translate }}</strong>
+          <p>{{ 'settings.discoverEe.pitch' | translate }}</p>
+          <a mat-flat-button [href]="enterpriseUrl" target="_blank" rel="noopener">{{ 'settings.discoverEe.learnMore' | translate }}</a>
+          <a class="nav-promo-link" [href]="eeDemoUrl" target="_blank" rel="noopener">{{ 'settings.discoverEe.tryDemo' | translate }} →</a>
         </div>
-      </div>
-    </div>
-  }
+      }
+    </nav>
 
-  @if (showDiscoverEe) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>rocket_launch</mat-icon>
-        {{ 'settings.discoverEe.title' | translate }}
-      </div>
-
-      <div class="section-content">
-        <div class="upsell-card">
-          <p class="upsell-text">{{ 'settings.discoverEe.pitch' | translate }}</p>
-          <div class="upsell-actions">
-            <a mat-flat-button [href]="enterpriseUrl" target="_blank" rel="noopener">
-              <mat-icon aria-hidden="true">open_in_new</mat-icon>
-              {{ 'settings.discoverEe.learnMore' | translate }}
-            </a>
-            <a mat-stroked-button [href]="eeDemoUrl" target="_blank" rel="noopener">
-              {{ 'settings.discoverEe.tryDemo' | translate }}
-            </a>
+    <!-- The open category -->
+    <div class="settings-pane" role="tabpanel" appSwipeNav (swipeNext)="step(1)" (swipePrev)="step(-1)"
+          [swipeNavCanNext]="canStepNext" [swipeNavCanPrev]="canStepPrev">
+      @if (current !== 'overview') {
+        <div class="pane-header">
+          <span class="pane-icon"><mat-icon aria-hidden="true">{{ currentSection.icon }}</mat-icon></span>
+          <div>
+            <h2>{{ 'settings.nav.' + current | translate }}</h2>
+            <p>{{ 'settings.navDesc.' + current | translate }}</p>
           </div>
         </div>
-      </div>
-    </div>
-  }
+      }
 
-  <!-- AI on, no chat model configured: say why the assistant (chat button, BYOK settings) is missing -->
-  @if (showAiChatUnavailable) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>smart_toy</mat-icon>
-        {{ 'settings.ai.chatUnavailable.title' | translate }}
-      </div>
-      <div class="section-content">
-        <div class="upsell-card info-card" role="note">
-          <mat-icon class="info-card-icon" aria-hidden="true">info</mat-icon>
-          <p class="upsell-text">{{ 'settings.ai.chatUnavailable.message' | translate:aiChatConfigParams }}</p>
-        </div>
-      </div>
-    </div>
-  }
-
-  @if (showAiSettings) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>smart_toy</mat-icon>
-        {{ 'settings.ai.title' | translate }}
-      </div>
-      <div class="section-content">
-        <app-ai-settings></app-ai-settings>
-      </div>
-    </div>
-  }
-
-  <!-- Its own section, gated on openfilz.ai.active + CONTRIBUTOR (not on BYOK like the AI
-       settings above): the maintenance jobs exist on every AI deployment -->
-  @if (showAiMaintenance) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>build</mat-icon>
-        {{ 'settings.aiMaintenance.title' | translate }}
-      </div>
-      <div class="section-content">
-        <app-ai-maintenance></app-ai-maintenance>
-      </div>
-    </div>
-  }
-
-  @if (showSmartFiling) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>auto_awesome</mat-icon>
-        {{ 'smartFiling.title' | translate }}
-      </div>
-      <div class="section-content">
-        <p class="setting-description">{{ 'smartFiling.description' | translate }}</p>
-        <app-smart-filing-toggle variant="settings"></app-smart-filing-toggle>
-      </div>
-    </div>
-  }
-
-  <!-- Its own section, gated on openfilz.mcp.active alone: MCP exposes the tools to EXTERNAL
-       agents and is independent of the in-app chat, so nesting it under the AI section would
-       hide it on a deployment that runs MCP without the assistant. -->
-  @if (showMcpSettings) {
-    <div class="settings-section">
-      <div class="section-title">
-        <mat-icon>hub</mat-icon>
-        {{ 'settings.mcp.title' | translate }}
-      </div>
-      <div class="section-content">
-        <app-mcp-settings></app-mcp-settings>
-      </div>
-    </div>
-  }
-
-  <div class="settings-section">
-    <div class="section-title">
-      <mat-icon>palette</mat-icon>
-      {{ 'settings.appearance' | translate }}
-    </div>
-
-    <div class="section-content">
-      <div class="setting-item full-width">
-        <label class="setting-label">{{ 'settings.theme' | translate }}</label>
-        <p class="setting-description">{{ 'settings.themeDescription' | translate }}</p>
-
-        <div class="theme-grid">
-          @for (theme of availableThemes; track theme) {
-            <div class="theme-card"
-              [class.active]="currentTheme?.name === theme.name" (click)="onThemeChange(theme.name)">
-              <!-- Apply the theme class to this wrapper so CSS variables are scoped locally -->
-              <div class="theme-preview-wrapper" [ngClass]="theme.className">
-                <div class="theme-preview-content">
-                  <div class="color-preview" style="background-color: var(--primary)"></div>
-                  <div class="theme-info">
-                    <span class="theme-name">{{ 'settings.themes.' + theme.name | translate }}</span>
-                    @if (currentTheme?.name === theme.name) {
-                      <mat-icon class="check-icon">check_circle</mat-icon>
+      @switch (current) {
+        <!-- ───────────── Overview ───────────── -->
+        @case ('overview') {
+          <div class="pane-body" [attr.data-section]="'overview'">
+            <h2 class="overview-title">{{ 'settings.overview.title' | translate }}</h2>
+            <div class="overview-grid">
+              @for (section of visibleSections; track section.id) {
+                @if (section.id !== 'overview') {
+                  <button type="button" class="overview-tile" [class.wide]="section.id === 'storage'" (click)="select(section.id)">
+                    <span class="tile-head">
+                      <span class="tile-icon"><mat-icon aria-hidden="true">{{ section.icon }}</mat-icon></span>
+                      <span class="tile-title">{{ 'settings.nav.' + section.id | translate }}</span>
+                      <mat-icon class="tile-chevron" aria-hidden="true">chevron_right</mat-icon>
+                    </span>
+                    @if (section.id === 'storage' && myQuota) {
+                      <span class="tile-big">{{ formatBytes(myQuota.usedBytes) }}
+                        <small>{{ myQuota.limitBytes ? ('settings.storage.ofLimit' | translate:{ limit: formatBytes(myQuota.limitBytes) }) : ('settings.quotas.unlimited' | translate) }}</small>
+                      </span>
+                      @if (storagePercent !== null) {
+                        <span class="meter"><span class="meter-fill" [ngClass]="storageLevel" [style.width.%]="storagePercent > 100 ? 100 : storagePercent"></span></span>
+                      }
+                    } @else if (section.id === 'appearance' && currentTheme) {
+                      <span class="tile-swatches" [ngClass]="currentTheme.className">
+                        <span style="background: var(--primary)"></span>
+                        <span style="background: var(--bg-secondary)"></span>
+                        <span style="background: var(--text-primary)"></span>
+                      </span>
+                      <span class="tile-status">{{ status(section.id) }}</span>
+                    } @else {
+                      <span class="tile-status">{{ status(section.id) }}</span>
                     }
-                  </div>
-                </div>
-              </div>
+                  </button>
+                }
+              }
             </div>
-          }
-        </div>
+          </div>
+        }
 
-      </div>
+        <!-- ───────────── Storage ───────────── -->
+        @case ('storage') {
+          <div class="pane-body" [attr.data-section]="'storage'">
+            <section class="card usage-card" [ngClass]="storageLevel">
+              <div class="usage-main">
+                <span class="usage-label">{{ 'settings.storage.yourStorage' | translate }}</span>
+                <span class="usage-value">
+                  {{ myQuota ? formatBytes(myQuota.usedBytes) : '—' }}
+                  <small>{{ myQuota?.limitBytes ? ('settings.storage.ofLimit' | translate:{ limit: storageLimitLabel }) : ('settings.storage.noLimit' | translate) }}</small>
+                </span>
+                @if (storagePercent !== null) {
+                  <span class="meter large" role="progressbar" [attr.aria-valuenow]="storagePercent" aria-valuemin="0" aria-valuemax="100">
+                    <span class="meter-fill" [ngClass]="storageLevel" [style.width.%]="storagePercent > 100 ? 100 : storagePercent"></span>
+                  </span>
+                  <span class="usage-percent">{{ 'settings.storage.percent' | translate:{ pct: storagePercent } }}</span>
+                }
+                @if (myQuota) {
+                  <span class="source-chip"><mat-icon aria-hidden="true">{{ myQuota.source === 'USER' ? 'person' : myQuota.source === 'GROUP' ? 'groups' : 'tune' }}</mat-icon>{{ quotaSourceLabel }}</span>
+                }
+              </div>
+              @if (storageLevel !== 'ok') {
+                <div class="hint" [class.warn]="storageLevel === 'warn'" [class.err]="storageLevel === 'full'">
+                  <mat-icon aria-hidden="true">{{ storageLevel === 'full' ? 'error_outline' : 'warning_amber' }}</mat-icon>
+                  <span>{{ (storageLevel === 'full' ? 'settings.storage.full' : 'settings.storage.nearLimit') | translate }}</span>
+                </div>
+              }
+            </section>
+
+            <div class="stat-grid">
+              <section class="card stat">
+                <span class="stat-icon"><mat-icon aria-hidden="true">upload_file</mat-icon></span>
+                <span class="stat-label">{{ 'settings.quotas.fileQuota' | translate }}</span>
+                <span class="stat-value">{{ fileLimitLabel }}</span>
+                <span class="stat-desc">{{ 'settings.quotas.fileQuotaDescription' | translate }}</span>
+              </section>
+              <section class="card stat">
+                <span class="stat-icon"><mat-icon aria-hidden="true">storage</mat-icon></span>
+                <span class="stat-label">{{ 'settings.quotas.userQuota' | translate }}</span>
+                <span class="stat-value">{{ storageLimitLabel }}</span>
+                <span class="stat-desc">{{ 'settings.quotas.userQuotaDescription' | translate }}</span>
+              </section>
+            </div>
+
+            <div class="hint info">
+              <mat-icon aria-hidden="true">delete_outline</mat-icon>
+              <span>
+                {{ 'settings.storage.binHint' | translate }}
+                @if (binCleanupDays) { {{ 'settings.storage.binCleanup' | translate:{ days: binCleanupDays } }} }
+              </span>
+            </div>
+          </div>
+        }
+
+        <!-- ───────────── Appearance ───────────── -->
+        @case ('appearance') {
+          <div class="pane-body" [attr.data-section]="'appearance'">
+            <section class="card">
+              <h3 class="card-title">{{ 'settings.theme' | translate }}</h3>
+              <p class="card-desc">{{ 'settings.themeDescription' | translate }}</p>
+              <div class="theme-grid" role="radiogroup" [attr.aria-label]="'settings.theme' | translate">
+                @for (theme of availableThemes; track theme.name) {
+                  <button type="button" class="theme-card" role="radio"
+                          [attr.aria-checked]="currentTheme?.name === theme.name"
+                          [class.active]="currentTheme?.name === theme.name" (click)="onThemeChange(theme.name)">
+                    <!-- The theme class scopes the CSS variables to this preview -->
+                    <span class="theme-mock" [ngClass]="theme.className" aria-hidden="true">
+                      <span class="mock-side"><span></span><span></span><span></span></span>
+                      <span class="mock-main">
+                        <span class="mock-bar"></span>
+                        <span class="mock-line"></span>
+                        <span class="mock-line short"></span>
+                        <span class="mock-btn"></span>
+                      </span>
+                    </span>
+                    <span class="theme-name">
+                      {{ 'settings.themes.' + theme.name | translate }}
+                      @if (currentTheme?.name === theme.name) {
+                        <mat-icon class="check-icon" aria-hidden="true">check_circle</mat-icon>
+                      }
+                    </span>
+                  </button>
+                }
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- ───────────── AI ───────────── -->
+        @case ('ai') {
+          <div class="pane-body" [attr.data-section]="'ai'">
+            <!-- AI on, no chat model configured: say why the assistant (chat button, BYOK settings) is missing -->
+            @if (showAiChatUnavailable) {
+              <div class="hint info" role="note">
+                <mat-icon aria-hidden="true">info</mat-icon>
+                <span>
+                  <strong>{{ 'settings.ai.chatUnavailable.title' | translate }}</strong> —
+                  {{ 'settings.ai.chatUnavailable.message' | translate:aiChatConfigParams }}
+                </span>
+              </div>
+            }
+            @if (showAiSettings) {
+              <section class="card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">smart_toy</mat-icon>{{ 'settings.ai.title' | translate }}</h3>
+                <app-ai-settings></app-ai-settings>
+              </section>
+            }
+            @if (showSmartFiling) {
+              <section class="card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">auto_awesome</mat-icon>{{ 'smartFiling.title' | translate }}</h3>
+                <p class="card-desc">{{ 'smartFiling.description' | translate }}</p>
+                <app-smart-filing-toggle variant="settings"></app-smart-filing-toggle>
+              </section>
+            }
+            <!-- Gated on openfilz.ai.active + CONTRIBUTOR (not on BYOK like the AI settings above):
+                 the maintenance jobs exist on every AI deployment -->
+            @if (showAiMaintenance) {
+              <section class="card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">build</mat-icon>{{ 'settings.aiMaintenance.title' | translate }}</h3>
+                <app-ai-maintenance></app-ai-maintenance>
+              </section>
+            }
+          </div>
+        }
+
+        <!-- ───────────── Connected apps ───────────── -->
+        @case ('integrations') {
+          <div class="pane-body" [attr.data-section]="'integrations'">
+            <!-- Gated on openfilz.mcp.active alone: MCP exposes the tools to EXTERNAL agents and is
+                 independent of the in-app chat -->
+            @if (showMcpSettings) {
+              <section class="card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">hub</mat-icon>{{ 'settings.mcp.title' | translate }}</h3>
+                <app-mcp-settings></app-mcp-settings>
+              </section>
+            }
+          </div>
+        }
+
+        <!-- ───────────── Signatures ───────────── -->
+        @case ('signatures') {
+          <div class="pane-body" [attr.data-section]="'signatures'">
+            @if (showCloudSigning) {
+              <section class="card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">cloud_done</mat-icon>{{ 'settings.cloudSigning.title' | translate }}</h3>
+                @if (cloudSubscription; as sub) {
+                  <div class="cloud-sub">
+                    <div class="cloud-head">
+                      <div class="cloud-plan">
+                        <span class="cloud-plan-name">
+                          {{ (sub.billingMode === 'METERED' ? 'settings.cloudSigning.planMetered' : 'settings.cloudSigning.planIncluded') | translate }}
+                        </span>
+                        <span class="cloud-status st-{{ sub.status }}">{{ 'settings.cloudSigning.status.' + sub.status | translate }}</span>
+                      </div>
+                      <p class="card-desc cloud-cap-note">
+                        {{ (sub.hardCap ? 'settings.cloudSigning.hardCapOn' : 'settings.cloudSigning.hardCapOff') | translate }}
+                      </p>
+                    </div>
+
+                    <div class="cloud-usage">
+                      <div class="cloud-usage-labels">
+                        <span>{{ 'settings.cloudSigning.used' | translate:{ used: sub.usedThisMonth, quota: sub.monthlyQuota } }}</span>
+                        <span class="cloud-remaining" [class.low]="sub.remaining <= 5">
+                          {{ 'settings.cloudSigning.remaining' | translate:{ count: sub.remaining } }}
+                        </span>
+                      </div>
+                      <span class="meter large" role="progressbar" [attr.aria-valuenow]="cloudUsagePct" aria-valuemin="0" aria-valuemax="100">
+                        <span class="meter-fill" [class.warn]="cloudUsagePct >= 80" [style.width.%]="cloudUsagePct"></span>
+                      </span>
+                    </div>
+
+                    <div class="cloud-meta">
+                      <div class="cloud-meta-item">
+                        <mat-icon aria-hidden="true">event_repeat</mat-icon>
+                        <span>{{ 'settings.cloudSigning.resetsOn' | translate:{ date: (sub.periodEnd | localDate:'mediumDate') } }}</span>
+                      </div>
+                      @if (sub.memberSince) {
+                        <div class="cloud-meta-item">
+                          <mat-icon aria-hidden="true">workspace_premium</mat-icon>
+                          <span>{{ 'settings.cloudSigning.memberSince' | translate:{ date: (sub.memberSince | localDate:'mediumDate') } }}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                } @else if (cloudSubscriptionError) {
+                  <p class="card-desc">{{ 'settings.cloudSigning.loadError' | translate }}</p>
+                } @else {
+                  <div class="cloud-loading"><mat-spinner diameter="26"></mat-spinner></div>
+                }
+              </section>
+            }
+
+            @if (showCloudSigningUpsell) {
+              <section class="card upsell-card">
+                <h3 class="card-title"><mat-icon aria-hidden="true">verified</mat-icon>{{ 'settings.cloudSigning.upsell.title' | translate }}</h3>
+                <p class="upsell-text">{{ 'settings.cloudSigning.upsell.devSeal' | translate }}</p>
+                @if (isEnterprise) {
+                  <!-- EE: Cloud Signing is a license option (+€1/user/month on the subscription),
+                       enabled through the customer portal's self-service upgrade — not the CE
+                       marketing signup. -->
+                  <p class="upsell-text">{{ 'settings.cloudSigning.upsell.ee.pitch' | translate }}</p>
+                  <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
+                  <div class="upsell-actions">
+                    <a mat-flat-button [href]="licenseUpgradeUrl" target="_blank" rel="noopener">
+                      <mat-icon aria-hidden="true">cloud_done</mat-icon>
+                      {{ 'settings.cloudSigning.upsell.ee.enable' | translate }}
+                    </a>
+                    <a mat-stroked-button [href]="aatlPackUrl" target="_blank" rel="noopener">
+                      {{ 'settings.cloudSigning.upsell.aatlPack' | translate }}
+                    </a>
+                  </div>
+                } @else {
+                  <p class="upsell-text">{{ 'settings.cloudSigning.upsell.pitch' | translate }}</p>
+                  <p class="upsell-text secondary">{{ 'settings.cloudSigning.upsell.byoc' | translate }}</p>
+                  <div class="upsell-actions">
+                    <a mat-flat-button [href]="cloudSigningUrl" target="_blank" rel="noopener">
+                      <mat-icon aria-hidden="true">cloud_done</mat-icon>
+                      {{ 'settings.cloudSigning.upsell.learnMore' | translate }}
+                    </a>
+                    <a mat-stroked-button [href]="aatlPackUrl" target="_blank" rel="noopener">
+                      {{ 'settings.cloudSigning.upsell.aatlPack' | translate }}
+                    </a>
+                  </div>
+                }
+              </section>
+            }
+          </div>
+        }
+
+      }
     </div>
   </div>
 </div>
