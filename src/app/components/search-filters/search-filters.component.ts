@@ -184,6 +184,10 @@ export class SearchFiltersComponent implements OnInit {
     this.close.emit();
   }
 
+  /**
+   * Back to the default view: no filter, current folder only. A broad scope here would route the
+   * explorer to the flat "all files" listing; a text search ignores the scope anyway.
+   */
   clearFilters() {
     this.filters = {
       type: undefined,
@@ -191,7 +195,7 @@ export class SearchFiltersComponent implements OnInit {
       owner: '',
       fileType: 'any',
       metadata: [],
-      scope: 'ALL',
+      scope: 'CURRENT_ONLY',
       category: undefined,
       language: undefined
     };
