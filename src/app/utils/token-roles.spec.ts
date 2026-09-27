@@ -29,6 +29,9 @@ describe('token-roles', () => {
       expect(parseRootGroup(undefined)).toBe('OPENFILZ');
       expect(parseRootGroup('  ')).toBe('OPENFILZ');
       expect(parseRootGroup(' ACME ')).toBe('ACME');
+      expect(parseRootGroup('/ACME/')).toBe('ACME');
+      expect(parseRootGroup(' //ACME ')).toBe('ACME');
+      expect(parseRootGroup('/')).toBe('OPENFILZ');
     });
   });
 
@@ -43,17 +46,17 @@ describe('token-roles', () => {
       expect(extractTokenRoles(token, VALID, REALM).roles).toEqual(['READER']);
     });
 
-    it('falls back to groups only for exact /<root>/<ROLE> paths', () => {
+    it('never reads groups — no realm role means no role, even with /<root>/<ROLE> groups', () => {
       const token = {
-        realm_access: { roles: ['offline_access'] },
-        groups: ['/OPENFILZ/AUDITOR', '/OTHER/ADMIN', '/OPENFILZ/team/CLEANER', 'CONTRIBUTOR']
+        realm_access: { roles: ['offline_access', 'default-roles-openfilz'] },
+        groups: ['/OPENFILZ/CONTRIBUTOR', '/OPENFILZ/AUDITOR', '/OTHER/ADMIN']
       };
-      expect(extractTokenRoles(token, VALID, REALM)).toEqual({ roles: ['AUDITOR'], source: 'groups' });
+      expect(extractTokenRoles(token, VALID, REALM)).toEqual({ roles: [], source: null });
     });
 
     it('returns no role (source null) when nothing matches', () => {
       expect(extractTokenRoles({}, VALID, REALM)).toEqual({ roles: [], source: null });
-      expect(extractTokenRoles({ groups: ['/OTHER/ADMIN'] }, VALID, REALM)).toEqual({ roles: [], source: null });
+      expect(extractTokenRoles({ groups: ['/OPENFILZ/ADMIN'] }, VALID, REALM)).toEqual({ roles: [], source: null });
     });
   });
 

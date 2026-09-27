@@ -24,9 +24,13 @@ export function parseRoleTokenLookup(value: unknown): RoleTokenLookup {
   return typeof value === 'string' && value.trim().toUpperCase() === 'GROUPS' ? 'GROUPS' : 'REALM_ACCESS';
 }
 
-/** Normalises NG_APP_ROOT_GROUP: unset/blank falls back to OPENFILZ (the backend default). */
+/**
+ * Normalises NG_APP_ROOT_GROUP like the API normalises openfilz.security.root-group:
+ * trimmed, leading/trailing '/' stripped, unset/blank → OPENFILZ.
+ */
 export function parseRootGroup(value: unknown): string {
-  return typeof value === 'string' && value.trim() !== '' ? value.trim() : DEFAULT_ROOT_GROUP;
+  const root = typeof value === 'string' ? value.trim().replace(/^\/+|\/+$/g, '') : '';
+  return root !== '' ? root : DEFAULT_ROOT_GROUP;
 }
 
 /** Valid roles listed in `realm_access.roles`, in token order, without duplicates. */
@@ -63,12 +67,10 @@ export function extractGroupRoles<R extends string>(decodedToken: any, validRole
 }
 
 /**
- * Roles of the token for the configured lookup mode.
- * - GROUPS: groups `/<root>/<ROLE>` only; realm roles (e.g. default-roles READER) are ignored,
- *   exactly like the backend.
- * - REALM_ACCESS: realm roles; when the token carries no valid realm role, falls back to the
- *   same strict `/<root>/<ROLE>` group match (kept for deployments that ran a GROUPS backend
- *   before NG_APP_ROLE_TOKEN_LOOKUP existed).
+ * Roles of the token for the configured lookup mode — exactly what the API reads, never more:
+ * - REALM_ACCESS: valid `realm_access.roles` only; groups are never read (the API ignores them
+ *   in this mode, so a groups fallback would show actions the API refuses).
+ * - GROUPS: exact groups `/<root>/<ROLE>` only; realm roles (e.g. default-roles READER) are ignored.
  */
 export function extractTokenRoles<R extends string>(decodedToken: any, validRoles: readonly R[], config: RoleLookupConfig):
     { roles: R[]; source: 'realm_access' | 'groups' | null } {
@@ -76,12 +78,8 @@ export function extractTokenRoles<R extends string>(decodedToken: any, validRole
     const roles = extractGroupRoles(decodedToken, validRoles, config.rootGroup);
     return { roles, source: roles.length > 0 ? 'groups' : null };
   }
-  const realmRoles = extractRealmAccessRoles(decodedToken, validRoles);
-  if (realmRoles.length > 0) {
-    return { roles: realmRoles, source: 'realm_access' };
-  }
-  const groupRoles = extractGroupRoles(decodedToken, validRoles, config.rootGroup);
-  return { roles: groupRoles, source: groupRoles.length > 0 ? 'groups' : null };
+  const roles = extractRealmAccessRoles(decodedToken, validRoles);
+  return { roles, source: roles.length > 0 ? 'realm_access' : null };
 }
 
 function dedupe<T>(values: T[]): T[] {
