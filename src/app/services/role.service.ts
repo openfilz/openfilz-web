@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { extractTokenRoles } from '../utils/token-roles';
 
 export type UserRole = 'READER' | 'CONTRIBUTOR' | 'AUDITOR' | 'CLEANER' | 'SIGN_REQUESTER' | 'WORKFLOW_DESIGNER';
 
@@ -59,21 +60,13 @@ export class RoleService {
       return false;
     }
 
-    // First, try to extract roles from realm_access.roles
-    const realmRoles = this.extractRealmAccessRoles(decodedToken);
-    if (realmRoles.length > 0) {
-      this.userRoles = realmRoles;
+    // Mirror the backend's role-token-lookup: realm_access.roles (default) or, in GROUPS
+    // mode, only the groups /<root>/<ROLE> (see utils/token-roles.ts).
+    const { roles, source } = extractTokenRoles(decodedToken, VALID_ROLES, environment.roles);
+    if (roles.length > 0) {
+      this.userRoles = roles;
       this.initialized = true;
-      console.log('Roles initialized from realm_access.roles:', this.userRoles);
-      return true;
-    }
-
-    // If no roles found in realm_access.roles, try groups
-    const groupRoles = this.extractGroupRoles(decodedToken);
-    if (groupRoles.length > 0) {
-      this.userRoles = groupRoles;
-      this.initialized = true;
-      console.log('Roles initialized from groups:', this.userRoles);
+      console.log(`Roles initialized from ${source}:`, this.userRoles);
       return true;
     }
 
@@ -115,51 +108,5 @@ export class RoleService {
       console.error('Error decoding token:', e);
       return null;
     }
-  }
-
-  /**
-   * Extract valid roles from realm_access.roles in the token.
-   */
-  private extractRealmAccessRoles(decodedToken: any): UserRole[] {
-    const realmAccess = decodedToken?.realm_access;
-    if (!realmAccess || !Array.isArray(realmAccess.roles)) {
-      return [];
-    }
-
-    return realmAccess.roles.filter((role: string) =>
-      VALID_ROLES.includes(role as UserRole)
-    ) as UserRole[];
-  }
-
-  /**
-   * Extract valid roles from groups in the token.
-   * Groups may be in format "/path/to/ROLE", in which case
-   * we extract the part after the last "/".
-   */
-  private extractGroupRoles(decodedToken: any): UserRole[] {
-    const groups = decodedToken?.groups;
-    if (!Array.isArray(groups)) {
-      return [];
-    }
-
-    const roles: UserRole[] = [];
-    for (const group of groups) {
-      if (typeof group !== 'string') {
-        continue;
-      }
-
-      // If group contains "/", extract the part after the last "/"
-      let roleName = group;
-      const lastSlashIndex = group.lastIndexOf('/');
-      if (lastSlashIndex !== -1) {
-        roleName = group.substring(lastSlashIndex + 1);
-      }
-
-      if (VALID_ROLES.includes(roleName as UserRole)) {
-        roles.push(roleName as UserRole);
-      }
-    }
-
-    return roles;
   }
 }
