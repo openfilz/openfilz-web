@@ -229,8 +229,11 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
     this.searchService.requestAdvancedFilters();
   }
 
+  /**
+   * Without a text query, the listing only exists for its filters: clearing them returns to the
+   * folder it was started from (CURRENT_ONLY → {@link backToFolder}), not to every file flattened.
+   */
   private resetFilters(): void {
-    const scope = this.currentFilters.scope;
     this.searchService.updateFilters({
       type: undefined,
       dateModified: 'any',
@@ -239,7 +242,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       metadata: [],
       category: undefined,
       language: undefined,
-      scope: this.searchQuery ? undefined : scope
+      scope: this.searchQuery ? undefined : 'CURRENT_ONLY'
     });
   }
 
