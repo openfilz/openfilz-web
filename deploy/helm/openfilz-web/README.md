@@ -50,6 +50,10 @@ Example values: [`example-values/values-kind.yaml`](example-values/values-kind.y
 | `openshift.enabled` + `openshift.route.*` | OpenShift Route instead of Ingress | disabled |
 | `extraEnv` | Extra `NG_APP_*` env vars via a chart-managed ConfigMap | `{}` |
 
+When the API runs `openfilz.security.role-token-lookup: GROUPS`, pass the same mode to the UI
+so it derives roles from the `/<root>/<ROLE>` groups (and ignores realm roles), e.g.
+`--set extraEnv.NG_APP_ROLE_TOKEN_LOOKUP=GROUPS --set extraEnv.NG_APP_ROOT_GROUP=OPENFILZ`.
+
 ## The `global:` contract (cross-repo interface)
 
 The `openfilz-ce` umbrella chart (openfilz-core repo) injects shared settings

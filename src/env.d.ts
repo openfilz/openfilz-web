@@ -9,6 +9,8 @@ declare interface Env {
   readonly NG_APP_ONLYOFFICE_ENABLED: string;
   readonly NG_APP_ONLYOFFICE_MAX_FILE_SIZE: string;
   readonly NG_APP_STORAGE_MINIO_VERSIONING_ENABLED: string;
+  readonly NG_APP_ROLE_TOKEN_LOOKUP: string;
+  readonly NG_APP_ROOT_GROUP: string;
   [key: string]: any;
 }
 

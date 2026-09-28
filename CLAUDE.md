@@ -163,6 +163,8 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 | `NG_APP_AUTHENTICATION_ENABLED` | `true` | Enable/disable auth |
 | `NG_APP_ONLYOFFICE_ENABLED` | `true` | Enable OnlyOffice editor |
 | `NG_APP_ONLYOFFICE_MAX_FILE_SIZE` | `30` | Max file size for editing (MB) |
+| `NG_APP_ROLE_TOKEN_LOOKUP` | `REALM_ACCESS` | Where roles are read from the token — mirror the API's `OPENFILZ_SECURITY_ROLE_TOKEN_LOOKUP`. `GROUPS`: only groups `/<NG_APP_ROOT_GROUP>/<ROLE>` count, realm roles ignored (`utils/token-roles.ts`) |
+| `NG_APP_ROOT_GROUP` | `OPENFILZ` | Root group for `GROUPS` mode — mirror `OPENFILZ_SECURITY_ROOT_GROUP` |
 
 ---
 
