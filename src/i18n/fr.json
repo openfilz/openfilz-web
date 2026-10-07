@@ -331,6 +331,7 @@
     "auditLogs": "Entrées du journal d'audit",
     "unknownUser": "Utilisateur inconnu",
     "viaWorkflow": "via le workflow « {{workflow}} » — {{state}}",
+    "viaWorkflowNoState": "via le workflow « {{workflow}} »",
     "editMetadata": "Modifier les métadonnées",
     "cancelEditing": "Annuler l'édition",
     "saveMetadata": "Enregistrer les modifications de métadonnées",

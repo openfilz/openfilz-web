@@ -255,11 +255,17 @@
                             <span>{{ log.username || ('metadataPanel.unknownUser' | translate) }}</span>
                           </div>
                           <!-- The person above really did cause it; this says they did it through a
-                               workflow rather than by hand (details.workflow, stamped by the API). -->
-                          @if (log.details?.['workflow']; as workflow) {
+                               workflow rather than by hand (details.workflow + workflowInstanceId, stamped by the API on
+                               the actions a workflow caused; the WORKFLOW_* events carry their own `workflow` field but no
+                               workflowInstanceId, so they get no such line). -->
+                          @if (log.details?.['workflowInstanceId'] && log.details?.['workflow']; as workflow) {
                             <div class="audit-workflow">
                               <mat-icon aria-hidden="true">account_tree</mat-icon>
-                              <span>{{ 'metadataPanel.viaWorkflow' | translate: { workflow: workflow, state: log.details?.['workflowState'] } }}</span>
+                              @if (log.details?.['workflowState']; as state) {
+                                <span>{{ 'metadataPanel.viaWorkflow' | translate: { workflow: workflow, state: state } }}</span>
+                              } @else {
+                                <span>{{ 'metadataPanel.viaWorkflowNoState' | translate: { workflow: workflow } }}</span>
+                              }
                             </div>
                           }
                           @if (versioningEnabled && documentId && getVersionIdFor(log); as versionId) {

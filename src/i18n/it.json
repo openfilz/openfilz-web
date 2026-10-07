@@ -331,6 +331,7 @@
     "auditLogs": "Voci del registro di controllo",
     "unknownUser": "Utente sconosciuto",
     "viaWorkflow": "tramite il flusso «{{workflow}}» — {{state}}",
+    "viaWorkflowNoState": "tramite il flusso «{{workflow}}»",
     "editMetadata": "Modifica metadati",
     "cancelEditing": "Annulla modifica",
     "saveMetadata": "Salva modifiche metadati",

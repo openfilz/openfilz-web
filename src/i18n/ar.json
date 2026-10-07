@@ -331,6 +331,7 @@
     "auditLogs": "مدخلات سجل التدقيق",
     "unknownUser": "مستخدم غير معروف",
     "viaWorkflow": "عبر سير العمل «{{workflow}}» — {{state}}",
+    "viaWorkflowNoState": "عبر سير العمل «{{workflow}}»",
     "editMetadata": "تعديل البيانات الوصفية",
     "cancelEditing": "إلغاء التعديل",
     "saveMetadata": "حفظ تغييرات البيانات الوصفية",

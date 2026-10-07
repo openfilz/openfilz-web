@@ -331,6 +331,7 @@
     "auditLogs": "Audit log entries",
     "unknownUser": "Unknown user",
     "viaWorkflow": "via the workflow “{{workflow}}” — {{state}}",
+    "viaWorkflowNoState": "via the workflow “{{workflow}}”",
     "editMetadata": "Edit Metadata",
     "cancelEditing": "Cancel editing",
     "saveMetadata": "Save metadata changes",
