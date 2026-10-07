@@ -173,6 +173,8 @@ export interface SignatureEnvelopeDTO {
   templateId?: string;
   reminderDays?: number;
   sealProvider?: string;
+  /** Name of the certificate that sealed the signed document (e.g. "OpenFilz SAS"), once COMPLETED. */
+  sealSigner?: string;
   createdAt: string;
   sentAt?: string;
   completedAt?: string;

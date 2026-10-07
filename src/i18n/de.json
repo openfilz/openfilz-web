@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "Umschlag abgebrochen",
       "ENVELOPE_EXPIRED": "Umschlag abgelaufen"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "An 1 Empfänger gesendet",
+        "other": "An {{count}} Empfänger gesendet"
+      },
+      "fields": {
+        "one": "1 Feld ausgefüllt",
+        "other": "{{count}} Felder ausgefüllt"
+      },
+      "sealed": "Versiegelt von {{signer}}",
+      "sealedArchived": "Versiegelt von {{signer}} · {{flavor}}",
+      "archived": "Archiviert als {{flavor}}"
+    },
     "list": {
       "title": "Signaturen",
       "toSignTab": "Warten auf meine Signatur",
@@ -1149,6 +1162,7 @@
       "fromWho": "von {{who}}",
       "createdOn": "erstellt am {{date}}",
       "expiresOn": "läuft ab am {{date}}",
+      "completedOn": "abgeschlossen am {{date}}",
       "signedOf": "{{count}} unterschrieben",
       "waitingOn": "wartet auf {{who}}",
       "download": "Herunterladen",
