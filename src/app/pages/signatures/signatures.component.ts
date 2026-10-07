@@ -21,6 +21,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm
 import { TemplateNameDialogComponent } from '../../dialogs/request-signature-dialog/template-name-dialog.component';
 import { UseTemplateDialogComponent, UseTemplateDialogData } from '../../dialogs/use-template-dialog/use-template-dialog.component';
 import { recipientColor } from '../../utils/signature-envelope';
+import { eventDetailsView, showsExpiry } from '../../utils/signature-event-details';
 import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 
@@ -162,6 +163,18 @@ export class SignaturesComponent implements OnInit {
 
   sortedRecipients(e: SignatureEnvelopeDTO): SignatureRecipientDTO[] {
     return [...e.recipients].sort((a, b) => a.orderIndex - b.orderIndex);
+  }
+
+  /** Expiry date shown only while signatures are awaited, or for an expired envelope. */
+  showsExpiry(e: SignatureEnvelopeDTO): boolean {
+    return showsExpiry(e.status);
+  }
+
+  /** Translated details line of an activity event, null when there is nothing worth showing. */
+  eventDetails(ev: SignatureEventDTO, e: SignatureEnvelopeDTO): string | null {
+    const view = eventDetailsView(ev, e.sealSigner);
+    if (!view) return null;
+    return 'text' in view ? view.text : this.translate.instant(view.key, view.params);
   }
 
   /** Recipient display for an event actor (falls back to the raw actor string). */

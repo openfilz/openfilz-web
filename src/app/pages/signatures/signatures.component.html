@@ -31,7 +31,9 @@
                 </span>
                 <span class="c-state"><span class="badge s-{{ e.status }}">{{ 'signature.status.' + e.status | translate }}</span></span>
                 <span class="c-side">
-                  <span class="when"><mat-icon aria-hidden="true">event</mat-icon>{{ 'signature.list.expiresOn' | translate: { date: (e.expiresAt | localDate:'mediumDate') } }}</span>
+                  @if (showsExpiry(e)) {
+                    <span class="when"><mat-icon aria-hidden="true">event</mat-icon>{{ 'signature.list.expiresOn' | translate: { date: (e.expiresAt | localDate:'mediumDate') } }}</span>
+                  }
                 </span>
               </div>
             }
@@ -81,8 +83,13 @@
                     </span>
                     <span class="doc-meta">
                       {{ 'signature.list.createdOn' | translate: { date: (e.createdAt | localDate:'mediumDate') } }}
-                      <span class="dot-sep">·</span>
-                      <span [class.late]="e.status === 'EXPIRED'">{{ 'signature.list.expiresOn' | translate: { date: (e.expiresAt | localDate:'mediumDate') } }}</span>
+                      @if (showsExpiry(e)) {
+                        <span class="dot-sep">·</span>
+                        <span [class.late]="e.status === 'EXPIRED'">{{ 'signature.list.expiresOn' | translate: { date: (e.expiresAt | localDate:'mediumDate') } }}</span>
+                      } @else if (e.completedAt) {
+                        <span class="dot-sep">·</span>
+                        <span>{{ 'signature.list.completedOn' | translate: { date: (e.completedAt | localDate:'mediumDate') } }}</span>
+                      }
                     </span>
                   </span>
                 </span>
@@ -199,11 +206,11 @@
       <dl class="facts">
         <div class="fact"><dt>{{ 'signature.list.created' | translate }}</dt><dd>{{ d.createdAt | localDate:'medium' }}</dd></div>
         @if (d.sentAt) { <div class="fact"><dt>{{ 'signature.list.sentAt' | translate }}</dt><dd>{{ d.sentAt | localDate:'medium' }}</dd></div> }
-        <div class="fact" [class.late]="d.status === 'EXPIRED'"><dt>{{ 'signature.list.expires' | translate }}</dt><dd>{{ d.expiresAt | localDate:'medium' }}</dd></div>
+        @if (showsExpiry(d)) { <div class="fact" [class.late]="d.status === 'EXPIRED'"><dt>{{ 'signature.list.expires' | translate }}</dt><dd>{{ d.expiresAt | localDate:'medium' }}</dd></div> }
         @if (d.completedAt) { <div class="fact"><dt>{{ 'signature.list.completedAt' | translate }}</dt><dd>{{ d.completedAt | localDate:'medium' }}</dd></div> }
         <div class="fact"><dt>{{ 'signature.request.sequential' | translate }}</dt><dd>{{ (d.sequential ? 'common.yes' : 'common.no') | translate }}</dd></div>
         @if (d.reminderDays) { <div class="fact"><dt>{{ 'signature.request.reminderDays' | translate }}</dt><dd>{{ d.reminderDays }}</dd></div> }
-        @if (d.sealProvider) { <div class="fact"><dt>{{ 'signature.list.seal' | translate }}</dt><dd>{{ d.sealProvider }}</dd></div> }
+        @if (d.sealSigner) { <div class="fact"><dt>{{ 'signature.list.seal' | translate }}</dt><dd>{{ d.sealSigner }}</dd></div> }
       </dl>
       @if (d.message) { <div class="msg"><mat-icon aria-hidden="true">chat_bubble_outline</mat-icon><span>{{ d.message }}</span></div> }
 
@@ -281,7 +288,7 @@
                   @if (ev.actor) { · {{ ev.actor }} }
                   @if (ev.signerIp) { · {{ ev.signerIp }} }
                 </div>
-                @if (ev.details) { <div class="sub">{{ ev.details }}</div> }
+                @if (eventDetails(ev, d); as details) { <div class="sub">{{ details }}</div> }
               </div>
             </li>
           }

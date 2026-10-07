@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "Envelop geannuleerd",
       "ENVELOPE_EXPIRED": "Envelop verlopen"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "Verzonden naar 1 ontvanger",
+        "other": "Verzonden naar {{count}} ontvangers"
+      },
+      "fields": {
+        "one": "1 veld ingevuld",
+        "other": "{{count}} velden ingevuld"
+      },
+      "sealed": "Verzegeld door {{signer}}",
+      "sealedArchived": "Verzegeld door {{signer}} · {{flavor}}",
+      "archived": "Gearchiveerd als {{flavor}}"
+    },
     "list": {
       "title": "Handtekeningen",
       "toSignTab": "Wacht op mijn handtekening",
@@ -1149,6 +1162,7 @@
       "fromWho": "van {{who}}",
       "createdOn": "aangemaakt op {{date}}",
       "expiresOn": "verloopt op {{date}}",
+      "completedOn": "voltooid op {{date}}",
       "signedOf": "{{count}} ondertekend",
       "waitingOn": "wacht op {{who}}",
       "download": "Downloaden",

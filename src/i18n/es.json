@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "Sobre cancelado",
       "ENVELOPE_EXPIRED": "Sobre caducado"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "Enviado a 1 destinatario",
+        "other": "Enviado a {{count}} destinatarios"
+      },
+      "fields": {
+        "one": "1 campo completado",
+        "other": "{{count}} campos completados"
+      },
+      "sealed": "Sellado por {{signer}}",
+      "sealedArchived": "Sellado por {{signer}} · {{flavor}}",
+      "archived": "Archivado en {{flavor}}"
+    },
     "list": {
       "title": "Firmas",
       "toSignTab": "Esperando mi firma",
@@ -1149,6 +1162,7 @@
       "fromWho": "de {{who}}",
       "createdOn": "creado el {{date}}",
       "expiresOn": "caduca el {{date}}",
+      "completedOn": "completado el {{date}}",
       "signedOf": "{{count}} firmados",
       "waitingOn": "espera a {{who}}",
       "download": "Descargar",
