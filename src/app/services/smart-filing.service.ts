@@ -169,7 +169,10 @@ export class SmartFilingService {
     );
   }
 
-  /** Latest filing outcome of a document, or null when it was never filed (404). */
+  /**
+   * Latest filing outcome of a document, or null when it was never filed: 204 (empty body → null) since
+   * openfilz-core 2026-10-07; older servers answered 404, which the catchError still maps to null.
+   */
   getDocumentFiling(documentId: string): Observable<FilingOutcome | null> {
     if (!this.enabled) {
       return of(null);

@@ -79,8 +79,6 @@ export class MainComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('MainComponent ngOnInit - isMobileMenuOpen:', this.isMobileMenuOpen);
-
     // Ensure mobile menu starts closed
     this.isMobileMenuOpen = false;
 
