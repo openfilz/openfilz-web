@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "Busta annullata",
       "ENVELOPE_EXPIRED": "Busta scaduta"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "Inviata a 1 destinatario",
+        "other": "Inviata a {{count}} destinatari"
+      },
+      "fields": {
+        "one": "1 campo compilato",
+        "other": "{{count}} campi compilati"
+      },
+      "sealed": "Sigillata da {{signer}}",
+      "sealedArchived": "Sigillata da {{signer}} · {{flavor}}",
+      "archived": "Archiviata in {{flavor}}"
+    },
     "list": {
       "title": "Firme",
       "toSignTab": "In attesa della mia firma",
@@ -1149,6 +1162,7 @@
       "fromWho": "da {{who}}",
       "createdOn": "creato il {{date}}",
       "expiresOn": "scade il {{date}}",
+      "completedOn": "completata il {{date}}",
       "signedOf": "{{count}} firmati",
       "waitingOn": "in attesa di {{who}}",
       "download": "Scarica",

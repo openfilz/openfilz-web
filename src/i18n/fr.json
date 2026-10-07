@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "Enveloppe annulée",
       "ENVELOPE_EXPIRED": "Enveloppe expirée"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "Envoyée à 1 destinataire",
+        "other": "Envoyée à {{count}} destinataires"
+      },
+      "fields": {
+        "one": "1 champ rempli",
+        "other": "{{count}} champs remplis"
+      },
+      "sealed": "Scellée par {{signer}}",
+      "sealedArchived": "Scellée par {{signer}} · {{flavor}}",
+      "archived": "Archivée au format {{flavor}}"
+    },
     "list": {
       "title": "Signatures",
       "toSignTab": "En attente de ma signature",
@@ -1149,6 +1162,7 @@
       "fromWho": "de {{who}}",
       "createdOn": "créé le {{date}}",
       "expiresOn": "expire le {{date}}",
+      "completedOn": "terminé le {{date}}",
       "signedOf": "{{count}} signés",
       "waitingOn": "attend {{who}}",
       "download": "Télécharger",

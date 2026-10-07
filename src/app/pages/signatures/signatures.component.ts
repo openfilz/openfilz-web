@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { LocalDatePipe } from '../../i18n/local-date.pipe';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,8 +22,12 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../dialogs/confirm
 import { TemplateNameDialogComponent } from '../../dialogs/request-signature-dialog/template-name-dialog.component';
 import { UseTemplateDialogComponent, UseTemplateDialogData } from '../../dialogs/use-template-dialog/use-template-dialog.component';
 import { recipientColor } from '../../utils/signature-envelope';
+import { eventDetailsView, showsExpiry } from '../../utils/signature-event-details';
 import { SealNoticeComponent } from '../../components/seal-notice/seal-notice.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
+
+/** An activity event plus its details line, translated when the drawer loads. */
+interface EventRow extends SignatureEventDTO { detailsText: string | null; }
 
 /**
  * e-Sign hub: envelopes waiting for my signature, envelopes I sent (status chips as the filter,
@@ -48,6 +53,7 @@ export class SignaturesComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
+  private destroyRef = inject(DestroyRef);
 
   loadingSent = true;
   loadingToSign = true;
@@ -66,11 +72,16 @@ export class SignaturesComponent implements OnInit {
 
   /** Envelope whose detail drawer is open (null = closed). */
   detail: SignatureEnvelopeDTO | null = null;
-  detailEvents: SignatureEventDTO[] = [];
+  /** Activity of the open envelope, with the translated details line resolved once (not per change detection). */
+  detailEvents: EventRow[] = [];
   loadingDetail = false;
   busy = new Set<string>();
 
   ngOnInit(): void {
+    // The details line is resolved once per load; re-resolve it when the user switches language.
+    this.translate.onLangChange.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.detail) this.detailEvents = this.toEventRows(this.detailEvents, this.detail);
+    });
     this.route.queryParamMap.subscribe(params => {
       const tab = params.get('tab');
       if (tab && tab in SignaturesComponent.TAB_INDEX) this.selectedTab = SignaturesComponent.TAB_INDEX[tab];
@@ -164,6 +175,22 @@ export class SignaturesComponent implements OnInit {
     return [...e.recipients].sort((a, b) => a.orderIndex - b.orderIndex);
   }
 
+  /** Expiry date shown only while signatures are awaited, or for an expired envelope. */
+  showsExpiry(e: SignatureEnvelopeDTO): boolean {
+    return showsExpiry(e.status);
+  }
+
+  /** Translated details line of an activity event, null when there is nothing worth showing. */
+  private eventDetails(ev: SignatureEventDTO, e: SignatureEnvelopeDTO): string | null {
+    const view = eventDetailsView(ev, e.sealSigner);
+    if (!view) return null;
+    return 'text' in view ? view.text : this.translate.instant(view.key, view.params);
+  }
+
+  private toEventRows(events: SignatureEventDTO[], e: SignatureEnvelopeDTO): EventRow[] {
+    return events.map(ev => ({ ...ev, detailsText: this.eventDetails(ev, e) }));
+  }
+
   /** Recipient display for an event actor (falls back to the raw actor string). */
   actorLabel(ev: SignatureEventDTO): string {
     return ev.actor ?? '';
@@ -181,7 +208,7 @@ export class SignaturesComponent implements OnInit {
       setTimeout(() => document.getElementById('signature-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
     }
     this.api.events(e.id).subscribe({
-      next: (ev) => { this.detailEvents = ev ?? []; this.loadingDetail = false; },
+      next: (ev) => { this.detailEvents = this.toEventRows(ev ?? [], e); this.loadingDetail = false; },
       error: () => { this.loadingDetail = false; }
     });
   }

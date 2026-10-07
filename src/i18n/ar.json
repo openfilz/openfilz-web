@@ -1108,6 +1108,19 @@
       "ENVELOPE_CANCELLED": "أُلغي المظروف",
       "ENVELOPE_EXPIRED": "انتهت صلاحية المظروف"
     },
+    "eventDetails": {
+      "recipients": {
+        "one": "أُرسل إلى مستلم واحد",
+        "other": "أُرسل إلى {{count}} مستلمين"
+      },
+      "fields": {
+        "one": "تم ملء حقل واحد",
+        "other": "تم ملء {{count}} حقول"
+      },
+      "sealed": "مختوم بواسطة {{signer}}",
+      "sealedArchived": "مختوم بواسطة {{signer}} · {{flavor}}",
+      "archived": "مؤرشف بصيغة {{flavor}}"
+    },
     "list": {
       "title": "التوقيعات",
       "toSignTab": "في انتظار توقيعي",
@@ -1149,6 +1162,7 @@
       "fromWho": "من {{who}}",
       "createdOn": "أُنشئ في {{date}}",
       "expiresOn": "ينتهي في {{date}}",
+      "completedOn": "اكتمل في {{date}}",
       "signedOf": "{{count}} موقَّع",
       "waitingOn": "بانتظار {{who}}",
       "download": "تنزيل",
