@@ -33,6 +33,8 @@
                 <span class="c-side">
                   @if (showsExpiry(e)) {
                     <span class="when"><mat-icon aria-hidden="true">event</mat-icon>{{ 'signature.list.expiresOn' | translate: { date: (e.expiresAt | localDate:'mediumDate') } }}</span>
+                  } @else if (e.completedAt) {
+                    <span class="when"><mat-icon aria-hidden="true">event_available</mat-icon>{{ 'signature.list.completedOn' | translate: { date: (e.completedAt | localDate:'mediumDate') } }}</span>
                   }
                 </span>
               </div>
@@ -288,7 +290,7 @@
                   @if (ev.actor) { · {{ ev.actor }} }
                   @if (ev.signerIp) { · {{ ev.signerIp }} }
                 </div>
-                @if (eventDetails(ev, d); as details) { <div class="sub">{{ details }}</div> }
+                @if (ev.detailsText) { <div class="sub">{{ ev.detailsText }}</div> }
               </div>
             </li>
           }
