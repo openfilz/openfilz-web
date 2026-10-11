@@ -716,7 +716,7 @@
       },
       "insights": {
         "title": "Ré-analyser les documents",
-        "hint": "Redemande au modèle le type, le résumé et les mots-clés des documents sans analyse à jour. Avec « Tous les documents », tous sont ré-analysés, ce qui consomme des jetons.",
+        "hint": "Redemande au modèle le type, le résumé et les mots-clés des documents sans analyse à jour. Avec « Tous les documents », tous sont ré-analysés, ce qui consomme des tokens.",
         "start": "Ré-analyser"
       },
       "force": "Tous les documents",
@@ -1218,7 +1218,7 @@
       "readError": "Impossible de lire l’image."
     },
     "sign": {
-      "missingToken": "Ce lien de signature ne contient pas de jeton.",
+      "missingToken": "Ce lien de signature ne contient pas de token.",
       "invalidLink": "Ce lien de signature est invalide ou a expiré.",
       "linkExpired": "Cette demande de signature a expiré.",
       "requestedBy": "Demandé par",
