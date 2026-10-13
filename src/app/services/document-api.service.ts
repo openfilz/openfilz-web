@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { filter, forkJoin, map, Observable, of } from 'rxjs';
+import { filter, forkJoin, map, MonoTypeOperatorFunction, Observable, of, tap } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular';
 import {
   AncestorInfo,
@@ -179,6 +179,19 @@ const RECENT_FILES_QUERY = gql`
   }
 `;
 
+/**
+ * Apollo 4 reports a failed watchQuery (network error, API unreachable…) as `result.error` with no
+ * `data` instead of erroring the stream: rethrow it so subscribers' `error` handlers run with the
+ * real cause rather than a TypeError on `result.data`.
+ */
+function rethrowQueryError<T extends { error?: unknown }>(): MonoTypeOperatorFunction<T> {
+  return tap(result => {
+    if (result.error) {
+      throw result.error;
+    }
+  });
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -273,6 +286,7 @@ export class DocumentApiService {
       variables: { request1, request2 }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => ({
         listFolder: result.data.listFolder,
         count: result.data.count
@@ -302,6 +316,7 @@ export class DocumentApiService {
       variables: { request }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => result.data.listFolder)
     );
   }
@@ -408,6 +423,7 @@ export class DocumentApiService {
       variables: { request1, request2 }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => ({
         listFolder: result.data.listFolder,
         count: result.data.count
@@ -433,6 +449,7 @@ export class DocumentApiService {
       variables: { request }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => ({
         listFolder: result.data.listAllFolder,
         count: result.data.listAllFolder?.length ?? 0
@@ -450,6 +467,7 @@ export class DocumentApiService {
       variables: { request }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => result.data?.countAllFolder ?? 0)
     );
   }
@@ -476,6 +494,7 @@ export class DocumentApiService {
       variables: { request1, request2 }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => ({
         listFolder: result.data.listFavorites,
         count: result.data.countFavorites
@@ -801,6 +820,7 @@ export class DocumentApiService {
       variables: { query: query?.trim() ? query : null, filters: filterInputs, sort, page, size }
     }).valueChanges.pipe(
       filter(result => !result.loading),
+      rethrowQueryError(),
       map(result => result.data.searchDocuments)
     );
   }

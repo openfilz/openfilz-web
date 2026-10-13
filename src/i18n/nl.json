@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Kan de server niet bereiken ({{url}}). Blijft dit gebeuren, dan moet een beheerder de API-URL en de toegestane origins (CORS) controleren.",
     "ok": "OK",
     "cancel": "Annuleren",
     "close": "Sluiten",

@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Server nicht erreichbar ({{url}}). Wenn das Problem weiterhin besteht, sollte ein Administrator die API-URL und die erlaubten Origins (CORS) prüfen.",
     "ok": "OK",
     "cancel": "Abbrechen",
     "close": "Schließen",

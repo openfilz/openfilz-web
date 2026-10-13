@@ -28,6 +28,8 @@ import { AiOrganizeAccessService } from '../../services/ai-organize-access.servi
 import { SmartFilingService } from '../../services/smart-filing.service';
 import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
 import { isCompactViewport } from '../../utils/layout.util';
+import { isApiUnreachable } from '../../utils/http-errors';
+import { environment } from '../../../environments/environment';
 
 @Directive()
 export abstract class FileOperationsComponent implements OnInit {
@@ -438,6 +440,22 @@ export abstract class FileOperationsComponent implements OnInit {
   }
 
   /**
+   * Snackbar for a failed API call. When the browser got no HTTP answer at all (API down, wrong
+   * NG_APP_API_URL, origin not allowed by CORS — nothing in the server logs), says so with the API
+   * URL instead of the operation's generic error. The error itself goes to the browser console.
+   */
+  protected showHttpError(err: unknown, fallbackKey: string): void {
+    if (isApiUnreachable(err)) {
+      console.error(`OpenFilz API unreachable at ${environment.apiURL}`, err);
+      this.snackBar.open(this.translate.instant('common.apiUnreachable', { url: environment.apiURL }),
+        this.translate.instant('common.close'), { duration: 8000 });
+      return;
+    }
+    console.error(err);
+    this.snackBar.open(this.translate.instant(fallbackKey), this.translate.instant('common.close'), { duration: 3000 });
+  }
+
+  /**
    * The folder this listing shows, when it is the ZIP's own folder (`name` undefined = the root;
    * `writable: false` when the user may not write into it): labels the dialog's "current folder"
    * option. Listings without a current folder (search, favorites) return undefined and the option
@@ -737,7 +755,7 @@ export abstract class FileOperationsComponent implements OnInit {
             this.snackBar.open(this.translate.instant('operations.renameSuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open(this.translate.instant('operations.renameError'), this.translate.instant('common.close'), { duration: 3000 })
+          error: (err) => this.showHttpError(err, 'operations.renameError')
         });
       }
     });
@@ -782,7 +800,7 @@ export abstract class FileOperationsComponent implements OnInit {
             this.snackBar.open(this.translate.instant('operations.moveSuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open(this.translate.instant('operations.moveError'), this.translate.instant('common.close'), { duration: 3000 })
+          error: (err) => this.showHttpError(err, 'operations.moveError')
         });
       }
     });
@@ -805,7 +823,7 @@ export abstract class FileOperationsComponent implements OnInit {
             this.snackBar.open(this.translate.instant('operations.copySuccess'), this.translate.instant('common.close'), { duration: 3000 });
             this.reloadData();
           },
-          error: () => this.snackBar.open(this.translate.instant('operations.copyError'), this.translate.instant('common.close'), { duration: 3000 })
+          error: (err) => this.showHttpError(err, 'operations.copyError')
         });
       }
     });
