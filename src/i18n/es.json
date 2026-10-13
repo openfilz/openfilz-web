@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "No se puede contactar con el servidor ({{url}}). Si persiste, un administrador debe revisar la URL de la API y sus orígenes permitidos (CORS).",
     "ok": "OK",
     "cancel": "Cancelar",
     "close": "Cerrar",

@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Cannot reach the server ({{url}}). If this persists, an administrator should check the API URL and its allowed origins (CORS).",
     "ok": "OK",
     "cancel": "Cancel",
     "close": "Close",

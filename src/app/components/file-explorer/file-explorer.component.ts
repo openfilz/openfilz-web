@@ -626,7 +626,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.loadFolder(this.breadcrumbTrail[this.breadcrumbTrail.length - 1], true, false, false);
       },
       error: (err) => {
-        this.snackBar.open(this.translate.instant('fileExplorer.loadFolderError'), this.translate.instant('common.close'), { duration: 3000 });
+        this.showHttpError(err, 'fileExplorer.loadFolderError');
         this.loading = false;
         this.router.navigate(['/my-folder']);
         this.loadFolder(undefined, false, false, false);
@@ -725,8 +725,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         }
       },
       error: (error) => {
-          console.log(error);
-        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
+        this.showHttpError(error, 'fileExplorer.loadContentsError');
         this.loading = false;
       }
     });
@@ -800,8 +799,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.populateFolderContents(listAndCount.listFolder);
       },
       error: (error) => {
-          console.log(error);
-        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
+        this.showHttpError(error, 'fileExplorer.loadContentsError');
         this.loading = false;
       }
     });
@@ -814,8 +812,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         this.populateFolderContents(response);
       },
       error: (error) => {
-          console.log(error);
-        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
+        this.showHttpError(error, 'fileExplorer.loadContentsError');
         this.loading = false;
       }
     });
@@ -1061,9 +1058,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
             this.snackBar.open(this.translate.instant('fileExplorer.folderCreated'), this.translate.instant('common.close'), { duration: 3000 });
             this.navigateToNewFolder(response.id);
           },
-          error: () => {
-            this.snackBar.open(this.translate.instant('fileExplorer.folderCreateError'), this.translate.instant('common.close'), { duration: 3000 });
-          }
+          error: (err) => this.showHttpError(err, 'fileExplorer.folderCreateError')
         });
       }
     });
@@ -1210,8 +1205,7 @@ export class FileExplorerComponent extends FileOperationsComponent implements On
         }
       },
       error: (error) => {
-          console.log(error);
-        this.snackBar.open(this.translate.instant('fileExplorer.loadContentsError'), this.translate.instant('common.close'), { duration: 3000 });
+        this.showHttpError(error, 'fileExplorer.loadContentsError');
         this.loading = false;
       }
     });
