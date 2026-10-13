@@ -46,9 +46,10 @@ export class DocumentLanguagePromptService {
       }).afterClosed());
       if (result?.action === 'set') {
         await this.apply(documentId, result.language);
-      } else {
+      } else if (result?.action === 'keep') {
         this.remember(documentId);
       }
+      // dismissed (Escape, backdrop, X): ask again next time
     } catch (err) {
       console.warn('Document language check skipped:', err);
     }

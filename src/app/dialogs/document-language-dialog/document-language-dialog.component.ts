@@ -11,7 +11,11 @@ export interface DocumentLanguageDialogData {
   info: DocumentLanguageInfo;
 }
 
-/** `set`: write `language` into the document. `keep`: leave it (the dialog has shown how to change it in OnlyOffice). */
+/**
+ * `set`: write `language` into the document. `keep`: leave it (the dialog has shown how to change
+ * it in OnlyOffice) — remembered per document. Dismissed (Escape, backdrop, X on the first step):
+ * `undefined`, the question comes back next time.
+ */
 export type DocumentLanguageDialogResult = { action: 'set'; language: string } | { action: 'keep' };
 
 /** The languages the dialog offers, besides the detected and declared ones. */
@@ -36,7 +40,7 @@ export class DocumentLanguageDialogComponent {
 
   /** `ask` first; `manual` once the user declined (how to change it in OnlyOffice). */
   step: 'ask' | 'manual' = 'ask';
-  language = this.data.info.detected ?? 'fr-FR';
+  language = this.data.info.detected ?? 'en-US';
 
   readonly options: { tag: string; label: string }[];
   private readonly names?: Intl.DisplayNames;
@@ -74,7 +78,8 @@ export class DocumentLanguageDialogComponent {
     this.step = 'manual';
   }
 
+  /** On the first step this is a dismissal; after "leave it as is" it confirms the choice. */
   close(): void {
-    this.dialogRef.close({ action: 'keep' });
+    this.dialogRef.close(this.step === 'manual' ? { action: 'keep' } : undefined);
   }
 }
