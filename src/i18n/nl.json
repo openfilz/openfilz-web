@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Kan de server niet bereiken ({{url}}). Blijft dit gebeuren, dan moet een beheerder de API-URL en de toegestane origins (CORS) controleren.",
     "ok": "OK",
     "cancel": "Annuleren",
     "close": "Sluiten",
@@ -1992,5 +1993,26 @@
     "editorError": "Editorfout: {{error}}",
     "unknownError": "Onbekende fout",
     "createError": "Kan de OnlyOffice-editor niet aanmaken"
+  },
+  "documentLanguage": {
+    "title": "Documenttaal",
+    "detected": "Dit document lijkt in het {{language}} geschreven.",
+    "declaredOther": "Maar het is gemarkeerd als geschreven in het {{language}}.",
+    "declaredNone": "Maar het geeft niet aan in welke taal het geschreven is.",
+    "why": "OnlyOffice controleert spelling en grammatica in de taal van het document: met de verkeerde taal wordt de hele tekst rood onderstreept.",
+    "choose": "Taal van het document",
+    "newVersion": "De taal wordt in het document vastgelegd en als nieuwe versie opgeslagen.",
+    "keep": "Niet wijzigen",
+    "apply": "Taal instellen",
+    "applied": "Documenttaal ingesteld: {{language}}.",
+    "applyFailed": "De documenttaal kon niet worden gewijzigd. U kunt hem nog steeds in OnlyOffice wijzigen.",
+    "manual": {
+      "intro": "Het document is niet gewijzigd. Zo stelt u de taal zelf in OnlyOffice in:",
+      "step1": "Klik in de statusbalk onder in de editor op het wereldbolpictogram naast de getoonde taal (\"Documenttaal instellen\").",
+      "step2": "Kies {{language}} en bevestig.",
+      "step3": "OnlyOffice slaat het document op: de taal blijft ingesteld voor iedereen die het opent.",
+      "selection": "Om de taal van slechts een deel van de tekst te wijzigen, selecteert u dat deel en klikt u op de taal in de statusbalk.",
+      "ok": "Begrepen"
+    }
   }
 }

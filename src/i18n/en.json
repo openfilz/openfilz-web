@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Cannot reach the server ({{url}}). If this persists, an administrator should check the API URL and its allowed origins (CORS).",
     "ok": "OK",
     "cancel": "Cancel",
     "close": "Close",
@@ -1992,5 +1993,26 @@
     "editorError": "Editor error: {{error}}",
     "unknownError": "Unknown error",
     "createError": "Failed to create OnlyOffice editor"
+  },
+  "documentLanguage": {
+    "title": "Document language",
+    "detected": "This document seems to be written in {{language}}.",
+    "declaredOther": "But it is marked as written in {{language}}.",
+    "declaredNone": "But it does not say which language it is written in.",
+    "why": "OnlyOffice checks spelling and grammar in the document's language: with the wrong one, the whole text is underlined in red.",
+    "choose": "Language of the document",
+    "newVersion": "The language is written into the document and saved as a new version.",
+    "keep": "Leave it as is",
+    "apply": "Set the language",
+    "applied": "Document language set to {{language}}.",
+    "applyFailed": "The document language could not be changed. You can still change it in OnlyOffice.",
+    "manual": {
+      "intro": "The document has not been changed. To set its language yourself in OnlyOffice:",
+      "step1": "In the status bar at the bottom of the editor, click the globe icon next to the language shown (\"Set document language\").",
+      "step2": "Choose {{language}} and confirm.",
+      "step3": "OnlyOffice saves the document: the language stays set for everyone who opens it.",
+      "selection": "To change the language of only part of the text, select it and click the language shown in the status bar.",
+      "ok": "Got it"
+    }
   }
 }

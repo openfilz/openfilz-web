@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Server nicht erreichbar ({{url}}). Wenn das Problem weiterhin besteht, sollte ein Administrator die API-URL und die erlaubten Origins (CORS) prüfen.",
     "ok": "OK",
     "cancel": "Abbrechen",
     "close": "Schließen",
@@ -1992,5 +1993,26 @@
     "editorError": "Editor-Fehler: {{error}}",
     "unknownError": "Unbekannter Fehler",
     "createError": "OnlyOffice-Editor konnte nicht erstellt werden"
+  },
+  "documentLanguage": {
+    "title": "Dokumentsprache",
+    "detected": "Dieses Dokument scheint auf {{language}} verfasst zu sein.",
+    "declaredOther": "Es ist jedoch als {{language}} gekennzeichnet.",
+    "declaredNone": "Es gibt jedoch nicht an, in welcher Sprache es verfasst ist.",
+    "why": "OnlyOffice prüft Rechtschreibung und Grammatik in der Sprache des Dokuments: Mit der falschen Sprache wird der ganze Text rot unterstrichen.",
+    "choose": "Sprache des Dokuments",
+    "newVersion": "Die Sprache wird in das Dokument geschrieben und als neue Version gespeichert.",
+    "keep": "Nicht ändern",
+    "apply": "Sprache festlegen",
+    "applied": "Dokumentsprache festgelegt: {{language}}.",
+    "applyFailed": "Die Dokumentsprache konnte nicht geändert werden. Sie können sie weiterhin in OnlyOffice ändern.",
+    "manual": {
+      "intro": "Das Dokument wurde nicht geändert. So legen Sie die Sprache selbst in OnlyOffice fest:",
+      "step1": "Klicken Sie in der Statusleiste unten im Editor auf das Globus-Symbol neben der angezeigten Sprache („Dokumentsprache festlegen“).",
+      "step2": "Wählen Sie {{language}} und bestätigen Sie.",
+      "step3": "OnlyOffice speichert das Dokument: Die Sprache bleibt für alle festgelegt, die es öffnen.",
+      "selection": "Um die Sprache nur für einen Teil des Textes zu ändern, markieren Sie ihn und klicken Sie auf die in der Statusleiste angezeigte Sprache.",
+      "ok": "Verstanden"
+    }
   }
 }

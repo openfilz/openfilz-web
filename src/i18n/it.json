@@ -1,5 +1,6 @@
 {
   "common": {
+    "apiUnreachable": "Impossibile raggiungere il server ({{url}}). Se il problema persiste, un amministratore deve verificare l'URL dell'API e le origini consentite (CORS).",
     "ok": "OK",
     "cancel": "Annulla",
     "close": "Chiudi",
@@ -1992,5 +1993,26 @@
     "editorError": "Errore dell'editor: {{error}}",
     "unknownError": "Errore sconosciuto",
     "createError": "Impossibile creare l'editor OnlyOffice"
+  },
+  "documentLanguage": {
+    "title": "Lingua del documento",
+    "detected": "Questo documento sembra scritto in {{language}}.",
+    "declaredOther": "Ma è indicato come scritto in {{language}}.",
+    "declaredNone": "Ma non indica in quale lingua è scritto.",
+    "why": "OnlyOffice controlla ortografia e grammatica nella lingua del documento: con la lingua sbagliata, tutto il testo viene sottolineato in rosso.",
+    "choose": "Lingua del documento",
+    "newVersion": "La lingua viene scritta nel documento e salvata come nuova versione.",
+    "keep": "Non modificare",
+    "apply": "Imposta la lingua",
+    "applied": "Lingua del documento impostata: {{language}}.",
+    "applyFailed": "Impossibile cambiare la lingua del documento. Puoi comunque cambiarla in OnlyOffice.",
+    "manual": {
+      "intro": "Il documento non è stato modificato. Per impostarne tu stesso la lingua in OnlyOffice:",
+      "step1": "Nella barra di stato in basso nell'editor, fai clic sull'icona del globo accanto alla lingua visualizzata («Imposta la lingua del documento»).",
+      "step2": "Scegli {{language}} e conferma.",
+      "step3": "OnlyOffice salva il documento: la lingua resta impostata per chiunque lo apra.",
+      "selection": "Per cambiare la lingua solo di una parte del testo, selezionala e fai clic sulla lingua visualizzata nella barra di stato.",
+      "ok": "Ho capito"
+    }
   }
 }

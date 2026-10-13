@@ -12,6 +12,7 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { OnlyOfficeService, OnlyOfficeConfig } from '../../services/onlyoffice.service';
+import { DocumentLanguagePromptService } from '../../services/document-language-prompt.service';
 
 /**
  * Component for embedding OnlyOffice Document Editor.
@@ -109,6 +110,9 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
     /** Whether the user can edit the document */
     @Input() canEdit: boolean = true;
 
+    /** File name, when known: only Word documents get the language check before editing */
+    @Input() fileName?: string;
+
     /** Emitted when the editor is ready */
     @Output() editorReady = new EventEmitter<void>();
 
@@ -130,6 +134,8 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
     private docEditor?: any;
     private onlyOfficeService = inject(OnlyOfficeService);
     private translate = inject(TranslateService);
+    private languagePrompt = inject(DocumentLanguagePromptService);
+    private destroyed = false;
 
     /** Unique ID for the editor container element */
     readonly editorId = `onlyoffice-editor-${Math.random().toString(36).substring(2, 9)}`;
@@ -146,17 +152,29 @@ export class OnlyOfficeEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        this.destroyed = true;
         this.destroyEditor();
     }
 
     /**
      * Initialize the OnlyOffice editor.
      */
-    private initializeEditor() {
+    private async initializeEditor() {
         this.loading = true;
         this.error = undefined;
 
-        this.onlyOfficeService.getEditorConfig(this.documentId, this.canEdit).subscribe({
+        if (this.canEdit) {
+            // A Word document without the right proofing language: offer to set it before the
+            // editor loads it (a change saves a new version, which the editor then opens).
+            await this.languagePrompt.checkBeforeEditing(this.documentId, this.fileName);
+            if (this.destroyed) {
+                return;
+            }
+        }
+        // Editor menus in the user's OpenFilz language (also OnlyOffice's spell-check language
+        // for text that declares none).
+        const lang = this.translate.getCurrentLang() || this.translate.getFallbackLang() || undefined;
+        this.onlyOfficeService.getEditorConfig(this.documentId, this.canEdit, lang).subscribe({
             next: (config) => {
                 this.loadScriptAndCreateEditor(config);
             },
