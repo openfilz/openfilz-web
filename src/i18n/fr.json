@@ -1993,5 +1993,26 @@
     "editorError": "Erreur de l'éditeur : {{error}}",
     "unknownError": "Erreur inconnue",
     "createError": "Impossible de créer l'éditeur OnlyOffice"
+  },
+  "documentLanguage": {
+    "title": "Langue du document",
+    "detected": "Ce document semble rédigé en {{language}}.",
+    "declaredOther": "Mais il est indiqué comme rédigé en {{language}}.",
+    "declaredNone": "Mais il n'indique pas dans quelle langue il est rédigé.",
+    "why": "OnlyOffice vérifie l'orthographe et la grammaire dans la langue du document : avec la mauvaise langue, tout le texte est souligné en rouge.",
+    "choose": "Langue du document",
+    "newVersion": "La langue est enregistrée dans le document, sous forme d'une nouvelle version.",
+    "keep": "Ne pas modifier",
+    "apply": "Définir la langue",
+    "applied": "Langue du document définie : {{language}}.",
+    "applyFailed": "Impossible de changer la langue du document. Vous pouvez toujours la changer dans OnlyOffice.",
+    "manual": {
+      "intro": "Le document n'a pas été modifié. Pour définir sa langue vous-même dans OnlyOffice :",
+      "step1": "Dans la barre d'état en bas de l'éditeur, cliquez sur l'icône globe à côté de la langue affichée (« Définir la langue du document »).",
+      "step2": "Choisissez {{language}} et validez.",
+      "step3": "OnlyOffice enregistre le document : la langue reste définie pour tous ceux qui l'ouvrent.",
+      "selection": "Pour ne changer la langue que d'une partie du texte, sélectionnez-la puis cliquez sur la langue affichée dans la barre d'état.",
+      "ok": "Compris"
+    }
   }
 }

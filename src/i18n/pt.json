@@ -1993,5 +1993,26 @@
     "editorError": "Erro do editor: {{error}}",
     "unknownError": "Erro desconhecido",
     "createError": "Falha ao criar o editor OnlyOffice"
+  },
+  "documentLanguage": {
+    "title": "Idioma do documento",
+    "detected": "Este documento parece estar escrito em {{language}}.",
+    "declaredOther": "Mas está marcado como escrito em {{language}}.",
+    "declaredNone": "Mas não indica em que idioma está escrito.",
+    "why": "O OnlyOffice verifica a ortografia e a gramática no idioma do documento: com o idioma errado, todo o texto fica sublinhado a vermelho.",
+    "choose": "Idioma do documento",
+    "newVersion": "O idioma é gravado no documento e guardado como uma nova versão.",
+    "keep": "Não alterar",
+    "apply": "Definir o idioma",
+    "applied": "Idioma do documento definido: {{language}}.",
+    "applyFailed": "Não foi possível alterar o idioma do documento. Ainda pode alterá-lo no OnlyOffice.",
+    "manual": {
+      "intro": "O documento não foi alterado. Para definir o idioma você mesmo no OnlyOffice:",
+      "step1": "Na barra de estado, na parte inferior do editor, clique no ícone do globo ao lado do idioma apresentado («Definir idioma do documento»).",
+      "step2": "Escolha {{language}} e confirme.",
+      "step3": "O OnlyOffice guarda o documento: o idioma fica definido para todos os que o abrirem.",
+      "selection": "Para alterar o idioma de apenas uma parte do texto, selecione-a e clique no idioma apresentado na barra de estado.",
+      "ok": "Entendi"
+    }
   }
 }

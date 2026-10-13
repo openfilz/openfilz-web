@@ -50,6 +50,23 @@ export interface OnlyOfficeEditorConfig {
 }
 
 /**
+ * Proofing language of a Word document (GET/POST /onlyoffice/language/{id}).
+ */
+export interface DocumentLanguageInfo {
+    /** The language of this file type can be read and set (Word .docx). */
+    supported: boolean;
+    /** The caller may set it (edit rights, not a locked document). */
+    editable: boolean;
+    /** Language the document declares (e.g. en-US); absent when it declares none. */
+    declared?: string;
+    /** Language detected from the text (e.g. fr-FR); absent when the text is too short or ambiguous. */
+    detected?: string;
+    confidence?: number;
+    /** No language declared, or another one than the text's. */
+    suggested: boolean;
+}
+
+/**
  * OnlyOffice status response.
  */
 export interface OnlyOfficeStatus {
@@ -95,12 +112,26 @@ export class OnlyOfficeService {
      * Get the editor configuration for a document.
      * @param documentId The document ID to edit
      * @param canEdit Whether the user can edit the document
+     * @param lang Language of the editor interface (the user's OpenFilz language); also the
+     *             spell-check language of text that declares none
      * @returns Observable with editor configuration
      */
-    getEditorConfig(documentId: string, canEdit: boolean = true): Observable<OnlyOfficeConfig> {
-        return this.http.get<OnlyOfficeConfig>(
-            `${this.baseUrl}/onlyoffice/config/${documentId}?canEdit=${canEdit}`
-        );
+    getEditorConfig(documentId: string, canEdit: boolean = true, lang?: string): Observable<OnlyOfficeConfig> {
+        let url = `${this.baseUrl}/onlyoffice/config/${documentId}?canEdit=${canEdit}`;
+        if (lang) {
+            url += `&lang=${encodeURIComponent(lang)}`;
+        }
+        return this.http.get<OnlyOfficeConfig>(url);
+    }
+
+    /** The language a Word document declares and the one its text is written in. */
+    getDocumentLanguage(documentId: string): Observable<DocumentLanguageInfo> {
+        return this.http.get<DocumentLanguageInfo>(`${this.baseUrl}/onlyoffice/language/${documentId}`);
+    }
+
+    /** Sets the proofing language of a Word document (e.g. fr-FR); saved as a new version. */
+    setDocumentLanguage(documentId: string, language: string): Observable<DocumentLanguageInfo> {
+        return this.http.post<DocumentLanguageInfo>(`${this.baseUrl}/onlyoffice/language/${documentId}`, { language });
     }
 
     /**
