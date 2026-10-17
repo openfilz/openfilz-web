@@ -62,7 +62,7 @@
               [attr.aria-checked]="(filters.fileType || 'any') === ft.value"
               [class.selected]="(filters.fileType || 'any') === ft.value" (click)="setFileType(ft.value)">
               <mat-icon aria-hidden="true" [style.color]="ft.color || null">{{ ft.icon }}</mat-icon>
-              <span>{{ ft.labelKey | translate }}</span>
+              <span class="chip-label" [title]="ft.labelKey | translate">{{ ft.labelKey | translate }}</span>
             </button>
           }
         </div>
