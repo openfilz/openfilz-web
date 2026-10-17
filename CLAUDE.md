@@ -170,7 +170,7 @@ Runtime environment variables via `@ngx-env/builder` (prefix: `NG_APP_`):
 
 ## Buttons
 
-- **One button system for the whole app** — `global_styles.css` ("Buttons — one modern style") sets Angular Material's `--mat-button-*` tokens from the theme variables, in every theme. Use plain Material buttons and let it style them; do **not** restyle buttons per component (no gradients, no hover lift, no 2px borders, no 44px heights).
+- **One button system for the whole app** — `global_styles.css` ("Buttons — one modern style") sets Angular Material's `--mat-button-*` tokens from the theme variables, in every theme. The token blocks are declared on `html, body` — the theme class sits on `body` and a `var()` in a custom property resolves where it is declared, so a token block on `html`/`:root` alone paints every theme with the light colours. Use plain Material buttons and let it style them; do **not** restyle buttons per component (no gradients, no hover lift, no 2px borders, no 44px heights).
   - Primary action: `mat-flat-button` (or `mat-raised-button`) — `var(--primary)` fill, white label, soft primary shadow. `color="warn"` for destructive actions.
   - Secondary: `mat-stroked-button` — 1px `var(--border-color)` outline, `var(--text-primary)` label.
   - Cancel / tertiary: `mat-button` — quiet `var(--text-secondary)` label, `var(--bg-tertiary)` on hover.
@@ -253,7 +253,7 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   - `components/search-refine-bar/`: quick filter chips (type, file type, date, owner, document kind, language /
     metadata chips), "All filters", "Clear all", sort menu, list / grid toggle. It edits `SearchService` filters.
   - `components/search-result-list/`: the list view — highlighted name, type · size · relative date · owner, content
-    snippet, category badge, hover actions (favorite, show in folder) + the standard item menu. Touch: tap opens,
+    snippet, category badge, hover actions (open, favorite, show in folder) + the standard item menu. Touch: tap opens,
     long press / menu "Select" picks. The grid view stays `app-file-grid`.
   - Every filter is sent to the API (`DocumentApiService.searchDocuments`: `type`, `contentType` = the file-type
     category's content-type patterns joined with `,`, `updatedAtAfter`, `createdBy`, `metadata.*`, `category`,

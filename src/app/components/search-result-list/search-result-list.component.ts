@@ -245,6 +245,11 @@ export class SearchResultListComponent {
     this.contextMenuTrigger?.openMenu();
   }
 
+  onOpen(event: Event, item: FileItem): void {
+    event.stopPropagation();
+    this.itemDoubleClick.emit(item);
+  }
+
   onShowInFolder(event: Event, item: FileItem): void {
     event.stopPropagation();
     this.showInFolder.emit(item);
