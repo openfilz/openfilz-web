@@ -7,6 +7,12 @@
       (change)="selectAll.emit($event.checked)" [attr.aria-label]="'fileList.selectAll' | translate">
     </mat-checkbox>
     <span class="head-label">{{ 'common.name' | translate }}</span>
+    @if (!isTouch && items.length) {
+      <span class="head-hint">
+        <mat-icon aria-hidden="true">mouse</mat-icon>
+        <span>{{ 'searchResults.openHint' | translate }}</span>
+      </span>
+    }
   </div>
 
   @for (item of items; track item.id; let i = $index) {
