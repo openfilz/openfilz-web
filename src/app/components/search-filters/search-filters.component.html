@@ -137,16 +137,19 @@
       <div class="metadata-list">
         @for (meta of metadataFilters; track $index; let i = $index) {
           <div class="metadata-item">
-            <input type="text" [(ngModel)]="meta.key" [placeholder]="'common.key' | translate" class="meta-input"
-              [attr.aria-label]="'common.key' | translate" />
+            <app-metadata-key-input [(value)]="meta.key" [keys]="metadataKeys"
+              [placeholder]="'common.key' | translate" [ariaLabel]="'common.key' | translate" />
             <span class="meta-eq" aria-hidden="true">=</span>
-            <input type="text" [(ngModel)]="meta.value" [placeholder]="'common.value' | translate" class="meta-input"
-              [attr.aria-label]="'common.value' | translate" />
+            <input type="text" [(ngModel)]="meta.value" [placeholder]="'searchFilters.valuePlaceholder' | translate" class="meta-input"
+              [attr.aria-label]="'common.value' | translate" [attr.aria-describedby]="'metadata-wildcard-hint'" />
             <button type="button" class="btn-remove" (click)="$event.stopPropagation(); removeMetadataFilter(i)"
               [matTooltip]="'searchFilters.remove' | translate" [attr.aria-label]="'searchFilters.remove' | translate">
               <mat-icon aria-hidden="true">close</mat-icon>
             </button>
           </div>
+        }
+        @if (metadataFilters.length) {
+          <p class="meta-hint" id="metadata-wildcard-hint">{{ 'searchFilters.wildcardHint' | translate }}</p>
         }
         <button type="button" class="btn-add" (click)="addMetadataFilter()">
           <mat-icon aria-hidden="true">add</mat-icon>
