@@ -242,6 +242,7 @@
     "loadMore": "Weitere Ergebnisse laden",
     "endOfResults": "Ende der Ergebnisse",
     "showInFolder": "Im Ordner anzeigen",
+    "openHint": "Doppelklick auf ein Ergebnis zum Öffnen · Eingabetaste per Tastatur",
     "modifiedAgo": "Geändert {{when}}",
     "modifiedOn": "Geändert am {{date}}",
     "sort": {

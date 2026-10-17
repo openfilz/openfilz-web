@@ -242,6 +242,7 @@
     "loadMore": "Load more results",
     "endOfResults": "End of results",
     "showInFolder": "Show in folder",
+    "openHint": "Double-click a result to open it · Enter from the keyboard",
     "modifiedAgo": "Modified {{when}}",
     "modifiedOn": "Modified on {{date}}",
     "sort": {

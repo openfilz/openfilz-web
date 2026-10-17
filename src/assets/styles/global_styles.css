@@ -712,7 +712,8 @@ input:is([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type
    `.x-field ::ng-deep .mat-mdc-form-field.mat-focused` override never matched (the class sits on
    the form-field host itself), so a focused field stayed grey. This selector outranks them.
    Invalid fields keep the error colour. */
-:root {
+:root,
+body {
   --mat-form-field-outlined-focus-outline-color: var(--primary);
 }
 
@@ -996,8 +997,12 @@ a,
    variables instead. Matches the search filter panel: 40px high, 10px corners,
    semibold label, primary fill with a soft shadow, quiet text buttons.
    Component styles still win (they set properties, these are tokens).
+   Declared on body too: the theme class sits on body, and a var() in a custom property
+   resolves where it is declared — on html alone every theme got the light theme's colours
+   (dark labels on dark panels in the dark themes).
    ============================================================================= */
-html {
+html,
+body {
   /* The M3 typescale tokens are invalid too: labels fell back to the browser serif font */
   --app-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   --mat-button-filled-label-text-font: var(--app-font);

@@ -52,7 +52,6 @@ export class SearchResultListComponent {
   @Output() move = new EventEmitter<FileItem>();
   @Output() copy = new EventEmitter<FileItem>();
   @Output() delete = new EventEmitter<FileItem>();
-  @Output() toggleFavorite = new EventEmitter<FileItem>();
   @Output() viewProperties = new EventEmitter<FileItem>();
   @Output() requestSignature = new EventEmitter<FileItem>();
   @Output() startWorkflow = new EventEmitter<FileItem>();
@@ -245,15 +244,16 @@ export class SearchResultListComponent {
     this.contextMenuTrigger?.openMenu();
   }
 
+  onOpen(event: Event, item: FileItem): void {
+    event.stopPropagation();
+    this.itemDoubleClick.emit(item);
+  }
+
   onShowInFolder(event: Event, item: FileItem): void {
     event.stopPropagation();
     this.showInFolder.emit(item);
   }
 
-  onFavorite(event: Event, item: FileItem): void {
-    event.stopPropagation();
-    this.toggleFavorite.emit(item);
-  }
 
   onMenuAction(actionId: FileActionId): void {
     const item = this.menuItem;
