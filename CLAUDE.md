@@ -253,7 +253,7 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   - `components/search-refine-bar/`: quick filter chips (type, file type, date, owner, document kind, language /
     metadata chips), "All filters", "Clear all", sort menu, list / grid toggle. It edits `SearchService` filters.
   - `components/search-result-list/`: the list view — highlighted name, type · size · relative date · owner, content
-    snippet, category badge, hover actions (open, favorite, show in folder) + the standard item menu. Touch: tap opens,
+    snippet, category badge, hover actions (open, favorite — `favorite` comes with each `searchDocuments` hit, show in folder) + the standard item menu. Touch: tap opens,
     long press / menu "Select" picks. The grid view stays `app-file-grid`.
   - Every filter is sent to the API (`DocumentApiService.searchDocuments`: `type`, `contentType` = the file-type
     category's content-type patterns joined with `,`, `updatedAtAfter`, `createdBy`, `metadata.*`, `category`,

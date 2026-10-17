@@ -177,6 +177,8 @@ export interface DocumentSearchInfo {
     contentSnippet?: string;
     category?: string;
     language?: string;
+    /** Whether the caller has the hit in their favorites (openfilz-core with the search `favorite` field) */
+    favorite?: boolean | null;
 }
 
 export interface DocumentSearchResult {

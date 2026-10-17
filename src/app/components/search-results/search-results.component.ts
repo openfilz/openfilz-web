@@ -469,6 +469,7 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
       parentId: doc.parentId ?? null,
       contentSnippet: doc.contentSnippet,
       category: doc.category,
+      favorite: doc.favorite ?? undefined,
       selected: false
     };
   }
@@ -476,8 +477,9 @@ export class SearchResultsComponent extends FileOperationsComponent implements O
   onToggleFavorite(item: FileItem) {
     const action = item.favorite ? 'remove from' : 'add to';
     this.documentApi.toggleFavorite(item.id).subscribe({
-      next: () => {
-        item.favorite = !item.favorite;
+      next: (favorite) => {
+        // The API answers the new state: trust it over the local guess
+        item.favorite = typeof favorite === 'boolean' ? favorite : !item.favorite;
         this.snackBar.open(this.translate.instant(action === 'add to' ? 'operations.addFavoriteSuccess' : 'operations.removeFavoriteSuccess'), this.translate.instant('common.close'), { duration: 3000 });
       },
       error: () => {

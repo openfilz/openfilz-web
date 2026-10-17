@@ -150,6 +150,7 @@ const SEARCH_DOCUMENTS_QUERY = gql`
         thumbnailUrl
         category
         language
+        favorite
       }
     }
   }
