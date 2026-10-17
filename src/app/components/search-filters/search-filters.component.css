@@ -223,6 +223,14 @@
 
 .chip-grid .choice-chip {
   border-radius: 10px;
+  min-width: 0;
+}
+
+.chip-grid .chip-label {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .choice-chip mat-icon {
