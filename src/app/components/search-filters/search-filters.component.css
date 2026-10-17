@@ -382,6 +382,13 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
 }
 
+.meta-hint {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .meta-eq {
   color: var(--text-tertiary);
   font-weight: 600;

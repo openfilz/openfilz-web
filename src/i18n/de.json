@@ -261,6 +261,10 @@
     "ownerPlaceholder": "Erstellt von...",
     "fileType": "Dateityp",
     "addMetadataFilter": "Metadatenfilter hinzufügen",
+    "valuePlaceholder": "Wert, z. B. beta%",
+    "wildcardHint": "% oder * steht für beliebige Zeichen, ? für genau ein Zeichen: projekt = beta% findet beta-1, beta-2…",
+    "keySuggestions": "Metadatenschlüssel",
+    "keyDocumentCount": "{{count}} Dokumente",
     "applyFilters": "Filter anwenden",
     "remove": "Entfernen",
     "documentTypes": {

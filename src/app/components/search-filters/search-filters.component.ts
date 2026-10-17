@@ -10,11 +10,13 @@ import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES } from '../../models/file-type-filt
 import { DATE_MODIFIED_OPTIONS, countActiveFilters } from '../../models/search-refine';
 import { InsightFacetsService } from '../../services/insight-facets.service';
 import { InsightFacetCount } from '../../models/smart-filing.models';
+import { MetadataKeySuggestion, MetadataKeySuggestionsService } from '../../services/metadata-key-suggestions.service';
+import { MetadataKeyInputComponent } from '../metadata-key-input/metadata-key-input.component';
 
 @Component({
   selector: 'app-search-filters',
   standalone: true,
-  imports: [FormsModule, MatIconModule, MatButtonModule, MatTooltipModule, TranslatePipe],
+  imports: [FormsModule, MatIconModule, MatButtonModule, MatTooltipModule, TranslatePipe, MetadataKeyInputComponent],
   templateUrl: './search-filters.component.html',
   styleUrls: ['./search-filters.component.css']
 })
@@ -44,6 +46,10 @@ export class SearchFiltersComponent implements OnInit {
   /** Languages carried by at least one document, most frequent first (loaded once per session). */
   facetLanguages: InsightFacetCount[] = [];
 
+  /** Metadata keys of the visible documents, suggested in the key field of the metadata rows. */
+  private keySuggestions = inject(MetadataKeySuggestionsService);
+  metadataKeys: MetadataKeySuggestion[] = [];
+
   ngOnInit() {
     if (this.initialFilters) {
       this.filters = { ...this.filters, ...this.initialFilters };
@@ -58,6 +64,7 @@ export class SearchFiltersComponent implements OnInit {
     if (this.showInsightFacets) {
       this.insightFacets.getLanguages().subscribe(languages => this.facetLanguages = languages);
     }
+    this.keySuggestions.getKeys().subscribe(keys => this.metadataKeys = keys);
   }
 
   private takeSnapshot() {

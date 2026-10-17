@@ -261,6 +261,10 @@
     "ownerPlaceholder": "Aangemaakt door...",
     "fileType": "Bestandstype",
     "addMetadataFilter": "Metadatafilter toevoegen",
+    "valuePlaceholder": "Waarde, bijv. beta%",
+    "wildcardHint": "% of * staat voor willekeurige tekens, ? voor één teken: project = beta% vindt beta-1, beta-2…",
+    "keySuggestions": "Metadatasleutels",
+    "keyDocumentCount": "{{count}} documenten",
     "applyFilters": "Filters toepassen",
     "remove": "Verwijderen",
     "documentTypes": {

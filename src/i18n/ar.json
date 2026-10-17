@@ -261,6 +261,10 @@
     "ownerPlaceholder": "أنشأه...",
     "fileType": "نوع الملف",
     "addMetadataFilter": "إضافة فلتر البيانات الوصفية",
+    "valuePlaceholder": "القيمة، مثل beta%",
+    "wildcardHint": "‏% أو * يطابق أي أحرف، و? حرفًا واحدًا: المشروع = beta% يجد beta-1 وbeta-2…",
+    "keySuggestions": "مفاتيح البيانات الوصفية",
+    "keyDocumentCount": "{{count}} مستندات",
     "applyFilters": "تطبيق الفلاتر",
     "remove": "إزالة",
     "documentTypes": {

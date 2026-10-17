@@ -239,6 +239,11 @@ openfilz-web-ee fork only mirrors four descriptor entries:
   panel through `SearchService.requestAdvancedFilters()`.
 - **Filter panel** (`components/search-filters/`): segmented scope / type, file-type chip grid, date chips, owner,
   kind / language facets, metadata rows. Desktop popover under the box; bottom sheet (own backdrop) on phones.
+  Metadata rows: the key field is `components/metadata-key-input/` — suggestions from `GET /documents/metadata-keys`
+  (`services/metadata-key-suggestions.service.ts`, fetched when the panel opens, 60 s client cache, empty + plain input on
+  404) filtered client-side (`utils/metadata-key-filter.ts`, prefixes first). Its list is drawn inside the panel, not in a
+  CDK overlay: the header closes the panel on clicks outside its element and the phone sheet (z-index 1100) covers the
+  overlay container. Values with `%` / `*` are patterns, matched by the API (`searchFilters.wildcardHint`).
 - **Results page** (`components/search-results/`): pages of 30 loaded as the user scrolls (IntersectionObserver
   sentinel + "Load more"), skeleton / empty / error states, title + count + time. `:host` is a bounded flex column —
   without it nothing scrolls inside `.main-content.file-explorer-view` (overflow hidden), the old phone bug.
