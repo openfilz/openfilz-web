@@ -242,6 +242,7 @@
     "loadMore": "Cargar más resultados",
     "endOfResults": "Fin de los resultados",
     "showInFolder": "Mostrar en la carpeta",
+    "openHint": "Haz doble clic en un resultado para abrirlo · Intro desde el teclado",
     "modifiedAgo": "Modificado {{when}}",
     "modifiedOn": "Modificado el {{date}}",
     "sort": {

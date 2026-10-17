@@ -242,6 +242,7 @@
     "loadMore": "تحميل المزيد من النتائج",
     "endOfResults": "نهاية النتائج",
     "showInFolder": "إظهار في المجلد",
+    "openHint": "انقر نقرًا مزدوجًا على نتيجة لفتحها · أو اضغط Enter من لوحة المفاتيح",
     "modifiedAgo": "عُدّل {{when}}",
     "modifiedOn": "عُدّل في {{date}}",
     "sort": {

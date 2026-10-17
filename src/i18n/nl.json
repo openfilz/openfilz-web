@@ -242,6 +242,7 @@
     "loadMore": "Meer resultaten laden",
     "endOfResults": "Einde van de resultaten",
     "showInFolder": "Tonen in map",
+    "openHint": "Dubbelklik op een resultaat om het te openen · Enter op het toetsenbord",
     "modifiedAgo": "Gewijzigd {{when}}",
     "modifiedOn": "Gewijzigd op {{date}}",
     "sort": {
