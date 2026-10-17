@@ -78,14 +78,6 @@
           [matTooltip]="'common.open' | translate" [attr.aria-label]="('common.open' | translate) + ': ' + item.name">
           <mat-icon aria-hidden="true">{{ item.type === 'FOLDER' ? 'folder_open' : 'visibility' }}</mat-icon>
         </button>
-        <!-- Full-text hits do not say whether they are favorites: no toggle that could guess wrong -->
-        @if (item.favorite !== undefined) {
-          <button mat-icon-button class="row-action hover-action" (click)="onFavorite($event, item)"
-            [matTooltip]="(item.favorite ? 'fileList.removeFromFavorites' : 'fileList.addToFavorites') | translate"
-            [attr.aria-label]="(item.favorite ? 'fileList.removeFromFavorites' : 'fileList.addToFavorites') | translate">
-            <mat-icon [class.favorited]="item.favorite" aria-hidden="true">{{ item.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
-          </button>
-        }
         <button mat-icon-button class="row-action hover-action" (click)="onShowInFolder($event, item)"
           [matTooltip]="'searchResults.showInFolder' | translate" [attr.aria-label]="'searchResults.showInFolder' | translate">
           <mat-icon aria-hidden="true">drive_file_move_outline</mat-icon>

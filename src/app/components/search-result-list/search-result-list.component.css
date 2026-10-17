@@ -259,10 +259,6 @@
   color: var(--text-secondary);
 }
 
-.row-action mat-icon.favorited {
-  color: #ef4444;
-}
-
 /* Secondary actions appear on hover / focus on pointer devices */
 @media (hover: hover) {
   .hover-action {
