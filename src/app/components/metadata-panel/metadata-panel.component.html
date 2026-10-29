@@ -131,42 +131,107 @@
 
               <div class="metadata-rows" role="list">
                 @for(entry of metadataEntries; track entry.key) {
-                  <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key">
-                    <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
-                    @if(editingKey === entry.key) {
-                      <input class="metadata-value-input" type="text" [(ngModel)]="editValue"
-                        (keydown.enter)="commitEdit(entry)" (keydown.escape)="cancelEdit()"
-                        (blur)="commitEdit(entry)" autofocus
-                        [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
-                    } @else if(isLocked(entry.key)) {
-                      <span class="metadata-value metadata-value-locked">{{ entry.value }}</span>
-                    } @else {
-                      <button class="metadata-value" (click)="startEdit(entry)"
-                        [matTooltip]="'metadataPanel.clickToEdit' | translate"
-                        [attr.aria-label]="('metadataPanel.clickToEdit' | translate) + ': ' + entry.key">
-                        {{ entry.value }}
-                      </button>
-                    }
-                    <span class="metadata-row-actions">
-                      @if(savingKey === entry.key) {
-                        <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
-                      } @else if(isLocked(entry.key)) {
-                        <mat-icon class="row-action-locked" aria-hidden="true"
-                          [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
-                      } @else {
-                        <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
-                          [matTooltip]="'common.rename' | translate"
-                          [attr.aria-label]="'metadataPanel.clickToEdit' | translate">
-                          <mat-icon aria-hidden="true">edit</mat-icon>
+                  @if(entry.structured) {
+                    <!-- Object / array value: folded to one line by default, unfolds into a tree, edited as indented JSON -->
+                    <div class="metadata-row metadata-row-json" role="listitem"
+                      [class.editing]="editingKey === entry.key" [class.open]="isJsonOpen(entry.key)">
+                      <div class="metadata-json-header">
+                        <button type="button" class="metadata-json-toggle" (click)="toggleJson(entry.key)"
+                          [attr.aria-expanded]="isJsonOpen(entry.key)"
+                          [attr.aria-label]="((isJsonOpen(entry.key) ? 'jsonTree.collapse' : 'jsonTree.expand') | translate) + ': ' + entry.key">
+                          <mat-icon class="metadata-json-chevron" aria-hidden="true">chevron_right</mat-icon>
+                          <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
+                          @if (entry.summary; as s) {
+                            <span class="metadata-json-badge">{{ s.key | translate: s.params }}</span>
+                          }
+                          @if (!isJsonOpen(entry.key) && editingKey !== entry.key) {
+                            <code class="metadata-json-preview">{{ entry.preview }}</code>
+                          }
                         </button>
-                        <button mat-icon-button class="row-action-btn danger" (click)="deleteEntry(entry)"
-                          [matTooltip]="'common.delete' | translate"
-                          [attr.aria-label]="('common.delete' | translate) + ' ' + entry.key">
-                          <mat-icon aria-hidden="true">delete</mat-icon>
+                        <span class="metadata-row-actions">
+                          @if(savingKey === entry.key) {
+                            <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                          } @else {
+                            <button mat-icon-button class="row-action-btn" (click)="copyJson(entry)"
+                              [matTooltip]="'metadataPanel.copyJson' | translate"
+                              [attr.aria-label]="('metadataPanel.copyJson' | translate) + ': ' + entry.key">
+                              <mat-icon aria-hidden="true">content_copy</mat-icon>
+                            </button>
+                            @if(isLocked(entry.key)) {
+                              <mat-icon class="row-action-locked" aria-hidden="true"
+                                [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
+                            } @else if(editingKey !== entry.key) {
+                              <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
+                                [matTooltip]="'metadataPanel.editJson' | translate"
+                                [attr.aria-label]="('metadataPanel.editJson' | translate) + ': ' + entry.key">
+                                <mat-icon aria-hidden="true">edit</mat-icon>
+                              </button>
+                              <button mat-icon-button class="row-action-btn danger" (click)="deleteEntry(entry)"
+                                [matTooltip]="'common.delete' | translate"
+                                [attr.aria-label]="('common.delete' | translate) + ' ' + entry.key">
+                                <mat-icon aria-hidden="true">delete</mat-icon>
+                              </button>
+                            }
+                          }
+                        </span>
+                      </div>
+                      @if(editingKey === entry.key) {
+                        <textarea class="metadata-json-input" [(ngModel)]="editValue" spellcheck="false" autofocus
+                          [rows]="jsonEditRows" (input)="editError = undefined"
+                          (keydown.control.enter)="commitEdit(entry)" (keydown.meta.enter)="commitEdit(entry)"
+                          (keydown.escape)="cancelEdit()" (blur)="commitEdit(entry)"
+                          [attr.aria-invalid]="!!editError"
+                          [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate"></textarea>
+                        @if(editError) {
+                          <div class="metadata-add-error" role="alert">
+                            <mat-icon aria-hidden="true">error</mat-icon>
+                            {{ editError | translate }}
+                          </div>
+                        } @else {
+                          <div class="metadata-json-hint">{{ 'metadataPanel.editJsonHint' | translate }}</div>
+                        }
+                      } @else if(isJsonOpen(entry.key)) {
+                        <app-json-tree class="metadata-json-tree" [value]="entry.raw" [expandDepth]="1"></app-json-tree>
+                      }
+                    </div>
+                  } @else {
+                    <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key">
+                      <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
+                      @if(editingKey === entry.key) {
+                        <input class="metadata-value-input" type="text" [(ngModel)]="editValue"
+                          (keydown.enter)="commitEdit(entry)" (keydown.escape)="cancelEdit()"
+                          (blur)="commitEdit(entry)" autofocus
+                          [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                      } @else if(isLocked(entry.key)) {
+                        <span class="metadata-value metadata-value-locked">{{ entry.value }}</span>
+                      } @else {
+                        <button class="metadata-value" (click)="startEdit(entry)"
+                          [matTooltip]="'metadataPanel.clickToEdit' | translate"
+                          [attr.aria-label]="('metadataPanel.clickToEdit' | translate) + ': ' + entry.key">
+                          {{ entry.value }}
                         </button>
                       }
-                    </span>
-                  </div>
+                      <span class="metadata-row-actions">
+                        @if(savingKey === entry.key) {
+                          <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                        } @else if(isLocked(entry.key)) {
+                          <mat-icon class="row-action-locked" aria-hidden="true"
+                            [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
+                        } @else {
+                          <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
+                            [matTooltip]="'common.rename' | translate"
+                            [attr.aria-label]="'metadataPanel.clickToEdit' | translate">
+                            <mat-icon aria-hidden="true">edit</mat-icon>
+                          </button>
+                          <button mat-icon-button class="row-action-btn danger" (click)="deleteEntry(entry)"
+                            [matTooltip]="'common.delete' | translate"
+                            [attr.aria-label]="('common.delete' | translate) + ' ' + entry.key">
+                            <mat-icon aria-hidden="true">delete</mat-icon>
+                          </button>
+                        }
+                      </span>
+                    </div>
+                  }
                 }
 
                 @if(addingEntry) {

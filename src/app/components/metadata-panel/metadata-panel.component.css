@@ -795,3 +795,113 @@ button:focus-visible {
   outline: 2px solid var(--primary-light);
   outline-offset: 2px;
 }
+
+/* Object / array metadata: one folded line (key, size badge, JSON preview), unfolds into a tree */
+.metadata-row-json {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.metadata-json-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.metadata-json-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 4px 4px 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.metadata-json-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.metadata-json-chevron {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: var(--text-tertiary);
+  transition: transform 150ms ease;
+}
+
+.metadata-row-json.open .metadata-json-chevron {
+  transform: rotate(90deg);
+}
+
+.metadata-json-badge {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--primary);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+  white-space: nowrap;
+}
+
+.metadata-json-preview {
+  flex: 1;
+  min-width: 0;
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Unfolded tree: capped height so a large value never stretches the panel */
+.metadata-json-tree {
+  max-height: 320px;
+  overflow: auto;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  overscroll-behavior: contain;
+}
+
+.metadata-json-input {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 8px 10px;
+  outline: none;
+  tab-size: 2;
+}
+
+.metadata-json-input:focus {
+  border-color: var(--primary);
+}
+
+.metadata-json-input[aria-invalid="true"] {
+  border-color: #ef4444;
+}
+
+.metadata-json-hint {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}

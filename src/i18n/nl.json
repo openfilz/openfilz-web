@@ -356,7 +356,21 @@
     "clickToEdit": "Klik om te bewerken",
     "lockedByESign": "Vergrendeld door e-Sign — kan niet worden bewerkt of verwijderd",
     "keyDeleted": "\"{{key}}\" verwijderd",
-    "saveFailed": "Opslaan van metadata mislukt"
+    "saveFailed": "Opslaan van metadata mislukt",
+    "invalidJson": "Ongeldige JSON: de waarde is niet opgeslagen",
+    "copyJson": "JSON kopiëren",
+    "jsonCopied": "JSON gekopieerd naar het klembord",
+    "editJson": "JSON bewerken",
+    "editJsonHint": "Ctrl+Enter om op te slaan · Esc om te annuleren"
+  },
+  "jsonTree": {
+    "expand": "Uitvouwen",
+    "collapse": "Samenvouwen",
+    "key": "1 sleutel",
+    "keys": "{{count}} sleutels",
+    "item": "1 item",
+    "items": "{{count}} items",
+    "showMore": "Nog {{count}} tonen"
   },
   "metadataEditor": {
     "clearAll": "Alles wissen",

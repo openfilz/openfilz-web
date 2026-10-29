@@ -356,7 +356,21 @@
     "clickToEdit": "Click to edit",
     "lockedByESign": "Locked by e-Sign — cannot be edited or deleted",
     "keyDeleted": "\"{{key}}\" removed",
-    "saveFailed": "Failed to save metadata"
+    "saveFailed": "Failed to save metadata",
+    "invalidJson": "Invalid JSON: the value was not saved",
+    "copyJson": "Copy JSON",
+    "jsonCopied": "JSON copied to clipboard",
+    "editJson": "Edit JSON",
+    "editJsonHint": "Ctrl+Enter to save · Esc to cancel"
+  },
+  "jsonTree": {
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "key": "1 key",
+    "keys": "{{count}} keys",
+    "item": "1 item",
+    "items": "{{count}} items",
+    "showMore": "Show {{count}} more"
   },
   "metadataEditor": {
     "clearAll": "Clear All",

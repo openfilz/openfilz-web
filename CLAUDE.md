@@ -342,6 +342,17 @@ own, their team's (EE) or the default; 0 / `null` = unlimited — never render "
   "X used · source"), `settings.quotas.unlimited` / `used` / `source.*`.
 - Same files in openfilz-web and openfilz-web-ee (keep them identical).
 
+## Metadata panel: JSON values
+
+Object / array metadata values are shown folded (key, size badge, one-line preview capped at 200 characters) and
+unfold into `components/json-tree/` — a dependency-free, `OnPush` tree (nested values folded, arrays paged by 50,
+fold state keyed by JSON-pointer-escaped paths so a key containing `/` cannot collide with a nested one). Editing
+uses indented JSON in a textarea (Ctrl+Enter saves, Esc cancels, invalid JSON stays inline and is never sent);
+objects, arrays, numbers and booleans are parsed back from their text, strings stay strings. The pure helpers
+(`jsonSummary`, `jsonChildPath`, `formatMetadataValue`, `previewMetadataValue`, `parseEditedValue`) live in
+`utils/json-values.ts` with `utils/json-values.spec.ts` (run with vitest, see the workflow spec). i18n: `jsonTree.*`,
+`metadataPanel.{invalidJson,copyJson,jsonCopied,editJson,editJsonHint}`.
+
 ## Text editor on touch devices
 
 Monaco has no drag-to-select with a finger: `PointerEventHandler._onMouseDown` bails out when
