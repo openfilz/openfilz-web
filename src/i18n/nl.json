@@ -361,7 +361,16 @@
     "copyJson": "JSON kopiëren",
     "jsonCopied": "JSON gekopieerd naar het klembord",
     "editJson": "JSON bewerken",
-    "editJsonHint": "Ctrl+Enter om op te slaan · Esc om te annuleren"
+    "editJsonHint": "Ctrl+Enter om op te slaan · Esc om te annuleren",
+    "invalidNumber": "Geen getal: de waarde is niet opgeslagen",
+    "invalidBoolean": "Kies true of false",
+    "valueType": {
+      "label": "Waardetype",
+      "text": "Tekst",
+      "number": "Getal",
+      "boolean": "Booleaans",
+      "json": "JSON"
+    }
   },
   "jsonTree": {
     "expand": "Uitvouwen",

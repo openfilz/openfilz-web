@@ -1144,3 +1144,27 @@ body {
 .mat-mdc-dialog-actions .mat-mdc-button-base + .mat-mdc-button-base {
   margin-inline-start: 0;
 }
+
+/* =========================================================================
+   AI chat FAB vs. the details panel. Both are pinned to the bottom-right
+   corner (the FAB at z-index 1100 above the 1000 of the panel), so the FAB
+   used to cover the last metadata row: its value field and the save /
+   cancel / delete buttons. The panel is non-modal on desktop, so the FAB
+   steps left of it (420px = .metadata-panel width) and both stay usable;
+   an open chat panel (400px) is capped so it never leaves the viewport on
+   narrow screens. Phones show the details as a modal bottom sheet: the FAB
+   hides. Scoped to LTR: the RTL FAB sits bottom-left, away from the panel.
+   ========================================================================= */
+html:not([dir="rtl"]) body:has(.metadata-panel) app-ai-chat-fab {
+  right: calc(420px + 24px);
+}
+
+html:not([dir="rtl"]) body:has(.metadata-panel) app-ai-chat-fab:has(.panel-container) {
+  right: min(calc(420px + 24px), calc(100vw - 400px - 16px));
+}
+
+@media (max-width: 768px) {
+  body:has(.metadata-panel) app-ai-chat-fab {
+    display: none;
+  }
+}

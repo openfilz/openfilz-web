@@ -361,7 +361,16 @@
     "copyJson": "Copiar JSON",
     "jsonCopied": "JSON copiado al portapapeles",
     "editJson": "Editar JSON",
-    "editJsonHint": "Ctrl+Intro para guardar · Esc para cancelar"
+    "editJsonHint": "Ctrl+Intro para guardar · Esc para cancelar",
+    "invalidNumber": "No es un número: el valor no se ha guardado",
+    "invalidBoolean": "Elija true o false",
+    "valueType": {
+      "label": "Tipo de valor",
+      "text": "Texto",
+      "number": "Número",
+      "boolean": "Booleano",
+      "json": "JSON"
+    }
   },
   "jsonTree": {
     "expand": "Expandir",

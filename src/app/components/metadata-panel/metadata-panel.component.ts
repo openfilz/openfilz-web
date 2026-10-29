@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { Component, ElementRef, Input, Output, EventEmitter, OnInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -17,7 +17,10 @@ import { DocumentInsightsComponent } from './document-insights/document-insights
 import { DocumentWorkflowComponent } from './document-workflow/document-workflow.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { JsonTreeComponent } from '../json-tree/json-tree.component';
-import { JsonSummary, formatMetadataValue, isJsonContainer, jsonSummary, parseEditedValue, previewMetadataValue } from '../../utils/json-values';
+import {
+  JsonSummary, METADATA_VALUE_TYPES, MetadataValueType, formatMetadataValue, isJsonContainer, jsonSummary,
+  looksLikeJsonContainer, metadataValueType, parseTypedValue, previewMetadataValue
+} from '../../utils/json-values';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
@@ -42,6 +45,19 @@ interface MetadataEntry {
 }
 
 /** Entry of the list; the derived fields are computed once here, not on every change detection. */
+/** Value being typed in the inline editor: its text, the type it is saved as, and the error shown under it */
+interface ValueDraft {
+  text: string;
+  type: MetadataValueType;
+  /** The user picked the type by hand, so a leading { or [ no longer switches it to JSON */
+  typeChosen: boolean;
+  error?: string;
+}
+
+function emptyDraft(): ValueDraft {
+  return { text: '', type: 'text', typeChosen: false };
+}
+
 function toMetadataEntry(key: string, raw: unknown): MetadataEntry {
   const value = formatMetadataValue(raw);
   const structured = isJsonContainer(raw);
@@ -64,6 +80,7 @@ export interface MetadataPanelTarget {
   styleUrls: ['./metadata-panel.component.css'],
   imports: [
     NgClass,
+    NgTemplateOutlet,
     FormsModule,
     MatButtonModule,
     MatIconModule,
@@ -105,14 +122,14 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   // Inline metadata editing state (per-field, no global edit mode)
   metadataEntries: MetadataEntry[] = [];
   editingKey: string | null = null;
-  editValue: string = '';
   savingKey: string | null = null;
   addingEntry: boolean = false;
   newKey: string = '';
-  newValue: string = '';
-  newEntryError?: string;
-  /** Inline error of the value being edited (invalid JSON) */
-  editError?: string;
+  /** The value being typed, for the inline edit or the add row (only one of them is open at a time) */
+  draft: ValueDraft = emptyDraft();
+  readonly valueTypes = METADATA_VALUE_TYPES;
+  readonly booleanLiterals = ['true', 'false'];
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   /** Keys of the structured values unfolded in the list (all folded by default) */
   private openJsonKeys = new Set<string>();
 
@@ -390,32 +407,36 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (this.savingKey || this.isLocked(entry.key)) return;
     this.cancelAdd();
     this.editingKey = entry.key;
-    this.editValue = entry.structured ? JSON.stringify(entry.raw, null, 2) : entry.value;
-    this.editError = undefined;
+    this.draft = {
+      text: entry.structured ? JSON.stringify(entry.raw, null, 2) : entry.value,
+      type: metadataValueType(entry.raw),
+      typeChosen: false
+    };
+    this.focusDraftControl();
   }
 
   cancelEdit() {
     this.editingKey = null;
-    this.editValue = '';
-    this.editError = undefined;
+    this.draft = emptyDraft();
   }
 
   commitEdit(entry: MetadataEntry) {
     // A blur while the save is in flight (Ctrl+Enter then a click elsewhere) must not send it twice
     if (this.editingKey !== entry.key || this.savingKey) return;
-    const newValue = this.editValue.trim();
-    if (!newValue || newValue === entry.value) {
+    const text = this.draft.text.trim();
+    if (!text) {
       this.cancelEdit();
       return;
     }
     if (!this.documentId) return;
-    const saved = parseEditedValue(entry.raw, newValue);
-    if (saved === undefined) {
-      this.editError = 'metadataPanel.invalidJson';
+    const parsed = parseTypedValue(this.draft.type, text);
+    if ('error' in parsed) {
+      this.draft.error = 'metadataPanel.' + parsed.error;
       return;
     }
-    // Re-indenting a JSON value is not a change
-    if (formatMetadataValue(saved) === entry.value) {
+    // Retyping the same value (or re-indenting a JSON one) is not a change; a new type is
+    const saved = parsed.value;
+    if (JSON.stringify(saved) === JSON.stringify(entry.raw)) {
       this.cancelEdit();
       return;
     }
@@ -439,6 +460,9 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   deleteEntry(entry: MetadataEntry) {
     if (!this.documentId || this.savingKey || this.isLocked(entry.key)) return;
+    if (this.editingKey === entry.key) {
+      this.cancelEdit();
+    }
 
     this.savingKey = entry.key;
     this.documentApi.deleteDocumentMetadata(this.documentId, [entry.key]).subscribe({
@@ -463,37 +487,41 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.cancelEdit();
     this.addingEntry = true;
     this.newKey = '';
-    this.newValue = '';
-    this.newEntryError = undefined;
+    this.draft = emptyDraft();
   }
 
   cancelAdd() {
     this.addingEntry = false;
     this.newKey = '';
-    this.newValue = '';
-    this.newEntryError = undefined;
+    this.draft = emptyDraft();
   }
 
   get canCommitAdd(): boolean {
-    return !!this.newKey.trim() && !!this.newValue.trim() && !this.savingKey;
+    return !!this.newKey.trim() && !!this.draft.text.trim() && !this.savingKey;
   }
 
   commitAdd() {
     const key = this.newKey.trim();
-    const value = this.newValue.trim();
-    if (!key || !value || !this.documentId) return;
+    const text = this.draft.text.trim();
+    if (!key || !text || !this.documentId) return;
 
     if (!this.METADATA_KEY_PATTERN.test(key)) {
-      this.newEntryError = 'metadataEditor.errors.invalidKeyFormat';
+      this.draft.error = 'metadataEditor.errors.invalidKeyFormat';
       return;
     }
-    const existingKeys = [...this.metadataEntries.map(e => e.key), ...this.SYSTEM_METADATA_KEYS];
+    const existingKeys = [...this.metadataEntries.map(e => e.key), ...this.SYSTEM_METADATA_KEYS, ...this.LOCKED_METADATA_KEYS];
     if (existingKeys.some(k => k.toLowerCase() === key.toLowerCase())) {
-      this.newEntryError = 'metadataEditor.errors.duplicateKey';
+      this.draft.error = 'metadataEditor.errors.duplicateKey';
       return;
     }
+    const parsed = parseTypedValue(this.draft.type, text);
+    if ('error' in parsed) {
+      this.draft.error = 'metadataPanel.' + parsed.error;
+      return;
+    }
+    const value = parsed.value;
 
-    this.newEntryError = undefined;
+    this.draft.error = undefined;
     this.savingKey = key;
     this.documentApi.updateDocumentMetadata(this.documentId, { [key]: value }).subscribe({
       next: () => {
@@ -511,17 +539,96 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  /** Enter / Ctrl+Enter in the value editor: saves the inline edit of `entry`, or the add row when there is none */
+  commitDraft(entry: MetadataEntry | null) {
+    if (entry) {
+      this.commitEdit(entry);
+    } else {
+      this.commitAdd();
+    }
+  }
+
+  /** Esc in the value editor */
+  cancelDraft(entry: MetadataEntry | null) {
+    if (entry) {
+      this.cancelEdit();
+    } else {
+      this.cancelAdd();
+    }
+  }
+
+  /** The type picker: the text is kept across types (a boolean can only be one of its two literals) */
+  setDraftType(type: MetadataValueType) {
+    if (this.draft.type === type) return;
+    this.draft.type = type;
+    this.draft.typeChosen = true;
+    this.draft.error = undefined;
+    if (type === 'boolean' && !this.booleanLiterals.includes(this.draft.text.trim())) {
+      this.draft.text = 'true';
+    }
+    this.focusDraftControl();
+  }
+
+  /** Typing a value: an untouched text type becomes JSON as soon as the text opens an object or array */
+  onDraftInput() {
+    this.draft.error = undefined;
+    if (this.draft.type === 'text' && !this.draft.typeChosen && looksLikeJsonContainer(this.draft.text)) {
+      this.draft.type = 'json';
+      this.focusDraftControl();
+    }
+  }
+
+  /**
+   * Focus the control of the open editor once it is rendered (the field of a text / number / JSON value,
+   * the chosen literal of a boolean), caret at the end. Called whenever the control changes element.
+   */
+  private focusDraftControl() {
+    setTimeout(() => {
+      const editor = this.host.nativeElement.querySelector('.metadata-row.editing, .metadata-row.add-row');
+      const control = editor?.querySelector<HTMLElement>('.metadata-json-input, .metadata-value-input, .metadata-bool-picker button.selected');
+      if (!control) return;
+      control.focus();
+      if (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement) {
+        const end = control.value.length;
+        control.setSelectionRange(end, end);
+      }
+    });
+  }
+
+  /**
+   * The inline edit saves when the focus leaves its row (click elsewhere, Tab away). Moving within the
+   * row (type picker, boolean literals, save / cancel buttons) is not leaving it. Those buttons also
+   * cancel their mousedown so the field keeps the focus in browsers that do not focus clicked buttons.
+   * Chrome fires focusout for a control that is being replaced too (value button → field, field → JSON
+   * textarea), while it is still attached: the decision waits for the end of the task, when such a
+   * control is detached — and still comes before the click that follows a mousedown elsewhere, so
+   * the unsaved-changes guard sees a save in flight, not a pending edit.
+   */
+  onRowFocusOut(event: FocusEvent, entry: MetadataEntry) {
+    if (this.editingKey !== entry.key) return;
+    const row = event.currentTarget as HTMLElement;
+    const next = event.relatedTarget;
+    if (next instanceof Node && row.contains(next)) return;
+    const control = event.target as Node;
+    queueMicrotask(() => {
+      if (!control.isConnected || this.editingKey !== entry.key) return;
+      const active = document.activeElement;
+      if (active && row.contains(active)) return;
+      this.commitEdit(entry);
+    });
+  }
+
   private isEditDirty(entry: MetadataEntry): boolean {
-    const saved = parseEditedValue(entry.raw, this.editValue.trim());
-    return saved === undefined || formatMetadataValue(saved) !== entry.value;
+    const parsed = parseTypedValue(this.draft.type, this.draft.text.trim());
+    return 'error' in parsed || JSON.stringify(parsed.value) !== JSON.stringify(entry.raw);
   }
 
   /** Height of the JSON editor: fits the value, between 4 and 16 lines (then it scrolls) */
   get jsonEditRows(): number {
-    if (this.editValue !== this.jsonEditRowsFor) {
-      this.jsonEditRowsFor = this.editValue;
+    if (this.draft.text !== this.jsonEditRowsFor) {
+      this.jsonEditRowsFor = this.draft.text;
       let lines = 1;
-      for (let i = this.editValue.indexOf('\n'); i !== -1 && lines < 16; i = this.editValue.indexOf('\n', i + 1)) lines++;
+      for (let i = this.draft.text.indexOf('\n'); i !== -1 && lines < 16; i = this.draft.text.indexOf('\n', i + 1)) lines++;
       this.jsonEditRowsValue = Math.min(16, Math.max(4, lines));
     }
     return this.jsonEditRowsValue;
@@ -612,13 +719,15 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
    * value, or a new-entry row with any content typed in.
    */
   get hasPendingChanges(): boolean {
+    // A save already on its way (blur-commit, Enter) is not unsaved: the panel may close over it
+    if (this.savingKey) return false;
     if (this.editingKey !== null) {
       const entry = this.metadataEntries.find(e => e.key === this.editingKey);
       if (entry && this.isEditDirty(entry)) {
         return true;
       }
     }
-    if (this.addingEntry && (!!this.newKey.trim() || !!this.newValue.trim())) {
+    if (this.addingEntry && (!!this.newKey.trim() || !!this.draft.text.trim())) {
       return true;
     }
     return false;

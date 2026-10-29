@@ -517,6 +517,100 @@
   }
 }
 
+/* Editing: the type row wraps under the value, the key and the buttons stay level with the field */
+.metadata-row.editing,
+.metadata-row.add-row {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.metadata-row.editing .metadata-row-actions,
+.metadata-row.add-row .metadata-row-actions {
+  opacity: 1;
+}
+
+.metadata-row.editing > .metadata-key {
+  line-height: 32px;
+}
+
+/* A scalar row whose value turned into JSON: the editor takes the value column, not a line of its own */
+.metadata-row:not(.metadata-row-json) > .metadata-json-input {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+.metadata-value-type {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+/* Segmented track: a few exclusive choices (the value type, true / false) on one rounded track */
+.metadata-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 2px;
+  height: 28px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  max-width: 100%;
+}
+
+.metadata-segmented button {
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.metadata-segmented button:hover:not(.selected) {
+  color: var(--text-primary);
+}
+
+.metadata-segmented button.selected {
+  background: var(--bg-primary);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm), 0 0 0 1px color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+.metadata-segmented button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.metadata-bool-picker {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+}
+
+.metadata-bool-picker button {
+  flex: 1;
+  font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.metadata-row > .metadata-add-error {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .metadata-add-error {
   display: flex;
   align-items: center;

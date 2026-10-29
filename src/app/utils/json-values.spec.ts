@@ -3,7 +3,9 @@ import {
   formatMetadataValue,
   jsonChildPath,
   jsonSummary,
-  parseEditedValue,
+  looksLikeJsonContainer,
+  metadataValueType,
+  parseTypedValue,
   previewMetadataValue
 } from './json-values';
 
@@ -74,35 +76,65 @@ describe('previewMetadataValue', () => {
   });
 });
 
-describe('parseEditedValue', () => {
-  it('keeps a string entry a string, even when its text looks like JSON', () => {
-    expect(parseEditedValue('old', '{"a":1}')).toBe('{"a":1}');
-    expect(parseEditedValue('old', '12')).toBe('12');
-    expect(parseEditedValue(null, '12')).toBe('12');
-    expect(parseEditedValue(undefined, 'x')).toBe('x');
+describe('metadataValueType', () => {
+  it('edits numbers, booleans and containers as their own type, everything else as text', () => {
+    expect(metadataValueType(12)).toBe('number');
+    expect(metadataValueType(false)).toBe('boolean');
+    expect(metadataValueType({ a: 1 })).toBe('json');
+    expect(metadataValueType([])).toBe('json');
+    expect(metadataValueType('12')).toBe('text');
+    expect(metadataValueType(null)).toBe('text');
+    expect(metadataValueType(undefined)).toBe('text');
+  });
+});
+
+describe('looksLikeJsonContainer', () => {
+  it('spots text opening an object or an array, blanks allowed', () => {
+    expect(looksLikeJsonContainer('{')).toBe(true);
+    expect(looksLikeJsonContainer('  [1]')).toBe(true);
+    expect(looksLikeJsonContainer('x {')).toBe(false);
+    expect(looksLikeJsonContainer('"{"')).toBe(false);
+    expect(looksLikeJsonContainer('')).toBe(false);
+  });
+});
+
+describe('parseTypedValue', () => {
+  it('keeps text a string, even when it looks like JSON, a number or a boolean', () => {
+    expect(parseTypedValue('text', '{"a":1}')).toEqual({ value: '{"a":1}' });
+    expect(parseTypedValue('text', '0123')).toEqual({ value: '0123' });
+    expect(parseTypedValue('text', 'true')).toEqual({ value: 'true' });
+    expect(parseTypedValue('text', '  x  ')).toEqual({ value: 'x' });
   });
 
-  it('parses objects and arrays back from their JSON text', () => {
-    expect(parseEditedValue({ a: 1 }, '{\n  "a": 2,\n  "b": [true]\n}')).toEqual({ a: 2, b: [true] });
-    expect(parseEditedValue([1], '[]')).toEqual([]);
-    expect(parseEditedValue({ a: 1 }, '"now a string"')).toBe('now a string');
+  it('parses numbers, with a decimal comma, and refuses anything else', () => {
+    expect(parseTypedValue('number', '13')).toEqual({ value: 13 });
+    expect(parseTypedValue('number', '-1.5')).toEqual({ value: -1.5 });
+    expect(parseTypedValue('number', '1,5')).toEqual({ value: 1.5 });
+    expect(parseTypedValue('number', '1,000.5')).toEqual({ error: 'invalidNumber' });
+    expect(parseTypedValue('number', 'twelve')).toEqual({ error: 'invalidNumber' });
+    expect(parseTypedValue('number', '')).toEqual({ error: 'invalidNumber' });
+    expect(parseTypedValue('number', 'Infinity')).toEqual({ error: 'invalidNumber' });
   });
 
-  it('refuses invalid JSON for an object or array', () => {
-    expect(parseEditedValue({ a: 1 }, '{a: 1}')).toBeUndefined();
-    expect(parseEditedValue([1], 'not json')).toBeUndefined();
+  it('parses the two boolean literals only', () => {
+    expect(parseTypedValue('boolean', 'true')).toEqual({ value: true });
+    expect(parseTypedValue('boolean', 'false')).toEqual({ value: false });
+    expect(parseTypedValue('boolean', 'yes')).toEqual({ error: 'invalidBoolean' });
   });
 
-  it('parses numbers and booleans, falling back to text when the JSON is invalid', () => {
-    expect(parseEditedValue(12, '13')).toBe(13);
-    expect(parseEditedValue(true, 'false')).toBe(false);
-    expect(parseEditedValue(12, 'twelve')).toBe('twelve');
-    expect(parseEditedValue(12, '{"a":1}')).toEqual({ a: 1 });
+  it('parses any JSON value but null, and refuses invalid JSON', () => {
+    expect(parseTypedValue('json', '{\n  "a": 2,\n  "b": [true]\n}')).toEqual({ value: { a: 2, b: [true] } });
+    expect(parseTypedValue('json', '[]')).toEqual({ value: [] });
+    expect(parseTypedValue('json', '"a string"')).toEqual({ value: 'a string' });
+    expect(parseTypedValue('json', '42')).toEqual({ value: 42 });
+    expect(parseTypedValue('json', 'null')).toEqual({ error: 'invalidJson' });
+    expect(parseTypedValue('json', '{a: 1}')).toEqual({ error: 'invalidJson' });
+    expect(parseTypedValue('json', 'not json')).toEqual({ error: 'invalidJson' });
   });
 
   it('does not pollute Object.prototype through a __proto__ key', () => {
-    const parsed = parseEditedValue({}, '{"__proto__": {"polluted": true}}') as Record<string, unknown>;
+    const parsed = parseTypedValue('json', '{"__proto__": {"polluted": true}}') as { value: Record<string, unknown> };
     expect(({} as Record<string, unknown>)['polluted']).toBeUndefined();
-    expect(Object.prototype.hasOwnProperty.call(parsed, '__proto__')).toBe(true);
+    expect(Object.prototype.hasOwnProperty.call(parsed.value, '__proto__')).toBe(true);
   });
 });

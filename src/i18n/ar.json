@@ -361,7 +361,16 @@
     "copyJson": "نسخ JSON",
     "jsonCopied": "تم نسخ JSON إلى الحافظة",
     "editJson": "تعديل JSON",
-    "editJsonHint": "Ctrl+Enter للحفظ · Esc للإلغاء"
+    "editJsonHint": "Ctrl+Enter للحفظ · Esc للإلغاء",
+    "invalidNumber": "ليس رقمًا: لم يتم حفظ القيمة",
+    "invalidBoolean": "اختر true أو false",
+    "valueType": {
+      "label": "نوع القيمة",
+      "text": "نص",
+      "number": "رقم",
+      "boolean": "منطقي",
+      "json": "JSON"
+    }
   },
   "jsonTree": {
     "expand": "توسيع",

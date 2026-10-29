@@ -361,7 +361,16 @@
     "copyJson": "JSON kopieren",
     "jsonCopied": "JSON in die Zwischenablage kopiert",
     "editJson": "JSON bearbeiten",
-    "editJsonHint": "Strg+Enter zum Speichern · Esc zum Abbrechen"
+    "editJsonHint": "Strg+Enter zum Speichern · Esc zum Abbrechen",
+    "invalidNumber": "Keine Zahl: Der Wert wurde nicht gespeichert",
+    "invalidBoolean": "true oder false wählen",
+    "valueType": {
+      "label": "Werttyp",
+      "text": "Text",
+      "number": "Zahl",
+      "boolean": "Boolesch",
+      "json": "JSON"
+    }
   },
   "jsonTree": {
     "expand": "Aufklappen",
