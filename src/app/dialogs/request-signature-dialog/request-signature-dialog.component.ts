@@ -567,7 +567,8 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
       return;
     }
     this.sending = true;
-    const req = buildCreateRequest(this.data.documentId, this.draft, true);
+    // the UI language becomes the e-mail language of the recipients (the server would default to English)
+    const req = buildCreateRequest(this.data.documentId, this.draft, true, this.translate.getCurrentLang());
     this.signatureApi.createEnvelope(req).subscribe({
       next: (env) => {
         this.toast('signature.request.sent');

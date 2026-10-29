@@ -87,6 +87,8 @@ export class UseTemplateDialogComponent {
         email: b.email.trim(),
         phone: b.needsPhone ? b.phone?.trim() : undefined
       })),
+      // the UI language becomes the e-mail language of the recipients (the server would default to English)
+      locale: this.translate.getCurrentLang() || undefined,
       send: true
     };
     this.api.instantiateTemplate(this.data.template.id, req).subscribe({
