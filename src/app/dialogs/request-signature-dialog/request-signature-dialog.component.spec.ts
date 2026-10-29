@@ -8,6 +8,7 @@ import { NEVER, of } from 'rxjs';
 
 import { RequestSignatureDialogComponent } from './request-signature-dialog.component';
 import { DocumentApiService } from '../../services/document-api.service';
+import { RoleService } from '../../services/role.service';
 import { cssToPdf, pdfToCss, pdfToPercentStyle, clampBox, isWithinPage, defaultFieldSize } from '../../utils/signature-geometry';
 import {
   buildCreateRequest, buildTemplateRequest, EnvelopeDraft, newRecipient, nextLocalId, templateToRecipients, validateDraft
@@ -225,7 +226,9 @@ describe('RequestSignatureDialogComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: { documentId: 'doc-1', documentName: 'contract.pdf' } },
         { provide: MatDialogRef, useValue: { close: (r: unknown) => closed.push(r) } },
         // Never resolves: keeps pdf.js out of the unit test.
-        { provide: DocumentApiService, useValue: { downloadDocument: () => NEVER } }
+        { provide: DocumentApiService, useValue: { downloadDocument: () => NEVER } },
+        // SealNoticeComponent reads the caller's roles; the real service needs the OIDC configuration.
+        { provide: RoleService, useValue: { getRoles: () => [] } }
       ]
     });
     // MatDialogModule (imported by the standalone component) would shadow a root-level override.
