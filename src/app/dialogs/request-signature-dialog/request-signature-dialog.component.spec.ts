@@ -3,11 +3,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateService, TranslateService } from '@ngx-translate/core';
 import { NEVER, of } from 'rxjs';
 
 import { RequestSignatureDialogComponent } from './request-signature-dialog.component';
 import { DocumentApiService } from '../../services/document-api.service';
+import { RoleService } from '../../services/role.service';
 import { cssToPdf, pdfToCss, pdfToPercentStyle, clampBox, isWithinPage, defaultFieldSize } from '../../utils/signature-geometry';
 import {
   buildCreateRequest, buildTemplateRequest, EnvelopeDraft, newRecipient, nextLocalId, templateToRecipients, validateDraft
@@ -162,6 +163,19 @@ describe('envelope payload + templates', () => {
     expect(parallel.recipients.map(r => r.orderIndex)).toEqual([0, 0, 0]);
   });
 
+  it('carries the UI language as the envelope locale, and none when unknown', () => {
+    const d: EnvelopeDraft = {
+      title: 'T', message: '', expiresInDays: null, sequential: false, reminderDays: null,
+      recipients: [newRecipient({ email: 'a@x.io', fields: [{ localId: '1', type: 'SIGNATURE', page: 0, x: 0.1, y: 0.1, w: 0.2, h: 0.05, required: true }] })]
+    };
+    expect(buildCreateRequest('doc-1', d, true, 'fr').locale).toBe('fr');
+    expect(buildCreateRequest('doc-1', d, true, ' ').locale).toBeUndefined();
+    expect(buildCreateRequest('doc-1', d).locale).toBeUndefined();
+    // a recipient's own language is kept untouched
+    d.recipients[0].locale = 'de';
+    expect(buildCreateRequest('doc-1', d, true, 'fr').recipients[0].locale).toBe('de');
+  });
+
   it('derives a template from the draft and turns it back into recipients', () => {
     const d: EnvelopeDraft = {
       title: 'T', message: 'm', expiresInDays: 15, sequential: true, reminderDays: null,
@@ -212,7 +226,9 @@ describe('RequestSignatureDialogComponent', () => {
         { provide: MAT_DIALOG_DATA, useValue: { documentId: 'doc-1', documentName: 'contract.pdf' } },
         { provide: MatDialogRef, useValue: { close: (r: unknown) => closed.push(r) } },
         // Never resolves: keeps pdf.js out of the unit test.
-        { provide: DocumentApiService, useValue: { downloadDocument: () => NEVER } }
+        { provide: DocumentApiService, useValue: { downloadDocument: () => NEVER } },
+        // SealNoticeComponent reads the caller's roles; the real service needs the OIDC configuration.
+        { provide: RoleService, useValue: { getRoles: () => [] } }
       ]
     });
     // MatDialogModule (imported by the standalone component) would shadow a root-level override.
@@ -264,6 +280,16 @@ describe('RequestSignatureDialogComponent', () => {
     expect(req.request.body.recipients[0].fields[0].type).toBe('SIGNATURE');
     req.flush({ id: 'env-1' });
     expect(closed[0]).toEqual({ success: true, envelope: { id: 'env-1' } });
+  });
+
+  it('sends the UI language as the envelope locale', () => {
+    TestBed.inject(TranslateService).use('fr');
+    component.recipients[0].email = 'a@b.co';
+    component.placeAtCenter('SIGNATURE');
+    component.send();
+    const req = http.expectOne(`${environment.apiURL}/signatures`);
+    expect(req.request.body.locale).toBe('fr');
+    req.flush({ id: 'env-2' });
   });
 
   it('loads a template into recipients', () => {

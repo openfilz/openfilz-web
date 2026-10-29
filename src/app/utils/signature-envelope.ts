@@ -145,12 +145,17 @@ function toFieldInput(f: PlacedField): SignatureFieldInput {
 
 const round = (v: number): number => Math.round(v * 10000) / 10000;
 
-/** Build the API payload from the builder state. */
-export function buildCreateRequest(sourceDocId: string, draft: EnvelopeDraft, send = true): CreateSignatureEnvelopeRequest {
+/**
+ * Build the API payload from the builder state.
+ * `locale` is the UI language: it becomes the envelope's e-mail language for every recipient
+ * without one of their own (the server falls back to English otherwise).
+ */
+export function buildCreateRequest(sourceDocId: string, draft: EnvelopeDraft, send = true, locale?: string): CreateSignatureEnvelopeRequest {
   const req: CreateSignatureEnvelopeRequest = {
     sourceDocId,
     title: draft.title.trim(),
     message: draft.message?.trim() || undefined,
+    locale: locale?.trim() || undefined,
     recipients: draft.recipients.map((r, i) => ({
       userId: r.userId || undefined,
       name: r.name?.trim() || undefined,
