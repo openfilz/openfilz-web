@@ -1,0 +1,57 @@
+<!-- The host already names the value: an object or array starts at its children, without its own brackets -->
+<div class="json-tree" role="tree">
+  @if (isContainer(value)) {
+    @for (child of visibleChildren(value, '$'); track child.key) {
+      <ng-container *ngTemplateOutlet="node; context: { $implicit: child.value, key: child.key, path: '$/' + child.key, depth: 1 }" />
+    }
+    @if (hiddenCount(value, '$'); as hidden) {
+      <button type="button" class="jt-more" (click)="showMore('$')">
+        {{ 'jsonTree.showMore' | translate: { count: hidden } }}
+      </button>
+    }
+  } @else {
+    <ng-container *ngTemplateOutlet="node; context: { $implicit: value, key: null, path: '$', depth: 0 }" />
+  }
+</div>
+
+<ng-template #node let-v let-key="key" let-path="path" let-depth="depth">
+  @if (isContainer(v)) {
+    @let open = isOpen(path, depth);
+    <div class="jt-line" role="treeitem" [attr.aria-expanded]="open">
+      <button type="button" class="jt-toggle" (click)="toggle(path, depth)"
+        [attr.aria-label]="(open ? 'jsonTree.collapse' : 'jsonTree.expand') | translate">
+        <mat-icon aria-hidden="true" [class.open]="open">chevron_right</mat-icon>
+        @if (key !== null) {
+          <span class="jt-key">{{ key }}</span><span class="jt-punct">:</span>
+        }
+        <span class="jt-punct">{{ isArray(v) ? '[' : '{' }}</span>
+        @if (!open) {
+          @if (summary(v); as s) {
+            <span class="jt-summary">{{ s.key | translate: s.params }}</span>
+          }
+          <span class="jt-punct">{{ isArray(v) ? ']' : '}' }}</span>
+        }
+      </button>
+    </div>
+    @if (open) {
+      <div class="jt-children" role="group">
+        @for (child of visibleChildren(v, path); track child.key) {
+          <ng-container *ngTemplateOutlet="node; context: { $implicit: child.value, key: child.key, path: path + '/' + child.key, depth: depth + 1 }" />
+        }
+        @if (hiddenCount(v, path); as hidden) {
+          <button type="button" class="jt-more" (click)="showMore(path)">
+            {{ 'jsonTree.showMore' | translate: { count: hidden } }}
+          </button>
+        }
+      </div>
+      <div class="jt-line jt-close"><span class="jt-punct">{{ isArray(v) ? ']' : '}' }}</span></div>
+    }
+  } @else {
+    <div class="jt-line jt-leaf" role="treeitem">
+      @if (key !== null) {
+        <span class="jt-key">{{ key }}</span><span class="jt-punct">:</span>
+      }
+      <span class="jt-value" [class]="'jt-value jt-' + scalarType(v)">{{ formatScalar(v) }}</span>
+    </div>
+  }
+</ng-template>

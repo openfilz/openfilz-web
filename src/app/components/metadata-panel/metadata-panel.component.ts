@@ -16,6 +16,7 @@ import { AuditVersionActionsComponent } from './audit-version-actions/audit-vers
 import { DocumentInsightsComponent } from './document-insights/document-insights.component';
 import { DocumentWorkflowComponent } from './document-workflow/document-workflow.component';
 import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
+import { JsonTreeComponent, jsonSummary } from '../json-tree/json-tree.component';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
@@ -28,7 +29,35 @@ import { FileIconService } from '../../services/file-icon.service';
 /** A single metadata key/value shown in the inline editor */
 interface MetadataEntry {
   key: string;
+  /** Text shown and edited: JSON for objects, arrays, numbers and booleans */
   value: string;
+  /** The value as stored, so a structured value is saved back with its type */
+  raw: unknown;
+  /** An object or array: shown as a collapsible tree, edited as indented JSON */
+  structured: boolean;
+}
+
+function toMetadataEntry(key: string, raw: unknown): MetadataEntry {
+  return { key, value: formatMetadataValue(raw), raw, structured: raw !== null && typeof raw === 'object' };
+}
+
+/** Text form of a metadata value: JSON for objects and arrays (String() would give "[object Object]"). */
+function formatMetadataValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  return typeof value === 'object' ? JSON.stringify(value) : String(value);
+}
+
+/**
+ * Value to save for an edited entry. A string stays a string; any other stored type is parsed back
+ * from its JSON text. `undefined` means the text is not valid JSON for an object or array.
+ */
+function parseEditedValue(raw: unknown, text: string): unknown {
+  if (raw === null || raw === undefined || typeof raw === 'string') return text;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return typeof raw === 'object' ? undefined : text;
+  }
 }
 
 /** The document a panel navigation action applies to. */
@@ -57,6 +86,7 @@ export interface MetadataPanelTarget {
     MatTooltipModule,
     MatTabsModule,
     SwipeTabsDirective,
+    JsonTreeComponent,
     AuditVersionActionsComponent,
     DocumentInsightsComponent,
     DocumentWorkflowComponent,
@@ -93,6 +123,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   newKey: string = '';
   newValue: string = '';
   newEntryError?: string;
+  /** Inline error of the value being edited (invalid JSON) */
+  editError?: string;
+  /** Keys of the structured values unfolded in the list (all folded by default) */
+  private openJsonKeys = new Set<string>();
+  readonly jsonSummary = jsonSummary;
 
   // Audit
   auditLogs: AuditLog[] = [];
@@ -245,6 +280,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.versions = [];
     this.versionIdByLog.clear();
     this.metadataEntries = [];
+    this.openJsonKeys.clear();
     this.cancelEdit();
     this.cancelAdd();
   }
@@ -277,7 +313,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     const metadata = this.documentInfo?.metadata || {};
     this.metadataEntries = Object.keys(metadata)
       .filter(key => !this.SYSTEM_METADATA_KEYS.includes(key))
-      .map(key => ({ key, value: String(metadata[key]) }));
+      .map(key => toMetadataEntry(key, metadata[key]));
   }
 
   /**
@@ -367,12 +403,14 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (this.savingKey || this.isLocked(entry.key)) return;
     this.cancelAdd();
     this.editingKey = entry.key;
-    this.editValue = entry.value;
+    this.editValue = entry.structured ? JSON.stringify(entry.raw, null, 2) : entry.value;
+    this.editError = undefined;
   }
 
   cancelEdit() {
     this.editingKey = null;
     this.editValue = '';
+    this.editError = undefined;
   }
 
   commitEdit(entry: MetadataEntry) {
@@ -383,12 +421,22 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
     if (!this.documentId) return;
+    const saved = parseEditedValue(entry.raw, newValue);
+    if (saved === undefined) {
+      this.editError = 'metadataPanel.invalidJson';
+      return;
+    }
+    // Re-indenting a JSON value is not a change
+    if (formatMetadataValue(saved) === entry.value) {
+      this.cancelEdit();
+      return;
+    }
 
     this.savingKey = entry.key;
-    this.documentApi.updateDocumentMetadata(this.documentId, { [entry.key]: newValue }).subscribe({
+    this.documentApi.updateDocumentMetadata(this.documentId, { [entry.key]: saved }).subscribe({
       next: () => {
-        entry.value = newValue;
-        this.syncLocalMetadata(entry.key, newValue);
+        Object.assign(entry, toMetadataEntry(entry.key, saved));
+        this.syncLocalMetadata(entry.key, saved);
         this.savingKey = null;
         this.cancelEdit();
         this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
@@ -461,7 +509,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.savingKey = key;
     this.documentApi.updateDocumentMetadata(this.documentId, { [key]: value }).subscribe({
       next: () => {
-        this.metadataEntries.push({ key, value });
+        this.metadataEntries.push(toMetadataEntry(key, value));
         this.syncLocalMetadata(key, value);
         this.savingKey = null;
         this.cancelAdd();
@@ -475,7 +523,35 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  private syncLocalMetadata(key: string, value: string) {
+  private isEditDirty(entry: MetadataEntry): boolean {
+    const saved = parseEditedValue(entry.raw, this.editValue.trim());
+    return saved === undefined || formatMetadataValue(saved) !== entry.value;
+  }
+
+  /** Height of the JSON editor: fits the value, between 4 and 16 lines (then it scrolls) */
+  get jsonEditRows(): number {
+    return Math.min(16, Math.max(4, this.editValue.split('\n').length));
+  }
+
+  isJsonOpen(key: string): boolean {
+    return this.openJsonKeys.has(key);
+  }
+
+  toggleJson(key: string) {
+    if (!this.openJsonKeys.delete(key)) {
+      this.openJsonKeys.add(key);
+    }
+  }
+
+  copyJson(entry: MetadataEntry) {
+    navigator.clipboard.writeText(JSON.stringify(entry.raw, null, 2)).then(() => {
+      this.snackBar.open(this.translate.instant('metadataPanel.jsonCopied'), this.translate.instant('common.close'), { duration: 2000 });
+    }).catch(() => {
+      this.snackBar.open(this.translate.instant('metadataPanel.copyFailed'), this.translate.instant('common.close'), { duration: 2000 });
+    });
+  }
+
+  private syncLocalMetadata(key: string, value: unknown) {
     if (this.documentInfo) {
       this.documentInfo.metadata = { ...(this.documentInfo.metadata || {}), [key]: value };
     }
@@ -537,7 +613,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   get hasPendingChanges(): boolean {
     if (this.editingKey !== null) {
       const entry = this.metadataEntries.find(e => e.key === this.editingKey);
-      if (entry && this.editValue.trim() !== entry.value) {
+      if (entry && this.isEditDirty(entry)) {
         return true;
       }
     }

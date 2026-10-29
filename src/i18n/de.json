@@ -356,7 +356,21 @@
     "clickToEdit": "Zum Bearbeiten klicken",
     "lockedByESign": "Durch e-Sign gesperrt – kann nicht bearbeitet oder gelöscht werden",
     "keyDeleted": "\"{{key}}\" entfernt",
-    "saveFailed": "Metadaten konnten nicht gespeichert werden"
+    "saveFailed": "Metadaten konnten nicht gespeichert werden",
+    "invalidJson": "Ungültiges JSON: Der Wert wurde nicht gespeichert",
+    "copyJson": "JSON kopieren",
+    "jsonCopied": "JSON in die Zwischenablage kopiert",
+    "editJson": "JSON bearbeiten",
+    "editJsonHint": "Strg+Enter zum Speichern · Esc zum Abbrechen"
+  },
+  "jsonTree": {
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen",
+    "key": "1 Schlüssel",
+    "keys": "{{count}} Schlüssel",
+    "item": "1 Element",
+    "items": "{{count}} Elemente",
+    "showMore": "{{count}} weitere anzeigen"
   },
   "metadataEditor": {
     "clearAll": "Alles löschen",
