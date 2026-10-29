@@ -1,29 +1,21 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
+import { isJsonContainer, jsonChildPath, jsonSummary } from '../../utils/json-values';
 
-/** A translation key + params summarising an object or array ("3 keys", "5 items"). */
-export interface JsonSummary {
-  key: string;
-  params: { count: number };
-}
-
-/** Summary of a JSON container, or null for a scalar. */
-export function jsonSummary(value: unknown): JsonSummary | null {
-  if (Array.isArray(value)) {
-    return { key: value.length === 1 ? 'jsonTree.item' : 'jsonTree.items', params: { count: value.length } };
-  }
-  if (value !== null && typeof value === 'object') {
-    const count = Object.keys(value).length;
-    return { key: count === 1 ? 'jsonTree.key' : 'jsonTree.keys', params: { count } };
-  }
-  return null;
-}
+export { jsonSummary } from '../../utils/json-values';
+export type { JsonSummary } from '../../utils/json-values';
 
 interface JsonChild {
   key: string;
   value: unknown;
+}
+
+/** The children of a container currently shown: the first `limit` of them. */
+interface JsonPage {
+  limit: number;
+  children: JsonChild[];
 }
 
 /** Children shown before a "show more" button, so a huge array does not render thousands of rows. */
@@ -33,13 +25,17 @@ const PAGE_SIZE = 50;
  * Read-only, collapsible view of a JSON value: one line per property, objects and arrays fold
  * behind a chevron and show their size when folded. The root object or array is always open (its
  * host shows its name); nested ones shallower than {@link expandDepth} start open.
+ *
+ * OnPush: the host (the details panel) re-renders often; the tree only changes through its own
+ * clicks and its `value` input.
  */
 @Component({
   selector: 'app-json-tree',
   standalone: true,
   templateUrl: './json-tree.component.html',
   styleUrls: ['./json-tree.component.css'],
-  imports: [NgTemplateOutlet, MatIconModule, TranslatePipe]
+  imports: [NgTemplateOutlet, MatIconModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JsonTreeComponent implements OnChanges {
   @Input() value: unknown;
@@ -50,19 +46,20 @@ export class JsonTreeComponent implements OnChanges {
   private collapsed = new Set<string>();
   private limits = new Map<string, number>();
   private childrenCache = new WeakMap<object, JsonChild[]>();
+  /** The slice shown per path, kept so change detection does not rebuild it on every pass. */
+  private pages = new Map<string, JsonPage>();
 
   readonly summary = jsonSummary;
+  readonly isContainer = isJsonContainer;
+  readonly childPath = jsonChildPath;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['value']) {
       this.expanded.clear();
       this.collapsed.clear();
       this.limits.clear();
+      this.pages.clear();
     }
-  }
-
-  isContainer(value: unknown): value is object {
-    return value !== null && typeof value === 'object';
   }
 
   isArray(value: unknown): boolean {
@@ -85,7 +82,7 @@ export class JsonTreeComponent implements OnChanges {
     }
   }
 
-  children(value: object): JsonChild[] {
+  private children(value: object): JsonChild[] {
     let children = this.childrenCache.get(value);
     if (!children) {
       children = Array.isArray(value)
@@ -96,16 +93,26 @@ export class JsonTreeComponent implements OnChanges {
     return children;
   }
 
+  private limit(path: string): number {
+    return this.limits.get(path) ?? PAGE_SIZE;
+  }
+
   visibleChildren(value: object, path: string): JsonChild[] {
-    return this.children(value).slice(0, this.limits.get(path) ?? PAGE_SIZE);
+    const limit = this.limit(path);
+    let page = this.pages.get(path);
+    if (!page || page.limit !== limit) {
+      page = { limit, children: this.children(value).slice(0, limit) };
+      this.pages.set(path, page);
+    }
+    return page.children;
   }
 
   hiddenCount(value: object, path: string): number {
-    return Math.max(0, this.children(value).length - (this.limits.get(path) ?? PAGE_SIZE));
+    return Math.max(0, this.children(value).length - this.limit(path));
   }
 
   showMore(path: string) {
-    this.limits.set(path, (this.limits.get(path) ?? PAGE_SIZE) + PAGE_SIZE);
+    this.limits.set(path, this.limit(path) + PAGE_SIZE);
   }
 
   /** CSS class of a scalar: drives its colour. */

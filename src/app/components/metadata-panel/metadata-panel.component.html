@@ -141,11 +141,11 @@
                           [attr.aria-label]="((isJsonOpen(entry.key) ? 'jsonTree.collapse' : 'jsonTree.expand') | translate) + ': ' + entry.key">
                           <mat-icon class="metadata-json-chevron" aria-hidden="true">chevron_right</mat-icon>
                           <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
-                          @if (jsonSummary(entry.raw); as s) {
+                          @if (entry.summary; as s) {
                             <span class="metadata-json-badge">{{ s.key | translate: s.params }}</span>
                           }
                           @if (!isJsonOpen(entry.key) && editingKey !== entry.key) {
-                            <code class="metadata-json-preview">{{ entry.value }}</code>
+                            <code class="metadata-json-preview">{{ entry.preview }}</code>
                           }
                         </button>
                         <span class="metadata-row-actions">
