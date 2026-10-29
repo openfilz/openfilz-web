@@ -356,7 +356,21 @@
     "clickToEdit": "Clique para editar",
     "lockedByESign": "Bloqueado pelo e-Sign — não pode ser editado ou excluído",
     "keyDeleted": "\"{{key}}\" removido",
-    "saveFailed": "Falha ao salvar os metadados"
+    "saveFailed": "Falha ao salvar os metadados",
+    "invalidJson": "JSON inválido: o valor não foi guardado",
+    "copyJson": "Copiar JSON",
+    "jsonCopied": "JSON copiado para a área de transferência",
+    "editJson": "Editar JSON",
+    "editJsonHint": "Ctrl+Enter para guardar · Esc para cancelar"
+  },
+  "jsonTree": {
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "key": "1 chave",
+    "keys": "{{count}} chaves",
+    "item": "1 item",
+    "items": "{{count}} itens",
+    "showMore": "Mostrar mais {{count}}"
   },
   "metadataEditor": {
     "clearAll": "Limpar Tudo",

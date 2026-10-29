@@ -356,7 +356,21 @@
     "clickToEdit": "انقر للتعديل",
     "lockedByESign": "مقفل بواسطة التوقيع الإلكتروني — لا يمكن تعديله أو حذفه",
     "keyDeleted": "تمت إزالة \"{{key}}\"",
-    "saveFailed": "فشل حفظ البيانات الوصفية"
+    "saveFailed": "فشل حفظ البيانات الوصفية",
+    "invalidJson": "JSON غير صالح: لم يتم حفظ القيمة",
+    "copyJson": "نسخ JSON",
+    "jsonCopied": "تم نسخ JSON إلى الحافظة",
+    "editJson": "تعديل JSON",
+    "editJsonHint": "Ctrl+Enter للحفظ · Esc للإلغاء"
+  },
+  "jsonTree": {
+    "expand": "توسيع",
+    "collapse": "طي",
+    "key": "مفتاح واحد",
+    "keys": "{{count}} مفاتيح",
+    "item": "عنصر واحد",
+    "items": "{{count}} عناصر",
+    "showMore": "عرض {{count}} إضافية"
   },
   "metadataEditor": {
     "clearAll": "مسح الكل",

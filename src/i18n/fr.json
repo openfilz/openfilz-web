@@ -356,7 +356,21 @@
     "clickToEdit": "Cliquer pour modifier",
     "lockedByESign": "Verrouillé par e-Sign — non modifiable ni supprimable",
     "keyDeleted": "« {{key}} » supprimé",
-    "saveFailed": "Échec de l'enregistrement des métadonnées"
+    "saveFailed": "Échec de l'enregistrement des métadonnées",
+    "invalidJson": "JSON invalide : la valeur n’a pas été enregistrée",
+    "copyJson": "Copier le JSON",
+    "jsonCopied": "JSON copié dans le presse-papiers",
+    "editJson": "Modifier le JSON",
+    "editJsonHint": "Ctrl+Entrée pour enregistrer · Échap pour annuler"
+  },
+  "jsonTree": {
+    "expand": "Déplier",
+    "collapse": "Replier",
+    "key": "1 clé",
+    "keys": "{{count}} clés",
+    "item": "1 élément",
+    "items": "{{count}} éléments",
+    "showMore": "Afficher {{count}} de plus"
   },
   "metadataEditor": {
     "clearAll": "Tout effacer",
