@@ -134,7 +134,8 @@
                   @if(entry.structured) {
                     <!-- Object / array value: folded to one line by default, unfolds into a tree, edited as indented JSON -->
                     <div class="metadata-row metadata-row-json" role="listitem"
-                      [class.editing]="editingKey === entry.key" [class.open]="isJsonOpen(entry.key)">
+                      [class.editing]="editingKey === entry.key" [class.open]="isJsonOpen(entry.key)"
+                      (focusout)="onRowFocusOut($event, entry)">
                       <div class="metadata-json-header">
                         <button type="button" class="metadata-json-toggle" (click)="toggleJson(entry.key)"
                           [attr.aria-expanded]="isJsonOpen(entry.key)"
@@ -151,6 +152,8 @@
                         <span class="metadata-row-actions">
                           @if(savingKey === entry.key) {
                             <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                          } @else if(editingKey === entry.key) {
+                            <ng-container *ngTemplateOutlet="editActions; context: { entry: entry }"></ng-container>
                           } @else {
                             <button mat-icon-button class="row-action-btn" (click)="copyJson(entry)"
                               [matTooltip]="'metadataPanel.copyJson' | translate"
@@ -160,7 +163,7 @@
                             @if(isLocked(entry.key)) {
                               <mat-icon class="row-action-locked" aria-hidden="true"
                                 [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
-                            } @else if(editingKey !== entry.key) {
+                            } @else {
                               <button mat-icon-button class="row-action-btn" (click)="startEdit(entry)"
                                 [matTooltip]="'metadataPanel.editJson' | translate"
                                 [attr.aria-label]="('metadataPanel.editJson' | translate) + ': ' + entry.key">
@@ -176,32 +179,18 @@
                         </span>
                       </div>
                       @if(editingKey === entry.key) {
-                        <textarea class="metadata-json-input" [(ngModel)]="editValue" spellcheck="false" autofocus
-                          [rows]="jsonEditRows" (input)="editError = undefined"
-                          (keydown.control.enter)="commitEdit(entry)" (keydown.meta.enter)="commitEdit(entry)"
-                          (keydown.escape)="cancelEdit()" (blur)="commitEdit(entry)"
-                          [attr.aria-invalid]="!!editError"
-                          [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate"></textarea>
-                        @if(editError) {
-                          <div class="metadata-add-error" role="alert">
-                            <mat-icon aria-hidden="true">error</mat-icon>
-                            {{ editError | translate }}
-                          </div>
-                        } @else {
-                          <div class="metadata-json-hint">{{ 'metadataPanel.editJsonHint' | translate }}</div>
-                        }
+                        <ng-container *ngTemplateOutlet="valueEditor; context: { entry: entry }"></ng-container>
+                        <ng-container *ngTemplateOutlet="valueTypeRow"></ng-container>
                       } @else if(isJsonOpen(entry.key)) {
                         <app-json-tree class="metadata-json-tree" [value]="entry.raw" [expandDepth]="1"></app-json-tree>
                       }
                     </div>
                   } @else {
-                    <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key">
+                    <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key"
+                      (focusout)="onRowFocusOut($event, entry)">
                       <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
                       @if(editingKey === entry.key) {
-                        <input class="metadata-value-input" type="text" [(ngModel)]="editValue"
-                          (keydown.enter)="commitEdit(entry)" (keydown.escape)="cancelEdit()"
-                          (blur)="commitEdit(entry)" autofocus
-                          [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                        <ng-container *ngTemplateOutlet="valueEditor; context: { entry: entry }"></ng-container>
                       } @else if(isLocked(entry.key)) {
                         <span class="metadata-value metadata-value-locked">{{ entry.value }}</span>
                       } @else {
@@ -214,6 +203,8 @@
                       <span class="metadata-row-actions">
                         @if(savingKey === entry.key) {
                           <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
+                        } @else if(editingKey === entry.key) {
+                          <ng-container *ngTemplateOutlet="editActions; context: { entry: entry }"></ng-container>
                         } @else if(isLocked(entry.key)) {
                           <mat-icon class="row-action-locked" aria-hidden="true"
                             [matTooltip]="'metadataPanel.lockedByESign' | translate">lock</mat-icon>
@@ -230,20 +221,20 @@
                           </button>
                         }
                       </span>
+                      @if(editingKey === entry.key) {
+                        <ng-container *ngTemplateOutlet="valueTypeRow"></ng-container>
+                      }
                     </div>
                   }
                 }
 
                 @if(addingEntry) {
                   <div class="metadata-row add-row">
-                    <input class="metadata-key-input" type="text" [(ngModel)]="newKey"
+                    <input class="metadata-key-input" type="text" [(ngModel)]="newKey" (ngModelChange)="draft.error = undefined"
                       [placeholder]="'metadataEditor.keyPlaceholder' | translate"
                       (keydown.enter)="commitAdd()" (keydown.escape)="cancelAdd()" autofocus
                       [attr.aria-label]="'metadataEditor.keyAriaLabel' | translate" />
-                    <input class="metadata-value-input" type="text" [(ngModel)]="newValue"
-                      [placeholder]="'metadataEditor.valuePlaceholder' | translate"
-                      (keydown.enter)="commitAdd()" (keydown.escape)="cancelAdd()"
-                      [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+                    <ng-container *ngTemplateOutlet="valueEditor; context: { entry: null }"></ng-container>
                     <span class="metadata-row-actions">
                       @if(savingKey && addingEntry) {
                         <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
@@ -259,13 +250,8 @@
                         </button>
                       }
                     </span>
+                    <ng-container *ngTemplateOutlet="valueTypeRow"></ng-container>
                   </div>
-                  @if(newEntryError) {
-                    <div class="metadata-add-error" role="alert">
-                      <mat-icon aria-hidden="true">error</mat-icon>
-                      {{ newEntryError | translate }}
-                    </div>
-                  }
                 }
               </div>
             </div>
@@ -355,3 +341,66 @@
     </div>
   </aside>
 }
+
+<!-- Value editor shared by the inline edit (entry) and the add row (entry = null): one control per value type.
+     The buttons cancel their mousedown so the field being edited keeps the focus (see onRowFocusOut). -->
+<ng-template #valueEditor let-entry="entry">
+  @switch (draft.type) {
+    @case ('json') {
+      <textarea class="metadata-json-input" [(ngModel)]="draft.text" (ngModelChange)="onDraftInput()" spellcheck="false" autofocus
+        [rows]="jsonEditRows"
+        (keydown.control.enter)="commitDraft(entry)" (keydown.meta.enter)="commitDraft(entry)" (keydown.escape)="cancelDraft(entry)"
+        [attr.aria-invalid]="!!draft.error" [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate"></textarea>
+    }
+    @case ('boolean') {
+      <div class="metadata-segmented metadata-bool-picker" role="radiogroup" [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate">
+        @for (literal of booleanLiterals; track literal) {
+          <button type="button" role="radio" [class.selected]="draft.text === literal" [attr.aria-checked]="draft.text === literal"
+            (mousedown)="$event.preventDefault()" (click)="draft.text = literal; draft.error = undefined"
+            (keydown.enter)="commitDraft(entry)" (keydown.escape)="cancelDraft(entry)">{{ literal }}</button>
+        }
+      </div>
+    }
+    @default {
+      <input class="metadata-value-input" type="text" [(ngModel)]="draft.text" (ngModelChange)="onDraftInput()" autofocus
+        [attr.inputmode]="draft.type === 'number' ? 'decimal' : null"
+        [placeholder]="entry ? '' : ('metadataEditor.valuePlaceholder' | translate)"
+        (keydown.enter)="commitDraft(entry)" (keydown.escape)="cancelDraft(entry)"
+        [attr.aria-invalid]="!!draft.error" [attr.aria-label]="'metadataEditor.valueAriaLabel' | translate" />
+    }
+  }
+</ng-template>
+
+<!-- Type the value is saved as. A text value turns into JSON by itself once it opens with { or [ ;
+     picking a type by hand stops that. -->
+<ng-template #valueTypeRow>
+  <div class="metadata-value-type">
+    <div class="metadata-segmented metadata-type-picker" role="radiogroup" [attr.aria-label]="'metadataPanel.valueType.label' | translate">
+      @for (type of valueTypes; track type) {
+        <button type="button" role="radio" [class.selected]="draft.type === type" [attr.aria-checked]="draft.type === type"
+          (mousedown)="$event.preventDefault()" (click)="setDraftType(type)">{{ 'metadataPanel.valueType.' + type | translate }}</button>
+      }
+    </div>
+    @if (draft.type === 'json') {
+      <span class="metadata-json-hint">{{ 'metadataPanel.editJsonHint' | translate }}</span>
+    }
+  </div>
+  @if (draft.error) {
+    <div class="metadata-add-error" role="alert">
+      <mat-icon aria-hidden="true">error</mat-icon>
+      {{ draft.error | translate }}
+    </div>
+  }
+</ng-template>
+
+<!-- Save / cancel of an inline edit, in place of the row's edit / delete -->
+<ng-template #editActions let-entry="entry">
+  <button mat-icon-button class="row-action-btn confirm" (mousedown)="$event.preventDefault()" (click)="commitEdit(entry)"
+    [matTooltip]="'common.save' | translate" [attr.aria-label]="'common.save' | translate">
+    <mat-icon aria-hidden="true">check</mat-icon>
+  </button>
+  <button mat-icon-button class="row-action-btn" (mousedown)="$event.preventDefault()" (click)="cancelEdit()"
+    [matTooltip]="'common.cancel' | translate" [attr.aria-label]="'common.cancel' | translate">
+    <mat-icon aria-hidden="true">close</mat-icon>
+  </button>
+</ng-template>

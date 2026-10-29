@@ -1,6 +1,6 @@
 /**
  * Pure helpers for metadata values that may be JSON objects or arrays: how they are summarised,
- * previewed, edited as text and saved back with their type. No Angular dependency, so the
+ * previewed, typed in under a chosen type and saved back with that type. No Angular dependency, so the
  * `json-values.spec.ts` suite runs under plain vitest.
  */
 
@@ -48,15 +48,50 @@ export function previewMetadataValue(text: string): string {
   return text.length > JSON_PREVIEW_MAX_LENGTH ? text.slice(0, JSON_PREVIEW_MAX_LENGTH - 1) + '…' : text;
 }
 
+/** How a scalar metadata value is typed in: as text, a number, a boolean or raw JSON. */
+export type MetadataValueType = 'text' | 'number' | 'boolean' | 'json';
+
+export const METADATA_VALUE_TYPES: readonly MetadataValueType[] = ['text', 'number', 'boolean', 'json'];
+
+/** The type a stored value is edited as: objects and arrays as JSON, anything unknown (null) as text. */
+export function metadataValueType(raw: unknown): MetadataValueType {
+  if (typeof raw === 'number') return 'number';
+  if (typeof raw === 'boolean') return 'boolean';
+  if (isJsonContainer(raw)) return 'json';
+  return 'text';
+}
+
+/** True when text typed as plain text opens a JSON object or array, so the editor can switch to JSON by itself. */
+export function looksLikeJsonContainer(text: string): boolean {
+  const first = text.trimStart()[0];
+  return first === '{' || first === '[';
+}
+
+export type TypedValueError = 'invalidJson' | 'invalidNumber' | 'invalidBoolean';
+
 /**
- * Value to save for an edited entry. A string stays a string; any other stored type is parsed back
- * from its JSON text. `undefined` means the text is not valid JSON for an object or array.
+ * Value to save for text entered under a type, or the error to show when the text does not fit it.
+ * Text stays a string whatever it looks like ("0123", "true" and "{}" are legitimate strings); a number
+ * accepts a decimal comma; JSON takes any JSON value but null (a null entry would show as empty).
  */
-export function parseEditedValue(raw: unknown, text: string): unknown {
-  if (raw === null || raw === undefined || typeof raw === 'string') return text;
-  try {
-    return JSON.parse(text);
-  } catch {
-    return typeof raw === 'object' ? undefined : text;
+export function parseTypedValue(type: MetadataValueType, text: string): { value: unknown } | { error: TypedValueError } {
+  const trimmed = text.trim();
+  switch (type) {
+    case 'number': {
+      const normalised = /^[^.,]*,[^.,]*$/.test(trimmed) ? trimmed.replace(',', '.') : trimmed;
+      const value = Number(normalised);
+      return trimmed && Number.isFinite(value) ? { value } : { error: 'invalidNumber' };
+    }
+    case 'boolean':
+      return trimmed === 'true' || trimmed === 'false' ? { value: trimmed === 'true' } : { error: 'invalidBoolean' };
+    case 'json':
+      try {
+        const value = JSON.parse(trimmed);
+        return value === null ? { error: 'invalidJson' } : { value };
+      } catch {
+        return { error: 'invalidJson' };
+      }
+    default:
+      return { value: trimmed };
   }
 }

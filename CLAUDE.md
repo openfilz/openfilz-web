@@ -347,11 +347,20 @@ own, their team's (EE) or the default; 0 / `null` = unlimited — never render "
 Object / array metadata values are shown folded (key, size badge, one-line preview capped at 200 characters) and
 unfold into `components/json-tree/` — a dependency-free, `OnPush` tree (nested values folded, arrays paged by 50,
 fold state keyed by JSON-pointer-escaped paths so a key containing `/` cannot collide with a nested one). Editing
-uses indented JSON in a textarea (Ctrl+Enter saves, Esc cancels, invalid JSON stays inline and is never sent);
-objects, arrays, numbers and booleans are parsed back from their text, strings stay strings. The pure helpers
-(`jsonSummary`, `jsonChildPath`, `formatMetadataValue`, `previewMetadataValue`, `parseEditedValue`) live in
-`utils/json-values.ts` with `utils/json-values.spec.ts` (run with vitest, see the workflow spec). i18n: `jsonTree.*`,
-`metadataPanel.{invalidJson,copyJson,jsonCopied,editJson,editJsonHint}`.
+uses indented JSON in a textarea (Ctrl+Enter saves, Esc cancels, invalid JSON stays inline and is never sent).
+**Every value is saved with an explicit type**: the inline edit and the add row carry a type picker
+(`.metadata-segmented`: Text · Number · Boolean · JSON, pre-set from the stored value) under the field, so a string
+can become a number, a boolean (two literals `true` / `false`) or an object, and "0123" / "true" stay strings when
+Text is chosen. A text value switches to JSON by itself the moment it opens with `{` or `[` (pasting JSON just
+works); picking a type by hand stops that. Numbers accept a decimal comma. The inline edit still saves on blur, but
+only when the focus leaves the row (`onRowFocusOut`, decided in a microtask because Chrome fires focusout for a
+control being replaced): the picker, the literals and the ✓ / ✗ buttons cancel their mousedown so the field keeps
+the focus. The pure helpers (`jsonSummary`, `jsonChildPath`, `formatMetadataValue`, `previewMetadataValue`,
+`metadataValueType`, `looksLikeJsonContainer`, `parseTypedValue`) live in `utils/json-values.ts` with
+`utils/json-values.spec.ts` (run with vitest, see the workflow spec). i18n: `jsonTree.*`,
+`metadataPanel.{invalidJson,invalidNumber,invalidBoolean,valueType.*,copyJson,jsonCopied,editJson,editJsonHint}`.
+The AI chat FAB steps left of the open details panel (`global_styles.css`, `body:has(.metadata-panel)`) and hides
+behind the phone bottom sheet, so it never covers the last row's field and save / cancel / delete buttons.
 
 ## Text editor on touch devices
 
