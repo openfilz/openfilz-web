@@ -70,9 +70,47 @@ export function looksLikeJsonContainer(text: string): boolean {
 export type TypedValueError = 'invalidJson' | 'invalidNumber' | 'invalidBoolean';
 
 /**
+ * Lenient JSON input. Strict JSON (double quotes everywhere, no trailing comma) is what JSON.parse
+ * takes; what people type is often JSON5 — `{ type: 2 }`, `{ 'type': 2 }`, a trailing comma, a
+ * comment. The JSON5 parser is a separate chunk loaded on demand (nothing is loaded until a JSON
+ * value is typed); until it is there, only strict JSON parses. Whatever the syntax typed, the value
+ * saved is the parsed object, so what is stored and shown is always strict JSON.
+ */
+type LenientJsonParser = (text: string) => unknown;
+let lenientJson: LenientJsonParser | null = null;
+let lenientJsonLoading: Promise<void> | null = null;
+
+/** Loads the JSON5 parser once; resolves either way (a failed load leaves strict parsing only). */
+export function loadLenientJson(): Promise<void> {
+  if (lenientJson) return Promise.resolve();
+  if (!lenientJsonLoading) {
+    lenientJsonLoading = import('json5').then(
+      m => { lenientJson = text => m.default.parse(text); },
+      () => { lenientJsonLoading = null; }
+    );
+  }
+  return lenientJsonLoading;
+}
+
+export function lenientJsonLoaded(): boolean {
+  return lenientJson !== null;
+}
+
+/** Strict JSON first, JSON5 when it is loaded; throws when neither reads the text. */
+function parseJsonText(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    if (!lenientJson) throw e;
+    return lenientJson(text);
+  }
+}
+
+/**
  * Value to save for text entered under a type, or the error to show when the text does not fit it.
  * Text stays a string whatever it looks like ("0123", "true" and "{}" are legitimate strings); a number
- * accepts a decimal comma; JSON takes any JSON value but null (a null entry would show as empty).
+ * accepts a decimal comma; JSON takes any JSON value but null (a null entry would show as empty), in
+ * strict or, once {@link loadLenientJson} has run, JSON5 syntax.
  */
 export function parseTypedValue(type: MetadataValueType, text: string): { value: unknown } | { error: TypedValueError } {
   const trimmed = text.trim();
@@ -86,7 +124,7 @@ export function parseTypedValue(type: MetadataValueType, text: string): { value:
       return trimmed === 'true' || trimmed === 'false' ? { value: trimmed === 'true' } : { error: 'invalidBoolean' };
     case 'json':
       try {
-        const value = JSON.parse(trimmed);
+        const value = parseJsonText(trimmed);
         return value === null ? { error: 'invalidJson' } : { value };
       } catch {
         return { error: 'invalidJson' };

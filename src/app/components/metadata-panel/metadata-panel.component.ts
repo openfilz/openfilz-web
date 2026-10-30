@@ -19,7 +19,7 @@ import { SwipeTabsDirective } from '../../directives/swipe-tabs.directive';
 import { JsonTreeComponent } from '../json-tree/json-tree.component';
 import {
   JsonSummary, METADATA_VALUE_TYPES, MetadataValueType, formatMetadataValue, isJsonContainer, jsonSummary,
-  looksLikeJsonContainer, metadataValueType, parseTypedValue, previewMetadataValue
+  lenientJsonLoaded, loadLenientJson, looksLikeJsonContainer, metadataValueType, parseTypedValue, previewMetadataValue
 } from '../../utils/json-values';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
@@ -412,6 +412,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       type: metadataValueType(entry.raw),
       typeChosen: false
     };
+    if (this.draft.type === 'json') loadLenientJson();
     this.focusDraftControl();
   }
 
@@ -431,6 +432,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.documentId) return;
     const parsed = parseTypedValue(this.draft.type, text);
     if ('error' in parsed) {
+      if (this.lenientJsonPending(parsed.error)) {
+        this.lenientJsonRetried = true;
+        loadLenientJson().then(() => { this.commitEdit(entry); this.lenientJsonRetried = false; });
+        return;
+      }
       this.draft.error = 'metadataPanel.' + parsed.error;
       return;
     }
@@ -516,6 +522,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     }
     const parsed = parseTypedValue(this.draft.type, text);
     if ('error' in parsed) {
+      if (this.lenientJsonPending(parsed.error)) {
+        this.lenientJsonRetried = true;
+        loadLenientJson().then(() => { this.commitAdd(); this.lenientJsonRetried = false; });
+        return;
+      }
       this.draft.error = 'metadataPanel.' + parsed.error;
       return;
     }
@@ -566,6 +577,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (type === 'boolean' && !this.booleanLiterals.includes(this.draft.text.trim())) {
       this.draft.text = 'true';
     }
+    if (type === 'json') loadLenientJson();
     this.focusDraftControl();
   }
 
@@ -574,9 +586,20 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.draft.error = undefined;
     if (this.draft.type === 'text' && !this.draft.typeChosen && looksLikeJsonContainer(this.draft.text)) {
       this.draft.type = 'json';
+      loadLenientJson();
       this.focusDraftControl();
     }
   }
+
+  /**
+   * Invalid JSON while the JSON5 parser is still on its way (typed and saved within the instant the
+   * editor opened): the save retries once it has landed, rather than refusing JSON5 syntax once.
+   * After a failed load the parser never counts as loaded, and the strict refusal stands.
+   */
+  private lenientJsonPending(error: string): boolean {
+    return error === 'invalidJson' && !lenientJsonLoaded() && !this.lenientJsonRetried;
+  }
+  private lenientJsonRetried = false;
 
   /**
    * Focus the control of the open editor once it is rendered (the field of a text / number / JSON value,

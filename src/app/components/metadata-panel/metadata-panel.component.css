@@ -363,11 +363,15 @@
 .metadata-rows {
   display: flex;
   flex-direction: column;
+  /* A host that lays the panel body out as a flex column must never squeeze the list or a row to its
+     min-height: an open editor (its type row, a JSON textarea) would then spill out of the row's frame */
+  flex-shrink: 0;
   gap: 6px;
 }
 
 .metadata-row {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 8px;
   padding: 6px 10px;

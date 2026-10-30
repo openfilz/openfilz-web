@@ -71,7 +71,10 @@
               "src/assets/styles/custom-theme.scss",
               "src/assets/styles/global_styles.css"
             ],
-            "tsConfig": "tsconfig.app.json"
+            "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "json5"
+            ]
           }
         },
         "serve": {
