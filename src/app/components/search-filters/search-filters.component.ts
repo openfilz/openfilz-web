@@ -7,7 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DocumentType, SearchFilters, SearchScope } from '../../models/document.models';
 import { ANY_FILE_TYPE, FILE_TYPE_CATEGORIES } from '../../models/file-type-filters';
-import { DATE_MODIFIED_OPTIONS, countActiveFilters } from '../../models/search-refine';
+import { DATE_MODIFIED_OPTIONS, countActiveFilters, emptySearchFilters } from '../../models/search-refine';
 import { InsightFacetsService } from '../../services/insight-facets.service';
 import { InsightFacetCount } from '../../models/smart-filing.models';
 import { MetadataKeySuggestion, MetadataKeySuggestionsService } from '../../services/metadata-key-suggestions.service';
@@ -196,16 +196,7 @@ export class SearchFiltersComponent implements OnInit {
    * explorer to the flat "all files" listing; a text search ignores the scope anyway.
    */
   clearFilters() {
-    this.filters = {
-      type: undefined,
-      dateModified: 'any',
-      owner: '',
-      fileType: 'any',
-      metadata: [],
-      scope: 'CURRENT_ONLY',
-      category: undefined,
-      language: undefined
-    };
+    this.filters = emptySearchFilters();
     this.metadataFilters = [];
     this.filtersChanged.emit(this.filters);
   }
