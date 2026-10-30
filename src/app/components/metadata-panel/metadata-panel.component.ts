@@ -470,10 +470,15 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.savingKey = oldKey;
     // A rename writes the value under its new key first, then removes the old key: a failure in
     // between leaves both keys on the document, never the value lost
+    // The panel may show another document by the time a request answers: the server-side work
+    // still completes, but the list and local metadata of the new document are left alone
+    const sameDocument = () => this.documentId === documentId;
     this.documentApi.updateDocumentMetadata(documentId, { [key]: saved }).subscribe({
       next: () => {
-        Object.assign(entry, toMetadataEntry(key, saved));
-        this.syncLocalMetadata(key, saved);
+        if (sameDocument()) {
+          Object.assign(entry, toMetadataEntry(key, saved));
+          this.syncLocalMetadata(key, saved);
+        }
         if (!renamed) {
           done();
           return;
@@ -481,12 +486,14 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
         this.savingKey = key;
         this.documentApi.deleteDocumentMetadata(documentId, [oldKey]).subscribe({
           next: () => {
-            delete this.documentInfo?.metadata?.[oldKey];
+            if (sameDocument()) delete this.documentInfo?.metadata?.[oldKey];
             done();
           },
           error: () => {
-            const at = this.metadataEntries.indexOf(entry);
-            this.metadataEntries.splice(at + 1, 0, toMetadataEntry(oldKey, oldRaw));
+            if (sameDocument()) {
+              const at = this.metadataEntries.indexOf(entry);
+              this.metadataEntries.splice(at + 1, 0, toMetadataEntry(oldKey, oldRaw));
+            }
             this.savingKey = null;
             this.cancelEdit();
             this.snackBar.open(this.translate.instant('metadataPanel.renameOldKeyKept', { key, old: oldKey }), this.translate.instant('common.close'), { duration: 5000 });
@@ -562,7 +569,11 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if ('error' in parsed) {
       if (this.lenientJsonPending(parsed.error)) {
         this.lenientJsonRetried = true;
-        loadLenientJson().then(() => { this.commitAdd(); this.lenientJsonRetried = false; });
+        loadLenientJson().then(() => {
+          // The add row may have been cancelled meanwhile (the draft then belongs to an inline edit)
+          if (this.addingEntry) this.commitAdd();
+          this.lenientJsonRetried = false;
+        });
         return;
       }
       this.draft.error = 'metadataPanel.' + parsed.error;

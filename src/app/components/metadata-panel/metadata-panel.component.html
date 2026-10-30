@@ -91,7 +91,7 @@
                 <!-- Integrity fingerprint: of no use to most readers, so folded behind one quiet line -->
                 <div class="info-row sha256-row" [class.open]="sha256Open">
                   <button type="button" class="sha256-toggle" (click)="sha256Open = !sha256Open"
-                    [attr.aria-expanded]="sha256Open" aria-controls="sha256-fingerprint">
+                    [attr.aria-expanded]="sha256Open" [attr.aria-controls]="sha256Open ? 'sha256-fingerprint' : null">
                     <mat-icon aria-hidden="true">fingerprint</mat-icon>
                     <span>{{ 'metadataPanel.sha256Fingerprint' | translate }}</span>
                     <mat-icon class="sha256-chevron" aria-hidden="true">chevron_right</mat-icon>
