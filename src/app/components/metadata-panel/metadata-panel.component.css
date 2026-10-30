@@ -598,6 +598,13 @@
   flex: 1;
 }
 
+/* The open editor's lines (key / value field, the type row, a JSON textarea) are never squeezed: a row that is
+   too short for them would clip the type picker on its bottom border */
+.metadata-row.editing > *,
+.metadata-row.add-row > * {
+  flex-shrink: 0;
+}
+
 .metadata-value-type {
   width: 100%;
   display: flex;
@@ -607,10 +614,12 @@
   gap: 6px 12px;
 }
 
-/* Segmented track: a few exclusive choices (the value type, true / false) on one rounded track */
+/* Segmented track: a few exclusive choices (the value type, true / false) on one rounded track.
+   The track is a fixed-height box and each segment fills it, its label centred on both axes. */
 .metadata-segmented {
   display: inline-flex;
   align-items: stretch;
+  flex-shrink: 0;
   gap: 2px;
   height: 28px;
   padding: 2px;
@@ -622,6 +631,13 @@
 }
 
 .metadata-segmented button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 0;
   padding: 0 8px;
   border: none;
   border-radius: 6px;
