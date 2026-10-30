@@ -3,6 +3,8 @@ import {
   formatMetadataValue,
   jsonChildPath,
   jsonSummary,
+  lenientJsonLoaded,
+  loadLenientJson,
   looksLikeJsonContainer,
   metadataValueType,
   parseTypedValue,
@@ -134,6 +136,37 @@ describe('parseTypedValue', () => {
 
   it('does not pollute Object.prototype through a __proto__ key', () => {
     const parsed = parseTypedValue('json', '{"__proto__": {"polluted": true}}') as { value: Record<string, unknown> };
+    expect(({} as Record<string, unknown>)['polluted']).toBeUndefined();
+    expect(Object.prototype.hasOwnProperty.call(parsed.value, '__proto__')).toBe(true);
+  });
+});
+
+describe('parseTypedValue with the lenient parser', () => {
+  it('reads only strict JSON until the lenient parser is loaded', () => {
+    expect(lenientJsonLoaded()).toBe(false);
+    expect(parseTypedValue('json', "{ 'type': 2 }")).toEqual({ error: 'invalidJson' });
+  });
+
+  it('then reads JSON5: unquoted or single-quoted keys, single-quoted strings, trailing commas, comments', async () => {
+    await loadLenientJson();
+    expect(lenientJsonLoaded()).toBe(true);
+    expect(parseTypedValue('json', "{ 'type': 2 }")).toEqual({ value: { type: 2 } });
+    expect(parseTypedValue('json', '{ type: 2, name: \'it\\\'s\', }')).toEqual({ value: { type: 2, name: "it's" } });
+    expect(parseTypedValue('json', '[1, 2, 3,]')).toEqual({ value: [1, 2, 3] });
+    expect(parseTypedValue('json', '{\n  // the kind\n  kind: "invoice", /* paid? */ paid: false\n}')).toEqual({ value: { kind: 'invoice', paid: false } });
+    expect(parseTypedValue('json', "'a string'")).toEqual({ value: 'a string' });
+  });
+
+  it('still refuses what is not JSON5 either, and null', async () => {
+    await loadLenientJson();
+    expect(parseTypedValue('json', '{ type: }')).toEqual({ error: 'invalidJson' });
+    expect(parseTypedValue('json', 'not json')).toEqual({ error: 'invalidJson' });
+    expect(parseTypedValue('json', 'null')).toEqual({ error: 'invalidJson' });
+  });
+
+  it('does not pollute Object.prototype through an unquoted __proto__ key', async () => {
+    await loadLenientJson();
+    const parsed = parseTypedValue('json', '{ __proto__: { polluted: true } }') as { value: Record<string, unknown> };
     expect(({} as Record<string, unknown>)['polluted']).toBeUndefined();
     expect(Object.prototype.hasOwnProperty.call(parsed.value, '__proto__')).toBe(true);
   });

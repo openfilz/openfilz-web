@@ -88,17 +88,25 @@
               </div>
 
               @if(sha256Hash) {
-                <div class="info-row sha256-row">
-                  <span class="info-label">{{ 'metadataPanel.sha256' | translate }}</span>
-                  <span class="info-value sha256-value">
-                    <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate"
-                      (click)="copySha256ToClipboard()">{{ sha256Hash }}</code>
-                    <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
-                      [matTooltip]="'metadataPanel.copyToClipboard' | translate"
-                      [attr.aria-label]="'metadataPanel.copySha256' | translate">
-                      <mat-icon aria-hidden="true">content_copy</mat-icon>
-                    </button>
-                  </span>
+                <!-- Integrity fingerprint: of no use to most readers, so folded behind one quiet line -->
+                <div class="info-row sha256-row" [class.open]="sha256Open">
+                  <button type="button" class="sha256-toggle" (click)="sha256Open = !sha256Open"
+                    [attr.aria-expanded]="sha256Open" [attr.aria-controls]="sha256Open ? 'sha256-fingerprint' : null">
+                    <mat-icon aria-hidden="true">fingerprint</mat-icon>
+                    <span>{{ 'metadataPanel.sha256Fingerprint' | translate }}</span>
+                    <mat-icon class="sha256-chevron" aria-hidden="true">chevron_right</mat-icon>
+                  </button>
+                  @if(sha256Open) {
+                    <span class="info-value sha256-value" id="sha256-fingerprint">
+                      <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate"
+                        (click)="copySha256ToClipboard()">{{ sha256Hash }}</code>
+                      <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
+                        [matTooltip]="'metadataPanel.copyToClipboard' | translate"
+                        [attr.aria-label]="'metadataPanel.copySha256' | translate">
+                        <mat-icon aria-hidden="true">content_copy</mat-icon>
+                      </button>
+                    </span>
+                  }
                 </div>
               }
 
@@ -137,18 +145,22 @@
                       [class.editing]="editingKey === entry.key" [class.open]="isJsonOpen(entry.key)"
                       (focusout)="onRowFocusOut($event, entry)">
                       <div class="metadata-json-header">
-                        <button type="button" class="metadata-json-toggle" (click)="toggleJson(entry.key)"
-                          [attr.aria-expanded]="isJsonOpen(entry.key)"
-                          [attr.aria-label]="((isJsonOpen(entry.key) ? 'jsonTree.collapse' : 'jsonTree.expand') | translate) + ': ' + entry.key">
-                          <mat-icon class="metadata-json-chevron" aria-hidden="true">chevron_right</mat-icon>
-                          <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
-                          @if (entry.summary; as s) {
-                            <span class="metadata-json-badge">{{ s.key | translate: s.params }}</span>
-                          }
-                          @if (!isJsonOpen(entry.key) && editingKey !== entry.key) {
-                            <code class="metadata-json-preview">{{ entry.preview }}</code>
-                          }
-                        </button>
+                        @if(editingKey === entry.key) {
+                          <ng-container *ngTemplateOutlet="keyEditor; context: { entry: entry }"></ng-container>
+                        } @else {
+                          <button type="button" class="metadata-json-toggle" (click)="toggleJson(entry.key)"
+                            [attr.aria-expanded]="isJsonOpen(entry.key)"
+                            [attr.aria-label]="((isJsonOpen(entry.key) ? 'jsonTree.collapse' : 'jsonTree.expand') | translate) + ': ' + entry.key">
+                            <mat-icon class="metadata-json-chevron" aria-hidden="true">chevron_right</mat-icon>
+                            <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
+                            @if (entry.summary; as s) {
+                              <span class="metadata-json-badge">{{ s.key | translate: s.params }}</span>
+                            }
+                            @if (!isJsonOpen(entry.key) && editingKey !== entry.key) {
+                              <code class="metadata-json-preview">{{ entry.preview }}</code>
+                            }
+                          </button>
+                        }
                         <span class="metadata-row-actions">
                           @if(savingKey === entry.key) {
                             <mat-spinner diameter="18" aria-hidden="true"></mat-spinner>
@@ -188,12 +200,14 @@
                   } @else {
                     <div class="metadata-row" role="listitem" [class.editing]="editingKey === entry.key"
                       (focusout)="onRowFocusOut($event, entry)">
-                      <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
                       @if(editingKey === entry.key) {
+                        <ng-container *ngTemplateOutlet="keyEditor; context: { entry: entry }"></ng-container>
                         <ng-container *ngTemplateOutlet="valueEditor; context: { entry: entry }"></ng-container>
                       } @else if(isLocked(entry.key)) {
+                        <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
                         <span class="metadata-value metadata-value-locked">{{ entry.value }}</span>
                       } @else {
+                        <span class="metadata-key" [title]="entry.key">{{ entry.key }}</span>
                         <button class="metadata-value" (click)="startEdit(entry)"
                           [matTooltip]="'metadataPanel.clickToEdit' | translate"
                           [attr.aria-label]="('metadataPanel.clickToEdit' | translate) + ': ' + entry.key">
@@ -230,7 +244,7 @@
 
                 @if(addingEntry) {
                   <div class="metadata-row add-row">
-                    <input class="metadata-key-input" type="text" [(ngModel)]="newKey" (ngModelChange)="draft.error = undefined"
+                    <input class="metadata-key-input" type="text" [(ngModel)]="draft.key" (ngModelChange)="draft.error = undefined"
                       [placeholder]="'metadataEditor.keyPlaceholder' | translate"
                       (keydown.enter)="commitAdd()" (keydown.escape)="cancelAdd()" autofocus
                       [attr.aria-label]="'metadataEditor.keyAriaLabel' | translate" />
@@ -341,6 +355,14 @@
     </div>
   </aside>
 }
+
+<!-- Key of the entry being edited: renaming it writes the value under the new key, then removes the old one -->
+<ng-template #keyEditor let-entry="entry">
+  <input class="metadata-key-input" type="text" [(ngModel)]="draft.key" (ngModelChange)="draft.error = undefined"
+    (keydown.enter)="commitDraft(entry)" (keydown.escape)="cancelDraft(entry)"
+    [attr.aria-invalid]="!!draft.error" [attr.aria-label]="'metadataEditor.keyAriaLabel' | translate"
+    [title]="'metadataPanel.renameKeyHint' | translate" />
+</ng-template>
 
 <!-- Value editor shared by the inline edit (entry) and the add row (entry = null): one control per value type.
      The buttons cancel their mousedown so the field being edited keeps the focus (see onRowFocusOut). -->

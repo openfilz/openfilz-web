@@ -263,6 +263,55 @@
 }
 
 /* SHA256 Hash Styling */
+/* One quiet line; the hash and its copy button appear under it on demand */
+.sha256-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 4px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sha256-toggle:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+}
+
+.sha256-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.sha256-toggle mat-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.sha256-toggle span {
+  flex: 1;
+  min-width: 0;
+}
+
+.sha256-chevron {
+  color: var(--text-tertiary);
+  transition: transform 150ms ease;
+}
+
+.sha256-row.open .sha256-chevron {
+  transform: rotate(90deg);
+}
+
 .sha256-value {
   display: flex;
   align-items: center;
@@ -363,11 +412,15 @@
 .metadata-rows {
   display: flex;
   flex-direction: column;
+  /* A host that lays the panel body out as a flex column must never squeeze the list or a row to its
+     min-height: an open editor (its type row, a JSON textarea) would then spill out of the row's frame */
+  flex-shrink: 0;
   gap: 6px;
 }
 
 .metadata-row {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
@@ -538,6 +591,11 @@
   flex: 1;
   width: auto;
   min-width: 0;
+}
+
+/* While a JSON value is edited, its key field takes the fold toggle's place in the header */
+.metadata-json-header > .metadata-key-input {
+  flex: 1;
 }
 
 .metadata-value-type {

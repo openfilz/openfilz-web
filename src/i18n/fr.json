@@ -325,6 +325,7 @@
     "type": "Type :",
     "size": "Taille :",
     "sha256": "SHA256 :",
+    "sha256Fingerprint": "Empreinte SHA-256",
     "clickToCopy": "Cliquer pour copier",
     "copyToClipboard": "Copier dans le presse-papiers",
     "copySha256": "Copier le hachage SHA256 dans le presse-papiers",
@@ -364,6 +365,8 @@
     "editJsonHint": "Ctrl+Entrée pour enregistrer · Échap pour annuler",
     "invalidNumber": "Ce n’est pas un nombre : la valeur n’a pas été enregistrée",
     "invalidBoolean": "Choisissez true ou false",
+    "renameOldKeyKept": "Enregistré sous « {{key}} », mais l’ancienne clé « {{old}} » n’a pas pu être supprimée",
+    "renameKeyHint": "Renommer la clé",
     "valueType": {
       "label": "Type de valeur",
       "text": "Texte",

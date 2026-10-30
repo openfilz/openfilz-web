@@ -325,6 +325,7 @@
     "type": "Typ:",
     "size": "Größe:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "SHA-256-Fingerabdruck",
     "clickToCopy": "Zum Kopieren klicken",
     "copyToClipboard": "In die Zwischenablage kopieren",
     "copySha256": "SHA256-Hash in die Zwischenablage kopieren",
@@ -364,6 +365,8 @@
     "editJsonHint": "Strg+Enter zum Speichern · Esc zum Abbrechen",
     "invalidNumber": "Keine Zahl: Der Wert wurde nicht gespeichert",
     "invalidBoolean": "true oder false wählen",
+    "renameOldKeyKept": "Unter „{{key}}“ gespeichert, aber der alte Schlüssel „{{old}}“ konnte nicht entfernt werden",
+    "renameKeyHint": "Schlüssel umbenennen",
     "valueType": {
       "label": "Werttyp",
       "text": "Text",

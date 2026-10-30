@@ -352,14 +352,14 @@ uses indented JSON in a textarea (Ctrl+Enter saves, Esc cancels, invalid JSON st
 (`.metadata-segmented`: Text · Number · Boolean · JSON, pre-set from the stored value) under the field, so a string
 can become a number, a boolean (two literals `true` / `false`) or an object, and "0123" / "true" stay strings when
 Text is chosen. A text value switches to JSON by itself the moment it opens with `{` or `[` (pasting JSON just
-works); picking a type by hand stops that. Numbers accept a decimal comma. The inline edit still saves on blur, but
+works); picking a type by hand stops that. Numbers accept a decimal comma. JSON input is lenient: strict JSON first, then JSON5 (`{ type: 2 }`, `{ 'type': 2 }`, trailing commas, comments) through the `json5` parser, a separate chunk loaded the moment a JSON value is edited (`loadLenientJson`); the value saved and shown is always strict JSON. The inline edit also lets the key be renamed (field in place of the key; the value is written under the new key, then the old key is deleted, so a failure in between leaves both keys and never loses the value; `utils/metadata-key.ts` + spec holds the key rules shared with the add row). It still saves on blur, but
 only when the focus leaves the row (`onRowFocusOut`, decided in a microtask because Chrome fires focusout for a
 control being replaced): the picker, the literals and the ✓ / ✗ buttons cancel their mousedown so the field keeps
 the focus. The pure helpers (`jsonSummary`, `jsonChildPath`, `formatMetadataValue`, `previewMetadataValue`,
 `metadataValueType`, `looksLikeJsonContainer`, `parseTypedValue`) live in `utils/json-values.ts` with
 `utils/json-values.spec.ts` (run with vitest, see the workflow spec). i18n: `jsonTree.*`,
 `metadataPanel.{invalidJson,invalidNumber,invalidBoolean,valueType.*,copyJson,jsonCopied,editJson,editJsonHint}`.
-The AI chat FAB steps left of the open details panel (`global_styles.css`, `body:has(.metadata-panel)`) and hides
+The SHA-256 fingerprint of the Details tab is folded behind a `fingerprint` line (`sha256Open`): it means nothing to most readers, and the copy button is one click away for the others. The AI chat FAB steps left of the open details panel (`global_styles.css`, `body:has(.metadata-panel)`) and hides
 behind the phone bottom sheet, so it never covers the last row's field and save / cancel / delete buttons.
 
 ## Text editor on touch devices

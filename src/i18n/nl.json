@@ -325,6 +325,7 @@
     "type": "Type:",
     "size": "Grootte:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "SHA-256-vingerafdruk",
     "clickToCopy": "Klik om te kopiëren",
     "copyToClipboard": "Kopieer naar klembord",
     "copySha256": "Kopieer SHA256-hash naar klembord",
@@ -364,6 +365,8 @@
     "editJsonHint": "Ctrl+Enter om op te slaan · Esc om te annuleren",
     "invalidNumber": "Geen getal: de waarde is niet opgeslagen",
     "invalidBoolean": "Kies true of false",
+    "renameOldKeyKept": "Opgeslagen als “{{key}}”, maar de oude sleutel “{{old}}” kon niet worden verwijderd",
+    "renameKeyHint": "Sleutel hernoemen",
     "valueType": {
       "label": "Waardetype",
       "text": "Tekst",
