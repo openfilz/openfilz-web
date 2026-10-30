@@ -1374,7 +1374,7 @@
       "ee": {
         "message": "Vous explorez la démo OpenFilz Enterprise — les données peuvent être réinitialisées à tout moment.",
         "messageShort": "Démo Enterprise — données réinitialisables.",
-        "startTrial": "Démarrer un essai gratuit",
+        "startTrial": "Essai gratuit sur votre infrastructure",
         "pricing": "Tarifs"
       }
     }

@@ -1374,7 +1374,7 @@
       "ee": {
         "message": "You are exploring the OpenFilz Enterprise demo — data may be reset at any time.",
         "messageShort": "Enterprise demo — data may be reset.",
-        "startTrial": "Start a free trial",
+        "startTrial": "Free trial on your infrastructure",
         "pricing": "Pricing"
       }
     }
