@@ -364,6 +364,8 @@
     "editJsonHint": "Ctrl+Enter para guardar · Esc para cancelar",
     "invalidNumber": "Não é um número: o valor não foi guardado",
     "invalidBoolean": "Escolha true ou false",
+    "renameOldKeyKept": "Guardado como “{{key}}”, mas a chave antiga “{{old}}” não pôde ser removida",
+    "renameKeyHint": "Mudar o nome da chave",
     "valueType": {
       "label": "Tipo de valor",
       "text": "Texto",

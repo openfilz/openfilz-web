@@ -364,6 +364,8 @@
     "editJsonHint": "Ctrl+Entrée pour enregistrer · Échap pour annuler",
     "invalidNumber": "Ce n’est pas un nombre : la valeur n’a pas été enregistrée",
     "invalidBoolean": "Choisissez true ou false",
+    "renameOldKeyKept": "Enregistré sous « {{key}} », mais l’ancienne clé « {{old}} » n’a pas pu être supprimée",
+    "renameKeyHint": "Renommer la clé",
     "valueType": {
       "label": "Type de valeur",
       "text": "Texte",

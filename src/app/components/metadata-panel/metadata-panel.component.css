@@ -544,6 +544,11 @@
   min-width: 0;
 }
 
+/* While a JSON value is edited, its key field takes the fold toggle's place in the header */
+.metadata-json-header > .metadata-key-input {
+  flex: 1;
+}
+
 .metadata-value-type {
   width: 100%;
   display: flex;

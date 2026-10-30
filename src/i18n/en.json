@@ -364,6 +364,8 @@
     "editJsonHint": "Ctrl+Enter to save · Esc to cancel",
     "invalidNumber": "Not a number: the value was not saved",
     "invalidBoolean": "Choose true or false",
+    "renameOldKeyKept": "Saved as “{{key}}”, but the old key “{{old}}” could not be removed",
+    "renameKeyHint": "Rename the key",
     "valueType": {
       "label": "Value type",
       "text": "Text",

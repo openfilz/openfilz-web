@@ -364,6 +364,8 @@
     "editJsonHint": "Strg+Enter zum Speichern · Esc zum Abbrechen",
     "invalidNumber": "Keine Zahl: Der Wert wurde nicht gespeichert",
     "invalidBoolean": "true oder false wählen",
+    "renameOldKeyKept": "Unter „{{key}}“ gespeichert, aber der alte Schlüssel „{{old}}“ konnte nicht entfernt werden",
+    "renameKeyHint": "Schlüssel umbenennen",
     "valueType": {
       "label": "Werttyp",
       "text": "Text",

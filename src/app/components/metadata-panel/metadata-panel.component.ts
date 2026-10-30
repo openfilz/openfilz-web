@@ -21,6 +21,7 @@ import {
   JsonSummary, METADATA_VALUE_TYPES, MetadataValueType, formatMetadataValue, isJsonContainer, jsonSummary,
   lenientJsonLoaded, loadLenientJson, looksLikeJsonContainer, metadataValueType, parseTypedValue, previewMetadataValue
 } from '../../utils/json-values';
+import { metadataKeyError } from '../../utils/metadata-key';
 import { DocumentApiService } from '../../services/document-api.service';
 import { DocumentVersionsService } from '../../services/document-versions.service';
 import { DragDropService } from '../../services/drag-drop.service';
@@ -47,6 +48,8 @@ interface MetadataEntry {
 /** Entry of the list; the derived fields are computed once here, not on every change detection. */
 /** Value being typed in the inline editor: its text, the type it is saved as, and the error shown under it */
 interface ValueDraft {
+  /** The key: typed in the add row, renamable in the inline edit */
+  key: string;
   text: string;
   type: MetadataValueType;
   /** The user picked the type by hand, so a leading { or [ no longer switches it to JSON */
@@ -55,7 +58,7 @@ interface ValueDraft {
 }
 
 function emptyDraft(): ValueDraft {
-  return { text: '', type: 'text', typeChosen: false };
+  return { key: '', text: '', type: 'text', typeChosen: false };
 }
 
 function toMetadataEntry(key: string, raw: unknown): MetadataEntry {
@@ -124,7 +127,6 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   editingKey: string | null = null;
   savingKey: string | null = null;
   addingEntry: boolean = false;
-  newKey: string = '';
   /** The value being typed, for the inline edit or the add row (only one of them is open at a time) */
   draft: ValueDraft = emptyDraft();
   readonly valueTypes = METADATA_VALUE_TYPES;
@@ -157,8 +159,6 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
 
   // e-Sign metadata written by the signing pipeline: shown, but locked against edit/delete
   private readonly LOCKED_METADATA_KEYS = ['_signed', '_readOnly', '_signedEnvelopeId'];
-
-  private readonly METADATA_KEY_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
   // MIME type to translation key mapping
   private readonly MIME_TYPE_KEYS: { [key: string]: string } = {
@@ -408,6 +408,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.cancelAdd();
     this.editingKey = entry.key;
     this.draft = {
+      key: entry.key,
       text: entry.structured ? JSON.stringify(entry.raw, null, 2) : entry.value,
       type: metadataValueType(entry.raw),
       typeChosen: false
@@ -424,12 +425,18 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   commitEdit(entry: MetadataEntry) {
     // A blur while the save is in flight (Ctrl+Enter then a click elsewhere) must not send it twice
     if (this.editingKey !== entry.key || this.savingKey) return;
+    const key = this.draft.key.trim();
     const text = this.draft.text.trim();
     if (!text) {
       this.cancelEdit();
       return;
     }
     if (!this.documentId) return;
+    const keyError = this.keyError(key, entry.key);
+    if (keyError) {
+      this.draft.error = keyError;
+      return;
+    }
     const parsed = parseTypedValue(this.draft.type, text);
     if ('error' in parsed) {
       if (this.lenientJsonPending(parsed.error)) {
@@ -440,28 +447,62 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       this.draft.error = 'metadataPanel.' + parsed.error;
       return;
     }
-    // Retyping the same value (or re-indenting a JSON one) is not a change; a new type is
+    // Retyping the same value (or re-indenting a JSON one) is not a change; a new type or key is
     const saved = parsed.value;
-    if (JSON.stringify(saved) === JSON.stringify(entry.raw)) {
+    const oldKey = entry.key;
+    const renamed = key !== oldKey;
+    if (!renamed && JSON.stringify(saved) === JSON.stringify(entry.raw)) {
       this.cancelEdit();
       return;
     }
 
-    this.savingKey = entry.key;
-    this.documentApi.updateDocumentMetadata(this.documentId, { [entry.key]: saved }).subscribe({
+    const documentId = this.documentId;
+    const oldRaw = entry.raw;
+    const done = () => {
+      this.savingKey = null;
+      this.cancelEdit();
+      this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
+      this.metadataSaved.emit();
+    };
+    this.savingKey = oldKey;
+    // A rename writes the value under its new key first, then removes the old key: a failure in
+    // between leaves both keys on the document, never the value lost
+    this.documentApi.updateDocumentMetadata(documentId, { [key]: saved }).subscribe({
       next: () => {
-        Object.assign(entry, toMetadataEntry(entry.key, saved));
-        this.syncLocalMetadata(entry.key, saved);
-        this.savingKey = null;
-        this.cancelEdit();
-        this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
-        this.metadataSaved.emit();
+        Object.assign(entry, toMetadataEntry(key, saved));
+        this.syncLocalMetadata(key, saved);
+        if (!renamed) {
+          done();
+          return;
+        }
+        this.savingKey = key;
+        this.documentApi.deleteDocumentMetadata(documentId, [oldKey]).subscribe({
+          next: () => {
+            delete this.documentInfo?.metadata?.[oldKey];
+            done();
+          },
+          error: () => {
+            const at = this.metadataEntries.indexOf(entry);
+            this.metadataEntries.splice(at + 1, 0, toMetadataEntry(oldKey, oldRaw));
+            this.savingKey = null;
+            this.cancelEdit();
+            this.snackBar.open(this.translate.instant('metadataPanel.renameOldKeyKept', { key, old: oldKey }), this.translate.instant('common.close'), { duration: 5000 });
+            this.metadataSaved.emit();
+          }
+        });
       },
       error: () => {
         this.savingKey = null;
         this.snackBar.open(this.translate.instant('metadataPanel.saveFailed'), this.translate.instant('common.close'), { duration: 3000 });
       }
     });
+  }
+
+  /** Why the typed key cannot be saved (as a new entry, or as the new name of `current`), or null */
+  private keyError(key: string, current?: string): string | null {
+    const taken = this.metadataEntries.map(e => e.key).filter(k => k !== current);
+    const error = metadataKeyError(key, taken, [...this.SYSTEM_METADATA_KEYS, ...this.LOCKED_METADATA_KEYS]);
+    return error && 'metadataEditor.errors.' + error;
   }
 
   deleteEntry(entry: MetadataEntry) {
@@ -492,32 +533,26 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     if (this.savingKey) return;
     this.cancelEdit();
     this.addingEntry = true;
-    this.newKey = '';
     this.draft = emptyDraft();
   }
 
   cancelAdd() {
     this.addingEntry = false;
-    this.newKey = '';
     this.draft = emptyDraft();
   }
 
   get canCommitAdd(): boolean {
-    return !!this.newKey.trim() && !!this.draft.text.trim() && !this.savingKey;
+    return !!this.draft.key.trim() && !!this.draft.text.trim() && !this.savingKey;
   }
 
   commitAdd() {
-    const key = this.newKey.trim();
+    const key = this.draft.key.trim();
     const text = this.draft.text.trim();
     if (!key || !text || !this.documentId) return;
 
-    if (!this.METADATA_KEY_PATTERN.test(key)) {
-      this.draft.error = 'metadataEditor.errors.invalidKeyFormat';
-      return;
-    }
-    const existingKeys = [...this.metadataEntries.map(e => e.key), ...this.SYSTEM_METADATA_KEYS, ...this.LOCKED_METADATA_KEYS];
-    if (existingKeys.some(k => k.toLowerCase() === key.toLowerCase())) {
-      this.draft.error = 'metadataEditor.errors.duplicateKey';
+    const keyError = this.keyError(key);
+    if (keyError) {
+      this.draft.error = keyError;
       return;
     }
     const parsed = parseTypedValue(this.draft.type, text);
@@ -642,6 +677,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private isEditDirty(entry: MetadataEntry): boolean {
+    if (this.draft.key.trim() !== entry.key) return true;
     const parsed = parseTypedValue(this.draft.type, this.draft.text.trim());
     return 'error' in parsed || JSON.stringify(parsed.value) !== JSON.stringify(entry.raw);
   }
@@ -750,7 +786,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
         return true;
       }
     }
-    if (this.addingEntry && (!!this.newKey.trim() || !!this.draft.text.trim())) {
+    if (this.addingEntry && (!!this.draft.key.trim() || !!this.draft.text.trim())) {
       return true;
     }
     return false;
