@@ -134,6 +134,8 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   private host = inject<ElementRef<HTMLElement>>(ElementRef);
   /** Keys of the structured values unfolded in the list (all folded by default) */
   private openJsonKeys = new Set<string>();
+  /** The SHA-256 fingerprint is folded until asked for: it means nothing to most readers */
+  sha256Open = false;
 
   // Audit
   auditLogs: AuditLog[] = [];
@@ -285,6 +287,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
     this.versionIdByLog.clear();
     this.metadataEntries = [];
     this.openJsonKeys.clear();
+    this.sha256Open = false;
     this.cancelEdit();
     this.cancelAdd();
   }

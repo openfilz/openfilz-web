@@ -88,17 +88,25 @@
               </div>
 
               @if(sha256Hash) {
-                <div class="info-row sha256-row">
-                  <span class="info-label">{{ 'metadataPanel.sha256' | translate }}</span>
-                  <span class="info-value sha256-value">
-                    <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate"
-                      (click)="copySha256ToClipboard()">{{ sha256Hash }}</code>
-                    <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
-                      [matTooltip]="'metadataPanel.copyToClipboard' | translate"
-                      [attr.aria-label]="'metadataPanel.copySha256' | translate">
-                      <mat-icon aria-hidden="true">content_copy</mat-icon>
-                    </button>
-                  </span>
+                <!-- Integrity fingerprint: of no use to most readers, so folded behind one quiet line -->
+                <div class="info-row sha256-row" [class.open]="sha256Open">
+                  <button type="button" class="sha256-toggle" (click)="sha256Open = !sha256Open"
+                    [attr.aria-expanded]="sha256Open" aria-controls="sha256-fingerprint">
+                    <mat-icon aria-hidden="true">fingerprint</mat-icon>
+                    <span>{{ 'metadataPanel.sha256Fingerprint' | translate }}</span>
+                    <mat-icon class="sha256-chevron" aria-hidden="true">chevron_right</mat-icon>
+                  </button>
+                  @if(sha256Open) {
+                    <span class="info-value sha256-value" id="sha256-fingerprint">
+                      <code class="sha256-hash" [matTooltip]="'metadataPanel.clickToCopy' | translate"
+                        (click)="copySha256ToClipboard()">{{ sha256Hash }}</code>
+                      <button mat-icon-button class="copy-button" (click)="copySha256ToClipboard()"
+                        [matTooltip]="'metadataPanel.copyToClipboard' | translate"
+                        [attr.aria-label]="'metadataPanel.copySha256' | translate">
+                        <mat-icon aria-hidden="true">content_copy</mat-icon>
+                      </button>
+                    </span>
+                  }
                 </div>
               }
 

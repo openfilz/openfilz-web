@@ -325,6 +325,7 @@
     "type": "Tipo:",
     "size": "Tamaño:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "Huella SHA-256",
     "clickToCopy": "Haga clic para copiar",
     "copyToClipboard": "Copiar al portapapeles",
     "copySha256": "Copiar hash SHA256 al portapapeles",

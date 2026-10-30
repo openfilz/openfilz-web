@@ -325,6 +325,7 @@
     "type": "Type:",
     "size": "Grootte:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "SHA-256-vingerafdruk",
     "clickToCopy": "Klik om te kopiëren",
     "copyToClipboard": "Kopieer naar klembord",
     "copySha256": "Kopieer SHA256-hash naar klembord",

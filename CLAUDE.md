@@ -359,7 +359,7 @@ the focus. The pure helpers (`jsonSummary`, `jsonChildPath`, `formatMetadataValu
 `metadataValueType`, `looksLikeJsonContainer`, `parseTypedValue`) live in `utils/json-values.ts` with
 `utils/json-values.spec.ts` (run with vitest, see the workflow spec). i18n: `jsonTree.*`,
 `metadataPanel.{invalidJson,invalidNumber,invalidBoolean,valueType.*,copyJson,jsonCopied,editJson,editJsonHint}`.
-The AI chat FAB steps left of the open details panel (`global_styles.css`, `body:has(.metadata-panel)`) and hides
+The SHA-256 fingerprint of the Details tab is folded behind a `fingerprint` line (`sha256Open`): it means nothing to most readers, and the copy button is one click away for the others. The AI chat FAB steps left of the open details panel (`global_styles.css`, `body:has(.metadata-panel)`) and hides
 behind the phone bottom sheet, so it never covers the last row's field and save / cancel / delete buttons.
 
 ## Text editor on touch devices

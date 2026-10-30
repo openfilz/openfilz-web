@@ -325,6 +325,7 @@
     "type": "Typ:",
     "size": "Größe:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "SHA-256-Fingerabdruck",
     "clickToCopy": "Zum Kopieren klicken",
     "copyToClipboard": "In die Zwischenablage kopieren",
     "copySha256": "SHA256-Hash in die Zwischenablage kopieren",

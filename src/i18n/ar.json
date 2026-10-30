@@ -325,6 +325,7 @@
     "type": "النوع:",
     "size": "الحجم:",
     "sha256": "SHA256:",
+    "sha256Fingerprint": "بصمة SHA-256",
     "clickToCopy": "انقر للنسخ",
     "copyToClipboard": "نسخ إلى الحافظة",
     "copySha256": "نسخ هاش SHA256 إلى الحافظة",
