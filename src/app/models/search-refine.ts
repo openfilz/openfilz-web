@@ -42,6 +42,24 @@ export const DATE_MODIFIED_OPTIONS: { value: string; labelKey: string }[] = [
 ];
 
 /** Number of filters in force (scope excluded) — the badge on the filter buttons. */
+/**
+ * The default search filters: nothing selected, current folder only (a broad scope here would route
+ * the explorer to the flat "all files" listing). One source for the filter panel's Reset and the
+ * header's quick "Clear filters" button.
+ */
+export function emptySearchFilters(): SearchFilters {
+  return {
+    type: undefined,
+    dateModified: 'any',
+    owner: '',
+    fileType: ANY_FILE_TYPE,
+    metadata: [],
+    scope: 'CURRENT_ONLY',
+    category: undefined,
+    language: undefined
+  };
+}
+
 export function countActiveFilters(filters: SearchFilters | undefined): number {
   if (!filters) {
     return 0;

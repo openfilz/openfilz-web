@@ -234,20 +234,58 @@
 
 .filter-badge {
     position: absolute;
-    top: 1px;
-    right: 1px;
+    top: -2px;
+    right: -2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     min-width: 16px;
     height: 16px;
     padding: 0 4px;
-    border-radius: 8px;
+    border-radius: 999px;
     background-color: var(--primary);
-    border: 2px solid var(--bg-primary);
+    /* ring against the search box: a shadow never changes the box size */
+    box-shadow: 0 0 0 2px var(--bg-primary);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
-    line-height: 12px;
-    text-align: center;
-    box-sizing: content-box;
+    line-height: 1;
+    letter-spacing: 0;
+    pointer-events: none;
+}
+
+/* Quick "clear filters" next to the filter button, only while a filter is active */
+.filter-clear-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.filter-clear-button mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.filter-clear-button:hover {
+    background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+    color: var(--primary);
+}
+
+.filter-clear-button.mobile-filter {
+    display: none;
 }
 
 .search-back-button {
@@ -578,6 +616,7 @@
     }
 
     .filter-button.desktop-filter,
+    .filter-clear-button.desktop-filter,
     .shortcut-hint,
     .suggestions-footer {
         display: none;
@@ -595,6 +634,15 @@
     .filter-button.mobile-filter .filter-badge {
         top: -5px;
         right: -5px;
+    }
+
+    .filter-clear-button.mobile-filter {
+        display: flex;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
     }
 
     /* The search takes the whole header while in use */
