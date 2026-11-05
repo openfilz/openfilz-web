@@ -333,6 +333,17 @@
                               }
                             </div>
                           }
+                          <!-- The current content stayed; details say where the editor's work went, or why it could not be kept. -->
+                          @if (log.action === 'ONLYOFFICE_SAVE_CONFLICT' && (log.details?.['copyName'] || log.details?.['failure'])) {
+                            <div class="audit-workflow">
+                              <mat-icon aria-hidden="true">file_copy</mat-icon>
+                              @if (log.details?.['copyName']; as name) {
+                                <span>{{ 'metadataPanel.editorConflictCopy' | translate: { name: name } }}</span>
+                              } @else if (log.details?.['failure']) {
+                                <span>{{ 'metadataPanel.editorConflictFailed' | translate: { reason: log.details?.['failure'] } }}</span>
+                              }
+                            </div>
+                          }
                           @if (versioningEnabled && documentId && getVersionIdFor(log); as versionId) {
                             <app-audit-version-actions
                               [documentId]="documentId"
