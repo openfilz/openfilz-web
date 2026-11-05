@@ -793,7 +793,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadata vervangen",
       "UPDATE_DOCUMENT_METADATA": "Metadata bijgewerkt",
       "DOWNLOAD_DOCUMENT": "Document gedownload",
-      "ONLYOFFICE_SAVE_CONFLICT": "Opgeslagen als kopie",
+      "ONLYOFFICE_SAVE_CONFLICT": "Conflict bij opslaan",
       "OPEN_DOCUMENT": "Document geopend",
       "DELETE_DOCUMENT_METADATA": "Metadata verwijderd",
       "SHARE_DOCUMENTS": "Documenten gedeeld",

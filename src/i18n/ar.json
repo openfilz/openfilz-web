@@ -793,7 +793,7 @@
       "REPLACE_DOCUMENT_METADATA": "تم استبدال البيانات الوصفية",
       "UPDATE_DOCUMENT_METADATA": "تم تحديث البيانات الوصفية",
       "DOWNLOAD_DOCUMENT": "تم تنزيل المستند",
-      "ONLYOFFICE_SAVE_CONFLICT": "حُفظ كنسخة",
+      "ONLYOFFICE_SAVE_CONFLICT": "تعارض عند الحفظ",
       "OPEN_DOCUMENT": "تم فتح المستند",
       "DELETE_DOCUMENT_METADATA": "تم حذف البيانات الوصفية",
       "SHARE_DOCUMENTS": "تم مشاركة المستندات",

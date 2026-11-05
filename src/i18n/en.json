@@ -793,7 +793,7 @@
       "REPLACE_DOCUMENT_METADATA": "Metadata Replaced",
       "UPDATE_DOCUMENT_METADATA": "Metadata Updated",
       "DOWNLOAD_DOCUMENT": "Document Downloaded",
-      "ONLYOFFICE_SAVE_CONFLICT": "Saved as a copy",
+      "ONLYOFFICE_SAVE_CONFLICT": "Editor save conflict",
       "OPEN_DOCUMENT": "Document Opened",
       "DELETE_DOCUMENT_METADATA": "Metadata Deleted",
       "SHARE_DOCUMENTS": "Documents Shared",
