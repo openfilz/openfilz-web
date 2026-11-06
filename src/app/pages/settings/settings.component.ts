@@ -339,7 +339,7 @@ export class SettingsComponent implements OnInit {
   readonly aatlPackUrl = 'https://www.openfilz.com/esign/aatl-onboarding';
   /** Self-service license upgrade in the customer portal, CLOUD_SIGN preselected (EE). */
   readonly licenseUpgradeUrl = 'https://www.openfilz.com/portal/upgrade?feature=CLOUD_SIGN';
-  readonly enterpriseUrl = 'https://www.openfilz.com/enterprise';
+  readonly enterpriseUrl = 'https://www.openfilz.com/upgrade-from-ce';
   readonly eeDemoUrl = 'https://app.openfilz.com';
 
   get cloudUsagePct(): number {
