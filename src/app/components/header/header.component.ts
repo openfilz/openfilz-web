@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged, filter as rxFilter, switchMap, tap 
 import { Suggestion, SearchFilters } from "../../models/document.models";
 import { DocumentApiService } from "../../services/document-api.service";
 import { SearchFiltersComponent } from "../search-filters/search-filters.component";
-import { clearRecentSearches, countActiveFilters, highlightTerms, loadRecentSearches, removeRecentSearch, sanitizeSnippet as sanitizeSnippetHtml, saveRecentSearch } from "../../models/search-refine";
+import { clearRecentSearches, countActiveFilters, emptySearchFilters, highlightTerms, loadRecentSearches, removeRecentSearch, sanitizeSnippet as sanitizeSnippetHtml, saveRecentSearch } from "../../models/search-refine";
 import { isCompactViewport } from "../../utils/layout.util";
 import { TranslateService, TranslatePipe } from "@ngx-translate/core";
 import { MatMenuModule } from '@angular/material/menu';
@@ -352,6 +352,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   closeFilters() {
     this.showFilters = false;
+  }
+
+  /** Quick reset from the header badge: drops every filter without opening the panel. */
+  clearFilters(event?: Event): void {
+    event?.stopPropagation();
+    this.closeFilters();
+    this.onFiltersChanged(emptySearchFilters());
   }
 
   onMobileMenuToggle() {

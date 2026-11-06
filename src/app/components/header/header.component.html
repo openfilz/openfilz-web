@@ -37,6 +37,12 @@
                 <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate">{{ activeFilterCount }}</span>
                 }
             </button>
+            @if (activeFilterCount > 0) {
+            <button type="button" class="filter-clear-button desktop-filter" (click)="clearFilters($event)"
+                [matTooltip]="'header.clearFilters' | translate" [attr.aria-label]="'header.clearFilters' | translate">
+                <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
+            </button>
+            }
 
             <!-- Suggestions / recent searches -->
             @if (dropdownOpen) {
@@ -145,6 +151,12 @@
             <span class="filter-badge" [attr.aria-label]="'header.activeFilters' | translate">{{ activeFilterCount }}</span>
             }
         </button>
+        @if (activeFilterCount > 0) {
+        <button type="button" class="filter-clear-button mobile-filter" (click)="clearFilters($event)"
+            [attr.aria-label]="'header.clearFilters' | translate">
+            <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
+        </button>
+        }
         <!-- Avatar with Menu -->
         <div class="avatar" [matMenuTriggerFor]="avatarMenu">{{ userInitials }}</div>
         <mat-menu #avatarMenu="matMenu" class="avatar-menu">

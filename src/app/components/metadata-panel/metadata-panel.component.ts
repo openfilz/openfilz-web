@@ -951,6 +951,7 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
       'UPDATE_DOCUMENT_METADATA': 'label',
       'DOWNLOAD_DOCUMENT': 'download',
       'OPEN_DOCUMENT': 'visibility',
+      'ONLYOFFICE_SAVE_CONFLICT': 'file_copy',
       'DELETE_DOCUMENT_METADATA': 'label_off',
       'SHARE_DOCUMENTS': 'share',
       'RESTORE_FILE': 'restore',
@@ -973,6 +974,8 @@ export class MetadataPanelComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   getAuditActionColor(action: string): string {
+    // The document changed under an open editor: someone should look at the two versions.
+    if (action === 'ONLYOFFICE_SAVE_CONFLICT') return 'warn';
     // An action the workflow could not carry out must read as a problem, not as history.
     if (action.includes('FAILED')) return 'warn';
     if (action.includes('DELETE') || action.includes('PERMANENT')) return 'warn';
