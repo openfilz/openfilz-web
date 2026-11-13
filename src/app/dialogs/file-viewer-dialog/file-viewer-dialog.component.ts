@@ -366,11 +366,6 @@ export class FileViewerDialogComponent implements OnInit, AfterViewInit, OnDestr
     console.log('OnlyOffice editor is ready');
   }
 
-  onDocumentSaved() {
-    console.log('Document saved via OnlyOffice');
-    this.snackBar.open(this.translate.instant('metadataPanel.saveSuccess'), this.translate.instant('common.close'), { duration: 2000 });
-  }
-
   onEditorError(error: string) {
     // OnlyOffice could not be reached (config call refused, api.js unreachable, ...).
     // Retreat to the in-app viewer rather than leaving the user on an error screen.
