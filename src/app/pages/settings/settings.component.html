@@ -196,15 +196,9 @@
         <!-- ───────────── AI ───────────── -->
         @case ('ai') {
           <div class="pane-body" [attr.data-section]="'ai'">
-            <!-- AI on, no chat model configured: say why the assistant (chat button, BYOK settings) is missing -->
+            <!-- No chat model answers this user: the two ways to turn the assistant on -->
             @if (showAiChatUnavailable) {
-              <div class="hint info" role="note">
-                <mat-icon aria-hidden="true">info</mat-icon>
-                <span>
-                  <strong>{{ 'settings.ai.chatUnavailable.title' | translate }}</strong> —
-                  {{ 'settings.ai.chatUnavailable.message' | translate:aiChatConfigParams }}
-                </span>
-              </div>
+              <app-ai-no-model-panel variant="settings"></app-ai-no-model-panel>
             }
             @if (showAiSettings) {
               <section class="card">

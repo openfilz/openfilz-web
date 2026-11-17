@@ -4,7 +4,8 @@ import { BehaviorSubject, Observable, Subject, firstValueFrom, isObservable, of 
 import { tap } from 'rxjs/operators';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../../environments/environment';
-import { SettingsService } from './settings.service';
+import { SettingsService, aiNoModelOf } from './settings.service';
+import { AiNoModelService } from './ai-no-model.service';
 import {
   AiConversation,
   AiMessage,
@@ -20,6 +21,7 @@ export class AiChatService {
   private oidcSecurityService = inject(OidcSecurityService);
   private ngZone = inject(NgZone);
   private settingsService = inject(SettingsService);
+  private aiNoModel = inject(AiNoModelService);
 
   private readonly baseUrl = environment.apiURL;
 
@@ -34,11 +36,17 @@ export class AiChatService {
   folderContentChanged$ = new Subject<string[]>();
   /** Asks the chat FAB to show the panel (see {@link openWithPrompt}). */
   openRequested$ = new Subject<void>();
+  /** Asks the chat FAB to hide the panel (the "No AI model yet" panel sent the user to Settings). */
+  closeRequested$ = new Subject<void>();
 
   private abortController: AbortController | null = null;
 
+  /**
+   * The chat is offered: AI on and the assistant not switched off (a missing model keeps it offered,
+   * the panel then shows "No AI model yet" in place of the input — see {@link AiNoModelService}).
+   */
   get isEnabled(): boolean {
-    return this.settingsService.isAiChatActive;
+    return this.settingsService.isAiChatOffered;
   }
 
   loadConversations(): Observable<AiConversation[]> {
@@ -112,6 +120,10 @@ export class AiChatService {
     this.cancelStreaming();
     this.startNewConversation();
     this.openRequested$.next();
+    if (this.aiNoModel.noModel) {
+      // Nothing can answer: the panel shows "No AI model yet" instead of sending the prompt
+      return;
+    }
     void this.sendMessage(prompt.trim());
   }
 
@@ -167,6 +179,15 @@ export class AiChatService {
       });
 
       if (!response.ok) {
+        const refusal = response.status === 409 ? aiNoModelOf(409, await response.json().catch(() => null)) : null;
+        if (refusal) {
+          // No chat model resolves for this user: drop the unanswered turn, the panel takes the input's place
+          this.ngZone.run(() => {
+            this.currentMessages$.next(this.currentMessages$.value.filter(m => m !== userMsg && m !== assistantMsg));
+            this.aiNoModel.reportServerRefusal(refusal);
+          });
+          return;
+        }
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 

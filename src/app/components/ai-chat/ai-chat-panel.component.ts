@@ -8,6 +8,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { AiChatService } from '../../services/ai-chat.service';
 import { AiSettingsService } from '../../services/ai-settings.service';
 import { SettingsService } from '../../services/settings.service';
+import { AiNoModelService } from '../../services/ai-no-model.service';
 import { AiChatPanelView } from '../../models/ai-chat.models';
 import { AiUserSettings } from '../../models/ai-settings.models';
 import { AiConversationListComponent } from './ai-conversation-list.component';
@@ -44,11 +45,17 @@ export class AiChatPanelComponent implements OnInit, OnDestroy {
   chatService = inject(AiChatService);
   private aiSettingsService = inject(AiSettingsService);
   private settingsService = inject(SettingsService);
+  private aiNoModel = inject(AiNoModelService);
   currentView: AiChatPanelView = 'conversations';
   private aiSettings: AiUserSettings | null = null;
   private subscriptions: Subscription[] = [];
 
   ngOnInit(): void {
+    // No model answers this user: open straight on the chat view, where the "No AI model yet" panel
+    // takes the input's place (the back arrow still lists the earlier conversations)
+    if (this.aiNoModel.noModel && this.chatService.panelView$.value === 'conversations') {
+      this.chatService.startNewConversation();
+    }
     this.subscriptions.push(
       this.chatService.panelView$.subscribe(v => this.currentView = v)
     );

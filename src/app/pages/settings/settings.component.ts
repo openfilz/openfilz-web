@@ -14,6 +14,7 @@ import { formatFileSize } from '../../utils/file-size.util';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsComponent } from '../../components/ai-settings/ai-settings.component';
+import { AiNoModelPanelComponent } from '../../components/ai-no-model-panel/ai-no-model-panel.component';
 import { McpSettingsComponent } from '../../components/mcp-settings/mcp-settings.component';
 import { SmartFilingToggleComponent } from '../../components/smart-filing-toggle/smart-filing-toggle.component';
 import { AiMaintenanceComponent } from '../../components/ai-maintenance/ai-maintenance.component';
@@ -49,7 +50,7 @@ interface SettingsSection {
   imports: [
     LocalDatePipe, CommonModule, FormsModule, TranslatePipe,
     MatIconModule, MatButtonModule, MatProgressSpinnerModule,
-    AiSettingsComponent, McpSettingsComponent, SmartFilingToggleComponent, AiMaintenanceComponent,
+    AiSettingsComponent, AiNoModelPanelComponent, McpSettingsComponent, SmartFilingToggleComponent, AiMaintenanceComponent,
     SwipeNavDirective
   ],
   templateUrl: './settings.component.html',
@@ -282,15 +283,12 @@ export class SettingsComponent implements OnInit {
   // ------------------------------------------------------------------ feature gates (unchanged)
 
   /**
-   * AI is on but no chat model is configured (aiChatUnavailableReason NO_MODEL): explain why the
-   * assistant is missing instead of silently hiding it. Nothing for DISABLED — the operator chose that.
+   * No chat model answers this user (aiModelSource NONE): the "No AI model yet" panel says the two ways
+   * to turn the assistant on. Nothing for DISABLED — the operator chose that.
    */
   get showAiChatUnavailable(): boolean {
-    return this.settingsService.isAiChatMissingModel;
+    return this.settingsService.isAiModelMissing;
   }
-
-  /** Env var names are passed as params so no locale ever translates them. */
-  readonly aiChatConfigParams = { model: 'OPENFILZ_AI_MODEL', key: 'OPENFILZ_AI_API_KEY' };
 
   get showAiSettings(): boolean {
     return this.settingsService.isAiUserSettingsEnabled;

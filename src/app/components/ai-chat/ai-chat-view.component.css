@@ -24,6 +24,11 @@
   -webkit-user-select: text;
 }
 
+.no-model-panel {
+  display: block;
+  margin-top: 8px;
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;

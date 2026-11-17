@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { SettingsService } from './settings.service';
 import {
   AiConnectionTestResult,
   AiModelsResponse,
@@ -21,6 +22,7 @@ import {
 export class AiSettingsService {
   private readonly baseUrl = `${environment.apiURL}/settings/ai`;
   private http = inject(HttpClient);
+  private appSettings = inject(SettingsService);
 
   private settingsSubject = new BehaviorSubject<AiUserSettings | null>(null);
   /** Last loaded settings — the chat panel badge reads this. */
@@ -34,7 +36,10 @@ export class AiSettingsService {
 
   saveSettings(request: SaveAiSettingsRequest): Observable<AiUserSettings> {
     return this.http.put<AiUserSettings>(this.baseUrl, request).pipe(
-      tap(settings => this.settingsSubject.next(settings))
+      tap(settings => {
+        this.settingsSubject.next(settings);
+        this.refreshModelSource();
+      })
     );
   }
 
@@ -47,6 +52,7 @@ export class AiSettingsService {
             ...current, provider: null, model: null, baseUrl: null, hasApiKey: false, keySuffix: null
           });
         }
+        this.refreshModelSource();
       })
     );
   }
@@ -62,6 +68,15 @@ export class AiSettingsService {
    */
   listModels(request: ListAiModelsRequest): Observable<AiModelsResponse> {
     return this.http.post<AiModelsResponse>(`${this.baseUrl}/models`, request);
+  }
+
+  /**
+   * A saved or removed key changes which model answers the user (Settings.aiModelSource): read the
+   * settings again so the chat leaves or shows the "No AI model yet" panel without a reload. In the
+   * background: a failed read leaves the page as it is.
+   */
+  private refreshModelSource(): void {
+    this.appSettings.refreshSettings().subscribe();
   }
 
   get settings(): AiUserSettings | null {
