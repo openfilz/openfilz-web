@@ -13,6 +13,7 @@ import { AiNoModelService } from '../../services/ai-no-model.service';
  */
 describe('AiNoModelPanelComponent', () => {
   const state = { keysAllowed: true };
+  const recheck = vi.fn();
   const navigate = vi.fn().mockResolvedValue(true);
   const close = vi.fn();
 
@@ -23,7 +24,7 @@ describe('AiNoModelPanelComponent', () => {
         provideZoneChangeDetection(),
         provideTranslateService(),
         { provide: Router, useValue: { navigate } },
-        { provide: AiNoModelService, useValue: { get userKeysAllowed() { return state.keysAllowed; }, noModel: true } },
+        { provide: AiNoModelService, useValue: { get userKeysAllowed() { return state.keysAllowed; }, noModel: true, recheck } },
         ...(asDialog ? [{ provide: MAT_DIALOG_DATA, useValue: {} }, { provide: MatDialogRef, useValue: { close } }] : [])
       ]
     });
@@ -50,6 +51,7 @@ describe('AiNoModelPanelComponent', () => {
   beforeEach(() => {
     state.keysAllowed = true;
     navigate.mockClear();
+    recheck.mockClear();
     close.mockClear();
   });
 
@@ -87,5 +89,15 @@ describe('AiNoModelPanelComponent', () => {
     el.querySelector<HTMLButtonElement>('[data-action="setup"]')!.click();
     expect(close).toHaveBeenCalled();
     expect(navigate).toHaveBeenCalledWith(['/settings'], { queryParams: { section: 'ai' } });
+  });
+
+  it('asks again whether a model answers when it shows and when the user comes back to the tab', () => {
+    configure();
+    render();
+    expect(recheck).toHaveBeenCalledTimes(1);
+    window.dispatchEvent(new Event('focus'));
+    expect(recheck).toHaveBeenCalledTimes(2);
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(recheck).toHaveBeenCalledTimes(3);
   });
 });

@@ -160,6 +160,22 @@ export class SettingsService {
     );
   }
 
+  /**
+   * Reads the settings again in the background (a saved AI key, the "No AI model yet" panel asking whether
+   * a model answers now). A failure changes nothing: unlike {@link loadSettings}, which decides what the
+   * app shows at start-up, a refresh that fails on a network blip must leave the page as it is.
+   */
+  refreshSettings(): Observable<Settings | null> {
+    const language = this.uiLanguage();
+    return this.http.get<Settings>(`${this.baseUrl}/settings`, { headers: this.languageHeaders(language) }).pipe(
+      tap(settings => {
+        this.labelsLanguage = language;
+        this.settingsSubject.next(settings);
+      }),
+      catchError(() => of(null))
+    );
+  }
+
   get settings(): Settings | null {
     return this.settingsSubject.value;
   }

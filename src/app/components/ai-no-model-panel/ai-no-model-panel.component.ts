@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, inject } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -28,7 +28,7 @@ export type AiNoModelDialogData = Record<string, never>;
   templateUrl: './ai-no-model-panel.component.html',
   styleUrls: ['./ai-no-model-panel.component.css']
 })
-export class AiNoModelPanelComponent {
+export class AiNoModelPanelComponent implements OnInit {
   private router = inject(Router);
   private noModel = inject(AiNoModelService);
   private dialogRef = inject<MatDialogRef<AiNoModelPanelComponent>>(MatDialogRef, { optional: true });
@@ -42,6 +42,20 @@ export class AiNoModelPanelComponent {
 
   get mode(): AiNoModelPanelVariant {
     return this.dialogData ? 'dialog' : this.variant;
+  }
+
+  /** A model may have been set since the settings were read: ask again when the panel shows... */
+  ngOnInit(): void {
+    this.noModel.recheck();
+  }
+
+  /** ... and when the user comes back to this tab (from the page where the model is set, for one). */
+  @HostListener('document:visibilitychange')
+  @HostListener('window:focus')
+  onReturnToTheTab(): void {
+    if (document.visibilityState === 'visible') {
+      this.noModel.recheck();
+    }
   }
 
   get userKeysAllowed(): boolean {

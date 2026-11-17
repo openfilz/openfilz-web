@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTranslateService } from '@ngx-translate/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
 import { Settings, SettingsService, aiModelMissing, aiNoModelOf, chatOffered } from './settings.service';
-import { AiNoModelService } from './ai-no-model.service';
+import { AI_NO_MODEL_RECHECK_INTERVAL_MS, AiNoModelService } from './ai-no-model.service';
 import { AiChatService } from './ai-chat.service';
 
 /**
@@ -122,6 +122,49 @@ describe('AiNoModelService + AiChatService', () => {
       expect(fetchMock).not.toHaveBeenCalled();
     } finally {
       vi.unstubAllGlobals();
+    }
+  });
+
+  it('recheck reads the settings again: a model set meanwhile takes the panel away, no reload', () => {
+    const http = TestBed.inject(HttpTestingController);
+    const service = TestBed.inject(AiNoModelService);
+    publish(settings({ aiModelSource: 'DEPLOYMENT' }));
+    service.recheck();
+    http.expectNone(r => r.url.endsWith('/settings'));   // a model answers: nothing to ask
+
+    publish(settings({ aiModelSource: 'NONE', aiUserSettingsEnabled: true }));
+    service.recheck();
+    service.recheck();                                    // one read at a time
+    const read = http.expectOne(r => r.method === 'GET' && r.url.endsWith('/settings'));
+    read.flush(settings({ aiModelSource: 'ORGANISATION' }));
+    expect(service.noModel).toBe(false);
+    http.verify();
+  });
+
+  it('recheck: a failed read changes nothing, and the next one waits a few seconds', () => {
+    vi.useFakeTimers();
+    try {
+      const http = TestBed.inject(HttpTestingController);
+      const service = TestBed.inject(AiNoModelService);
+      const before = settings({ aiModelSource: 'NONE', aiUserSettingsEnabled: true, thumbnailsActive: true });
+      publish(before);
+
+      service.recheck();
+      http.expectOne(r => r.url.endsWith('/settings')).flush('down', { status: 503, statusText: 'Service Unavailable' });
+      // the page keeps what it had: still the panel, and no feature switched off by a network blip
+      expect(settingsService.settings).toEqual(before);
+      expect(service.noModel).toBe(true);
+      expect(service.userKeysAllowed).toBe(true);
+
+      service.recheck();
+      http.expectNone(r => r.url.endsWith('/settings'));
+      vi.advanceTimersByTime(AI_NO_MODEL_RECHECK_INTERVAL_MS);
+      service.recheck();
+      http.expectOne(r => r.url.endsWith('/settings')).flush(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+      expect(service.noModel).toBe(false);
+      http.verify();
+    } finally {
+      vi.useRealTimers();
     }
   });
 });

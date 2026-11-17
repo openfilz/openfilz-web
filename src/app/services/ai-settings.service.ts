@@ -72,10 +72,11 @@ export class AiSettingsService {
 
   /**
    * A saved or removed key changes which model answers the user (Settings.aiModelSource): read the
-   * settings again so the chat leaves or shows the "No AI model yet" panel without a reload.
+   * settings again so the chat leaves or shows the "No AI model yet" panel without a reload. In the
+   * background: a failed read leaves the page as it is.
    */
   private refreshModelSource(): void {
-    this.appSettings.loadSettings().subscribe();
+    this.appSettings.refreshSettings().subscribe();
   }
 
   get settings(): AiUserSettings | null {
