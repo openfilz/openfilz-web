@@ -95,7 +95,8 @@ src/app/
 | `theme.service` | 10 themes (light, dark, ocean, forest, sunset, lavender, rose, midnight, slate, copper) |
 | `settings.service` | App settings (bin interval, quotas, thumbnails, AI flags incl. `aiUserSettingsEnabled`) |
 | `ai-chat.service` | AI chat panel state + SSE streaming (`/ai/chat`, conversations) |
-| `ai-settings.service` | Per-user AI model settings — BYOK (`/settings/ai`, key is write-only) |
+| `ai-settings.service` | Per-user AI model settings — BYOK (`/settings/ai`, key is write-only); saving or removing a key reloads the settings so `aiModelSource` follows |
+| `ai-no-model.service` | "No AI model yet": `noModel` (`Settings.aiModelSource === 'NONE'`, or a 409 `AI_NO_MODEL` from `/ai/chat` until the next settings refresh) and `userKeysAllowed`. The chat (`isAiChatOffered`: AI on and not DISABLED, NO_MODEL no longer hides it) then shows `components/ai-no-model-panel/` in place of the input, "Organise with AI" opens it as a dialog, the settings AI pane uses it as its notice. i18n `aiNoModel.*` |
 | `ai-maintenance.service` | AI maintenance jobs of the settings page — re-embed (`/ai/embeddings/backfill`) and re-enrich (`/ai/insights/backfill`) the documents; `enabled` = AI on + CONTRIBUTOR, `components/ai-maintenance/` polls the job |
 | `search.service` | Search with filters and suggestions |
 | `user-preferences.service` | User preferences persistence |

@@ -665,10 +665,6 @@
       "copper": "Cobre"
     },
     "ai": {
-      "chatUnavailable": {
-        "title": "Asistente de IA no disponible",
-        "message": "Esta instalación no tiene ningún modelo de chat configurado. Los análisis de documentos y el archivado inteligente siguen funcionando. Un administrador puede activar el asistente definiendo {{model}} (provider:model) y {{key}} con su propia clave del proveedor."
-      },
       "title": "Asistente de IA",
       "description": "Elige qué modelo de IA responde a tus conversaciones. De forma predeterminada se usa el modelo del servidor; puedes usar tu propia cuenta de OpenAI, Anthropic Claude o Google Gemini con tu clave API.",
       "provider": "Proveedor del modelo de IA",
@@ -1366,6 +1362,18 @@
       "action": "Organizar con IA",
       "currentFolder": "Organizar esta carpeta con IA"
     }
+  },
+  "aiNoModel": {
+    "title": "Todavía no hay ningún modelo de IA configurado",
+    "intro": "Esta función usa un modelo de IA (LLM). Hay dos formas de activarla:",
+    "forEveryone": "Para todos",
+    "forEveryoneText": "Un administrador puede elegir un modelo para todos los usuarios.",
+    "askAdmin": "Pregunte a su administrador.",
+    "justForYou": "Solo para usted",
+    "justForYouText": "Puede usar su propio modelo con su propia clave de API.",
+    "justForYouBelow": "Puede usar su propio modelo con su propia clave de API en el formulario de abajo.",
+    "setUp": "Configurar mi modelo de IA",
+    "worksWithout": "Ya funciona sin modelo: tipos de documento y archivado inteligente."
   },
   "notice": {
     "dismiss": "Cerrar",

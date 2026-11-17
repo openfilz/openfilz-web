@@ -665,10 +665,6 @@
       "copper": "Kupfer"
     },
     "ai": {
-      "chatUnavailable": {
-        "title": "KI-Assistent nicht verfügbar",
-        "message": "Für diese Installation ist kein Chat-Modell konfiguriert. Dokumentanalysen und die intelligente Ablage funktionieren weiterhin. Ein Administrator kann den Assistenten aktivieren, indem er {{model}} (provider:model) und {{key}} mit einem eigenen Anbieterschlüssel setzt."
-      },
       "title": "KI-Assistent",
       "description": "Wählen Sie, welches KI-Modell Ihre Chats beantwortet. Standardmäßig wird das Modell des Servers verwendet; Sie können Ihr eigenes OpenAI-, Anthropic-Claude- oder Google-Gemini-Konto mit eigenem API-Schlüssel nutzen.",
       "provider": "KI-Modell-Anbieter",
@@ -1366,6 +1362,18 @@
       "action": "Mit KI ordnen",
       "currentFolder": "Diesen Ordner mit KI ordnen"
     }
+  },
+  "aiNoModel": {
+    "title": "Noch kein KI-Modell eingerichtet",
+    "intro": "Diese Funktion nutzt ein KI-Modell (LLM). Es gibt zwei Wege, sie einzuschalten:",
+    "forEveryone": "Für alle",
+    "forEveryoneText": "Ein Administrator kann ein Modell für alle Benutzer auswählen.",
+    "askAdmin": "Wenden Sie sich an Ihren Administrator.",
+    "justForYou": "Nur für Sie",
+    "justForYouText": "Sie können Ihr eigenes Modell mit Ihrem eigenen API-Schlüssel verwenden.",
+    "justForYouBelow": "Im Formular unten können Sie Ihr eigenes Modell mit Ihrem eigenen API-Schlüssel verwenden.",
+    "setUp": "Mein KI-Modell einrichten",
+    "worksWithout": "Funktioniert schon ohne Modell: Dokumentarten und intelligente Ablage."
   },
   "notice": {
     "dismiss": "Schließen",

@@ -6,6 +6,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 import { McpConnection } from '../models/mcp-settings.models';
 
+/** Where the caller's chat model comes from (Settings.aiModelSource). */
+export type AiModelSource = 'PERSONAL' | 'ORGANISATION' | 'DEPLOYMENT' | 'NONE';
+
 export interface Settings {
   emptyBinInterval: number | null;
   fileQuotaMB: number | null;
@@ -25,6 +28,17 @@ export interface Settings {
    * filing may still run. Older backends do not send it.
    */
   aiChatUnavailableReason?: 'DISABLED' | 'NO_MODEL' | null;
+  /**
+   * Which chat model answers the caller: their own key (PERSONAL), the model an administrator set for
+   * everyone (ORGANISATION), the deployment's default (DEPLOYMENT), or none at all (NONE: the chat and
+   * "Organise with AI" show the "No AI model yet" panel). Null when AI is off; older backends do not send it.
+   */
+  aiModelSource?: AiModelSource | null;
+  /**
+   * openfilz.ai.user-settings.enabled on the API, ANDed with aiChatActive. The API keeps aiChatActive true
+   * whenever personal keys are allowed (only DISABLED turns it off then), so this is false only when keys
+   * are not allowed or the assistant is switched off — read it as "the user may bring a key".
+   */
   aiUserSettingsEnabled: boolean;
   /** openfilz.ai.insights.active on the API — document insights (summary, keywords…) shown in the details panel. */
   aiInsightsActive?: boolean;
@@ -191,11 +205,34 @@ export class SettingsService {
   }
 
   /**
-   * AI is on but the deployment has no chat model: the settings page explains why the assistant
-   * is missing (the chat button stays hidden). A deliberate DISABLED shows nothing.
+   * AI is on but the deployment has no chat model (NO_MODEL). Since the "No AI model yet" panel, it no
+   * longer hides the chat: see {@link isAiChatOffered} and {@link isAiModelMissing}.
    */
   get isAiChatMissingModel(): boolean {
     return chatUnavailableBecauseNoModel(this.settingsSubject.value);
+  }
+
+  /**
+   * Whether the chat button and the assistant path of "Organise with AI" are offered: AI on and the
+   * assistant not switched off by the operator (reason DISABLED). A missing model (NO_MODEL) no longer
+   * hides them: using them shows the "No AI model yet" panel instead ({@link isAiModelMissing}).
+   */
+  get isAiChatOffered(): boolean {
+    return chatOffered(this.settingsSubject.value);
+  }
+
+  /** No chat model answers this user (aiModelSource NONE): the chat and "Organise with AI" show the "No AI model yet" panel. */
+  get isAiModelMissing(): boolean {
+    return aiModelMissing(this.settingsSubject.value);
+  }
+
+  /**
+   * The user may bring their own model and key (Settings > AI). aiUserSettingsEnabled is only false
+   * on the API when keys are off or the assistant is DISABLED, so it reads as "keys allowed" here.
+   */
+  get areAiUserKeysAllowed(): boolean {
+    const settings = this.settingsSubject.value;
+    return chatOffered(settings) && settings?.aiUserSettingsEnabled === true;
   }
 
   // BYOK: users may override the chat LLM with their own provider + API key.
@@ -312,4 +349,44 @@ export class SettingsService {
 /** True when AI is on but the chat assistant is off because no chat model is configured. */
 export function chatUnavailableBecauseNoModel(settings: Settings | null | undefined): boolean {
   return settings?.aiActive === true && settings.aiChatUnavailableReason === 'NO_MODEL';
+}
+
+/**
+ * Whether the chat assistant is offered: AI on and not switched off by the operator. NO_MODEL keeps it
+ * offered (the "No AI model yet" panel explains what to do). An older backend that sends no reason but
+ * aiChatActive=false meant "off", so that stays hidden.
+ */
+export function chatOffered(settings: Settings | null | undefined): boolean {
+  if (settings?.aiActive !== true || settings.aiChatUnavailableReason === 'DISABLED') {
+    return false;
+  }
+  return settings.aiChatUnavailableReason === 'NO_MODEL' || settings.aiChatActive !== false;
+}
+
+/**
+ * No chat model answers this user: aiModelSource NONE, or, from a backend that does not send the
+ * source yet, the NO_MODEL reason.
+ */
+export function aiModelMissing(settings: Settings | null | undefined): boolean {
+  if (!chatOffered(settings)) {
+    return false;
+  }
+  return settings!.aiModelSource != null
+    ? settings!.aiModelSource === 'NONE'
+    : settings!.aiChatUnavailableReason === 'NO_MODEL';
+}
+
+/** The body of the 409 the chat and LLM-plan endpoints answer when no model resolves. */
+export interface AiNoModelError {
+  code: 'AI_NO_MODEL';
+  userKeysAllowed: boolean;
+}
+
+/** The 409 AI_NO_MODEL body, or null for any other answer. */
+export function aiNoModelOf(status: number | null | undefined, body: unknown): AiNoModelError | null {
+  const candidate = body as Partial<AiNoModelError> | null | undefined;
+  if (status !== 409 || !candidate || typeof candidate !== 'object' || candidate.code !== 'AI_NO_MODEL') {
+    return null;
+  }
+  return { code: 'AI_NO_MODEL', userKeysAllowed: candidate.userKeysAllowed === true };
 }

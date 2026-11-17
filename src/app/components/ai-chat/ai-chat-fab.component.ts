@@ -21,12 +21,15 @@ import { AiChatService } from '../../services/ai-chat.service';
 export class AiChatFabComponent implements OnInit, OnDestroy {
   private chatService = inject(AiChatService);
   private openRequestedSubscription?: Subscription;
+  private closeRequestedSubscription?: Subscription;
   isOpen = false;
 
   ngOnInit(): void {
     // Actions elsewhere in the app (e.g. "Organise with AI" on a folder) open the panel
     // through the service — see AiChatService.openWithPrompt().
     this.openRequestedSubscription = this.chatService.openRequested$.subscribe(() => this.isOpen = true);
+    // The "No AI model yet" panel sends the user to Settings > AI: the panel gets out of the way
+    this.closeRequestedSubscription = this.chatService.closeRequested$.subscribe(() => this.isOpen = false);
   }
 
   toggle(): void {
@@ -39,6 +42,7 @@ export class AiChatFabComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.openRequestedSubscription?.unsubscribe();
+    this.closeRequestedSubscription?.unsubscribe();
     this.chatService.destroy();
   }
 }

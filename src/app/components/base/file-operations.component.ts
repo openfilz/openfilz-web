@@ -25,6 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { isFolderItem, isPdfItem } from '../../models/file-actions';
 import { AiChatService } from '../../services/ai-chat.service';
 import { AiOrganizeAccessService } from '../../services/ai-organize-access.service';
+import { AiNoModelService } from '../../services/ai-no-model.service';
 import { SmartFilingService } from '../../services/smart-filing.service';
 import type { RequestSignatureDialogData } from '../../dialogs/request-signature-dialog/request-signature-dialog.component';
 import { isCompactViewport } from '../../utils/layout.util';
@@ -81,6 +82,7 @@ export abstract class FileOperationsComponent implements OnInit {
   protected translate = inject(TranslateService);
   protected aiChat = inject(AiChatService);
   protected aiOrganizeAccess = inject(AiOrganizeAccessService);
+  protected aiNoModel = inject(AiNoModelService);
   protected smartFiling = inject(SmartFilingService);
   private destroyRef = inject(DestroyRef);
 
@@ -364,6 +366,13 @@ export abstract class FileOperationsComponent implements OnInit {
    */
   organizeFolderWithAi(folder?: { id?: string; name?: string } | null): void {
     if (!this.aiOrganizeAccess.enabled) {
+      return;
+    }
+    if (this.aiNoModel.noModel) {
+      // No model answers this user: say so, and how to get one, instead of opening a chat that cannot answer
+      import('../ai-no-model-panel/ai-no-model-panel.component').then(m => {
+        this.dialog.open(m.AiNoModelPanelComponent, { width: '520px', maxWidth: '96vw', maxHeight: '94dvh', autoFocus: false, data: {} });
+      });
       return;
     }
     const prompt = folder?.name

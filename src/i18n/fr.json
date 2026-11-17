@@ -665,10 +665,6 @@
       "copper": "Cuivre"
     },
     "ai": {
-      "chatUnavailable": {
-        "title": "Assistant IA indisponible",
-        "message": "Aucun modèle de conversation n'est configuré sur ce déploiement. Les analyses de documents et le classement intelligent continuent de fonctionner. Un administrateur peut activer l'assistant en définissant {{model}} (provider:model) et {{key}} avec sa propre clé du fournisseur."
-      },
       "title": "Assistant IA",
       "description": "Choisissez le modèle d'IA qui répond à vos conversations. Par défaut, le modèle du serveur est utilisé ; vous pouvez utiliser votre propre compte OpenAI, Anthropic Claude ou Google Gemini avec votre clé API.",
       "provider": "Fournisseur du modèle d'IA",
@@ -1366,6 +1362,18 @@
       "action": "Organiser avec l’IA",
       "currentFolder": "Organiser ce dossier avec l’IA"
     }
+  },
+  "aiNoModel": {
+    "title": "Aucun modèle d'IA n'est encore configuré",
+    "intro": "Cette fonction utilise un modèle d'IA (LLM). Deux façons de l'activer :",
+    "forEveryone": "Pour tout le monde",
+    "forEveryoneText": "Un administrateur peut choisir un modèle pour tous les utilisateurs.",
+    "askAdmin": "Demandez à votre administrateur.",
+    "justForYou": "Rien que pour vous",
+    "justForYouText": "Vous pouvez utiliser votre propre modèle avec votre propre clé API.",
+    "justForYouBelow": "Vous pouvez utiliser votre propre modèle avec votre propre clé API, dans le formulaire ci-dessous.",
+    "setUp": "Configurer mon modèle d'IA",
+    "worksWithout": "Fonctionne déjà sans modèle : types de documents et classement intelligent."
   },
   "notice": {
     "dismiss": "Fermer",
