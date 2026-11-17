@@ -1,0 +1,191 @@
+/* "No AI model is set up yet": in the chat (in place of the input), in the settings AI pane, or as a
+   dialog from "Organise with AI". Theme variables only. */
+
+:host {
+  display: block;
+}
+
+.no-model {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.no-model.in-dialog {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.nm-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nm-icon,
+.nm-way-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.nm-icon mat-icon,
+.nm-way-icon mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+.nm-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.nm-intro {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.nm-way {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-primary);
+}
+
+.nm-way-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.nm-way-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.nm-way-text p {
+  margin: 0;
+}
+
+.nm-ask {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.nm-action {
+  margin-top: 6px;
+}
+
+.nm-works {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.nm-works mat-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #16a34a;
+}
+
+/* ---- Dialog frame (opened from "Organise with AI") ---- */
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.icon-wrapper mat-icon {
+  color: var(--primary);
+}
+
+.header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.dialog-subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.close-btn {
+  color: var(--text-secondary);
+}
+
+.dialog-content {
+  padding: 20px 28px !important;
+  color: var(--text-primary);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 28px 20px !important;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+  border-top: 1px solid var(--border-light);
+  background-color: var(--bg-primary);
+}

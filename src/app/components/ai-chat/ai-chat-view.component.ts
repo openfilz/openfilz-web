@@ -9,6 +9,8 @@ import { AiChatService } from '../../services/ai-chat.service';
 import { AiMessage } from '../../models/ai-chat.models';
 import { AiMessageComponent } from './ai-message.component';
 import { AiTypingIndicatorComponent } from './ai-typing-indicator.component';
+import { AiNoModelPanelComponent } from '../ai-no-model-panel/ai-no-model-panel.component';
+import { AiNoModelService } from '../../services/ai-no-model.service';
 
 @Component({
   selector: 'app-ai-chat-view',
@@ -20,7 +22,8 @@ import { AiTypingIndicatorComponent } from './ai-typing-indicator.component';
     MatTooltipModule,
     TranslatePipe,
     AiMessageComponent,
-    AiTypingIndicatorComponent
+    AiTypingIndicatorComponent,
+    AiNoModelPanelComponent
   ],
   templateUrl: './ai-chat-view.component.html',
   styleUrls: ['./ai-chat-view.component.css']
@@ -30,12 +33,23 @@ export class AiChatViewComponent implements OnInit, OnDestroy, AfterViewChecked 
   @ViewChild('messageInput') messageInput!: ElementRef<HTMLTextAreaElement>;
 
   chatService = inject(AiChatService);
+  private aiNoModel = inject(AiNoModelService);
 
   messages: AiMessage[] = [];
   isStreaming = false;
   inputText = '';
   private shouldScrollToBottom = false;
   private subscriptions: Subscription[] = [];
+
+  /** No chat model answers this user: the "No AI model yet" panel replaces the input. */
+  get noModel(): boolean {
+    return this.aiNoModel.noModel;
+  }
+
+  /** The panel sent the user to Settings > AI. */
+  onLeaveForSettings(): void {
+    this.chatService.closeRequested$.next();
+  }
 
   ngOnInit(): void {
     this.subscriptions.push(

@@ -1,6 +1,6 @@
 <div class="chat-view">
   <div class="messages-container" #messagesContainer>
-    @if (messages.length === 0 && !isStreaming) {
+    @if (messages.length === 0 && !isStreaming && !noModel) {
       <div class="empty-state">
         <mat-icon class="empty-icon">chat_bubble_outline</mat-icon>
         <p>{{ 'aiChat.emptyChat' | translate }}</p>
@@ -15,8 +15,12 @@
         <app-ai-typing-indicator></app-ai-typing-indicator>
       </div>
     }
+    @if (noModel) {
+      <app-ai-no-model-panel class="no-model-panel" variant="chat" (leave)="onLeaveForSettings()"></app-ai-no-model-panel>
+    }
   </div>
 
+  @if (!noModel) {
   <div class="input-area">
     <textarea
       #messageInput
@@ -36,4 +40,5 @@
       <mat-icon>send</mat-icon>
     </button>
   </div>
+  }
 </div>
