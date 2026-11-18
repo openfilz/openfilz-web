@@ -6,9 +6,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideTranslateService } from '@ngx-translate/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
-import { Settings, SettingsService, aiModelMissing, aiNoModelOf, chatOffered } from './settings.service';
+import { Settings, SettingsService, aiModelMissing, aiNoModelOf, chatOffered, isAiKeyUnreadable } from './settings.service';
 import { AI_NO_MODEL_RECHECK_INTERVAL_MS, AiNoModelService } from './ai-no-model.service';
 import { AiChatService } from './ai-chat.service';
+import { AiSettingsService } from './ai-settings.service';
 
 /**
  * "No AI model yet": when the chat is offered, when the panel shows, and the 409 AI_NO_MODEL.
@@ -41,6 +42,14 @@ describe('chat visibility helpers', () => {
     expect(aiModelMissing(settings({ aiChatActive: false, aiChatUnavailableReason: 'NO_MODEL' }))).toBe(true);
     expect(aiModelMissing(settings({}))).toBe(false);
     expect(aiModelMissing(settings({ aiChatActive: false, aiChatUnavailableReason: 'DISABLED', aiModelSource: 'NONE' }))).toBe(false);
+  });
+
+  it('recognises the 409 AI_KEY_UNREADABLE and nothing else', () => {
+    expect(isAiKeyUnreadable(409, { code: 'AI_KEY_UNREADABLE', message: 'x' })).toBe(true);
+    expect(isAiKeyUnreadable(409, { code: 'AI_NO_MODEL' })).toBe(false);
+    expect(isAiKeyUnreadable(500, { code: 'AI_KEY_UNREADABLE' })).toBe(false);
+    expect(isAiKeyUnreadable(409, null)).toBe(false);
+    expect(isAiKeyUnreadable(409, 'AI_KEY_UNREADABLE')).toBe(false);
   });
 
   it('reads the 409 AI_NO_MODEL body and nothing else', () => {
@@ -106,6 +115,78 @@ describe('AiNoModelService + AiChatService', () => {
       expect(chat.isStreaming$.value).toBe(false);
       expect(noModel.noModel).toBe(true);
       expect(noModel.userKeysAllowed).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('the chat drops the unanswered turn on a 409 AI_KEY_UNREADABLE; a settings refresh keeps the notice, saving clears it', async () => {
+    publish(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+    const chat = TestBed.inject(AiChatService);
+    const noModel = TestBed.inject(AiNoModelService);
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ code: 'AI_KEY_UNREADABLE', message: 'm' }), {
+      status: 409, headers: { 'Content-Type': 'application/json' }
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      await TestBed.inject(NgZone).run(() => chat.sendMessage('hello'));
+      expect(chat.currentMessages$.value).toEqual([]);
+      expect(chat.isStreaming$.value).toBe(false);
+      expect(noModel.keyUnreadable).toBe(true);
+      expect(noModel.noModel).toBe(false);
+      // The settings still say PERSONAL: a refresh must not take the notice away
+      publish(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+      expect(noModel.keyUnreadable).toBe(true);
+      noModel.clearKeyUnreadable();
+      expect(noModel.keyUnreadable).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('reading the personal AI settings shows the unreadable-key notice before anything is typed; a readable key takes it away', () => {
+    const http = TestBed.inject(HttpTestingController);
+    const aiSettings = TestBed.inject(AiSettingsService);
+    const noModel = TestBed.inject(AiNoModelService);
+    const stored = {
+      enabled: true, provider: 'OPENAI', model: 'gpt-x', baseUrl: null, hasApiKey: true, keySuffix: '',
+      defaultProvider: 'ollama', defaultModel: 'm'
+    };
+    const personalSettings = (method: string) => http.expectOne(r => r.method === method && r.url.endsWith('/settings/ai'));
+
+    // What the chat panel does when it opens, and Settings > AI when it shows
+    aiSettings.loadSettings().subscribe();
+    personalSettings('GET').flush({ ...stored, keyUnreadable: true });
+    expect(noModel.keyUnreadable).toBe(true);
+
+    // Back to the server default: the settings kept by the page no longer say the key is unreadable
+    aiSettings.resetSettings().subscribe();
+    personalSettings('DELETE').flush(null);
+    http.expectOne(r => r.method === 'GET' && r.url.endsWith('/settings')).flush(settings({ aiModelSource: 'DEPLOYMENT' }));
+    expect(aiSettings.settings?.hasApiKey).toBe(false);
+    expect(aiSettings.settings?.keyUnreadable).toBe(false);
+
+    // The key was saved again elsewhere (another tab): the next read clears the notice
+    noModel.reportKeyUnreadable();
+    aiSettings.loadSettings().subscribe();
+    personalSettings('GET').flush({ ...stored, keySuffix: '6789' });
+    expect(noModel.keyUnreadable).toBe(false);
+    http.verify();
+  });
+
+  it('a chat that answers takes the unreadable-key notice away', async () => {
+    publish(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+    const chat = TestBed.inject(AiChatService);
+    const noModel = TestBed.inject(AiNoModelService);
+    noModel.reportKeyUnreadable();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('data: {"type":"MESSAGE","content":"hi"}\n\ndata: {"type":"DONE"}\n\n', {
+      status: 200, headers: { 'Content-Type': 'text/event-stream' }
+    })));
+    try {
+      await TestBed.inject(NgZone).run(() => chat.sendMessage('hello'));
+      expect(noModel.keyUnreadable).toBe(false);
+      expect(chat.currentMessages$.value.map(m => m.content)).toEqual(['hello', 'hi']);
+      expect(chat.isStreaming$.value).toBe(false);
     } finally {
       vi.unstubAllGlobals();
     }

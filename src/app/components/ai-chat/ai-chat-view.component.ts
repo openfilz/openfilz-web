@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,6 +35,7 @@ export class AiChatViewComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   chatService = inject(AiChatService);
   private aiNoModel = inject(AiNoModelService);
+  private router = inject(Router);
 
   messages: AiMessage[] = [];
   isStreaming = false;
@@ -46,9 +48,21 @@ export class AiChatViewComponent implements OnInit, OnDestroy, AfterViewChecked 
     return this.aiNoModel.noModel;
   }
 
+  /** The user's saved key can no longer be read (409 AI_KEY_UNREADABLE): a notice replaces the input. */
+  get keyUnreadable(): boolean {
+    return this.aiNoModel.keyUnreadable;
+  }
+
   /** The panel sent the user to Settings > AI. */
   onLeaveForSettings(): void {
     this.chatService.closeRequested$.next();
+  }
+
+  /** "Save my key again": Settings > AI. The next chat asks the server again. */
+  openAiSettings(): void {
+    this.aiNoModel.clearKeyUnreadable();
+    this.chatService.closeRequested$.next();
+    void this.router.navigate(['/settings'], { queryParams: { section: 'ai' } });
   }
 
   ngOnInit(): void {

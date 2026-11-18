@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subject, firstValueFrom, isObservable, of 
 import { tap } from 'rxjs/operators';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../../environments/environment';
-import { SettingsService, aiNoModelOf } from './settings.service';
+import { SettingsService, aiNoModelOf, isAiKeyUnreadable } from './settings.service';
 import { AiNoModelService } from './ai-no-model.service';
 import {
   AiConversation,
@@ -179,7 +179,16 @@ export class AiChatService {
       });
 
       if (!response.ok) {
-        const refusal = response.status === 409 ? aiNoModelOf(409, await response.json().catch(() => null)) : null;
+        const conflict = response.status === 409 ? await response.json().catch(() => null) : null;
+        if (isAiKeyUnreadable(response.status, conflict)) {
+          // The user's saved key can no longer be read: drop the unanswered turn, the chat asks them to save it again
+          this.ngZone.run(() => {
+            this.currentMessages$.next(this.currentMessages$.value.filter(m => m !== userMsg && m !== assistantMsg));
+            this.aiNoModel.reportKeyUnreadable();
+          });
+          return;
+        }
+        const refusal = response.status === 409 ? aiNoModelOf(409, conflict) : null;
         if (refusal) {
           // No chat model resolves for this user: drop the unanswered turn, the panel takes the input's place
           this.ngZone.run(() => {
@@ -189,6 +198,11 @@ export class AiChatService {
           return;
         }
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      if (this.aiNoModel.keyUnreadable) {
+        // The server answers: the key is readable again (saved from another tab, or the old encryption key is back)
+        this.ngZone.run(() => this.aiNoModel.clearKeyUnreadable());
       }
 
       const reader = response.body!.getReader();
