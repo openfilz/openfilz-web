@@ -398,6 +398,15 @@ export interface AiNoModelError {
   userKeysAllowed: boolean;
 }
 
+/**
+ * Whether an answer is the 409 AI_KEY_UNREADABLE: the user's saved key can no longer be read by the server (its
+ * encryption key was replaced), so they save it again.
+ */
+export function isAiKeyUnreadable(status: number | null | undefined, body: unknown): boolean {
+  const candidate = body as { code?: unknown } | null | undefined;
+  return status === 409 && !!candidate && typeof candidate === 'object' && candidate.code === 'AI_KEY_UNREADABLE';
+}
+
 /** The 409 AI_NO_MODEL body, or null for any other answer. */
 export function aiNoModelOf(status: number | null | undefined, body: unknown): AiNoModelError | null {
   const candidate = body as Partial<AiNoModelError> | null | undefined;

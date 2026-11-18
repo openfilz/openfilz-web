@@ -18,6 +18,8 @@ export interface AiUserSettings {
   keySuffix: string | null;
   defaultProvider: string;
   defaultModel: string;
+  /** A key is stored but the server can no longer read it (its encryption key was replaced): save it again. */
+  keyUnreadable?: boolean;
 }
 
 export interface SaveAiSettingsRequest {
