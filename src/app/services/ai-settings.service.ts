@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SettingsService } from './settings.service';
+import { AiNoModelService } from './ai-no-model.service';
 import {
   AiConnectionTestResult,
   AiModelsResponse,
@@ -23,6 +24,7 @@ export class AiSettingsService {
   private readonly baseUrl = `${environment.apiURL}/settings/ai`;
   private http = inject(HttpClient);
   private appSettings = inject(SettingsService);
+  private aiNoModel = inject(AiNoModelService);
 
   private settingsSubject = new BehaviorSubject<AiUserSettings | null>(null);
   /** Last loaded settings — the chat panel badge reads this. */
@@ -30,7 +32,16 @@ export class AiSettingsService {
 
   loadSettings(): Observable<AiUserSettings> {
     return this.http.get<AiUserSettings>(this.baseUrl).pipe(
-      tap(settings => this.settingsSubject.next(settings))
+      tap(settings => {
+        this.settingsSubject.next(settings);
+        // Read by the chat panel when it opens and by Settings > AI: a saved key the server can no longer
+        // read shows the chat's notice before a message is typed (and dropped), a readable one takes it away
+        if (settings.keyUnreadable) {
+          this.aiNoModel.reportKeyUnreadable();
+        } else {
+          this.aiNoModel.clearKeyUnreadable();
+        }
+      })
     );
   }
 
@@ -49,7 +60,8 @@ export class AiSettingsService {
         const current = this.settingsSubject.value;
         if (current) {
           this.settingsSubject.next({
-            ...current, provider: null, model: null, baseUrl: null, hasApiKey: false, keySuffix: null
+            ...current, provider: null, model: null, baseUrl: null, hasApiKey: false, keySuffix: null,
+            keyUnreadable: false
           });
         }
         this.refreshModelSource();

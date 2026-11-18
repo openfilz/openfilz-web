@@ -200,6 +200,11 @@ export class AiChatService {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
+      if (this.aiNoModel.keyUnreadable) {
+        // The server answers: the key is readable again (saved from another tab, or the old encryption key is back)
+        this.ngZone.run(() => this.aiNoModel.clearKeyUnreadable());
+      }
+
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
