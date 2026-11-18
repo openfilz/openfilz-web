@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AiSettingsService } from '../../services/ai-settings.service';
+import { AiNoModelService } from '../../services/ai-no-model.service';
+import { isAiKeyUnreadable } from '../../services/settings.service';
 import {
   AI_KEY_HELP_URLS,
   AI_MODEL_SUGGESTIONS,
@@ -30,6 +32,7 @@ export class AiSettingsComponent implements OnInit {
 
   private aiSettingsService = inject(AiSettingsService);
   private translate = inject(TranslateService);
+  private aiNoModel = inject(AiNoModelService);
 
   loaded = false;
   saving = false;
@@ -81,6 +84,9 @@ export class AiSettingsComponent implements OnInit {
         this.model = settings.model ?? '';
         this.baseUrl = settings.baseUrl ?? '';
         this.loaded = true;
+        if (settings.keyUnreadable) {
+          this.banner = this.keyUnreadableBanner();
+        }
         if (!this.isDefault) {
           this.syncCustomModelFlag();
           this.refreshModels();   // a stored key can list models with nothing typed
@@ -255,6 +261,10 @@ export class AiSettingsComponent implements OnInit {
       },
       error: err => {
         this.testing = false;
+        if (isAiKeyUnreadable(err?.status, err?.error)) {
+          this.banner = this.keyUnreadableBanner();
+          return;
+        }
         this.banner = { kind: 'error', text: this.translate.instant('settings.ai.testFailed', { message: err?.error?.message ?? err.message ?? '' }) };
       }
     });
@@ -269,10 +279,15 @@ export class AiSettingsComponent implements OnInit {
     const done = () => {
       this.saving = false;
       this.apiKey = '';
+      this.aiNoModel.clearKeyUnreadable();
       this.banner = { kind: 'success', text: this.translate.instant('settings.ai.saved') };
     };
     const fail = (err: any) => {
       this.saving = false;
+      if (isAiKeyUnreadable(err?.status, err?.error)) {
+        this.banner = this.keyUnreadableBanner();
+        return;
+      }
       this.banner = { kind: 'error', text: err?.error?.message ?? this.translate.instant('settings.ai.saveError') };
     };
     if (this.isDefault) {
@@ -292,6 +307,11 @@ export class AiSettingsComponent implements OnInit {
         error: fail
       });
     }
+  }
+
+  /** The stored key can no longer be read by the server: enter it again (409 AI_KEY_UNREADABLE, or keyUnreadable). */
+  private keyUnreadableBanner(): { kind: 'error'; text: string } {
+    return { kind: 'error', text: this.translate.instant('settings.ai.keyUnreadable') };
   }
 
   private buildRequest() {

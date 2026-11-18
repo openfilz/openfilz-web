@@ -44,6 +44,25 @@ export class AiNoModelService {
   }
 
   /**
+   * The chat answered 409 AI_KEY_UNREADABLE: the user's saved key can no longer be read. Unlike AI_NO_MODEL the
+   * settings cannot tell (they still say PERSONAL), so this stays until the user saves their AI settings or leaves
+   * for them; a chat sent after that asks the server again.
+   */
+  private keyUnreadableState = false;
+
+  get keyUnreadable(): boolean {
+    return this.keyUnreadableState;
+  }
+
+  reportKeyUnreadable(): void {
+    this.keyUnreadableState = true;
+  }
+
+  clearKeyUnreadable(): void {
+    this.keyUnreadableState = false;
+  }
+
+  /**
    * Asks the API again whether a model answers this user now. The panel takes the place of the input, so
    * nothing else would ever notice a model set meanwhile (by an administrator, or the user's own key saved
    * in another tab): the panel would stay until the page is reloaded. Called when the panel shows and when

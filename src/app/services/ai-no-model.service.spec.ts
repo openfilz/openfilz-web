@@ -6,7 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideTranslateService } from '@ngx-translate/core';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { of } from 'rxjs';
-import { Settings, SettingsService, aiModelMissing, aiNoModelOf, chatOffered } from './settings.service';
+import { Settings, SettingsService, aiModelMissing, aiNoModelOf, chatOffered, isAiKeyUnreadable } from './settings.service';
 import { AI_NO_MODEL_RECHECK_INTERVAL_MS, AiNoModelService } from './ai-no-model.service';
 import { AiChatService } from './ai-chat.service';
 
@@ -41,6 +41,14 @@ describe('chat visibility helpers', () => {
     expect(aiModelMissing(settings({ aiChatActive: false, aiChatUnavailableReason: 'NO_MODEL' }))).toBe(true);
     expect(aiModelMissing(settings({}))).toBe(false);
     expect(aiModelMissing(settings({ aiChatActive: false, aiChatUnavailableReason: 'DISABLED', aiModelSource: 'NONE' }))).toBe(false);
+  });
+
+  it('recognises the 409 AI_KEY_UNREADABLE and nothing else', () => {
+    expect(isAiKeyUnreadable(409, { code: 'AI_KEY_UNREADABLE', message: 'x' })).toBe(true);
+    expect(isAiKeyUnreadable(409, { code: 'AI_NO_MODEL' })).toBe(false);
+    expect(isAiKeyUnreadable(500, { code: 'AI_KEY_UNREADABLE' })).toBe(false);
+    expect(isAiKeyUnreadable(409, null)).toBe(false);
+    expect(isAiKeyUnreadable(409, 'AI_KEY_UNREADABLE')).toBe(false);
   });
 
   it('reads the 409 AI_NO_MODEL body and nothing else', () => {
@@ -106,6 +114,30 @@ describe('AiNoModelService + AiChatService', () => {
       expect(chat.isStreaming$.value).toBe(false);
       expect(noModel.noModel).toBe(true);
       expect(noModel.userKeysAllowed).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('the chat drops the unanswered turn on a 409 AI_KEY_UNREADABLE; a settings refresh keeps the notice, saving clears it', async () => {
+    publish(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+    const chat = TestBed.inject(AiChatService);
+    const noModel = TestBed.inject(AiNoModelService);
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ code: 'AI_KEY_UNREADABLE', message: 'm' }), {
+      status: 409, headers: { 'Content-Type': 'application/json' }
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    try {
+      await TestBed.inject(NgZone).run(() => chat.sendMessage('hello'));
+      expect(chat.currentMessages$.value).toEqual([]);
+      expect(chat.isStreaming$.value).toBe(false);
+      expect(noModel.keyUnreadable).toBe(true);
+      expect(noModel.noModel).toBe(false);
+      // The settings still say PERSONAL: a refresh must not take the notice away
+      publish(settings({ aiModelSource: 'PERSONAL', aiUserSettingsEnabled: true }));
+      expect(noModel.keyUnreadable).toBe(true);
+      noModel.clearKeyUnreadable();
+      expect(noModel.keyUnreadable).toBe(false);
     } finally {
       vi.unstubAllGlobals();
     }
