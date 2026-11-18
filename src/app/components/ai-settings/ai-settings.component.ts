@@ -85,7 +85,7 @@ export class AiSettingsComponent implements OnInit {
         this.baseUrl = settings.baseUrl ?? '';
         this.loaded = true;
         if (settings.keyUnreadable) {
-          this.banner = this.keyUnreadableBanner();
+          this.showKeyUnreadable();
         }
         if (!this.isDefault) {
           this.syncCustomModelFlag();
@@ -123,8 +123,9 @@ export class AiSettingsComponent implements OnInit {
     return this.isDefault ? '' : AI_KEY_HELP_URLS[this.provider as AiProvider] ?? '';
   }
 
+  /** A key is stored for this provider and the server can still read it: only then can the field stay empty. */
   get hasStoredKey(): boolean {
-    return (this.current?.hasApiKey ?? false) && this.current?.provider === this.provider;
+    return (this.current?.hasApiKey ?? false) && !this.current?.keyUnreadable && this.current?.provider === this.provider;
   }
 
   get apiKeyPlaceholder(): string {
@@ -262,7 +263,7 @@ export class AiSettingsComponent implements OnInit {
       error: err => {
         this.testing = false;
         if (isAiKeyUnreadable(err?.status, err?.error)) {
-          this.banner = this.keyUnreadableBanner();
+          this.showKeyUnreadable();
           return;
         }
         this.banner = { kind: 'error', text: this.translate.instant('settings.ai.testFailed', { message: err?.error?.message ?? err.message ?? '' }) };
@@ -285,7 +286,7 @@ export class AiSettingsComponent implements OnInit {
     const fail = (err: any) => {
       this.saving = false;
       if (isAiKeyUnreadable(err?.status, err?.error)) {
-        this.banner = this.keyUnreadableBanner();
+        this.showKeyUnreadable();
         return;
       }
       this.banner = { kind: 'error', text: err?.error?.message ?? this.translate.instant('settings.ai.saveError') };
@@ -309,9 +310,15 @@ export class AiSettingsComponent implements OnInit {
     }
   }
 
-  /** The stored key can no longer be read by the server: enter it again (409 AI_KEY_UNREADABLE, or keyUnreadable). */
-  private keyUnreadableBanner(): { kind: 'error'; text: string } {
-    return { kind: 'error', text: this.translate.instant('settings.ai.keyUnreadable') };
+  /**
+   * The stored key can no longer be read by the server: enter it again (409 AI_KEY_UNREADABLE, or keyUnreadable).
+   * The form stops offering to keep it: no "leave empty to keep it", and saving or testing needs a typed key.
+   */
+  private showKeyUnreadable(): void {
+    if (this.current && !this.current.keyUnreadable) {
+      this.current = { ...this.current, keyUnreadable: true, keySuffix: '' };
+    }
+    this.banner = { kind: 'error', text: this.translate.instant('settings.ai.keyUnreadable') };
   }
 
   private buildRequest() {
