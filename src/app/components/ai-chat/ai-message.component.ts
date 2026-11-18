@@ -1,4 +1,4 @@
-import { Component, Input, inject, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, inject, ElementRef, AfterViewInit, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AiMessage } from '../../models/ai-chat.models';
@@ -236,12 +236,30 @@ export class AiMessageComponent implements AfterViewInit {
     return this.planIdsCache;
   }
 
+  private renderedSource: string | null = null;
+  private renderedCache: SafeHtml = '';
+
+  /**
+   * The message as HTML, rendered once per text. The binding gets the same value until the text changes:
+   * a change-detection pass (every keystroke in the input, every streamed chunk) neither parses the
+   * markdown of every earlier message again nor replaces its DOM.
+   */
   get renderedContent(): SafeHtml {
-    if (!this.message?.content) return '';
+    const source = this.message?.content ?? '';
+    if (source !== this.renderedSource) {
+      this.renderedSource = source;
+      this.renderedCache = source ? this.render(source) : '';
+    }
+    return this.renderedCache;
+  }
+
+  private render(source: string): SafeHtml {
     // 0. Plan markers become cards below the bubble, not text
-    const content = this.message.content.replace(REORG_PLAN_REGEX, '').trimEnd();
-    // 1. Render markdown first (markers pass through as plain text)
-    let html = this.markdownService.render(content);
+    const content = source.replace(REORG_PLAN_REGEX, '').trimEnd();
+    // 1. Render markdown first (markers pass through as plain text), then sanitize it: marked lets raw
+    //    HTML through, and this text comes from a model that reads documents written by other people
+    //    (and from error messages), so a script, an event handler or a javascript: link must not survive
+    let html = this.sanitizer.sanitize(SecurityContext.HTML, this.markdownService.render(content)) ?? '';
     // 2. Then replace [[doc:...]] markers in the rendered HTML with clickable links
     html = html.replace(DOC_REF_REGEX, (_match, id, parentId, type, name) => {
       const icon = type === 'FOLDER' ? 'folder' : 'description';
@@ -252,7 +270,8 @@ export class AiMessageComponent implements AfterViewInit {
     //    degrade unresolvable markers to their plain name
     html = html.replace(BROKEN_DOC_SHELL_REGEX, '$1');
     html = html.replace(BROKEN_DOC_REF_REGEX, '$1');
-    // Bypass Angular sanitizer to preserve data-* attributes on doc-links
+    // Sanitized above, before the doc links were added: trusted as it is, so that the binding keeps their
+    // data-* attributes (the ids come from the marker pattern, hex and dashes only)
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
