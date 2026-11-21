@@ -1,5 +1,6 @@
 .app-layout {
-  display: block;
+  /* flow-root: .main-content's top margin stays inside (with block it went through, and the page was a header taller than the window) */
+  display: flow-root;
   height: 100vh;
   height: 100dvh;
   background-color: var(--bg-secondary);
