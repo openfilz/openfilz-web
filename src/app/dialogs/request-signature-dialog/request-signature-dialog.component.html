@@ -229,7 +229,7 @@
                        (pointerdown)="startMove(ri, f, $event)"
                        tabindex="0" role="button"
                        [attr.aria-label]="('signature.fieldTypes.' + f.type | translate) + ' — ' + recipientLabel(r, ri)"
-                       (keydown.enter)="selectField(f)" (keydown.delete)="removeField(r, f)">
+                       (keydown.enter)="selectField(f)" (keydown.delete)="removeField(r, f, $event)">
                     <mat-icon class="marker-icon" aria-hidden="true">{{ fieldIcons[f.type] }}</mat-icon>
                     <span class="marker-label">{{ f.label || ('signature.fieldTypes.' + f.type | translate) }}</span>
                     <button type="button" class="marker-del" (pointerdown)="$event.stopPropagation()"

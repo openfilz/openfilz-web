@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, fromEvent, filter, map } from 'rxjs';
+import { hasOpenDialog, isInOverlay } from '../utils/overlay-keys';
 
 export interface KeyboardShortcut {
   key: string;
@@ -145,6 +146,13 @@ export class KeyboardShortcutsService {
 
     // Don't handle if help dialog is open (except for Escape)
     if (this.isHelpDialogOpen && event.key !== 'Escape') {
+      return false;
+    }
+
+    // Page shortcuts never act behind a dialog or an overlay: a key pressed there belongs to it.
+    // Without this, Delete on a field of the signature dialog also deleted the file selected
+    // in the explorer behind it. Dialogs close themselves on Escape.
+    if (isInOverlay(target) || hasOpenDialog()) {
       return false;
     }
 

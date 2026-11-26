@@ -471,7 +471,10 @@ export class RequestSignatureDialogComponent implements OnInit, OnDestroy {
   }
 
   removeField(r: RecipientRow, field: PlacedField, event?: Event): void {
+    // The key or click is this dialog's: it must never reach a page shortcut (Delete = delete
+    // the selected file in the explorer behind the dialog).
     event?.stopPropagation();
+    event?.preventDefault();
     r.fields = r.fields.filter(f => f !== field);
     if (this.selectedField === field) this.selectedField = null;
   }
