@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build"
+    "build": "ng build",
+    "test": "vitest run"
   },
   "dependencies": {
     "@angular-devkit/schematics": "~21.2.3",
@@ -53,6 +54,8 @@
     "@ngx-env/builder": "^21.0.1",
     "@types/node": "^24.10.1",
     "baseline-browser-mapping": "^2.9.11",
-    "typescript": "^5.9.3"
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }
