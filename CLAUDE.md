@@ -295,8 +295,10 @@ as e-Sign / PDF tools so the enterprise fork only mirrors the descriptor + route
   tasks, the monitor drawer and the details panel), the editor's review section, the `parallel-review` template.
   `components/workflow-template-picker/` = the template cards (empty state + `dialogs/workflow-template-dialog`, the
   "New workflow" button), each with a mini flow preview built from `templateSpec()`. `utils/workflow-spec.spec.ts` pins
-  every template (valid + structure, mirrored by core `WorkflowTemplatesIT`) — no test runner is configured, run it with
-  `npx vitest run src/app/utils/workflow-spec.spec.ts --globals`.
+  every template (valid + structure, mirrored by core `WorkflowTemplatesIT`). Specs run with vitest: `npm test` for all
+  of them (also run on every PR by `.github/workflows/pr-checks.yml`), `npx vitest run src/app/utils/workflow-spec.spec.ts`
+  for one. `vitest.config.mjs` sets jsdom + `src/test-setup.ts` (Angular TestBed) and inlines component templates; it
+  excludes three specs that do not pass yet (listed there).
 - `components/workflow-diagram/` — pure SVG picture of a spec (current status highlighted, taken
   transitions bold, `stateClick` for the designer).
 - `pages/workflows/` — `workflows.component` (tabs, `?tab=tasks|monitor|designer`, `?task=`, `?instance=`),

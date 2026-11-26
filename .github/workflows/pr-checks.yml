@@ -1,0 +1,46 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches: [ "develop", "main" ]
+
+# A new commit on a PR cancels the previous run of that PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Unit specs and production build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      # No package-lock.json is committed, so cache the npm download cache
+      # (setup-node's own cache needs a lock file)
+      - name: Cache npm downloads
+        uses: actions/cache@v5
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      # Same install as the release workflow (no lock file, so npm ci cannot run)
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Unit specs
+        run: npm test
+
+      - name: Production build
+        run: npm run build openfilz-ui -- --configuration production
